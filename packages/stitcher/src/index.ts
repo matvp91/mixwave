@@ -4,6 +4,7 @@ import cors from "@fastify/cors";
 import { parsePlaylistParamsPayload } from "./schemas.js";
 import { parse, stringify } from "../extern/hls-parser/index.js";
 import { Define, Interstitial } from "../extern/hls-parser/types.js";
+import { env } from "./env.js";
 import type {
   MasterPlaylist,
   MediaPlaylist,
@@ -14,15 +15,13 @@ import type {
   preValidationAsyncHookHandler,
 } from "fastify";
 
-const BASE_URL = "https://streamer.ams3.cdn.digitaloceanspaces.com/package";
-
 function parseUrl(fullUrl: string) {
   const [url] = fullUrl.split(/[?#]/);
   return url.replace("out/", "");
 }
 
 async function fetchPlaylist<T>(url: string) {
-  const response = await fetch(`${BASE_URL}${url}`);
+  const response = await fetch(`${env.BASE_URL}${url}`);
   const text = await response.text();
   return parse(text) as T;
 }
@@ -48,7 +47,7 @@ const preValidation = async (
       }),
       new Define({
         name: "basePath",
-        value: BASE_URL,
+        value: env.BASE_URL,
         type: "NAME",
       }),
     );
@@ -77,7 +76,7 @@ const preValidation = async (
           new Interstitial({
             startDate: new Date(now),
             id: `i${index + 1}`,
-            uri: `${BASE_URL}/${interstitial.assetId}/hls/master.m3u8`,
+            uri: `${env.BASE_URL}/${interstitial.assetId}/hls/master.m3u8`,
             duration: 15,
           }),
         );
@@ -115,7 +114,7 @@ async function buildServer() {
   app.register(cors);
 
   app.register(fastifyProxy, {
-    upstream: BASE_URL,
+    upstream: env.BASE_URL,
     prefix: "/out",
     preValidation: preValidation as preValidationAsyncHookHandler,
   });

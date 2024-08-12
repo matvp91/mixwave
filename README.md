@@ -2,7 +2,9 @@
 
 Mixwave is a comprehensive toolset designed to streamline your video workflow, covering everything from transcoding and packaging to playback. With its user-friendly API, Mixwave makes self-hosting videos easy.
 
+<table><tr><td>
 <img src="https://github.com/matvp91/mixwave/blob/main/assets/api.png?raw=true" width="800" />
+</td></tr></table>
 
 The video world is full of variety, with numerous codecs and various playout protocols like MPEG-DASH and HLS. We believe that video doesn't have to be so fragmented, so we focus primarily on the following key areas:
 

@@ -89,3 +89,7 @@ The transcode job will result in an `assetId`, your stream can now be referenced
 ```
 
 </details>
+
+The HLS manifest will be available at `{S3_URL}/package/16644b94-a665-4ca2-8543-4aa519e853d8/hls/master.m3u8`.
+
+You can also use the `playlist` endpoint with the same `assetId` to generate a `stitcher` (manifest manipulator) URL and provide it with interstitials as you like.

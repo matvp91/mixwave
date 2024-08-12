@@ -1,0 +1,33 @@
+# This example shows 3 different video Renditions (Main, Centerfield
+# and Dugout), and 3 different Variant Streams (low, mid and high).  In
+# this example, clients that did not support the EXT-X-MEDIA tag and
+# the VIDEO attribute of the EXT-X-STREAM-INF tag would only be able to
+# play the video Rendition "Main".
+# Since the EXT-X-STREAM-INF tag has no AUDIO attribute, all video
+# Renditions would be required to contain the audio.
+#
+# In this example, the CODECS attributes have been condensed for space.
+# A '\' is used to indicate that the tag continues on the following
+# line with whitespace removed:
+
+#EXTM3U
+#EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="low",NAME="Main",DEFAULT=YES,URI="low/main/audio-video.m3u8"
+#EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="low",NAME="Centerfield",DEFAULT=NO,URI="low/centerfield/audio-video.m3u8"
+#EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="low",NAME="Dugout",DEFAULT=NO,URI="low/dugout/audio-video.m3u8"
+
+#EXT-X-STREAM-INF:BANDWIDTH=1280000,CODECS="avc1.640029,mp4a.40.2",VIDEO="low"
+low/main/audio-video.m3u8
+
+#EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="mid",NAME="Main",DEFAULT=NO,URI="mid/main/audio-video.m3u8"
+#EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="mid",NAME="Centerfield",DEFAULT=YES,URI="mid/centerfield/audio-video.m3u8"
+#EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="mid",NAME="Dugout",DEFAULT=NO,URI="mid/dugout/audio-video.m3u8"
+
+#EXT-X-STREAM-INF:BANDWIDTH=2560000,CODECS="avc1.640029,mp4a.40.2",VIDEO="mid"
+mid/main/audio-video.m3u8
+
+#EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="hi",NAME="Main",DEFAULT=YES,URI="hi/main/audio-video.m3u8"
+#EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="hi",NAME="Centerfield",DEFAULT=NO,URI="hi/centerfield/audio-video.m3u8"
+#EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID="hi",NAME="Dugout",DEFAULT=NO,URI="hi/dugout/audio-video.m3u8"
+
+#EXT-X-STREAM-INF:BANDWIDTH=7680000,CODECS="avc1.640029,mp4a.40.2",VIDEO="hi"
+hi/main/audio-video.m3u8

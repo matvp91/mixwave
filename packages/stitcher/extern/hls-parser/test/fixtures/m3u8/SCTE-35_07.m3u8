@@ -1,0 +1,23 @@
+# This example shows two EXT-X-DATERANGE tags that describe a single
+# Date Range, with a SCTE-35 "out" splice_insert() command that is
+# subsequently updated with an SCTE-35 "in" splice_insert() command.
+
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:30
+
+#EXT-X-PROGRAM-DATE-TIME:2014-03-05T11:14:00.000Z
+#EXTINF:30,
+http://media.example.com/01.ts
+#EXTINF:30,
+http://media.example.com/02.ts
+#EXT-X-DATERANGE:ID="splice-6FFFFFF0",START-DATE="2023-10-09T06:16:00.820Z",PLANNED-DURATION=59.993,SCTE35-OUT=0xFC30250001D1F7E25300FFF0140565239AA07FEFFE015C3F90FE00526362000101010000A7C1792D
+#EXTINF:30,
+http://ads.example.com/ad-01.ts
+#EXTINF:30,
+http://ads.example.com/ad-02.ts
+#EXT-X-DATERANGE:ID="splice-6FFFFFF0",START-DATE="2023-10-09T06:16:00.820Z",END-DATE="2023-10-09T06:17:01.514Z",DURATION=60.694
+#EXTINF:30,
+http://media.example.com/03.ts
+#EXTINF:3.003,
+http://media.example.com/04.ts

@@ -1,0 +1,11 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:10
+#EXTINF:9.009,
+http://media.example.com/first.ts
+#EXT-X-CUE-OUT:DURATION=15
+#EXTINF:9.009,
+http://media.example.com/second.ts
+#EXTINF:3.003,
+http://media.example.com/third.ts
+#EXT-X-ENDLIST

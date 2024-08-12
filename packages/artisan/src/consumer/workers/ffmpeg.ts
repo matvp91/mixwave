@@ -22,9 +22,7 @@ export type FfmpegResult = {
 export default async function (job: Job<FfmpegData, FfmpegResult>) {
   const { input, stream, segmentSize, assetId } = job.data;
 
-  const dir = dirSync({
-    name: assetId,
-  });
+  const dir = dirSync();
   let inputFile = parseFilePath(input.path);
 
   if (inputFile.dir.startsWith("s3://")) {

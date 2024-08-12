@@ -19,7 +19,11 @@ Mixwave consists of the following packages:
 > [!TIP]
 > We rely on `S3` as storage, your input can be `http` or `s3` but the output will always be produced and uploaded to `S3`. Take a look at [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/) if you want to keep costs manageable as they do not charge for egress.
 
-## 1. Transcode
+## API
+
+We're currently a bit short on documention but don't let that hold you back on experimenting. Converting your own media to an adaptive media format basically comes down to calling the 3 following endpoints.
+
+### 1. Transcode
 
 Prepare your video by transcoding your file(s) into CMAF compliant streams, ready to be packaged afterwards.
 
@@ -74,7 +78,7 @@ Prepare your video by transcoding your file(s) into CMAF compliant streams, read
 
 The transcode job will result in an `assetId`, your stream can now be referenced from by this ID. Next up, package it as you like.
 
-## 2. Package
+### 2. Package
 
 **POST** /package
 
@@ -96,7 +100,7 @@ The HLS manifest will be available at `{S3_URL}/package/16644b94-a665-4ca2-8543-
 
 You can also use the `playlist` endpoint with the same `assetId` to generate a `stitcher` (manifest manipulator) URL and provide it with interstitials as you like.
 
-## 3. Playlist
+### 3. Playlist
 
 **POST** /playlist/{assetId}
 

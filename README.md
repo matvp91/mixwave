@@ -93,6 +93,8 @@ The transcode job will result in an `assetId`, your stream can now be referenced
 
 </details>
 
+Uses [Shaka Packager](https://github.com/shaka-project/shaka-packager) under the hood.
+
 > [!NOTE]
 > Today we do not support additional configuration when packaging (such as DRM related settings), it'll produce a CMAF compliant, plain, HLS manifest.
 

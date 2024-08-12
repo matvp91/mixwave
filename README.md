@@ -72,7 +72,7 @@ Prepare your video by transcoding your file(s) into CMAF compliant streams, read
 
 </details>
 
-The transcode job will result in an `assetId`, your stream can now be referenced from by this ID. Next up, package it as you like. At the moment, we do not have additional options (such as DRM related settings) and packaging is merely a CMAF compliant HLS manifest.
+The transcode job will result in an `assetId`, your stream can now be referenced from by this ID. Next up, package it as you like.
 
 > [!NOTE]
 > Today we do not support additional configuration when packaging (such as DRM related settings), it'll produce a CMAF compliant, plain, HLS manifest.

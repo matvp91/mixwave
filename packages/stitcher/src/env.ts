@@ -3,6 +3,7 @@ import { z } from "zod";
 
 export const env = parse(
   z.object({
-    BASE_URL: z.string(),
+    PORT: z.coerce.number(),
+    S3_PUBLIC_URL: z.string(),
   }),
 );

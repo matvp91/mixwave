@@ -15,13 +15,15 @@ import type {
   preValidationAsyncHookHandler,
 } from "fastify";
 
+const packageUrl = `${env.S3_PUBLIC_URL}/package`;
+
 function parseUrl(fullUrl: string) {
   const [url] = fullUrl.split(/[?#]/);
   return url.replace("out/", "");
 }
 
 async function fetchPlaylist<T>(url: string) {
-  const response = await fetch(`${env.BASE_URL}${url}`);
+  const response = await fetch(`${packageUrl}${url}`);
   const text = await response.text();
   return parse(text) as T;
 }
@@ -47,7 +49,7 @@ const preValidation = async (
       }),
       new Define({
         name: "basePath",
-        value: env.BASE_URL,
+        value: packageUrl,
         type: "NAME",
       }),
     );
@@ -76,7 +78,7 @@ const preValidation = async (
           new Interstitial({
             startDate: new Date(now),
             id: `i${index + 1}`,
-            uri: `${env.BASE_URL}/${interstitial.assetId}/hls/master.m3u8`,
+            uri: `${packageUrl}/${interstitial.assetId}/hls/master.m3u8`,
             duration: 15,
           }),
         );
@@ -114,7 +116,7 @@ async function buildServer() {
   app.register(cors);
 
   app.register(fastifyProxy, {
-    upstream: env.BASE_URL,
+    upstream: packageUrl,
     prefix: "/out",
     preValidation: preValidation as preValidationAsyncHookHandler,
   });
@@ -125,7 +127,7 @@ async function buildServer() {
 async function main() {
   const app = await buildServer();
 
-  await app.listen({ port: 3001 });
+  await app.listen({ port: env.PORT });
 }
 
 main();

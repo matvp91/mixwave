@@ -8,6 +8,7 @@ import { JobsPage } from "./components/JobsPage";
 import { JobPage } from "./components/JobPage";
 import { IngestPage } from "./components/IngestPage";
 import { ApiPage } from "./components/ApiPage";
+import { ApiEmbedPage } from "./components/ApiEmbedPage";
 import { Suspense } from "react";
 import { RootLayout } from "./components/RootLayout";
 
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
         element: <ApiPage />,
       },
     ],
+  },
+  {
+    path: "/embed/api",
+    element: <ApiEmbedPage />,
   },
 ]);
 

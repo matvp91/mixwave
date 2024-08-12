@@ -76,7 +76,7 @@ Prepare your video by transcoding your file(s) into CMAF compliant streams, read
 
 </details>
 
-The transcode job will result in an `assetId`, your stream can now be referenced from by this ID. Next up, package it as you like.
+The transcode job will result in an `assetId`, your stream can now be referenced from by this ID. Next up, package it as you like. After transcoding, the multiple output streams will always be referenced by this `assetId`. There's no need to manually craft an URL and provide it for packaging, simply provide the id and mixwave will know what you mean.
 
 ### 2. Package
 

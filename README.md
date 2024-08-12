@@ -19,11 +19,14 @@ Mixwave consists of the following packages:
 > [!TIP]
 > We rely on `S3` as storage, your input can be `http` or `s3` but the output will always be produced and uploaded to `S3`. Take a look at [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/) if you want to keep costs manageable as they do not charge for egress.
 
-## Example
+## 1. Transcode
 
 Prepare your video by transcoding your file(s) into CMAF compliant streams, ready to be packaged afterwards.
 
 **POST** /transcode
+
+<details>
+<summary>Example payload with sources on S3</summary>
 
 ```json
 {
@@ -67,6 +70,8 @@ Prepare your video by transcoding your file(s) into CMAF compliant streams, read
 }
 ```
 
+</details>
+
 The transcode job will result in an `assetId`, your stream can now be referenced from by this ID. Next up, package it as you like. At the moment, we do not have additional options (such as DRM related settings) and packaging is merely a CMAF compliant HLS manifest.
 
 > [!NOTE]
@@ -74,8 +79,13 @@ The transcode job will result in an `assetId`, your stream can now be referenced
 
 **POST** /package
 
+<details>
+<summary>Example payload</summary>
+
 ```json
 {
   "assetId": "16644b94-a665-4ca2-8543-4aa519e853d8"
 }
 ```
+
+</details>

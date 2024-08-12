@@ -117,3 +117,5 @@ Now that we have an HLS playlist to work with, we can use the `stitcher` to mani
 ```
 
 </details>
+
+This endpoint will return a stitched HLS playlist URL that points to the stitcher proxy.

@@ -74,8 +74,7 @@ Prepare your video by transcoding your file(s) into CMAF compliant streams, read
 
 The transcode job will result in an `assetId`, your stream can now be referenced from by this ID. Next up, package it as you like.
 
-> [!NOTE]
-> Today we do not support additional configuration when packaging (such as DRM related settings), it'll produce a CMAF compliant, plain, HLS manifest.
+## 2. Package
 
 **POST** /package
 
@@ -90,6 +89,31 @@ The transcode job will result in an `assetId`, your stream can now be referenced
 
 </details>
 
+> [!NOTE]
+> Today we do not support additional configuration when packaging (such as DRM related settings), it'll produce a CMAF compliant, plain, HLS manifest.
+
 The HLS manifest will be available at `{S3_URL}/package/16644b94-a665-4ca2-8543-4aa519e853d8/hls/master.m3u8`.
 
 You can also use the `playlist` endpoint with the same `assetId` to generate a `stitcher` (manifest manipulator) URL and provide it with interstitials as you like.
+
+## 3. Playlist
+
+**POST** /playlist/{assetId}
+
+Now that we have an HLS playlist to work with, we can use the `stitcher` to manipulate its output. Let's say we want to add another playlist (think of a bumper, or a preroll ad) before our main playlist, we can POST to the endpoint with an `interstitials` list that points to other assets (by id) we packaged before.
+
+<details>
+<summary>Example payload</summary>
+
+```json
+{
+  "interstitials": [
+    {
+      "offset": 0,
+      "assetId": "dcbc11c4-3adc-46d6-9ed3-672b7e19fef9"
+    }
+  ]
+}
+```
+
+</details>

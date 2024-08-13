@@ -17,7 +17,7 @@ Mixwave consists of the following packages:
 
 - **API**: Designed to simplify the complex task of transcoding and packaging video files.
 - **Dashboard**: A frontend application that provides insights of running jobs and offers a user-friendly interface to the API for testing purposes.
-- **Artisan**: A queue-architectured job runner designed for a variety of tasks, such as FFmpeg processing and packaging.
+- **Artisan**: A queue-architectured job runner designed for a variety of tasks, such as FFmpeg processing and packaging. Check [EC2 Spot Instances](https://aws.amazon.com/ec2/spot/) to keep costs manageable.
 - **Stitcher**: A manifest manipulation proxy that enables the creation of personalized manifests, heavily focused on [HLS Interstitials](https://developer.apple.com/streaming/GettingStartedWithHLSInterstitials.pdf).
 
 <table><tr><td>

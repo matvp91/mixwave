@@ -1,5 +1,8 @@
 import { getTimeAgo } from "@/lib/helpers";
 import { JobActions } from "./JobActions";
+import { JobLogs } from "./JobLogs";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { JobDto } from "@/lib/api";
 
 type JobViewProps = {
@@ -9,6 +12,7 @@ type JobViewProps = {
 export function JobView({ job }: JobViewProps) {
   return (
     <>
+      {job.failedReason ? <JobError error={job.failedReason} /> : null}
       <JobActions job={job} />
       <div className="grid grid-cols-3 gap-2 w-full mb-4">
         <div>
@@ -24,13 +28,21 @@ export function JobView({ job }: JobViewProps) {
           {getTimeAgo(job.finishedOn) ?? "N/A"}
         </div>
       </div>
-      <div className="mb-4">
-        <div className="mb-2">Input</div>
-        <Format data={job.inputData} />
-      </div>
-      <div>
-        <div className="mb-2">Output</div>
-        <Format data={job.outputData} />
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <div className="mb-4">
+            <div className="mb-2">Input</div>
+            <Format data={job.inputData} />
+          </div>
+          <div>
+            <div className="mb-2">Output</div>
+            <Format data={job.outputData} />
+          </div>
+        </div>
+        <div>
+          <div className="mb-2">Logs</div>
+          <JobLogs id={job.id} />
+        </div>
       </div>
     </>
   );
@@ -45,8 +57,18 @@ function Format({ data }: { data: string | null }) {
   } catch {}
 
   return parsedData ? (
-    <pre className="p-2 text-xs border border-border rounded-md">
+    <pre className="p-2 text-xs border border-border rounded-md whitespace-pre-wrap">
       {JSON.stringify(parsedData, null, 2)}
     </pre>
   ) : null;
+}
+
+function JobError({ error }: { error: string }) {
+  return (
+    <Alert variant="destructive" className="mb-4">
+      <AlertCircle className="h-4 w-4" />
+      <AlertTitle>Failed</AlertTitle>
+      <AlertDescription>{error}</AlertDescription>
+    </Alert>
+  );
 }

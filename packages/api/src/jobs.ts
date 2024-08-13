@@ -42,7 +42,17 @@ async function formatJobDto(job: Job): Promise<JobDto> {
     createdOn: job.timestamp,
     inputData: JSON.stringify(job.data),
     outputData: job.returnvalue ? JSON.stringify(job.returnvalue) : null,
+    failedReason: job.failedReason ?? null,
   };
+}
+
+export async function getJobLogs(prefixedId: string) {
+  const [queueName, id] = prefixedId.split("_");
+  const queue = findQueueByName(queueName);
+
+  const { logs } = await queue.getJobLogs(id);
+
+  return logs;
 }
 
 export async function getJob(prefixedId: string) {

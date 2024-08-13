@@ -49,6 +49,13 @@ export const contract = c.router({
       }>(),
     },
   },
+  getJobLogs: {
+    method: "GET",
+    path: "/jobs/:id/logs",
+    responses: {
+      200: c.type<string[]>(),
+    },
+  },
   postPlaylist: {
     method: "POST",
     path: "/playlist/:assetId",

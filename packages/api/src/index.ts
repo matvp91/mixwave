@@ -5,7 +5,7 @@ import { contract } from "./contract.js";
 import { bullBoardPlugin } from "./plugins/bull-board.js";
 import { initServer } from "@ts-rest/fastify";
 import { addTranscodeJob, addPackageJob } from "@mixwave/artisan/producer";
-import { getJobs, getJob, getRootTreeForJobById } from "./jobs.js";
+import { getJobs, getJob, getRootTreeForJobById, getJobLogs } from "./jobs.js";
 import { getPlaylistUrl } from "./playlist.js";
 import { generateOpenApi } from "@ts-rest/open-api";
 
@@ -44,6 +44,12 @@ async function buildServer() {
           job: await getJob(params.id),
           rootTree: await getRootTreeForJobById(params.id),
         },
+      };
+    },
+    getJobLogs: async ({ params }) => {
+      return {
+        status: 200,
+        body: await getJobLogs(params.id),
       };
     },
     postPlaylist: async ({ params, body }) => {

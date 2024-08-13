@@ -10,6 +10,7 @@ export type JobDto = {
   createdOn: number;
   inputData: string;
   outputData: string | null;
+  failedReason: string | null;
 };
 
 export type JobNodeDto = {

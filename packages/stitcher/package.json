@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.1.0",
+    "@types/parse-filepath": "^1.0.2",
     "@types/qs": "^6.9.15",
     "tsc-watch": "^6.2.0",
     "typescript": "^5.5.4"

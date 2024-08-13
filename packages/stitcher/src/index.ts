@@ -2,7 +2,7 @@ import Fastify from "fastify";
 import fastifyProxy from "@fastify/http-proxy";
 import cors from "@fastify/cors";
 import { env } from "./env.js";
-import { getMasterPlaylist, getMediaPlaylist } from "./playlist.js";
+import { getPlaylist } from "./playlist.js";
 import { packageBaseUrl } from "./const.js";
 import type {
   FastifyReply,
@@ -28,12 +28,12 @@ const preValidation = async (
   const path = parsePath(request.url);
 
   if (path.endsWith("master.m3u8")) {
-    const playlistText = await getMasterPlaylist(path);
+    const playlistText = await getPlaylist("master", path, request.query);
     reply.type("application/x-mpegURL").send(playlistText);
   }
 
   if (path.endsWith("playlist.m3u8")) {
-    const playlistText = await getMediaPlaylist(path, request.query);
+    const playlistText = await getPlaylist("media", path, request.query);
     reply.type("application/x-mpegURL").send(playlistText);
   }
 };

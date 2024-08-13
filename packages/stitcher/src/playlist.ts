@@ -7,29 +7,51 @@ import type {
   MasterPlaylist,
   MediaPlaylist,
 } from "../extern/hls-parser/types.js";
+import type { ParsedPath } from "parse-filepath";
+import type { PlaylistParams } from "./schemas.js";
 
-async function fetchPlaylist<T>(url: string) {
+type PlaylistType = "master" | "media";
+
+type QueryParams = {
+  p?: string;
+};
+
+async function fetchPlaylist(url: string) {
   const response = await fetch(url);
   const text = await response.text();
-  return parse(text) as T;
+  return parse(text);
 }
 
-export async function getMasterPlaylist(filePath: string) {
+export async function getPlaylist(
+  type: PlaylistType,
+  filePath: string,
+  query: QueryParams,
+) {
   const file = parseFilePath(filePath);
 
-  const playlist = await fetchPlaylist<MasterPlaylist>(
-    `${packageBaseUrl}/${file.path}`,
-  );
+  const playlist = await fetchPlaylist(`${packageBaseUrl}/${file.path}`);
 
+  const playlistParams = parsePlaylistParamsPayload(query.p);
+
+  if (type === "master") {
+    mutateMasterPlaylist(file, playlist as MasterPlaylist, playlistParams);
+  }
+  if (type === "media") {
+    mutateMediaPlaylist(file, playlist as MediaPlaylist, playlistParams);
+  }
+
+  return stringify(playlist);
+}
+
+export async function mutateMasterPlaylist(
+  file: ParsedPath,
+  playlist: MasterPlaylist,
+  playlistParams: PlaylistParams,
+) {
   playlist.defines.push(
     new Define({
       value: "p",
       type: "QUERYPARAM",
-    }),
-    new Define({
-      name: "packageBaseUrl",
-      value: packageBaseUrl,
-      type: "NAME",
     }),
   );
 
@@ -40,25 +62,14 @@ export async function getMasterPlaylist(filePath: string) {
       audioTrack.uri = `${audioTrack.uri}?p={$p}`;
     });
   });
-
-  return stringify(playlist);
 }
 
-export async function getMediaPlaylist(
-  filePath: string,
-  query: {
-    p?: string;
-  },
+export async function mutateMediaPlaylist(
+  file: ParsedPath,
+  playlist: MediaPlaylist,
+  playlistParams: PlaylistParams,
 ) {
-  const file = parseFilePath(filePath);
-
   const now = Date.now();
-
-  const playlist = await fetchPlaylist<MediaPlaylist>(
-    `${packageBaseUrl}/${file.path}`,
-  );
-
-  const playlistParams = parsePlaylistParamsPayload(query.p);
 
   if (playlistParams.interstitials) {
     playlist.segments[0].programDateTime = new Date(now);
@@ -74,24 +85,4 @@ export async function getMediaPlaylist(
       );
     });
   }
-
-  if (playlistParams.origSegmentUri) {
-    playlist.defines.push(
-      new Define({
-        value: "packageBaseUrl",
-        type: "IMPORT",
-      }),
-      new Define({
-        name: "path",
-        value: `{$packageBaseUrl}${file.dir}`,
-        type: "NAME",
-      }),
-    );
-
-    playlist.segments.forEach((segment) => {
-      segment.uri = `{$path}/${segment.uri}`;
-    });
-  }
-
-  return stringify(playlist);
 }

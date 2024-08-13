@@ -288,6 +288,9 @@ importers:
       '@types/node':
         specifier: ^22.1.0
         version: 22.1.0
+      '@types/parse-filepath':
+        specifier: ^1.0.2
+        version: 1.0.2
       '@types/qs':
         specifier: ^6.9.15
         version: 6.9.15

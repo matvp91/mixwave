@@ -10,7 +10,6 @@ export const playlistParamsSchema = z.object({
       }),
     )
     .optional(),
-  origSegmentUri: z.boolean().optional(),
 });
 
 export type PlaylistParams = z.infer<typeof playlistParamsSchema>;

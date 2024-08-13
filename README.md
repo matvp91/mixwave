@@ -20,6 +20,10 @@ Mixwave consists of the following packages:
 - **Artisan**: A queue-architectured job runner designed for a variety of tasks, such as FFmpeg processing and packaging.
 - **Stitcher**: A manifest manipulation proxy that enables the creation of personalized manifests, heavily focused on [HLS Interstitials](https://developer.apple.com/streaming/GettingStartedWithHLSInterstitials.pdf).
 
+<table><tr><td>
+<img src="https://github.com/matvp91/mixwave/blob/main/assets/job.png?raw=true" width="800" />
+</td></tr></table>
+
 > [!TIP]
 > We rely on `S3` as storage, your input can be `http` or `s3` but the output will always be produced and uploaded to `S3`. Take a look at [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/) if you want to keep costs manageable as they do not charge for egress.
 

@@ -1,3 +1,9 @@
+---
+next:
+  text: "Transcode"
+  link: "/examples/transcode"
+---
+
 # Installation
 
 When you run `pnpm run build`, each package is ready for distribution. There's a `dist` folder and you must run `pnpm run start` in a package's folder to start the service.

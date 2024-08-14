@@ -1,5 +1,7 @@
 ---
-next: false
+next:
+  text: "Installation"
+  link: "/installation"
 ---
 
 # Getting Started

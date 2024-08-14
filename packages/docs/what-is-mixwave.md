@@ -1,6 +1,12 @@
+---
+next:
+  text: "Getting Started"
+  link: "/getting-started"
+---
+
 # What is Mixwave?
 
-Mixwave is an all-in-one platform that aims to simplify the complexities of video delivery. Transcode and package your media for online streaming with simple API calls and sane defaults.
+Mixwave is a self hostable platform that aims to simplify the complexities of video delivery. Transcode and package your media for online streaming with simple API calls and sane defaults.
 
 Things get more complicated once you go beyond playing a basic <Badge type="info" text=".mp4" /> file. To offer different video qualities depending on the viewer's bandwidth, or to include multiple audio or text tracks, you need a different setup.
 
@@ -73,6 +79,6 @@ Mixwave consists of the following packages:
   </tr>
   <tr>
     <td><a href="https://github.com/matvp91/mixwave/tree/main/packages/dashboard" target="_blank"><b>dashboard</b></a></td>
-    <td>A front-end that uses `api` and visualizes running jobs.</td>
+    <td>A front-end that uses the api and visualizes running jobs.</td>
   </tr>
 </table>

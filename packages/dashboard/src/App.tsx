@@ -6,7 +6,6 @@ import {
 } from "react-router-dom";
 import { JobsPage } from "./components/JobsPage";
 import { JobPage } from "./components/JobPage";
-import { IngestPage } from "./components/IngestPage";
 import { ApiPage } from "./components/ApiPage";
 import { ApiEmbedPage } from "./components/ApiEmbedPage";
 import { Suspense } from "react";
@@ -30,10 +29,6 @@ const router = createBrowserRouter([
       {
         path: "/jobs/:id",
         element: <JobPage />,
-      },
-      {
-        path: "/ingest",
-        element: <IngestPage />,
       },
       {
         path: "/api",

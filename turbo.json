@@ -4,6 +4,13 @@
     "dev": {
       "persistent": true,
       "cache": false
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": [".env*"]
+    },
+    "start": {
+      "dependsOn": ["^build"]
     }
   }
 }

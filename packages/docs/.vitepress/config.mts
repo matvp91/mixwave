@@ -4,6 +4,7 @@ export default defineConfig({
   base: "/mixwave/",
   title: "Mixwave",
   description: "A friendly API to simplify the complexities of video delivery.",
+  appearance: "force-dark",
   themeConfig: {
     nav: [],
     sidebar: [
@@ -14,6 +15,11 @@ export default defineConfig({
           { text: "What is Mixwave?", link: "what-is-mixwave" },
           { text: "Getting Started", link: "getting-started" },
         ],
+      },
+      {
+        text: "Self-hosting",
+        collapsed: false,
+        items: [{ text: "Installation", link: "installation" }],
       },
     ],
     socialLinks: [

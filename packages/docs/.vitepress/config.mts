@@ -25,6 +25,7 @@ export default defineConfig({
         items: [
           { text: "What is Mixwave?", link: "what-is-mixwave" },
           { text: "Getting Started", link: "getting-started" },
+          { text: "Dependencies", link: "dependencies" },
         ],
       },
       {

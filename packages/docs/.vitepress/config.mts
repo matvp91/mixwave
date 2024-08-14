@@ -21,6 +21,17 @@ export default defineConfig({
         collapsed: false,
         items: [{ text: "Installation", link: "installation" }],
       },
+      {
+        text: "Examples",
+        collapsed: false,
+        items: [
+          { text: "Transcode", link: "examples/transcode" },
+          {
+            text: "Package",
+            link: "examples/package",
+          },
+        ],
+      },
     ],
     socialLinks: [
       { icon: "github", link: "https://github.com/matvp91/mixwave" },

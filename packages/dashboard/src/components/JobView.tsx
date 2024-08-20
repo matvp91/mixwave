@@ -1,5 +1,4 @@
 import { getTimeAgo } from "@/lib/helpers";
-import { JobActions } from "./JobActions";
 import { JobLogs } from "./JobLogs";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -13,7 +12,6 @@ export function JobView({ job }: JobViewProps) {
   return (
     <>
       {job.failedReason ? <JobError error={job.failedReason} /> : null}
-      <JobActions job={job} />
       <div className="grid grid-cols-3 gap-2 w-full mb-4">
         <div>
           <div className="text-sm font-medium">Created</div>

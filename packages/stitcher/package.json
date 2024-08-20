@@ -27,6 +27,7 @@
     "@fastify/http-proxy": "^9.5.0",
     "@zodyac/env": "^1.1.8",
     "fastify": "^4.28.1",
+    "fastify-type-provider-zod": "^2.0.0",
     "parse-filepath": "^1.0.2",
     "persistent-node-cache": "^1.2.0",
     "zod": "^3.23.8"

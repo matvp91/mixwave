@@ -352,13 +352,24 @@ function buildMediaPlaylist(
   for (const interstitial of playlist.interstitials) {
     const params: string[] = ['CLASS="com.apple.hls.interstitial"'];
     params.unshift(`ID="${interstitial.id}"`);
+
     params.push(
       `START-DATE="${interstitial.startDate.toISOString()}"`,
       `DURATION=${interstitial.duration}`,
-      `X-ASSET-URI="${interstitial.uri}"`,
+    );
+
+    if (interstitial.uri) {
+      params.push(`X-ASSET-URI="${interstitial.uri}"`);
+    }
+    if (interstitial.list) {
+      params.push(`X-ASSET-LIST="${interstitial.list}"`);
+    }
+
+    params.push(
       `X-RESUME-OFFSET=${interstitial.resumeOffset}`,
       `X-RESTRICT="${interstitial.restrict}"`,
     );
+
     lines.push(`#EXT-X-DATERANGE:${params.join(",")}`);
   }
 }

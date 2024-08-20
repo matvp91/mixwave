@@ -1,10 +1,9 @@
 import { parse, stringify } from "../extern/hls-parser/index.js";
-import { Define } from "../extern/hls-parser/types.js";
+import { Define, Interstitial } from "../extern/hls-parser/types.js";
 import parseFilepath from "parse-filepath";
-import type {
-  MasterPlaylist,
-  MediaPlaylist,
-} from "../extern/hls-parser/types.js";
+import { packageBaseUrl } from "./const.js";
+import { MasterPlaylist, MediaPlaylist } from "../extern/hls-parser/types.js";
+import type { PlaylistParams } from "./schemas.js";
 
 async function fetchPlaylist<T>(url: string) {
   const response = await fetch(url);
@@ -12,17 +11,30 @@ async function fetchPlaylist<T>(url: string) {
   return parse(text) as T;
 }
 
-export async function masterPlaylist(url: string) {
+async function fetchDuration(url: string) {
+  const master = await fetchPlaylist<MasterPlaylist>(url);
+  const filePath = parseFilepath(url);
+
+  const media = await fetchPlaylist<MediaPlaylist>(
+    `${filePath.dir}/${master.variants[0].uri}`,
+  );
+
+  return media.segments.reduce((acc, segment) => {
+    acc += segment.duration;
+    return acc;
+  }, 0);
+}
+
+export async function formatMasterPlaylist(url: string) {
   const master = await fetchPlaylist<MasterPlaylist>(url);
 
   return stringify(master);
 }
 
-export async function mediaPlaylist(url: string) {
+export async function formatMediaPlaylist(url: string, params: PlaylistParams) {
   const media = await fetchPlaylist<MediaPlaylist>(url);
 
   const filePath = parseFilepath(url);
-  console.log(filePath);
 
   media.defines.push(
     new Define({
@@ -31,6 +43,24 @@ export async function mediaPlaylist(url: string) {
       type: "NAME",
     }),
   );
+
+  if (params.interstitials) {
+    const now = Date.now();
+    media.segments[0].programDateTime = new Date(now);
+
+    let id = 1;
+    for (const interstitial of params.interstitials) {
+      const uri = `${packageBaseUrl}/${interstitial.assetId}/hls/master.m3u8`;
+      media.interstitials.push(
+        new Interstitial({
+          startDate: new Date(now + interstitial.offset * 1000),
+          id: `${id++}`,
+          uri,
+          duration: await fetchDuration(uri),
+        }),
+      );
+    }
+  }
 
   for (const segment of media.segments) {
     if (segment.map.uri === "init.mp4") {

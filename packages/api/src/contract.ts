@@ -56,16 +56,6 @@ export const contract = c.router({
       200: c.type<string[]>(),
     },
   },
-  postPlaylist: {
-    method: "POST",
-    path: "/playlist/:assetId",
-    body: playlistParamsSchema,
-    responses: {
-      200: c.type<{
-        url: string;
-      }>(),
-    },
-  },
   getSpec: {
     method: "GET",
     path: "/spec.json",

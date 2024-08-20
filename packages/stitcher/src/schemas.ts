@@ -1,6 +1,7 @@
 import * as z from "zod";
 
 export const playlistParamsSchema = z.object({
+  assetId: z.string(),
   interstitials: z
     .array(
       z.object({

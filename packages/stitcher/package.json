@@ -19,7 +19,6 @@
   "devDependencies": {
     "@types/node": "^22.1.0",
     "@types/parse-filepath": "^1.0.2",
-    "@types/qs": "^6.9.15",
     "tsc-watch": "^6.2.0",
     "typescript": "^5.5.4"
   },
@@ -28,9 +27,8 @@
     "@fastify/http-proxy": "^9.5.0",
     "@zodyac/env": "^1.1.8",
     "fastify": "^4.28.1",
-    "js-base64": "^3.7.7",
     "parse-filepath": "^1.0.2",
-    "qs": "^6.13.0",
+    "persistent-node-cache": "^1.2.0",
     "zod": "^3.23.8"
   }
 }

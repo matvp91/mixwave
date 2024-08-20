@@ -1,7 +1,6 @@
 import { parse, stringify } from "../extern/hls-parser/index.js";
 import { Define, Interstitial } from "../extern/hls-parser/types.js";
 import parseFilepath from "parse-filepath";
-import { packageBaseUrl } from "./const.js";
 import { MasterPlaylist, MediaPlaylist } from "../extern/hls-parser/types.js";
 import type { PlaylistParams } from "./schemas.js";
 
@@ -50,13 +49,12 @@ export async function formatMediaPlaylist(url: string, params: PlaylistParams) {
 
     let id = 1;
     for (const interstitial of params.interstitials) {
-      const uri = `${packageBaseUrl}/${interstitial.assetId}/hls/master.m3u8`;
       media.interstitials.push(
         new Interstitial({
           startDate: new Date(now + interstitial.offset * 1000),
           id: `${id++}`,
-          uri,
-          duration: await fetchDuration(uri),
+          uri: interstitial.url,
+          duration: await fetchDuration(interstitial.url),
         }),
       );
     }

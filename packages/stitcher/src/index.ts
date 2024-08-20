@@ -1,11 +1,11 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { env } from "./env.js";
-import { packageBaseUrl } from "./const.js";
 import { randomUUID } from "crypto";
 import { formatMasterPlaylist, formatMediaPlaylist } from "./playlist.js";
 import * as z from "zod";
 import pnc from "persistent-node-cache";
+import parseFilepath from "parse-filepath";
 import {
   serializerCompiler,
   validatorCompiler,
@@ -38,13 +38,13 @@ async function buildServer() {
         cache.set(sessionId, request.body, 1000 * 60 * 60 * 24);
 
         reply.send({
-          url: `${request.protocol}://${request.hostname}/hls/${sessionId}/master.m3u8`,
+          url: `${request.protocol}://${request.hostname}/session/${sessionId}/master.m3u8`,
         });
       },
     })
     .route({
       method: "get",
-      url: "/hls/:sessionId/master.m3u8",
+      url: "/session/:sessionId/master.m3u8",
       schema: {
         params: z.object({
           sessionId: z.string(),
@@ -53,16 +53,14 @@ async function buildServer() {
       handler: async (request, reply) => {
         const session = cache.get<PlaylistParams>(request.params.sessionId)!;
 
-        const response = await formatMasterPlaylist(
-          `${packageBaseUrl}/${session.assetId}/hls/master.m3u8`,
-        );
+        const response = await formatMasterPlaylist(session.url);
 
         reply.type("application/x-mpegURL").send(response);
       },
     })
     .route({
       method: "get",
-      url: "/hls/:sessionId/:path/playlist.m3u8",
+      url: "/session/:sessionId/:path/playlist.m3u8",
       schema: {
         params: z.object({
           sessionId: z.string(),
@@ -71,9 +69,10 @@ async function buildServer() {
       },
       handler: async (request, reply) => {
         const session = cache.get<PlaylistParams>(request.params.sessionId)!;
+        const filePath = parseFilepath(session.url);
 
         const response = await formatMediaPlaylist(
-          `${packageBaseUrl}/${session.assetId}/hls/${request.params.path}/playlist.m3u8`,
+          `${filePath.dir}/${request.params.path}/playlist.m3u8`,
           session,
         );
 

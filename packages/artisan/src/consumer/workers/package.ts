@@ -91,22 +91,15 @@ export default async function (job: Job<PackageData, PackageResult>) {
   const fakeRequire = createRequire(import.meta.url);
   const packagerBin = await fakeRequire.resolve("shaka-packager");
 
+  job.log(packagerArgs.join("\n"));
+
   const packagerProcess = fork(packagerBin, packagerArgs, {
     stdio: "inherit",
     cwd: outDir.name,
     detached: false,
   });
 
-  // let outputStr = "";
-  // packagerProcess.stdout?.on("data", (chunk) => {
-  //   outputStr += chunk.toString();
-  // });
-
   await once(packagerProcess, "close");
-
-  // if (!outputStr.includes("Packaging completed")) {
-  //   throw new Error("Failed to package");
-  // }
 
   await uploadFolder(outDir.name, `package/${job.data.assetId}/hls`, {
     del: true,

@@ -5,7 +5,7 @@ import { lookup } from "mime-types";
 import { fork } from "child_process";
 import { createRequire } from "node:module";
 import { by639_2T } from "iso-language-codes";
-import { downloadFolder, uploadFolder } from "../s3.js";
+import { copyFile, downloadFolder, uploadFolder } from "../s3.js";
 import parseFilePath from "parse-filepath";
 import * as z from "zod";
 import { streamSchema } from "../../schemas.js";
@@ -85,7 +85,7 @@ export default async function (job: Job<PackageData, PackageResult>) {
     "--fragment_duration",
     "4",
     "--hls_master_playlist_output",
-    "master.m3u8",
+    "master_tmp.m3u8",
   );
 
   const fakeRequire = createRequire(import.meta.url);
@@ -108,6 +108,15 @@ export default async function (job: Job<PackageData, PackageResult>) {
       ACL: "public-read",
     }),
   });
+
+  // When we uploaded all files, including the "master_tmp" file, let's rename it so it
+  // becomes available on CDN.
+  // This way we ensure we have all the segments on S3 before we make the manifest available.
+  await copyFile(
+    `package/${job.data.assetId}/hls/master_tmp.m3u8`,
+    `package/${job.data.assetId}/hls/master.m3u8`,
+    "public-read",
+  );
 
   job.updateProgress(100);
 

@@ -6,6 +6,5 @@ export const env = parse(
     PORT: z.coerce.number(),
     REDIS_HOST: z.string(),
     REDIS_PORT: z.coerce.number(),
-    STITCHER_URL: z.string(),
-  })
+  }),
 );

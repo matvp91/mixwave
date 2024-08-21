@@ -32,9 +32,6 @@ importers:
       '@mixwave/artisan':
         specifier: workspace:*
         version: link:../artisan
-      '@mixwave/stitcher':
-        specifier: workspace:*
-        version: link:../stitcher
       '@ts-rest/core':
         specifier: ^3.49.3
         version: 3.49.3(zod@3.23.8)
@@ -266,12 +263,30 @@ importers:
 
   packages/stitcher:
     dependencies:
+      '@dailymotion/vast-client':
+        specifier: ^6.0.0
+        version: 6.0.0
+      '@dailymotion/vmap':
+        specifier: ^3.3.1
+        version: 3.3.1
       '@fastify/cors':
         specifier: ^9.0.1
         version: 9.0.1
       '@fastify/http-proxy':
         specifier: ^9.5.0
         version: 9.5.0
+      '@mixwave/artisan':
+        specifier: workspace:*
+        version: link:../artisan
+      '@ts-rest/core':
+        specifier: ^3.49.3
+        version: 3.49.3(zod@3.23.8)
+      '@ts-rest/fastify':
+        specifier: ^3.49.3
+        version: 3.49.3(@ts-rest/core@3.49.3)(fastify@4.28.1)(zod@3.23.8)
+      '@ts-rest/open-api':
+        specifier: ^3.49.3
+        version: 3.49.3(@ts-rest/core@3.49.3)(zod@3.23.8)
       '@zodyac/env':
         specifier: ^1.1.8
         version: 1.1.8
@@ -281,22 +296,43 @@ importers:
       fastify-type-provider-zod:
         specifier: ^2.0.0
         version: 2.0.0(fastify@4.28.1)(zod@3.23.8)
+      hh-mm-ss:
+        specifier: ^1.2.0
+        version: 1.2.0
       parse-filepath:
         specifier: ^1.0.2
         version: 1.0.2
       persistent-node-cache:
         specifier: ^1.2.0
         version: 1.2.0
+      uuid-by-string:
+        specifier: ^4.0.0
+        version: 4.0.0
+      xmldom:
+        specifier: ^0.6.0
+        version: 0.6.0
       zod:
         specifier: ^3.23.8
         version: 3.23.8
     devDependencies:
+      '@types/hh-mm-ss':
+        specifier: ^1.2.3
+        version: 1.2.3
       '@types/node':
         specifier: ^22.1.0
         version: 22.1.0
       '@types/parse-filepath':
         specifier: ^1.0.2
         version: 1.0.2
+      '@types/vast-client':
+        specifier: ^3.0.4
+        version: 3.0.4
+      '@types/vmap':
+        specifier: ^2.2.4
+        version: 2.2.4
+      '@types/xmldom':
+        specifier: ^0.1.34
+        version: 0.1.34
       tsc-watch:
         specifier: ^6.2.0
         version: 6.2.0(typescript@5.5.4)
@@ -2598,6 +2634,18 @@ packages:
       '@codemirror/state': 6.4.1
       style-mod: 4.1.2
       w3c-keyname: 2.2.8
+    dev: false
+
+  /@dailymotion/vast-client@6.0.0:
+    resolution: {integrity: sha512-5P31hlClpxCWhr997NfowKQZ7WkH5zvgbNwDqpCARU1kdnP6UaNQKajA9Cu060br0Y3X88CyTOKY9gTd6WzuNA==}
+    engines: {node: '>=12.22.1'}
+    dependencies:
+      '@xmldom/xmldom': 0.8.10
+    dev: false
+
+  /@dailymotion/vmap@3.3.1:
+    resolution: {integrity: sha512-0+JbHbK/ePKtQYAyrZWr7q/ec2hA355hOm5qwlNUt175ml6IBqKsSSjpz9cLe+0sYCKZGega7ED6gc+uoR5pbQ==}
+    engines: {node: '>=12.22.1'}
     dev: false
 
   /@docsearch/css@3.6.1:
@@ -5224,6 +5272,10 @@ packages:
     dependencies:
       '@types/unist': 3.0.2
 
+  /@types/hh-mm-ss@1.2.3:
+    resolution: {integrity: sha512-pq7ntXovS/jF6ayHs/CH8b27Fd52skZPf/TE+gl/oWEP6884xSmnAAySUrzaox5ebigqhzPdtcvUAu0AzG54ZA==}
+    dev: true
+
   /@types/http-errors@2.0.4:
     resolution: {integrity: sha512-D0CFMMtydbJAegzOyHjtiKPLlvnm3iTZyZRSZoLq2mRhDdmLfIWOCYPfQJ4cu2erKghU++QvjcUjp/5h7hESpA==}
     dev: false
@@ -5328,8 +5380,22 @@ packages:
   /@types/unist@3.0.2:
     resolution: {integrity: sha512-dqId9J8K/vGi5Zr7oo212BGii5m3q5Hxlkwy3WpYuKPklmBEvsbMYYyLxAQpSffdLl/gdW0XUpKWFvYmyoWCoQ==}
 
+  /@types/vast-client@3.0.4:
+    resolution: {integrity: sha512-aFP0rL0nv8JB61On2ARpM5mpy+Cms+LKDbwfPK8y9lp33PBk4S51yLkVgWakE4xRxs7ziKQ6IISdPkke9pQLzw==}
+    dependencies:
+      '@types/node': 22.1.0
+    dev: true
+
+  /@types/vmap@2.2.4:
+    resolution: {integrity: sha512-KR1+p9bq0ZilGB6aaPvDCpWSi2g6jCuRfTRTth5wMBs5rWj6odFQpxRHfFPvMgb0wW+EvVlkMV4vC2ETY2U+bg==}
+    dev: true
+
   /@types/web-bluetooth@0.0.20:
     resolution: {integrity: sha512-g9gZnnXVq7gM7v3tJCWV/qw7w+KeOlSHAhgF9RytFyifW6AF61hdT2ucrYhPq9hLs5JIryeupHV3qGk95dH9ow==}
+
+  /@types/xmldom@0.1.34:
+    resolution: {integrity: sha512-7eZFfxI9XHYjJJuugddV6N5YNeXgQE1lArWOcd1eCOKWb/FGs5SIjacSYuEJuwhsGS3gy4RuZ5EUIcqYscuPDA==}
+    dev: true
 
   /@uiw/codemirror-themes@4.23.0(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.30.0):
     resolution: {integrity: sha512-9fiji9xooZyBQozR1i6iTr56YP7j/Dr/VgsNWbqf5Szv+g+4WM1iZuiDGwNXmFMWX8gbkDzp6ASE21VCPSofWw==}
@@ -5593,6 +5659,11 @@ packages:
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
+
+  /@xmldom/xmldom@0.8.10:
+    resolution: {integrity: sha512-2WALfTl4xo2SkGCYRt6rDTFfk9R1czmBvUQy12gK2KuRKIpWEhcbbzy8EZXtz/jkRqHX8bFEc6FC1HjX4TUWYw==}
+    engines: {node: '>=10.0.0'}
+    dev: false
 
   /@yarnpkg/fslib@2.10.3:
     resolution: {integrity: sha512-41H+Ga78xT9sHvWLlFOZLIhtU6mTGZ20pZ29EiZa97vnxdohJD2AF42rCoAoWfqUz486xY6fhjMH+DYEM9r14A==}
@@ -7291,6 +7362,12 @@ packages:
       space-separated-tokens: 2.0.2
     dev: false
 
+  /hh-mm-ss@1.2.0:
+    resolution: {integrity: sha512-f4I9Hz1dLpX/3mrEs7yq30+FiuO3tt5NWAqAGeBTaoeoBfB8vhcQ3BphuDc5DjZb/K809agqrAaFlP0jhEU/8w==}
+    dependencies:
+      zero-fill: 2.2.4
+    dev: false
+
   /highlight.js@11.10.0:
     resolution: {integrity: sha512-SYVnVFswQER+zu1laSya563s+F8VDGt7o35d4utbamowvUNLLMovFqwCLSocpZTz3MgaSRA1IbqRWZv97dtErQ==}
     engines: {node: '>=12.0.0'}
@@ -7604,6 +7681,14 @@ packages:
   /js-cookie@3.0.5:
     resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==}
     engines: {node: '>=14'}
+    dev: false
+
+  /js-md5@0.7.3:
+    resolution: {integrity: sha512-ZC41vPSTLKGwIRjqDh8DfXoCrdQIyBgspJVPXHBGu4nZlAEvG3nf+jO9avM9RmLiGakg7vz974ms99nEV0tmTQ==}
+    dev: false
+
+  /js-sha1@0.6.0:
+    resolution: {integrity: sha512-01gwBFreYydzmU9BmZxpVk6svJJHrVxEN3IOiGl6VO93bVKYETJ0sIth6DASI6mIFdt7NmfX9UiByRzsYHGU9w==}
     dev: false
 
   /js-tokens@4.0.0:
@@ -10330,6 +10415,13 @@ packages:
     engines: {node: '>= 0.4.0'}
     dev: false
 
+  /uuid-by-string@4.0.0:
+    resolution: {integrity: sha512-88ZSfcSkN04juiLqSsuyteqlSrXNFdsEPzSv3urnElDXNsZUXQN0smeTnh99x2DE15SCUQNgqKBfro54CuzHNQ==}
+    dependencies:
+      js-md5: 0.7.3
+      js-sha1: 0.6.0
+    dev: false
+
   /uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
@@ -10590,6 +10682,11 @@ packages:
         optional: true
     dev: false
 
+  /xmldom@0.6.0:
+    resolution: {integrity: sha512-iAcin401y58LckRZ0TkI4k0VSM1Qg0KGSc3i8rU+xrxe19A/BN1zHyVSJY7uoutVlaTSzYyk/v5AmkewAP7jtg==}
+    engines: {node: '>=10.0.0'}
+    dev: false
+
   /y-codemirror.next@0.3.5(@codemirror/state@6.4.1)(@codemirror/view@6.30.0)(yjs@13.6.18):
     resolution: {integrity: sha512-VluNu3e5HfEXybnypnsGwKAj+fKLd4iAnR7JuX1Sfyydmn1jCBS5wwEL/uS04Ch2ib0DnMAOF6ZRR/8kK3wyGw==}
     requiresBuild: true
@@ -10634,6 +10731,10 @@ packages:
   /yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+    dev: false
+
+  /zero-fill@2.2.4:
+    resolution: {integrity: sha512-/N5GEDauLHz2uGnuJXWO1Wfib4EC+q4yp9C1jojM7RubwEKADqIqMcYpETMm1lRop403fi3v1qTOdgDE8DIOdw==}
     dev: false
 
   /zhead@2.2.4:

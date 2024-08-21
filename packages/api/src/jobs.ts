@@ -27,13 +27,17 @@ export async function getJobs(): Promise<JobDto[]> {
 }
 
 async function formatJobDto(job: Job): Promise<JobDto> {
+  if (!job.id) {
+    throw new Error("Missing jobId");
+  }
+
   let progress = 0;
   if (typeof job.progress === "number") {
     progress = job.progress;
   }
 
   return {
-    id: `${job.queueName}_${job.id}`,
+    id: job.id,
     name: job.name,
     state: await job.getState(),
     progress,
@@ -46,8 +50,8 @@ async function formatJobDto(job: Job): Promise<JobDto> {
   };
 }
 
-export async function getJobLogs(prefixedId: string) {
-  const [queueName, id] = prefixedId.split("_");
+export async function getJobLogs(id: string) {
+  const queueName = id.split("_", 1)[0];
   const queue = findQueueByName(queueName);
 
   const { logs } = await queue.getJobLogs(id);
@@ -55,8 +59,8 @@ export async function getJobLogs(prefixedId: string) {
   return logs;
 }
 
-export async function getJob(prefixedId: string) {
-  const [queueName, id] = prefixedId.split("_");
+export async function getJob(id: string) {
+  const queueName = id.split("_", 1)[0];
   const queue = findQueueByName(queueName);
 
   const job = await Job.fromId(queue, id);
@@ -104,8 +108,8 @@ export async function getRootTreeForJob(job: Job) {
   return await formatJobNodeDto(node);
 }
 
-export async function getRootTreeForJobById(prefixedId: string) {
-  const [queueName, id] = prefixedId.split("_");
+export async function getRootTreeForJobById(id: string) {
+  const queueName = id.split("_", 1)[0];
   const queue = findQueueByName(queueName);
 
   const job = await Job.fromId(queue, id);

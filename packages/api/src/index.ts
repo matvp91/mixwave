@@ -6,8 +6,8 @@ import { bullBoardPlugin } from "./plugins/bull-board.js";
 import { initServer } from "@ts-rest/fastify";
 import { addTranscodeJob, addPackageJob } from "@mixwave/artisan/producer";
 import { getJobs, getJob, getRootTreeForJobById, getJobLogs } from "./jobs.js";
-import { getPlaylistUrl } from "./playlist.js";
 import { generateOpenApi } from "@ts-rest/open-api";
+import { randomUUID } from "crypto";
 
 async function buildServer() {
   const app = Fastify();
@@ -18,7 +18,11 @@ async function buildServer() {
 
   const router = s.router(contract, {
     postTranscode: async ({ body }) => {
-      const { job } = await addTranscodeJob(body);
+      const job = await addTranscodeJob({
+        assetId: randomUUID(),
+        package: false,
+        ...body,
+      });
       return {
         status: 201,
         body: { jobId: job.id },
@@ -50,14 +54,6 @@ async function buildServer() {
       return {
         status: 200,
         body: await getJobLogs(params.id),
-      };
-    },
-    postPlaylist: async ({ params, body }) => {
-      return {
-        status: 200,
-        body: {
-          url: await getPlaylistUrl(params.assetId, body),
-        },
       };
     },
     getSpec: async () => {

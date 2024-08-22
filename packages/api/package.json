@@ -28,7 +28,6 @@
     "@fastify/swagger": "^8.15.0",
     "@fastify/swagger-ui": "^4.0.1",
     "@mixwave/artisan": "workspace:*",
-    "@mixwave/stitcher": "workspace:*",
     "@ts-rest/core": "^3.49.3",
     "@ts-rest/fastify": "^3.49.3",
     "@ts-rest/open-api": "^3.49.3",

@@ -1,3 +1,5 @@
+Run redis with `redis-stack-server`, `@redis/json` is required.
+
 ```json
 {
   "inputs": [

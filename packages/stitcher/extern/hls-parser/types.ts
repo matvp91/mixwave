@@ -54,8 +54,9 @@ class Rendition {
 
 class Interstitial {
   id: string;
-  uri: string;
-  duration: string;
+  uri?: string;
+  list?: string;
+  duration?: string;
   startDate: Date;
   resumeOffset?: number;
   restrict?: string;
@@ -63,6 +64,7 @@ class Interstitial {
   constructor({
     id,
     uri,
+    list,
     duration,
     startDate,
     resumeOffset = 0,
@@ -70,6 +72,7 @@ class Interstitial {
   }: any) {
     this.id = id;
     this.uri = uri;
+    this.list = list;
     this.duration = duration;
     this.startDate = startDate;
     this.resumeOffset = resumeOffset;

@@ -1,7 +1,7 @@
-import { Queue, FlowProducer } from "bullmq";
-import { randomUUID } from "node:crypto";
+import { Queue, FlowProducer, Job } from "bullmq";
 import { connection } from "./connection.js";
-import type { Input } from "./schemas.js";
+import { randomUUID } from "crypto";
+import type { Input, Stream } from "./schemas.js";
 import type { TranscodeData } from "./consumer/workers/transcode.js";
 import type { PackageData } from "./consumer/workers/package.js";
 import type { FfmpegData } from "./consumer/workers/ffmpeg.js";
@@ -29,36 +29,41 @@ const ffmpegQueue = new Queue<FfmpegData>("ffmpeg", {
  */
 export const allQueus = [transcodeQueue, packageQueue, ffmpegQueue];
 
-export async function addTranscodeJob(
-  data: Omit<TranscodeData, "assetId"> & { assetId?: string }
-) {
-  const assetId = data.assetId ?? randomUUID();
+type AddTranscodeJobData = {
+  assetId: string;
+  inputs: Input[];
+  streams: Stream[];
+  segmentSize: number;
+  package: boolean;
+};
 
-  const { inputs, streams, ...restParams } = data;
+export async function addTranscodeJob(data: AddTranscodeJobData) {
+  const jobId = `transcode_${data.assetId}`;
 
-  const genericOptions = Object.assign(restParams, {
-    assetId,
-  });
+  const pendingJob = await Job.fromId(transcodeQueue, jobId);
+  if (pendingJob) {
+    return pendingJob;
+  }
 
   let childJobIndex = 0;
   const childJobs: FlowChildJob[] = [];
 
-  for (const stream of streams) {
+  for (const stream of data.streams) {
     let input: Input | undefined;
 
     if (stream.type === "video") {
-      input = inputs.find((input) => input.type === "video");
+      input = data.inputs.find((input) => input.type === "video");
     }
 
     if (stream.type === "audio") {
-      input = inputs.find(
-        (input) => input.type === "audio" && input.language === stream.language
+      input = data.inputs.find(
+        (input) => input.type === "audio" && input.language === stream.language,
       );
     }
 
     if (stream.type === "text") {
-      input = inputs.find(
-        (input) => input.type === "text" && input.language === stream.language
+      input = data.inputs.find(
+        (input) => input.type === "text" && input.language === stream.language,
       );
     }
 
@@ -70,32 +75,46 @@ export async function addTranscodeJob(
       if (stream.type === "audio" || stream.type === "text") {
         params.push(stream.language);
       }
+
       childJobs.push({
         name: `ffmpeg(${params.join(",")})`,
         data: {
           parentSortKey: ++childJobIndex,
           input,
           stream,
-          ...genericOptions,
+          segmentSize: data.segmentSize,
+          assetId: data.assetId,
         } satisfies FfmpegData,
-
         queueName: "ffmpeg",
+        opts: {
+          jobId: `ffmpeg_${randomUUID()}`,
+        },
       });
     }
   }
 
-  return await flowProducer.add({
+  const { job } = await flowProducer.add({
     name: "transcode",
     queueName: "transcode",
     data: {
-      assetId,
-    },
+      assetId: data.assetId,
+      package: data.package,
+    } satisfies TranscodeData,
     children: childJobs,
+    opts: {
+      jobId,
+    },
   });
+
+  return job;
 }
 
-export async function addPackageJob(data: PackageData) {
+type AddPackageJobData = {
+  assetId: string;
+};
+
+export async function addPackageJob(data: AddPackageJobData) {
   return await packageQueue.add("package", data, {
-    jobId: randomUUID(),
+    jobId: `package_${data.assetId}`,
   });
 }

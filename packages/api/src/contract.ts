@@ -1,6 +1,5 @@
 import { initContract } from "@ts-rest/core";
 import { streamSchema, inputSchema } from "@mixwave/artisan/schemas";
-import { playlistParamsSchema } from "@mixwave/stitcher/schemas";
 import * as z from "zod";
 import type { JobDto, JobNodeDto } from "./types.js";
 
@@ -11,6 +10,7 @@ export const postTranscodeBodySchema = z.object({
   streams: z.array(streamSchema),
   segmentSize: z.number(),
   assetId: z.string().optional(),
+  package: z.boolean().optional(),
 });
 
 export const postPackageBodySchema = z.object({
@@ -54,16 +54,6 @@ export const contract = c.router({
     path: "/jobs/:id/logs",
     responses: {
       200: c.type<string[]>(),
-    },
-  },
-  postPlaylist: {
-    method: "POST",
-    path: "/playlist/:assetId",
-    body: playlistParamsSchema,
-    responses: {
-      200: c.type<{
-        url: string;
-      }>(),
     },
   },
   getSpec: {

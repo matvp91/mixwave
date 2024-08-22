@@ -10,9 +10,9 @@ export function getDurationStr(job: JobDto) {
   return prettyMs(duration);
 }
 
-export function getShortId(prefixedId: string) {
-  const [_, id] = prefixedId.split("_");
-  return id.substring(0, 7);
+export function getShortId(id: string) {
+  const chunks = id.split("_", 3);
+  return chunks[chunks.length - 1].substring(0, 7);
 }
 
 export function getTimeAgo(value: number | null) {

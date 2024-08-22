@@ -1,88 +1,91 @@
-import parseFilePath from "parse-filepath";
-import { parsePlaylistParamsPayload } from "./schemas.js";
 import { parse, stringify } from "../extern/hls-parser/index.js";
-import { Define, Interstitial } from "../extern/hls-parser/types.js";
-import { packageBaseUrl } from "./const.js";
-import type {
-  MasterPlaylist,
-  MediaPlaylist,
-} from "../extern/hls-parser/types.js";
-import type { ParsedPath } from "parse-filepath";
-import type { PlaylistParams } from "./schemas.js";
+import parseFilepath from "parse-filepath";
+import { Interstitial } from "../extern/hls-parser/types.js";
+import { env } from "./env.js";
+import { MasterPlaylist, MediaPlaylist } from "../extern/hls-parser/types.js";
+import { Session } from "./types.js";
 
-type PlaylistType = "master" | "media";
-
-type QueryParams = {
-  p?: string;
+type InterstitialAsset = {
+  URI: string;
+  DURATION: number;
 };
 
-async function fetchPlaylist(url: string) {
+async function fetchPlaylist<T>(url: string) {
   const response = await fetch(url);
   const text = await response.text();
-  return parse(text);
+  return parse(text) as T;
 }
 
-export async function getPlaylist(
-  type: PlaylistType,
-  filePath: string,
-  query: QueryParams,
-) {
-  const file = parseFilePath(filePath);
+export async function formatMasterPlaylist(url: string) {
+  const master = await fetchPlaylist<MasterPlaylist>(url);
 
-  const playlist = await fetchPlaylist(`${packageBaseUrl}/${file.path}`);
+  return stringify(master);
+}
 
-  const playlistParams = parsePlaylistParamsPayload(query.p);
+export async function formatMediaPlaylist(url: string, session: Session) {
+  const media = await fetchPlaylist<MediaPlaylist>(url);
 
-  if (type === "master") {
-    mutateMasterPlaylist(file, playlist as MasterPlaylist, playlistParams);
+  const filePath = parseFilepath(url);
+
+  for (const segment of media.segments) {
+    if (segment.map?.uri === "init.mp4") {
+      segment.map.uri = `${filePath.dir}/init.mp4`;
+    }
+
+    segment.uri = `${filePath.dir}/${segment.uri}`;
   }
-  if (type === "media") {
-    mutateMediaPlaylist(file, playlist as MediaPlaylist, playlistParams);
-  }
 
-  return stringify(playlist);
-}
-
-export async function mutateMasterPlaylist(
-  file: ParsedPath,
-  playlist: MasterPlaylist,
-  playlistParams: PlaylistParams,
-) {
-  playlist.defines.push(
-    new Define({
-      value: "p",
-      type: "QUERYPARAM",
-    }),
-  );
-
-  playlist.variants.forEach((variant) => {
-    variant.uri = `${variant.uri}?p={$p}`;
-
-    variant.audio.forEach((audioTrack) => {
-      audioTrack.uri = `${audioTrack.uri}?p={$p}`;
-    });
-  });
-}
-
-export async function mutateMediaPlaylist(
-  file: ParsedPath,
-  playlist: MediaPlaylist,
-  playlistParams: PlaylistParams,
-) {
   const now = Date.now();
 
-  if (playlistParams.interstitials) {
-    playlist.segments[0].programDateTime = new Date(now);
+  media.segments[0].programDateTime = new Date(now);
 
-    playlistParams.interstitials.forEach((interstitial, index) => {
-      playlist.interstitials.push(
+  session.ads
+    .reduce<number[]>((acc, ad) => {
+      if (!acc.includes(ad.timeOffset)) {
+        acc.push(ad.timeOffset);
+      }
+      return acc;
+    }, [])
+    .forEach((timeOffset) => {
+      media.interstitials.push(
         new Interstitial({
-          startDate: new Date(now),
-          id: `i${index + 1}`,
-          uri: `${packageBaseUrl}/${interstitial.assetId}/hls/master.m3u8`,
-          duration: 15,
+          id: `${timeOffset}`,
+          startDate: new Date(now + timeOffset * 1000),
+          list: `/interstitials/${session.id}/list.json?offset=${timeOffset}`,
         }),
       );
     });
+
+  return stringify(media);
+}
+
+export async function formatInterstitialsJson(
+  session: Session,
+  timeOffset: number,
+) {
+  const assets: InterstitialAsset[] = [];
+
+  const ads = session.ads.filter((ad) => ad.timeOffset === timeOffset);
+
+  for (const ad of ads) {
+    const uri = `${env.S3_PUBLIC_URL}/package/${ad.assetId}/hls/master.m3u8`;
+    assets.push({
+      URI: uri,
+      DURATION: await getDuration(uri),
+    });
   }
+
+  return { ASSETS: assets };
+}
+
+async function getDuration(url: string) {
+  const master = await fetchPlaylist<MasterPlaylist>(url);
+  const filePath = parseFilepath(url);
+  const media = await fetchPlaylist<MediaPlaylist>(
+    `${filePath.dir}/${master.variants[0].uri}`,
+  );
+  return media.segments.reduce((acc, segment) => {
+    acc += segment.duration;
+    return acc;
+  }, 0);
 }

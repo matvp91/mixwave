@@ -1,14 +1,13 @@
 import { getFakeJob } from "../../lib/job-helpers.js";
 import { uploadJsonFile } from "../s3.js";
-import type { Input, Stream } from "../../schemas.js";
+import { addPackageJob } from "../../producer.js";
+import type { Stream } from "../../schemas.js";
 import type { FfmpegResult } from "./ffmpeg.js";
 import type { Job } from "bullmq";
 
 export type TranscodeData = {
   assetId: string;
-  inputs: Input[];
-  streams: Stream[];
-  segmentSize: number;
+  package: boolean;
 };
 
 export type TranscodeResult = {
@@ -28,15 +27,22 @@ export default async function (job: Job<TranscodeData, TranscodeResult>) {
       }
       return acc;
     },
-    {}
+    {},
   );
 
   await job.log(`Writing meta.json (${JSON.stringify(meta)})`);
 
   await uploadJsonFile(
     `transcode/${job.data.assetId}/meta.json`,
-    JSON.stringify(meta, null, 2)
+    JSON.stringify(meta, null, 2),
   );
+
+  if (job.data.package) {
+    await job.log("Will queue package job");
+    await addPackageJob({
+      assetId: job.data.assetId,
+    });
+  }
 
   job.updateProgress(100);
 

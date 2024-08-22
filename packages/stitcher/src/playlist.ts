@@ -1,9 +1,14 @@
 import { parse, stringify } from "../extern/hls-parser/index.js";
 import parseFilepath from "parse-filepath";
 import { Interstitial } from "../extern/hls-parser/types.js";
-import { getSessionAds } from "./session.js";
 import { env } from "./env.js";
 import { MasterPlaylist, MediaPlaylist } from "../extern/hls-parser/types.js";
+import { Session } from "./types.js";
+
+type InterstitialAsset = {
+  URI: string;
+  DURATION: number;
+};
 
 async function fetchPlaylist<T>(url: string) {
   const response = await fetch(url);
@@ -17,7 +22,7 @@ export async function formatMasterPlaylist(url: string) {
   return stringify(master);
 }
 
-export async function formatMediaPlaylist(url: string, sessionId: string) {
+export async function formatMediaPlaylist(url: string, session: Session) {
   const media = await fetchPlaylist<MediaPlaylist>(url);
 
   const filePath = parseFilepath(url);
@@ -30,61 +35,47 @@ export async function formatMediaPlaylist(url: string, sessionId: string) {
     segment.uri = `${filePath.dir}/${segment.uri}`;
   }
 
-  const ads = await getSessionAds(sessionId);
-
-  const adsMap =
-    ads?.reduce<Record<number, string[]>>((acc, ad) => {
-      if (!acc[ad.offset]) {
-        acc[ad.offset] = [];
-      }
-      acc[ad.offset].push(ad.id);
-      return acc;
-    }, {}) ?? {};
-
   const now = Date.now();
 
   media.segments[0].programDateTime = new Date(now);
 
-  Object.keys(adsMap).forEach((offsetStr) => {
-    const offset = parseInt(offsetStr);
-
-    if (offset === -1) {
-      // Skip postrolls.
-      return;
-    }
-
-    media.interstitials.push(
-      new Interstitial({
-        id: `${offset}`,
-        startDate: new Date(now + offset * 1000),
-        list: `/interstitials/${sessionId}/list.json?offset=${offset}`,
-      }),
-    );
-  });
+  session.ads
+    .reduce<number[]>((acc, ad) => {
+      if (!acc.includes(ad.offset)) {
+        acc.push(ad.offset);
+      }
+      return acc;
+    }, [])
+    .forEach((offset) => {
+      media.interstitials.push(
+        new Interstitial({
+          id: `${offset}`,
+          startDate: new Date(now + offset * 1000),
+          list: `/interstitials/${session.id}/list.json?offset=${offset}`,
+        }),
+      );
+    });
 
   return stringify(media);
 }
 
 export async function formatInterstitialsJson(
-  sessionId: string,
+  session: Session,
   offset: number,
 ) {
-  const ads = await getSessionAds(sessionId);
+  const assets: InterstitialAsset[] = [];
 
-  const filteredAds = ads?.filter((ad) => ad.offset === offset) ?? [];
+  const ads = session.ads.filter((ad) => ad.offset === offset);
 
-  const ASSETS: any[] = [];
-
-  for (const ad of filteredAds) {
-    const uri = `${env.S3_PUBLIC_URL}/package/${ad.id}/hls/master.m3u8`;
-    const duration = await getDuration(uri);
-    ASSETS.push({
+  for (const ad of ads) {
+    const uri = `${env.S3_PUBLIC_URL}/package/${ad.assetId}/hls/master.m3u8`;
+    assets.push({
       URI: uri,
-      DURATION: duration,
+      DURATION: await getDuration(uri),
     });
   }
 
-  return { ASSETS };
+  return { ASSETS: assets };
 }
 
 async function getDuration(url: string) {

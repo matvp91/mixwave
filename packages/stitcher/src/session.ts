@@ -15,30 +15,23 @@ export async function createSession(data: { url: string; vmapUrl?: string }) {
     ads = await resolveVmap(data.vmapUrl);
   }
 
-  await client.json.set(key(sessionId), `$`, {
+  const session = {
+    id: sessionId,
     url: data.url,
     ads,
-  } satisfies Session);
+  } satisfies Session;
+
+  await client.json.set(key(sessionId), `$`, session);
 
   await client.expire(key(sessionId), 60 * 60 * 6);
 
-  return sessionId;
+  return session;
 }
 
-export async function getSessionData(sessionId: string) {
-  const [data] = (await client.json.get(key(sessionId), {
-    path: ["$.data"],
-  })) as [SessionData | undefined];
-  return data;
-}
-
-export async function getSessionAds(sessionId: string) {
-  const [data] = (await client.json.get(key(sessionId), {
-    path: ["$.ads"],
-  })) as [SessionAd[] | undefined];
-  return data;
-}
-
-export async function setSessionAds(sessionId: string, ads: SessionAd[]) {
-  await client.json.set(key(sessionId), "$.ads", ads);
+export async function getSession(sessionId: string) {
+  const data = await client.json.get(key(sessionId));
+  if (!data) {
+    throw new Error("No session found for id");
+  }
+  return data as Session;
 }

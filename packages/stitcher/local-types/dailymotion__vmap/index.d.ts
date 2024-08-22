@@ -70,7 +70,7 @@ declare namespace VMAP {
     /**
      * Contains a URI to the VAST
      */
-    adTagURI: {
+    adTagURI?: {
       uri: string;
     };
     /**
@@ -80,7 +80,7 @@ declare namespace VMAP {
     /**
      * Contains an embedded VAST response
      */
-    vastAdData: Element;
+    vastAdData?: Element;
   }
 
   /**

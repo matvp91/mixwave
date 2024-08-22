@@ -1,4 +1,5 @@
 export type Session = {
+  id: string;
   url: string;
   ads: Ad[];
 };

@@ -4,7 +4,7 @@ import { env } from "./env.js";
 import { contract } from "./contract.js";
 import { initServer } from "@ts-rest/fastify";
 import { generateOpenApi } from "@ts-rest/open-api";
-import { createSession, getSessionData } from "./session.js";
+import { createSession, getSession } from "./session.js";
 import {
   formatMasterPlaylist,
   formatMediaPlaylist,
@@ -21,7 +21,7 @@ async function buildServer() {
 
   const router = s.router(contract, {
     postSession: async ({ request, body }) => {
-      const sessionId = await createSession({
+      const session = await createSession({
         url: body.url,
         vmapUrl: body.vmapUrl,
       });
@@ -29,20 +29,14 @@ async function buildServer() {
       return {
         status: 200,
         body: {
-          url: `${request.protocol}://${request.hostname}/session/${sessionId}/master.m3u8`,
+          url: `${request.protocol}://${request.hostname}/session/${session.id}/master.m3u8`,
+          session,
         },
       };
     },
     getMasterPlaylist: async ({ params, reply }) => {
-      const sessionData = await getSessionData(params.sessionId);
-      if (!sessionData) {
-        return {
-          status: 404,
-          body: { message: "No session data found for id" },
-        };
-      }
-
-      const response = await formatMasterPlaylist(sessionData.url);
+      const session = await getSession(params.sessionId);
+      const response = await formatMasterPlaylist(session.url);
 
       reply.type("application/x-mpegURL");
 
@@ -52,19 +46,12 @@ async function buildServer() {
       };
     },
     getMediaPlaylist: async ({ params, reply }) => {
-      const sessionData = await getSessionData(params.sessionId);
-      if (!sessionData) {
-        return {
-          status: 404,
-          body: { message: "No session data found for id" },
-        };
-      }
-
-      const filePath = parseFilepath(sessionData.url);
+      const session = await getSession(params.sessionId);
+      const filePath = parseFilepath(session.url);
 
       const response = await formatMediaPlaylist(
         `${filePath.dir}/${params.path}/playlist.m3u8`,
-        params.sessionId,
+        session,
       );
 
       reply.type("application/x-mpegURL");
@@ -75,9 +62,10 @@ async function buildServer() {
       };
     },
     getInterstitialsList: async ({ query, params }) => {
+      const session = await getSession(params.sessionId);
       return {
         status: 200,
-        body: await formatInterstitialsJson(params.sessionId, query.offset),
+        body: await formatInterstitialsJson(session, query.offset),
       };
     },
     getSpec: async () => {

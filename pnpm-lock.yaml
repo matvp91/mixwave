@@ -287,6 +287,9 @@ importers:
       '@zodyac/env':
         specifier: ^1.1.8
         version: 1.1.8
+      dom-parser:
+        specifier: ^1.1.5
+        version: 1.1.5
       fastify:
         specifier: ^4.28.1
         version: 4.28.1
@@ -6492,6 +6495,10 @@ packages:
 
   /dom-accessibility-api@0.6.3:
     resolution: {integrity: sha512-7ZgogeTnjuHbo+ct10G9Ffp0mif17idi0IyWNVA/wcwcm7NPOD/WEHVP3n7n3MhXqxoIYm8d6MuZohYWIZ4T3w==}
+    dev: false
+
+  /dom-parser@1.1.5:
+    resolution: {integrity: sha512-lCiFG48ZUzGXjKN0qhSkxD/i3ndyV6I37zQ3W2VFYLjF1ob8A+QgSsM7Ps2UT0d3LpJxLMmMHiJJ34z5hkKLiA==}
     dev: false
 
   /dotenv@16.4.5:

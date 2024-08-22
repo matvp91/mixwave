@@ -6,6 +6,14 @@ const c = initContract();
 export const postSessionBodySchema = z.object({
   url: z.string(),
   vmapUrl: z.string().optional(),
+  ads: z
+    .array(
+      z.object({
+        timeOffset: z.number(),
+        assetId: z.string(),
+      }),
+    )
+    .optional(),
 });
 
 export const contract = c.router({

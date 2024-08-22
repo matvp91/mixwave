@@ -46,12 +46,12 @@ export async function formatMediaPlaylist(url: string, session: Session) {
       }
       return acc;
     }, [])
-    .forEach((offset) => {
+    .forEach((timeOffset) => {
       media.interstitials.push(
         new Interstitial({
-          id: `${offset}`,
-          startDate: new Date(now + offset * 1000),
-          list: `/interstitials/${session.id}/list.json?offset=${offset}`,
+          id: `${timeOffset}`,
+          startDate: new Date(now + timeOffset * 1000),
+          list: `/interstitials/${session.id}/list.json?offset=${timeOffset}`,
         }),
       );
     });

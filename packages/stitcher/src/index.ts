@@ -21,10 +21,7 @@ async function buildServer() {
 
   const router = s.router(contract, {
     postSession: async ({ request, body }) => {
-      const session = await createSession({
-        url: body.url,
-        vmapUrl: body.vmapUrl,
-      });
+      const session = await createSession(body);
 
       return {
         status: 200,

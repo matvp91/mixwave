@@ -353,11 +353,11 @@ function buildMediaPlaylist(
     const params: string[] = ['CLASS="com.apple.hls.interstitial"'];
     params.unshift(`ID="${interstitial.id}"`);
 
-    params.push(
-      `START-DATE="${interstitial.startDate.toISOString()}"`,
-      `DURATION=${interstitial.duration}`,
-    );
+    params.push(`START-DATE="${interstitial.startDate.toISOString()}"`);
 
+    if (interstitial.duration) {
+      params.push(`DURATION=${interstitial.duration}`);
+    }
     if (interstitial.uri) {
       params.push(`X-ASSET-URI="${interstitial.uri}"`);
     }

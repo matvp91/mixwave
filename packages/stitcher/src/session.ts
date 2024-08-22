@@ -1,16 +1,26 @@
 import { client } from "./redis.js";
 import { randomUUID } from "crypto";
 import { getAdsFromVmap } from "./vmap.js";
-import type { Session } from "./types.js";
+import type { Session, Ad } from "./types.js";
 
 const REDIS_PREFIX = `stitcher:session`;
 
 const key = (sessionId: string) => `${REDIS_PREFIX}:${sessionId}`;
 
-export async function createSession(data: { url: string; vmapUrl?: string }) {
+export async function createSession(data: {
+  url: string;
+  vmapUrl?: string;
+  ads?: Ad[];
+}) {
   const sessionId = randomUUID();
 
-  const ads = data.vmapUrl ? await getAdsFromVmap(data.vmapUrl) : [];
+  let ads: Ad[] = [];
+
+  if (data.ads) {
+    ads = data.ads;
+  } else if (data.vmapUrl) {
+    ads = await getAdsFromVmap(data.vmapUrl);
+  }
 
   const session = {
     id: sessionId,

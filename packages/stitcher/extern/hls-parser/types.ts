@@ -56,7 +56,7 @@ class Interstitial {
   id: string;
   uri?: string;
   list?: string;
-  duration: string;
+  duration?: string;
   startDate: Date;
   resumeOffset?: number;
   restrict?: string;

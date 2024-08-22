@@ -41,6 +41,10 @@ export default defineConfig({
             text: "Package",
             link: "examples/package",
           },
+          {
+            text: "Stitcher",
+            link: "examples/stitcher",
+          },
         ],
       },
       { text: "Thank You", link: "thank-you" },

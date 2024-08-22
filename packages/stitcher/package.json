@@ -15,8 +15,6 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@dailymotion/vast-client": "^6.0.0",
-    "@dailymotion/vmap": "^3.3.1",
     "@fastify/cors": "^9.0.1",
     "@mixwave/artisan": "workspace:*",
     "@ts-rest/core": "^3.49.3",

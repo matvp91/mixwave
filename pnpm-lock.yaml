@@ -284,6 +284,9 @@ importers:
       '@ts-rest/open-api':
         specifier: ^3.49.3
         version: 3.49.3(@ts-rest/core@3.49.3)(zod@3.23.8)
+      '@xmldom/xmldom':
+        specifier: ^0.8.10
+        version: 0.8.10
       '@zodyac/env':
         specifier: ^1.1.8
         version: 1.1.8

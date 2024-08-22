@@ -41,8 +41,8 @@ export async function formatMediaPlaylist(url: string, session: Session) {
 
   session.ads
     .reduce<number[]>((acc, ad) => {
-      if (!acc.includes(ad.offset)) {
-        acc.push(ad.offset);
+      if (!acc.includes(ad.timeOffset)) {
+        acc.push(ad.timeOffset);
       }
       return acc;
     }, [])
@@ -61,11 +61,11 @@ export async function formatMediaPlaylist(url: string, session: Session) {
 
 export async function formatInterstitialsJson(
   session: Session,
-  offset: number,
+  timeOffset: number,
 ) {
   const assets: InterstitialAsset[] = [];
 
-  const ads = session.ads.filter((ad) => ad.offset === offset);
+  const ads = session.ads.filter((ad) => ad.timeOffset === timeOffset);
 
   for (const ad of ads) {
     const uri = `${env.S3_PUBLIC_URL}/package/${ad.assetId}/hls/master.m3u8`;

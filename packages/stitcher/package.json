@@ -10,7 +10,6 @@
     "@types/hh-mm-ss": "^1.2.3",
     "@types/node": "^22.1.0",
     "@types/parse-filepath": "^1.0.2",
-    "@types/xmldom": "^0.1.34",
     "tsc-watch": "^6.2.0",
     "typescript": "^5.5.4"
   },
@@ -22,6 +21,7 @@
     "@ts-rest/core": "^3.49.3",
     "@ts-rest/fastify": "^3.49.3",
     "@ts-rest/open-api": "^3.49.3",
+    "@xmldom/xmldom": "^0.8.10",
     "@zodyac/env": "^1.1.8",
     "dom-parser": "^1.1.5",
     "fastify": "^4.28.1",
@@ -29,7 +29,6 @@
     "parse-filepath": "^1.0.2",
     "redis": "^4.7.0",
     "uuid-by-string": "^4.0.0",
-    "xmldom": "^0.6.0",
     "zod": "^3.23.8"
   }
 }

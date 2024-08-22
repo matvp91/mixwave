@@ -5,6 +5,6 @@ export type Session = {
 };
 
 export type Ad = {
-  offset: number;
+  timeOffset: number;
   assetId: string;
 };

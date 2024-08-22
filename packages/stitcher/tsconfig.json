@@ -7,12 +7,7 @@
     "skipLibCheck": true,
     "outDir": "./dist",
     "noImplicitAny": false,
-    "allowSyntheticDefaultImports": true,
-    "paths": {
-      "@dailymotion/vmap": ["./local-types/dailymotion__vmap/index.d.ts"],
-      "@dailymotion/vast-client": [
-        "./local-types/dailymotion__vast-client/index.d.ts"
-      ]
-    }
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true
   }
 }

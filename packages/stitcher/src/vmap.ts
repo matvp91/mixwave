@@ -1,10 +1,9 @@
-import VMAP from "@dailymotion/vmap";
-import VAST from "@dailymotion/vast-client";
-import { DOMParser, XMLSerializer } from "xmldom";
+import { DOMParser, XMLSerializer } from "@xmldom/xmldom";
 import timeFormat from "hh-mm-ss";
 import { addTranscodeJob } from "@mixwave/artisan/producer";
 import getUuidByString from "uuid-by-string";
 import { env } from "./env.js";
+import * as VAST from "../extern/vast-client/index.js";
 import type { Ad } from "./types.js";
 
 type AdMedia = {
@@ -12,7 +11,7 @@ type AdMedia = {
   url: string;
 };
 
-const vastParser = new VAST.VASTParser();
+const vastClient = new VAST.VASTClient();
 
 async function fetchXml(url: string) {
   const response = await fetch(url, {
@@ -27,22 +26,21 @@ async function fetchXml(url: string) {
 }
 
 async function resolveVastByUrl(url: string) {
-  const xml = await fetchXml(url);
-  return resolveVast(xml);
+  const response = await vastClient.get(url);
+  return await formatVastResponse(response);
 }
 
-async function resolveVastByElement(element: Element) {
-  const xmlSerializer = new XMLSerializer();
-  const str = xmlSerializer.serializeToString(element);
+async function resolveVastByXml(text: string) {
   const parser = new DOMParser();
-  const doc = parser.parseFromString(str, "text/xml");
-  return resolveVast(doc);
+  const doc = parser.parseFromString(text, "text/xml");
+  console.log(doc);
+  // @ts-ignore
+  const response = await vastClient.parseVAST(doc);
+  return await formatVastResponse(response);
 }
 
-async function resolveVast(doc: Document) {
-  const vast = await vastParser.parseVAST(doc);
-
-  return vast.ads.reduce<AdMedia[]>((acc, ad) => {
+async function formatVastResponse(response: VAST.VastResponse) {
+  return response.ads.reduce<AdMedia[]>((acc, ad) => {
     const creative = getCreative(ad);
     if (!creative) {
       return acc;
@@ -70,16 +68,6 @@ async function resolveVast(doc: Document) {
 
     return acc;
   }, []);
-}
-
-function getOffset(adBreak: VMAP.VMAPAdBreak) {
-  if (adBreak.timeOffset === "start") {
-    return 0;
-  }
-  if (adBreak.timeOffset === "end") {
-    return -1;
-  }
-  return timeFormat.toS(adBreak.timeOffset);
 }
 
 function scheduleForPackage(adMedia: AdMedia) {
@@ -116,32 +104,87 @@ function scheduleForPackage(adMedia: AdMedia) {
   });
 }
 
-export async function resolveVmap(url: string) {
+function formatTimeOffset(value: string | null) {
+  if (value === null) return null;
+  if (value === "start") return 0;
+  if (value === "end") return null;
+  return timeFormat.toS(value);
+}
+
+const xmlSerializer = new XMLSerializer();
+
+type AdBreak = {
+  timeOffset: number;
+  vastUrl?: string;
+  vastData?: string;
+};
+
+export async function resolveVmap2(url: string) {
   const xml = await fetchXml(url);
-  const vmap = new VMAP(xml);
 
+  if (xml.documentElement.localName !== "VMAP") {
+    throw new Error("Not a vmap");
+  }
+
+  const adBreaks: AdBreak[] = [];
+
+  for (const nodeKey in xml.documentElement.childNodes) {
+    const node = xml.documentElement.childNodes[nodeKey] as Element;
+    if (node.localName === "AdBreak") {
+      const timeOffset = formatTimeOffset(node.getAttribute("timeOffset"));
+      if (timeOffset === null) {
+        continue;
+      }
+
+      let vastUrl: string | undefined;
+      let vastData: string | undefined;
+
+      for (const node2Key in node.childNodes) {
+        const node2 = node.childNodes[node2Key] as Element;
+
+        if (node2.localName === "AdSource") {
+          for (const node3Key in node2.childNodes) {
+            const node3 = node2.childNodes[node3Key] as Element;
+
+            if (node3.localName === "AdTagURI") {
+              vastUrl = node2.textContent?.trim();
+            }
+
+            if (node3.localName === "VASTAdData") {
+              vastData = xmlSerializer.serializeToString(
+                node3.firstChild as Element,
+              );
+            }
+          }
+        }
+      }
+
+      adBreaks.push({
+        timeOffset,
+        vastUrl,
+        vastData,
+      });
+    }
+  }
+
+  return await resolveVmap(adBreaks);
+}
+
+async function resolveVmap(adBreaks: AdBreak[]) {
   const ads: Ad[] = [];
-  for (const adBreak of vmap.adBreaks) {
-    const offset = getOffset(adBreak);
-
-    // We'll skip postroll ads, they're a bit more complex and require
-    // additional thought with HLS interstitials.
-    if (offset === -1) {
-      continue;
-    }
-
+  for (const adBreak of adBreaks) {
     let adMedias: AdMedia[] = [];
-    if (adBreak.adSource.adTagURI) {
-      adMedias = await resolveVastByUrl(adBreak.adSource.adTagURI.uri);
+    if (adBreak.vastUrl) {
+      adMedias = await resolveVastByUrl(adBreak.vastUrl);
     }
-    if (adBreak.adSource.vastAdData) {
-      adMedias = await resolveVastByElement(adBreak.adSource.vastAdData);
+    if (adBreak.vastData) {
+      adMedias = await resolveVastByXml(adBreak.vastData);
     }
 
     for (const adMedia of adMedias) {
       if (await isPackaged(adMedia.assetId)) {
         ads.push({
-          offset,
+          timeOffset: adBreak.timeOffset,
           assetId: adMedia.assetId,
         });
       } else {

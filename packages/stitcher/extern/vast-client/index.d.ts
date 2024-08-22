@@ -174,6 +174,8 @@ export class VASTClient {
    * Use it to directly call a method provided by the VASTParser class.
    */
   getParser(): VASTParser;
+
+  parseVAST(doc: Document): Promise<VastResponse>;
 }
 
 export class VASTParser extends EventEmitter {

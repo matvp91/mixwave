@@ -10,6 +10,7 @@
     "@types/hh-mm-ss": "^1.2.3",
     "@types/node": "^22.1.0",
     "@types/parse-filepath": "^1.0.2",
+    "@types/uuid": "^10.0.0",
     "tsc-watch": "^6.2.0",
     "typescript": "^5.5.4"
   },
@@ -28,7 +29,7 @@
     "hh-mm-ss": "^1.2.0",
     "parse-filepath": "^1.0.2",
     "redis": "^4.7.0",
-    "uuid-by-string": "^4.0.0",
+    "uuid": "^10.0.0",
     "zod": "^3.23.8"
   }
 }

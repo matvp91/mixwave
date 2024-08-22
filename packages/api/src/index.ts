@@ -18,7 +18,7 @@ async function buildServer() {
 
   const router = s.router(contract, {
     postTranscode: async ({ body }) => {
-      const { job } = await addTranscodeJob({
+      const job = await addTranscodeJob({
         assetId: randomUUID(),
         package: false,
         ...body,

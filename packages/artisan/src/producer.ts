@@ -1,6 +1,6 @@
-import { Queue, FlowProducer } from "bullmq";
-import { randomUUID } from "node:crypto";
+import { Queue, FlowProducer, Job } from "bullmq";
 import { connection } from "./connection.js";
+import { randomUUID } from "crypto";
 import type { Input, Stream } from "./schemas.js";
 import type { TranscodeData } from "./consumer/workers/transcode.js";
 import type { PackageData } from "./consumer/workers/package.js";
@@ -38,6 +38,13 @@ type AddTranscodeJobData = {
 };
 
 export async function addTranscodeJob(data: AddTranscodeJobData) {
+  const jobId = `transcode_${data.assetId}`;
+
+  const pendingJob = await Job.fromId(transcodeQueue, jobId);
+  if (pendingJob) {
+    return pendingJob;
+  }
+
   let childJobIndex = 0;
   const childJobs: FlowChildJob[] = [];
 
@@ -68,6 +75,7 @@ export async function addTranscodeJob(data: AddTranscodeJobData) {
       if (stream.type === "audio" || stream.type === "text") {
         params.push(stream.language);
       }
+
       childJobs.push({
         name: `ffmpeg(${params.join(",")})`,
         data: {
@@ -85,7 +93,7 @@ export async function addTranscodeJob(data: AddTranscodeJobData) {
     }
   }
 
-  return await flowProducer.add({
+  const { job } = await flowProducer.add({
     name: "transcode",
     queueName: "transcode",
     data: {
@@ -94,9 +102,11 @@ export async function addTranscodeJob(data: AddTranscodeJobData) {
     } satisfies TranscodeData,
     children: childJobs,
     opts: {
-      jobId: `transcode_${data.assetId}`,
+      jobId,
     },
   });
+
+  return job;
 }
 
 type AddPackageJobData = {

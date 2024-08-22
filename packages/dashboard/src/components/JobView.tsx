@@ -55,7 +55,7 @@ function Format({ data }: { data: string | null }) {
   } catch {}
 
   return parsedData ? (
-    <pre className="p-2 text-xs border border-border rounded-md whitespace-pre-wrap">
+    <pre className="p-2 text-xs border border-border rounded-md whitespace-pre-wrap break-all">
       {JSON.stringify(parsedData, null, 2)}
     </pre>
   ) : null;

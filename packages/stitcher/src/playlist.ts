@@ -1,7 +1,7 @@
 import { parse, stringify } from "../extern/hls-parser/index.js";
 import parseFilepath from "parse-filepath";
 import { Interstitial } from "../extern/hls-parser/types.js";
-import { getAds } from "./vmap.js";
+import { getSessionAds } from "./session.js";
 import { env } from "./env.js";
 import { MasterPlaylist, MediaPlaylist } from "../extern/hls-parser/types.js";
 
@@ -30,7 +30,7 @@ export async function formatMediaPlaylist(url: string, sessionId: string) {
     segment.uri = `${filePath.dir}/${segment.uri}`;
   }
 
-  const ads = getAds(sessionId);
+  const ads = await getSessionAds(sessionId);
 
   const adsMap =
     ads?.reduce<Record<number, string[]>>((acc, ad) => {
@@ -44,11 +44,6 @@ export async function formatMediaPlaylist(url: string, sessionId: string) {
   const now = Date.now();
 
   media.segments[0].programDateTime = new Date(now);
-
-  const totalDuration = media.segments.reduce((acc, segment) => {
-    acc += segment.duration;
-    return acc;
-  }, 0);
 
   Object.keys(adsMap).forEach((offsetStr) => {
     const offset = parseInt(offsetStr);
@@ -74,7 +69,7 @@ export async function formatInterstitialsJson(
   sessionId: string,
   offset: number,
 ) {
-  const ads = getAds(sessionId);
+  const ads = await getSessionAds(sessionId);
 
   const filteredAds = ads?.filter((ad) => ad.offset === offset) ?? [];
 

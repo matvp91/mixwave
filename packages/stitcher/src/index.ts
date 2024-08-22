@@ -4,8 +4,7 @@ import { env } from "./env.js";
 import { contract } from "./contract.js";
 import { initServer } from "@ts-rest/fastify";
 import { generateOpenApi } from "@ts-rest/open-api";
-import { createSession, getSession } from "./session.js";
-import { parseVmap } from "./vmap.js";
+import { createSession, getSessionData } from "./session.js";
 import {
   formatMasterPlaylist,
   formatMediaPlaylist,
@@ -22,13 +21,10 @@ async function buildServer() {
 
   const router = s.router(contract, {
     postSession: async ({ request, body }) => {
-      const sessionId = createSession({
+      const sessionId = await createSession({
         url: body.url,
+        vmapUrl: body.vmapUrl,
       });
-
-      if (body.vmapUrl) {
-        await parseVmap(sessionId, body.vmapUrl);
-      }
 
       return {
         status: 200,
@@ -38,7 +34,14 @@ async function buildServer() {
       };
     },
     getMasterPlaylist: async ({ params, reply }) => {
-      const sessionData = getSession(params.sessionId);
+      const sessionData = await getSessionData(params.sessionId);
+      if (!sessionData) {
+        return {
+          status: 404,
+          body: { message: "No session data found for id" },
+        };
+      }
+
       const response = await formatMasterPlaylist(sessionData.url);
 
       reply.type("application/x-mpegURL");
@@ -49,7 +52,14 @@ async function buildServer() {
       };
     },
     getMediaPlaylist: async ({ params, reply }) => {
-      const sessionData = getSession(params.sessionId);
+      const sessionData = await getSessionData(params.sessionId);
+      if (!sessionData) {
+        return {
+          status: 404,
+          body: { message: "No session data found for id" },
+        };
+      }
+
       const filePath = parseFilepath(sessionData.url);
 
       const response = await formatMediaPlaylist(

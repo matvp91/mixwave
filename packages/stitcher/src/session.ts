@@ -1,26 +1,44 @@
-import cacheLib from "persistent-node-cache";
+import { client } from "./redis.js";
 import { randomUUID } from "crypto";
+import { resolveVmap } from "./vmap.js";
+import type { Session, Ad } from "./types.js";
 
-const { PersistentNodeCache } = cacheLib;
+const REDIS_PREFIX = `stitcher:session`;
 
-const cache = new PersistentNodeCache("stitcher__session");
+const key = (sessionId: string) => `${REDIS_PREFIX}:${sessionId}`;
 
-type SessionData = {
-  url: string;
-};
-
-export function createSession(data: SessionData) {
+export async function createSession(data: { url: string; vmapUrl?: string }) {
   const sessionId = randomUUID();
 
-  cache.set(sessionId, data, 1000 * 60 * 60 * 24);
+  let ads: Ad[] = [];
+  if (data.vmapUrl) {
+    ads = await resolveVmap(data.vmapUrl);
+  }
+
+  await client.json.set(key(sessionId), `$`, {
+    url: data.url,
+    ads,
+  } satisfies Session);
+
+  await client.expire(key(sessionId), 60 * 60 * 6);
 
   return sessionId;
 }
 
-export function getSession(id: string) {
-  const sessionData = cache.get<SessionData>(id);
-  if (!sessionData) {
-    throw new Error("No session found for id");
-  }
-  return sessionData;
+export async function getSessionData(sessionId: string) {
+  const [data] = (await client.json.get(key(sessionId), {
+    path: ["$.data"],
+  })) as [SessionData | undefined];
+  return data;
+}
+
+export async function getSessionAds(sessionId: string) {
+  const [data] = (await client.json.get(key(sessionId), {
+    path: ["$.ads"],
+  })) as [SessionAd[] | undefined];
+  return data;
+}
+
+export async function setSessionAds(sessionId: string, ads: SessionAd[]) {
+  await client.json.set(key(sessionId), "$.ads", ads);
 }

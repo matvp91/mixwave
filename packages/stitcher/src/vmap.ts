@@ -1,24 +1,11 @@
 import VMAP from "@dailymotion/vmap";
 import VAST from "@dailymotion/vast-client";
 import { DOMParser } from "xmldom";
-import cacheLib from "persistent-node-cache";
 import timeFormat from "hh-mm-ss";
 import { addTranscodeJob } from "@mixwave/artisan/producer";
 import getUuidByString from "uuid-by-string";
 import { env } from "./env.js";
-
-const { PersistentNodeCache } = cacheLib;
-
-const cache = new PersistentNodeCache("stitcher__vmap");
-
-export function getAds(sessionId: string) {
-  return cache.get<
-    {
-      offset: number;
-      id: string;
-    }[]
-  >(sessionId);
-}
+import type { Ad } from "./types.js";
 
 async function fetchXml(url: string) {
   const response = await fetch(url);
@@ -28,18 +15,7 @@ async function fetchXml(url: string) {
   return parser.parseFromString(text, "text/xml");
 }
 
-export async function parseVmap(sessionId: string, url: string) {
-  let vmap = cache.get(sessionId);
-
-  if (!vmap) {
-    vmap = await resolveVmap(url);
-    cache.set(sessionId, vmap, 1000 * 60 * 60 * 24);
-  }
-
-  return vmap;
-}
-
-async function resolveVmap(url: string) {
+export async function resolveVmap(url: string) {
   const vastParser = new VAST.VASTParser();
 
   const vmap = new VMAP(await fetchXml(url));
@@ -154,12 +130,6 @@ function getMediaFile(ad: VAST.VastAd) {
 
   return mediaFiles[0];
 }
-
-type Ad = {
-  id: string;
-  offset: number;
-  url: string;
-};
 
 async function isPackaged(assetId: string) {
   const response = await fetch(

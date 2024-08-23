@@ -19,7 +19,6 @@
     "@mixwave/artisan": "workspace:*",
     "@ts-rest/core": "^3.49.3",
     "@ts-rest/fastify": "^3.49.3",
-    "@ts-rest/open-api": "^3.49.3",
     "@xmldom/xmldom": "^0.8.10",
     "@zodyac/env": "^1.1.8",
     "dom-parser": "^1.1.5",

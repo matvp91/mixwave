@@ -1,9 +1,11 @@
 import { lazy } from "react";
 
-const LazyApiReference = lazy(() =>
-  import("./ApiReference").then((mod) => ({ default: mod.ApiReference })),
+const LazyOpenApiReference = lazy(() =>
+  import("./OpenApiReference").then((mod) => ({
+    default: mod.OpenApiReference,
+  })),
 );
 
 export function ApiEmbedPage() {
-  return <LazyApiReference />;
+  return <LazyOpenApiReference server={import.meta.env.VITE_API_URL} />;
 }

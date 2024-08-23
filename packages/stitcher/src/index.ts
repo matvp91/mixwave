@@ -3,7 +3,6 @@ import cors from "@fastify/cors";
 import { env } from "./env.js";
 import { contract } from "./contract.js";
 import { initServer } from "@ts-rest/fastify";
-import { generateOpenApi } from "@ts-rest/open-api";
 import { createSession, getSession } from "./session.js";
 import {
   formatMasterPlaylist,
@@ -48,17 +47,6 @@ async function buildServer() {
       return {
         status: 200,
         body: await formatInterstitialsJson(session, query.offset),
-      };
-    },
-    getSpec: async () => {
-      return {
-        status: 200,
-        body: generateOpenApi(contract, {
-          info: {
-            title: "Stitcher",
-            version: "1.0.0",
-          },
-        }),
       };
     },
     unstable_getDirectMasterPlaylist: async ({ request, query, reply }) => {

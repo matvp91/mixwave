@@ -41,11 +41,6 @@ export const contract = c.router({
     }),
     responses: {},
   },
-  getSpec: {
-    method: "GET",
-    path: "/spec.json",
-    responses: {},
-  },
   unstable_getDirectMasterPlaylist: {
     method: "GET",
     path: "/_direct/master.m3u8",

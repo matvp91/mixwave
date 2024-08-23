@@ -12,6 +12,12 @@ Mixwave is a self hostable platform that aims to simplify the complexities of vi
 
 Visit our [documentation](https://matvp91.github.io/mixwave/) for more info.
 
+<p align="center">
+ <kbd>
+<img src="https://github.com/matvp91/mixwave/blob/main/assets/job.png?raw=true" width="940" />
+ </kbd>
+</p>
+
 Wondering how easy it is? Let's pick a Big Buck Bunny video and package it to HLS with a single `720p` video track.
 
 ```javascript

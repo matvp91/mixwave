@@ -8,7 +8,7 @@ const REDIS_PREFIX = `stitcher:session`;
 const key = (sessionId: string) => `${REDIS_PREFIX}:${sessionId}`;
 
 export async function createSession(data: {
-  url: string;
+  assetId: string;
   vmapUrl?: string;
   ads?: Ad[];
 }) {
@@ -24,7 +24,7 @@ export async function createSession(data: {
 
   const session = {
     id: sessionId,
-    url: data.url,
+    assetId: data.assetId,
     ads,
   } satisfies Session;
 

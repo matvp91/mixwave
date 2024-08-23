@@ -3,7 +3,7 @@ import parseFilepath from "parse-filepath";
 import { Interstitial } from "../extern/hls-parser/types.js";
 import { env } from "./env.js";
 import { MasterPlaylist, MediaPlaylist } from "../extern/hls-parser/types.js";
-import { Session } from "./types.js";
+import type { Session } from "./types.js";
 
 type InterstitialAsset = {
   URI: string;
@@ -16,13 +16,17 @@ async function fetchPlaylist<T>(url: string) {
   return parse(text) as T;
 }
 
-export async function formatMasterPlaylist(url: string) {
+export async function formatMasterPlaylist(session: Session) {
+  const url = `${env.S3_PUBLIC_URL}/package/${session.assetId}/hls/master.m3u8`;
+
   const master = await fetchPlaylist<MasterPlaylist>(url);
 
   return stringify(master);
 }
 
-export async function formatMediaPlaylist(url: string, session: Session) {
+export async function formatMediaPlaylist(session: Session, path: string) {
+  const url = `${env.S3_PUBLIC_URL}/package/${session.assetId}/hls/${path}/playlist.m3u8`;
+
   const media = await fetchPlaylist<MediaPlaylist>(url);
 
   const filePath = parseFilepath(url);

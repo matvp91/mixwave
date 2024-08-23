@@ -11,6 +11,7 @@ export type JobDto = {
   inputData: string;
   outputData: string | null;
   failedReason: string | null;
+  tag: string | null;
 };
 
 export type JobNodeDto = {

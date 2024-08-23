@@ -15,8 +15,12 @@ import type { Code } from "iso-language-codes";
 const metaSchema = z.record(z.string(), streamSchema);
 
 export type PackageData = {
-  assetId: string;
-  tag: string;
+  params: {
+    assetId: string;
+  };
+  metadata: {
+    tag: string;
+  };
 };
 
 export type PackageResult = {
@@ -28,8 +32,10 @@ function formatLanguage(code: Code) {
 }
 
 export default async function (job: Job<PackageData, PackageResult>) {
+  const { params } = job.data;
+
   const dir = dirSync();
-  await downloadFolder(dir.name, `transcode/${job.data.assetId}`);
+  await downloadFolder(dir.name, `transcode/${params.assetId}`);
 
   const metaFile = await metaSchema.parseAsync(
     JSON.parse(await readFile(`${dir.name}/meta.json`, "utf8")),
@@ -37,14 +43,14 @@ export default async function (job: Job<PackageData, PackageResult>) {
 
   const outDir = dirSync();
 
-  const params: string[][] = [];
+  const packagerParams: string[][] = [];
 
   for (const key of Object.keys(metaFile)) {
     const stream = metaFile[key];
     const file = parseFilePath(key);
 
     if (stream.type === "video") {
-      params.push([
+      packagerParams.push([
         `in=${dir.name}/${key}`,
         "stream=video",
         `init_segment=${file.name}/init.mp4`,
@@ -55,7 +61,7 @@ export default async function (job: Job<PackageData, PackageResult>) {
     }
 
     if (stream.type === "audio") {
-      params.push([
+      packagerParams.push([
         `in=${dir.name}/${key}`,
         "stream=audio",
         `init_segment=${file.name}/init.mp4`,
@@ -67,7 +73,7 @@ export default async function (job: Job<PackageData, PackageResult>) {
     }
 
     if (stream.type === "text") {
-      params.push([
+      packagerParams.push([
         `in=${dir.name}/${key}`,
         "stream=text",
         `segment_template=${file.name}/$Number$.vtt`,
@@ -78,7 +84,7 @@ export default async function (job: Job<PackageData, PackageResult>) {
     }
   }
 
-  const packagerArgs = params.map((it) => `${it.join(",")}`);
+  const packagerArgs = packagerParams.map((it) => `${it.join(",")}`);
 
   packagerArgs.push(
     "--segment_duration",
@@ -102,7 +108,7 @@ export default async function (job: Job<PackageData, PackageResult>) {
 
   await once(packagerProcess, "close");
 
-  await uploadFolder(outDir.name, `package/${job.data.assetId}/hls`, {
+  await uploadFolder(outDir.name, `package/${params.assetId}/hls`, {
     del: true,
     commandInput: (input) => ({
       ContentType: lookup(input.Key) || "binary/octet-stream",
@@ -114,14 +120,14 @@ export default async function (job: Job<PackageData, PackageResult>) {
   // becomes available on CDN.
   // This way we ensure we have all the segments on S3 before we make the manifest available.
   await copyFile(
-    `package/${job.data.assetId}/hls/master_tmp.m3u8`,
-    `package/${job.data.assetId}/hls/master.m3u8`,
+    `package/${params.assetId}/hls/master_tmp.m3u8`,
+    `package/${params.assetId}/hls/master.m3u8`,
     "public-read",
   );
 
   job.updateProgress(100);
 
   return {
-    assetId: job.data.assetId,
+    assetId: params.assetId,
   };
 }

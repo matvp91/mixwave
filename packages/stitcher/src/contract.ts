@@ -4,7 +4,7 @@ import * as z from "zod";
 const c = initContract();
 
 export const postSessionBodySchema = z.object({
-  url: z.string(),
+  assetId: z.string(),
   vmapUrl: z.string().optional(),
   ads: z
     .array(

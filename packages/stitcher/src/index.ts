@@ -10,7 +10,6 @@ import {
   formatMediaPlaylist,
   formatInterstitialsJson,
 } from "./playlist.js";
-import parseFilepath from "parse-filepath";
 
 async function buildServer() {
   const app = Fastify();
@@ -33,7 +32,7 @@ async function buildServer() {
     },
     getMasterPlaylist: async ({ params, reply }) => {
       const session = await getSession(params.sessionId);
-      const response = await formatMasterPlaylist(session.url);
+      const response = await formatMasterPlaylist(session);
 
       reply.type("application/x-mpegURL");
 
@@ -44,12 +43,8 @@ async function buildServer() {
     },
     getMediaPlaylist: async ({ params, reply }) => {
       const session = await getSession(params.sessionId);
-      const filePath = parseFilepath(session.url);
 
-      const response = await formatMediaPlaylist(
-        `${filePath.dir}/${params.path}/playlist.m3u8`,
-        session,
-      );
+      const response = await formatMediaPlaylist(session, params.path);
 
       reply.type("application/x-mpegURL");
 

@@ -6,9 +6,13 @@ import type { FfmpegResult } from "./ffmpeg.js";
 import type { Job } from "bullmq";
 
 export type TranscodeData = {
-  assetId: string;
-  package: boolean;
-  tag: string;
+  params: {
+    assetId: string;
+    package: boolean;
+  };
+  metadata: {
+    tag: string;
+  };
 };
 
 export type TranscodeResult = {
@@ -16,6 +20,8 @@ export type TranscodeResult = {
 };
 
 export default async function (job: Job<TranscodeData, TranscodeResult>) {
+  const { params, metadata } = job.data;
+
   const fakeJob = await getFakeJob<TranscodeData>(job);
 
   const childrenValues = await fakeJob.getChildrenValues();
@@ -34,21 +40,21 @@ export default async function (job: Job<TranscodeData, TranscodeResult>) {
   await job.log(`Writing meta.json (${JSON.stringify(meta)})`);
 
   await uploadJsonFile(
-    `transcode/${job.data.assetId}/meta.json`,
+    `transcode/${params.assetId}/meta.json`,
     JSON.stringify(meta, null, 2),
   );
 
-  if (job.data.package) {
+  if (params.package) {
     await job.log("Will queue package job");
     await addPackageJob({
-      assetId: job.data.assetId,
-      tag: job.data.tag,
+      assetId: params.assetId,
+      tag: metadata.tag,
     });
   }
 
   job.updateProgress(100);
 
   return {
-    assetId: job.data.assetId,
+    assetId: params.assetId,
   };
 }

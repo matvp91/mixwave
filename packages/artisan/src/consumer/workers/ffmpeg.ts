@@ -7,11 +7,15 @@ import type { Stream, Input } from "../../schemas.js";
 import type { FfmpegCommand } from "fluent-ffmpeg";
 
 export type FfmpegData = {
-  parentSortKey?: number;
-  input: Input;
-  stream: Stream;
-  segmentSize: number;
-  assetId: string;
+  params: {
+    input: Input;
+    stream: Stream;
+    segmentSize: number;
+    assetId: string;
+  };
+  metadata: {
+    parentSortKey: number;
+  };
 };
 
 export type FfmpegResult = {
@@ -20,10 +24,10 @@ export type FfmpegResult = {
 };
 
 export default async function (job: Job<FfmpegData, FfmpegResult>) {
-  const { input, stream, segmentSize, assetId } = job.data;
+  const { params } = job.data;
 
   const dir = dirSync();
-  let inputFile = parseFilePath(input.path);
+  let inputFile = parseFilePath(params.input.path);
 
   if (inputFile.dir.startsWith("s3://")) {
     const s3SourcePath = inputFile.path.replace("s3://", "");
@@ -39,56 +43,56 @@ export default async function (job: Job<FfmpegData, FfmpegResult>) {
   let name: string | undefined;
   let ffmpegCmd: FfmpegCommand | undefined;
 
-  if (stream.type === "video") {
-    const keyFrameInterval = segmentSize * stream.framerate;
+  if (params.stream.type === "video") {
+    const keyFrameInterval = params.segmentSize * params.stream.framerate;
 
     let codec: string;
-    switch (stream.codec) {
+    switch (params.stream.codec) {
       case "h264":
         codec = "libx264";
         break;
       default:
-        codec = stream.codec;
+        codec = params.stream.codec;
         break;
     }
 
-    name = `video_${stream.height}_${stream.bitrate}_${stream.codec}.m4v`;
+    name = `video_${params.stream.height}_${params.stream.bitrate}_${params.stream.codec}.m4v`;
 
     ffmpegCmd = ffmpeg(inputFile.path)
       .noAudio()
       .format("mp4")
-      .size(`?x${stream.height}`)
+      .size(`?x${params.stream.height}`)
       .aspectRatio("16:9")
       .autoPad(true)
       .videoCodec(codec)
-      .videoBitrate(stream.bitrate)
+      .videoBitrate(params.stream.bitrate)
       .outputOptions([
-        `-frag_duration ${segmentSize * 1e6}`,
+        `-frag_duration ${params.segmentSize * 1e6}`,
         "-movflags +frag_keyframe",
-        `-r ${stream.framerate}`,
+        `-r ${params.stream.framerate}`,
         `-keyint_min ${keyFrameInterval}`,
         `-g ${keyFrameInterval}`,
       ])
       .output(`${dir.name}/${name}`);
   }
 
-  if (stream.type === "audio") {
-    name = `audio_${stream.language}_${stream.bitrate}.m4a`;
+  if (params.stream.type === "audio") {
+    name = `audio_${params.stream.language}_${params.stream.bitrate}.m4a`;
 
     ffmpegCmd = ffmpeg(inputFile.path)
       .noVideo()
       .format("mp4")
-      .audioCodec(stream.codec)
-      .audioBitrate(stream.bitrate)
+      .audioCodec(params.stream.codec)
+      .audioBitrate(params.stream.bitrate)
       .outputOptions([
-        `-metadata language=${stream.language}`,
-        `-frag_duration ${segmentSize * 1e6}`,
+        `-metadata language=${params.stream.language}`,
+        `-frag_duration ${params.segmentSize * 1e6}`,
       ])
       .output(`${dir.name}/${name}`);
   }
 
-  if (stream.type === "text") {
-    name = `text_${stream.language}.vtt`;
+  if (params.stream.type === "text") {
+    name = `text_${params.stream.language}.vtt`;
 
     ffmpegCmd = ffmpeg(inputFile.path).output(`${dir.name}/${name}`);
   }
@@ -116,9 +120,17 @@ export default async function (job: Job<FfmpegData, FfmpegResult>) {
       .run();
   });
 
-  job.log(`Uploading ${dir.name}/${name} to transcode/${assetId}/${name}`);
+  job.log(
+    `Uploading ${dir.name}/${name} to transcode/${params.assetId}/${name}`,
+  );
 
-  await uploadFile(`transcode/${assetId}/${name}`, `${dir.name}/${name}`);
+  await uploadFile(
+    `transcode/${params.assetId}/${name}`,
+    `${dir.name}/${name}`,
+  );
 
-  return { name, stream };
+  return {
+    name,
+    stream: params.stream,
+  };
 }

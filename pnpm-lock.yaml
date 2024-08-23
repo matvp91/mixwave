@@ -223,6 +223,9 @@ importers:
       timeago.js:
         specifier: 4.0.0-beta.3
         version: 4.0.0-beta.3
+      uniqolor:
+        specifier: ^1.1.1
+        version: 1.1.1
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -10244,6 +10247,10 @@ packages:
       is-plain-obj: 4.1.0
       trough: 2.2.0
       vfile: 6.0.2
+    dev: false
+
+  /uniqolor@1.1.1:
+    resolution: {integrity: sha512-HUwezlXCwm5bzsEXW7AP7ybezH13uWENRgYT+3dOdhJPvpYucSqvIGckMiLn+Uy2j0NVf3fPp43uZ4aun3t4Ww==}
     dev: false
 
   /unique-string@3.0.0:

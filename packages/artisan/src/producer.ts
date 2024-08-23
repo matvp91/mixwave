@@ -80,11 +80,15 @@ export async function addTranscodeJob(data: AddTranscodeJobData) {
       childJobs.push({
         name: `ffmpeg(${params.join(",")})`,
         data: {
-          parentSortKey: ++childJobIndex,
-          input,
-          stream,
-          segmentSize: data.segmentSize,
-          assetId: data.assetId,
+          params: {
+            input,
+            stream,
+            segmentSize: data.segmentSize,
+            assetId: data.assetId,
+          },
+          metadata: {
+            parentSortKey: ++childJobIndex,
+          },
         } satisfies FfmpegData,
         queueName: "ffmpeg",
         opts: {
@@ -98,9 +102,13 @@ export async function addTranscodeJob(data: AddTranscodeJobData) {
     name: "transcode",
     queueName: "transcode",
     data: {
-      assetId: data.assetId,
-      package: data.package,
-      tag: data.tag,
+      params: {
+        assetId: data.assetId,
+        package: data.package,
+      },
+      metadata: {
+        tag: data.tag,
+      },
     } satisfies TranscodeData,
     children: childJobs,
     opts: {
@@ -120,8 +128,12 @@ export async function addPackageJob(data: AddPackageJobData) {
   return await packageQueue.add(
     "package",
     {
-      assetId: data.assetId,
-      tag: data.tag,
+      params: {
+        assetId: data.assetId,
+      },
+      metadata: {
+        tag: data.tag,
+      },
     } satisfies PackageData,
     {
       jobId: `package_${data.assetId}`,

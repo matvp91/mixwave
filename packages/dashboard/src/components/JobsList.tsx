@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { JobState } from "./JobState";
 import { getShortId, getTimeAgo } from "@/lib/helpers";
+import { JobTag } from "./JobTag";
 import type { JobDto } from "@/lib/api";
 
 type JobsListProps = {
@@ -24,8 +25,11 @@ export function JobsList({ jobs }: JobsListProps) {
                   {job.name}
                 </div>
               </div>
-              <div className="text-right text-sm text-muted-foreground">
-                {getTimeAgo(job.createdOn)}
+              <div className="text-right">
+                <JobTag job={job} />
+                <div className="text-sm text-muted-foreground">
+                  {getTimeAgo(job.createdOn)}
+                </div>
               </div>
             </div>
           </Link>

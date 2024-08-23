@@ -38,6 +38,7 @@
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
     "timeago.js": "4.0.0-beta.3",
+    "uniqolor": "^1.1.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {

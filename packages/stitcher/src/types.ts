@@ -1,6 +1,6 @@
 export type Session = {
   id: string;
-  url: string;
+  assetId: string;
   ads: Ad[];
 };
 

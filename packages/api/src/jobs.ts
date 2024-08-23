@@ -47,6 +47,7 @@ async function formatJobDto(job: Job): Promise<JobDto> {
     inputData: JSON.stringify(job.data),
     outputData: job.returnvalue ? JSON.stringify(job.returnvalue) : null,
     failedReason: job.failedReason ?? null,
+    tag: extract(job.data, "metadata.tag", null),
   };
 }
 
@@ -75,7 +76,7 @@ async function formatJobNodeDto(node: JobNode): Promise<JobNodeDto> {
   const children = node.children ?? [];
 
   const findParentSortKey = (obj: unknown) =>
-    extract(obj, "data.parentSortKey", 0);
+    extract(obj, "data.metadata.parentSortKey", 0);
   children.sort((a, b) => findParentSortKey(a.job) - findParentSortKey(b.job));
 
   return {

@@ -193,9 +193,6 @@ importers:
       date-fns:
         specifier: ^3.6.0
         version: 3.6.0
-      es-toolkit:
-        specifier: ^1.16.0
-        version: 1.16.0
       lucide-react:
         specifier: ^0.424.0
         version: 0.424.0(react@18.3.1)
@@ -6549,10 +6546,6 @@ packages:
   /es-errors@1.3.0:
     resolution: {integrity: sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==}
     engines: {node: '>= 0.4'}
-    dev: false
-
-  /es-toolkit@1.16.0:
-    resolution: {integrity: sha512-eNJh3zF1KmAHRYd1D8rFi1cMFMCjrC6tumBfwuuZdSur97mED/ifyeBoGzxS11L4owCMx3XSmWTo6oxJQkdGng==}
     dev: false
 
   /esbuild-register@3.6.0(esbuild@0.21.5):

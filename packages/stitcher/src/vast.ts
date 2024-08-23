@@ -65,6 +65,7 @@ async function isPackaged(assetId: string) {
 
 function scheduleForPackage(adMedia: AdMedia) {
   addTranscodeJob({
+    tag: "ad",
     assetId: adMedia.assetId,
     package: true,
     segmentSize: 4,

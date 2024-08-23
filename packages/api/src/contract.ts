@@ -11,10 +11,12 @@ export const postTranscodeBodySchema = z.object({
   segmentSize: z.number(),
   assetId: z.string().optional(),
   package: z.boolean().optional(),
+  tag: z.string().optional(),
 });
 
 export const postPackageBodySchema = z.object({
   assetId: z.string(),
+  tag: z.string().optional(),
 });
 
 export const contract = c.router({

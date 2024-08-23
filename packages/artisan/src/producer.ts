@@ -35,6 +35,7 @@ type AddTranscodeJobData = {
   streams: Stream[];
   segmentSize: number;
   package: boolean;
+  tag: string;
 };
 
 export async function addTranscodeJob(data: AddTranscodeJobData) {
@@ -99,6 +100,7 @@ export async function addTranscodeJob(data: AddTranscodeJobData) {
     data: {
       assetId: data.assetId,
       package: data.package,
+      tag: data.tag,
     } satisfies TranscodeData,
     children: childJobs,
     opts: {
@@ -111,10 +113,18 @@ export async function addTranscodeJob(data: AddTranscodeJobData) {
 
 type AddPackageJobData = {
   assetId: string;
+  tag: string;
 };
 
 export async function addPackageJob(data: AddPackageJobData) {
-  return await packageQueue.add("package", data, {
-    jobId: `package_${data.assetId}`,
-  });
+  return await packageQueue.add(
+    "package",
+    {
+      assetId: data.assetId,
+      tag: data.tag,
+    } satisfies PackageData,
+    {
+      jobId: `package_${data.assetId}`,
+    },
+  );
 }

@@ -16,6 +16,7 @@ const metaSchema = z.record(z.string(), streamSchema);
 
 export type PackageData = {
   assetId: string;
+  tag: string;
 };
 
 export type PackageResult = {

@@ -21,6 +21,7 @@ async function buildServer() {
       const job = await addTranscodeJob({
         assetId: randomUUID(),
         package: false,
+        tag: "default",
         ...body,
       });
       return {
@@ -29,7 +30,10 @@ async function buildServer() {
       };
     },
     postPackage: async ({ body }) => {
-      const job = await addPackageJob(body);
+      const job = await addPackageJob({
+        tag: "default",
+        ...body,
+      });
       return {
         status: 201,
         body: { jobId: job.id },

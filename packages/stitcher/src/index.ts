@@ -10,6 +10,7 @@ import {
   formatMediaPlaylist,
   formatInterstitialsJson,
 } from "./playlist.js";
+import { parseDirectParams } from "./direct.js";
 
 async function buildServer() {
   const app = Fastify();
@@ -34,24 +35,13 @@ async function buildServer() {
       const session = await getSession(params.sessionId);
       const response = await formatMasterPlaylist(session);
 
-      reply.type("application/x-mpegURL");
-
-      return {
-        status: 200,
-        body: response,
-      };
+      return reply.type("application/x-mpegURL").send(response);
     },
     getMediaPlaylist: async ({ params, reply }) => {
       const session = await getSession(params.sessionId);
-
       const response = await formatMediaPlaylist(session, params.path);
 
-      reply.type("application/x-mpegURL");
-
-      return {
-        status: 200,
-        body: response,
-      };
+      return reply.type("application/x-mpegURL").send(response);
     },
     getInterstitialsList: async ({ query, params }) => {
       const session = await getSession(params.sessionId);
@@ -70,6 +60,15 @@ async function buildServer() {
           },
         }),
       };
+    },
+    unstable_getDirectMasterPlaylist: async ({ request, query, reply }) => {
+      const body = parseDirectParams(query.params);
+      const session = await createSession(body);
+
+      return reply.redirect(
+        `${request.protocol}://${request.hostname}/session/${session.id}/master.m3u8`,
+        302,
+      );
     },
   });
 

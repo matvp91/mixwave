@@ -17,6 +17,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "start": "node --env-file=.env ./dist/consumer/index.js",
     "dev": "tsc-watch --onSuccess \"node --env-file=.env ./dist/consumer/index.js\""
   },
   "devDependencies": {

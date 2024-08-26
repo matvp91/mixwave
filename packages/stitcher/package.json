@@ -3,6 +3,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "start": "node --env-file=.env ./dist/index.js",
     "dev": "tsc-watch --onSuccess \"node --env-file=.env ./dist/index.js\""
   },
   "devDependencies": {

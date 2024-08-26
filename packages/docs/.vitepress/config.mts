@@ -21,6 +21,17 @@ export default defineConfig({
     sidebar: [
       { text: "Introduction", link: "introduction" },
       { text: "Getting Started", link: "getting-started" },
+      {
+        text: "Features",
+        items: [
+          { text: "Transcode", link: "features/transcode" },
+          { text: "Package", link: "features/package" },
+          { text: "Stitcher", link: "features/stitcher" },
+          { text: "Dashboard", link: "features/dashboard" },
+        ],
+      },
+      { text: "Tips", link: "tips" },
+      { text: "Thank You", link: "thank-you" },
     ],
     socialLinks: [
       { icon: "github", link: "https://github.com/matvp91/mixwave" },

@@ -1,3 +1,9 @@
+---
+next:
+  text: "Features: Stitcher"
+  link: "/features/stitcher"
+---
+
 # Package
 
 The package job will prepare an HLS playlist for your asset. Before you package, check the [transcode](/examples/transcode) instructions.

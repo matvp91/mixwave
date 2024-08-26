@@ -33,6 +33,7 @@
     "@ts-rest/open-api": "^3.49.3",
     "@types/qs": "^6.9.15",
     "@zodyac/env": "^1.1.8",
+    "bullmq": "^5.12.0",
     "fastify": "^4.28.1",
     "fastify-plugin": "^4.5.1",
     "object-property-extractor": "^1.0.11",

@@ -44,9 +44,6 @@ importers:
       '@types/qs':
         specifier: ^6.9.15
         version: 6.9.15
-      '@zodyac/env':
-        specifier: ^1.1.8
-        version: 1.1.8
       bullmq:
         specifier: ^5.12.0
         version: 5.12.0
@@ -78,9 +75,6 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.623.0
         version: 3.623.0
-      '@zodyac/env':
-        specifier: ^1.1.8
-        version: 1.1.8
       bullmq:
         specifier: ^5.12.0
         version: 5.12.0
@@ -287,9 +281,6 @@ importers:
       '@xmldom/xmldom':
         specifier: ^0.8.10
         version: 0.8.10
-      '@zodyac/env':
-        specifier: ^1.1.8
-        version: 1.1.8
       dom-parser:
         specifier: ^1.1.5
         version: 1.1.5
@@ -5670,13 +5661,6 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /@zodyac/env@1.1.8:
-    resolution: {integrity: sha512-Kb1HL2h5MZ/rbj93w3Y2FFwCARXNGE6/CJpZeD8XQqAowwZZeTpF0c7tmctC8BPrB5uNz7hbudiwbxj7kjo1wQ==}
-    dependencies:
-      dotenv: 16.4.5
-      zod: 3.23.8
-    dev: false
-
   /abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
     engines: {node: '>=6.5'}
@@ -6487,11 +6471,6 @@ packages:
 
   /dom-parser@1.1.5:
     resolution: {integrity: sha512-lCiFG48ZUzGXjKN0qhSkxD/i3ndyV6I37zQ3W2VFYLjF1ob8A+QgSsM7Ps2UT0d3LpJxLMmMHiJJ34z5hkKLiA==}
-    dev: false
-
-  /dotenv@16.4.5:
-    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
-    engines: {node: '>=12'}
     dev: false
 
   /duplexer@0.1.2:

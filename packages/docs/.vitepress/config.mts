@@ -19,35 +19,8 @@ export default defineConfig({
   themeConfig: {
     nav: [],
     sidebar: [
-      {
-        text: "Introduction",
-        collapsed: false,
-        items: [
-          { text: "What is Mixwave?", link: "what-is-mixwave" },
-          { text: "Getting Started", link: "getting-started" },
-        ],
-      },
-      {
-        text: "Self-hosting",
-        collapsed: false,
-        items: [{ text: "Installation", link: "installation" }],
-      },
-      {
-        text: "Examples",
-        collapsed: false,
-        items: [
-          { text: "Transcode", link: "examples/transcode" },
-          {
-            text: "Package",
-            link: "examples/package",
-          },
-          {
-            text: "Stitcher",
-            link: "examples/stitcher",
-          },
-        ],
-      },
-      { text: "Thank You", link: "thank-you" },
+      { text: "Introduction", link: "introduction" },
+      { text: "Getting Started", link: "getting-started" },
     ],
     socialLinks: [
       { icon: "github", link: "https://github.com/matvp91/mixwave" },

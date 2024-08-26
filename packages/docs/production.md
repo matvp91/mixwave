@@ -4,9 +4,11 @@ next:
   link: "/examples/transcode"
 ---
 
-# Installation
+# Production
 
 When you run `pnpm run build`, each package is ready for distribution. There's a `dist` folder and you must run `pnpm run start` in a package's folder to start the service.
+
+You're free to host Mixwave as you like, but we suggest you run each package separately on one or multiple machines. Typically, you wouldn't want to run the workers on the same machine as you would run the api.
 
 If you want to keep costs manageable, take the following guidelines into consideration:
 

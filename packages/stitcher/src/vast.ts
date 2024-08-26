@@ -1,6 +1,6 @@
 import { env } from "./env.js";
 import { addTranscodeJob } from "@mixwave/artisan/producer";
-import { VASTClient } from "../extern/vast-client/index.js";
+import { VASTClient } from "./extern/vast-client/index.js";
 import { DOMParser } from "@xmldom/xmldom";
 import * as uuid from "uuid";
 import { NAMESPACE_UUID_AD } from "./const.js";
@@ -10,7 +10,7 @@ import type {
   VastResponse,
   VastCreativeLinear,
   VastAd,
-} from "../extern/vast-client/index.js";
+} from "./extern/vast-client/index.js";
 
 export async function extractAdsFromVmap(vmapResponse: VmapResponse) {
   const ads: Ad[] = [];
@@ -58,7 +58,7 @@ async function isPackaged(assetId: string) {
     `${env.S3_PUBLIC_URL}/package/${assetId}/hls/master.m3u8`,
     {
       method: "HEAD",
-    },
+    }
   );
   return response.ok;
 }

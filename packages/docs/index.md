@@ -8,7 +8,7 @@ hero:
   actions:
     - theme: brand
       text: Documentation
-      link: /what-is-mixwave
+      link: /introduction
     - theme: alt
       text: Getting Started
       link: /getting-started

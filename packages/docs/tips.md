@@ -1,7 +1,5 @@
 ---
-next:
-  text: "Transcode"
-  link: "/examples/transcode"
+next: false
 ---
 
 # Tips

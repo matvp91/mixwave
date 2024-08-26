@@ -6,7 +6,7 @@ next:
 
 # Package
 
-The package job will prepare an HLS playlist for your asset. Before you package, check the [transcode](/examples/transcode) instructions.
+The package job will prepare an HLS playlist for your asset. Before you package, check the [transcode](/features/transcode) instructions.
 
 ```shell
 POST /package

@@ -1,3 +1,9 @@
+---
+next:
+  text: "Features: Dashboard"
+  link: "/features/dashboard"
+---
+
 # Stitcher
 
 Stitcher is a playlist manipulator that can insert HLS interstitials on-the-fly. Several use cases include:

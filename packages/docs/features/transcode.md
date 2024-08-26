@@ -1,7 +1,7 @@
 ---
 next:
-  text: "Package"
-  link: "/examples/package"
+  text: "Features: Package"
+  link: "/features/package"
 ---
 
 # Transcode

@@ -1,14 +1,9 @@
-import { parse } from "@zodyac/env";
-import { z } from "zod";
-
-const env = parse(
-  z.object({
-    REDIS_HOST: z.string(),
-    REDIS_PORT: z.coerce.number(),
-  })
-);
+let port = 6379;
+if (process.env.REDIS_PORT) {
+  port = +process.env.REDIS_PORT;
+}
 
 export const connection = {
-  host: env.REDIS_HOST,
-  port: env.REDIS_PORT,
+  host: process.env.REDIS_HOST ?? "redis",
+  port,
 };

@@ -1,8 +1,8 @@
-import { parse, stringify } from "../extern/hls-parser/index.js";
+import { parse, stringify } from "./extern/hls-parser/index.js";
 import parseFilepath from "parse-filepath";
-import { Interstitial } from "../extern/hls-parser/types.js";
+import { Interstitial } from "./extern/hls-parser/types.js";
 import { env } from "./env.js";
-import { MasterPlaylist, MediaPlaylist } from "../extern/hls-parser/types.js";
+import { MasterPlaylist, MediaPlaylist } from "./extern/hls-parser/types.js";
 import type { Session } from "./types.js";
 
 type InterstitialAsset = {
@@ -56,7 +56,7 @@ export async function formatMediaPlaylist(session: Session, path: string) {
           id: `${timeOffset}`,
           startDate: new Date(now + timeOffset * 1000),
           list: `/interstitials/${session.id}/list.json?offset=${timeOffset}`,
-        }),
+        })
       );
     });
 
@@ -65,7 +65,7 @@ export async function formatMediaPlaylist(session: Session, path: string) {
 
 export async function formatInterstitialsJson(
   session: Session,
-  timeOffset: number,
+  timeOffset: number
 ) {
   const assets: InterstitialAsset[] = [];
 
@@ -86,7 +86,7 @@ async function getDuration(url: string) {
   const master = await fetchPlaylist<MasterPlaylist>(url);
   const filePath = parseFilepath(url);
   const media = await fetchPlaylist<MediaPlaylist>(
-    `${filePath.dir}/${master.variants[0].uri}`,
+    `${filePath.dir}/${master.variants[0].uri}`
   );
   return media.segments.reduce((acc, segment) => {
     acc += segment.duration;

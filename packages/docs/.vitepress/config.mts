@@ -19,34 +19,18 @@ export default defineConfig({
   themeConfig: {
     nav: [],
     sidebar: [
+      { text: "Introduction", link: "introduction" },
+      { text: "Getting Started", link: "getting-started" },
       {
-        text: "Introduction",
-        collapsed: false,
+        text: "Features",
         items: [
-          { text: "What is Mixwave?", link: "what-is-mixwave" },
-          { text: "Getting Started", link: "getting-started" },
+          { text: "Transcode", link: "features/transcode" },
+          { text: "Package", link: "features/package" },
+          { text: "Stitcher", link: "features/stitcher" },
+          { text: "Dashboard", link: "features/dashboard" },
         ],
       },
-      {
-        text: "Self-hosting",
-        collapsed: false,
-        items: [{ text: "Installation", link: "installation" }],
-      },
-      {
-        text: "Examples",
-        collapsed: false,
-        items: [
-          { text: "Transcode", link: "examples/transcode" },
-          {
-            text: "Package",
-            link: "examples/package",
-          },
-          {
-            text: "Stitcher",
-            link: "examples/stitcher",
-          },
-        ],
-      },
+      { text: "Tips", link: "tips" },
       { text: "Thank You", link: "thank-you" },
     ],
     socialLinks: [

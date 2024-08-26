@@ -81,7 +81,7 @@ async function buildServer() {
 async function main() {
   const app = await buildServer();
 
-  await app.listen({ port: env.PORT });
+  await app.listen({ host: env.HOST, port: env.PORT });
 }
 
 main();

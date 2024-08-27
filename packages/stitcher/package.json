@@ -4,14 +4,20 @@
   "scripts": {
     "build": "tsc",
     "start": "node ./dist/index.js",
-    "dev": "tsc-watch --noClear --onSuccess \"node ./dist/index.js\""
+    "dev": "tsc-watch --noClear --onSuccess \"node ./dist/index.js\"",
+    "test": "jest"
   },
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
     "@types/find-config": "^1.0.4",
     "@types/hh-mm-ss": "^1.2.3",
     "@types/node": "^22.1.0",
     "@types/parse-filepath": "^1.0.2",
     "@types/uuid": "^10.0.0",
+    "fetch-mock": "^11.1.1",
+    "jest": "^29.7.0",
+    "jest-ts-webcompat-resolver": "^1.0.0",
+    "ts-jest": "^29.2.5",
     "tsc-watch": "^6.2.0",
     "typescript": "^5.5.4"
   },

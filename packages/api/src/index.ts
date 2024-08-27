@@ -28,9 +28,7 @@ async function buildServer() {
       };
     },
     postPackage: async ({ body }) => {
-      const job = await addPackageJob({
-        ...body,
-      });
+      const job = await addPackageJob(body);
       return {
         status: 201,
         body: { jobId: job.id },

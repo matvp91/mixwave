@@ -52,9 +52,14 @@ In a scalable architecture, you probably do not want to run the ffmpeg and trans
 
 Mixwave is a monorepo, running `pnpm run build` at the root of the project will create a `dist` folder with the node files needed to start the api, stitcher and workers.
 
-Once built, you can run each package separately by going to the package directory and running `pnpm run start`. There's an example `.env` file with the required environment variables per package. Make sure they are configured properly.
-
 ### Services
+
+Once built, you can run each package separately by going to the package directory and running `pnpm run start`. When you run redis locally, add the following variables to the `config.env` file at your root:
+
+```shell
+REDIS_HOST=localhost
+REDIS_PORT=6379
+```
 
 There's two packages that provide you with an API:
 

@@ -25,14 +25,18 @@ export const contract = c.router({
     method: "POST",
     path: "/transcode",
     body: postTranscodeBodySchema,
-    responses: {},
+    responses: {
+      200: c.type<{ jobId: string }>(),
+    },
     description: "Convert your source files and prepare them for packaging.",
   },
   postPackage: {
     method: "POST",
     path: "/package",
     body: postPackageBodySchema,
-    responses: {},
+    responses: {
+      200: c.type<{ jobId: string }>(),
+    },
     description: "Package your asset to HLS.",
   },
   getJobs: {

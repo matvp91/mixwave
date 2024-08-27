@@ -39,4 +39,5 @@ cp config.env.example config.env
 docker compose up -d
 ```
 
-> [!NOTE] > **Mixwave is in early development, we would appreciate your feedback.**
+> [!NOTE]
+> **Mixwave is in early development, we would appreciate your feedback.**

@@ -4,7 +4,6 @@ export default defineConfig({
   base: "/mixwave/",
   title: "Mixwave",
   description: "A friendly API to simplify the complexities of video delivery.",
-  appearance: "force-dark",
   head: [
     [
       "script",
@@ -30,8 +29,13 @@ export default defineConfig({
           { text: "Dashboard", link: "features/dashboard" },
         ],
       },
-      { text: "Tips", link: "tips" },
-      { text: "Thank You", link: "thank-you" },
+      {
+        text: "Miscellaneous",
+        items: [
+          { text: "Tips", link: "tips" },
+          { text: "Toolset", link: "toolset" },
+        ],
+      },
     ],
     socialLinks: [
       { icon: "github", link: "https://github.com/matvp91/mixwave" },

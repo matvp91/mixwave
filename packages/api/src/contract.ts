@@ -8,15 +8,16 @@ const c = initContract();
 export const postTranscodeBodySchema = z.object({
   inputs: z.array(inputSchema),
   streams: z.array(streamSchema),
-  segmentSize: z.number(),
-  assetId: z.string().optional(),
-  package: z.boolean().optional(),
-  tag: z.string().optional(),
+  segmentSize: z.number().default(4),
+  assetId: z.string().uuid().optional(),
+  package: z.boolean().default(false),
+  tag: z.string().default("default"),
 });
 
 export const postPackageBodySchema = z.object({
   assetId: z.string(),
-  tag: z.string().optional(),
+  segmentSize: z.number().default(4),
+  tag: z.string().default("default"),
 });
 
 export const contract = c.router({

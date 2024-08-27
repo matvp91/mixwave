@@ -1,6 +1,6 @@
 import prettyMs from "pretty-ms";
 import * as timeAgo from "timeago.js";
-import type { JobDto } from "@/lib/api";
+import type { JobDto } from "@/tsr";
 
 export function getDurationStr(job: JobDto) {
   if (!job.finishedOn) {

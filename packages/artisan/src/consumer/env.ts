@@ -1,4 +1,11 @@
 import { z } from "zod";
+import findConfig from "find-config";
+import { config } from "dotenv";
+
+const configPath = findConfig("config.env");
+if (configPath) {
+  config({ path: configPath });
+}
 
 const envSchema = z.object({
   S3_ENDPOINT: z.string(),

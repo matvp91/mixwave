@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: ./packages/dashboard/Dockerfile
       args:
-        - VITE_API_URL=http://127.0.0.1:52001
+        - API_URL=http://127.0.0.1:52001
     restart: always
     ports:
       - 127.0.0.1:52000:8080
@@ -21,17 +21,7 @@ services:
       dockerfile: ./packages/api/Dockerfile
     restart: always
     ports:
-      - 127.0.0.1:52001:8080
-    env_file: config.env
-
-  artisan:
-    container_name: artisan
-    depends_on:
-      - redis
-    build:
-      context: .
-      dockerfile: ./packages/artisan/Dockerfile
-    restart: always
+      - 127.0.0.1:52001:52001
     env_file: config.env
 
   stitcher:
@@ -43,7 +33,17 @@ services:
       dockerfile: ./packages/stitcher/Dockerfile
     restart: always
     ports:
-      - 127.0.0.1:52002:8080
+      - 127.0.0.1:52002:52002
+    env_file: config.env
+
+  artisan:
+    container_name: artisan
+    depends_on:
+      - redis
+    build:
+      context: .
+      dockerfile: ./packages/artisan/Dockerfile
+    restart: always
     env_file: config.env
 
   redis:

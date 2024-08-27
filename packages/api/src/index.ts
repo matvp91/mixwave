@@ -20,8 +20,6 @@ async function buildServer() {
     postTranscode: async ({ body }) => {
       const job = await addTranscodeJob({
         assetId: randomUUID(),
-        package: false,
-        tag: "default",
         ...body,
       });
       return {
@@ -31,7 +29,6 @@ async function buildServer() {
     },
     postPackage: async ({ body }) => {
       const job = await addPackageJob({
-        tag: "default",
         ...body,
       });
       return {
@@ -82,7 +79,6 @@ async function buildServer() {
 
 async function main() {
   const app = await buildServer();
-
   await app.listen({ host: env.HOST, port: env.PORT });
 }
 

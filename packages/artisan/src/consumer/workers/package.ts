@@ -17,6 +17,7 @@ const metaSchema = z.record(z.string(), streamSchema);
 export type PackageData = {
   params: {
     assetId: string;
+    segmentSize: number;
   };
   metadata: {
     tag: string;
@@ -88,9 +89,9 @@ export default async function (job: Job<PackageData, PackageResult>) {
 
   packagerArgs.push(
     "--segment_duration",
-    "4",
+    params.segmentSize.toString(),
     "--fragment_duration",
-    "4",
+    params.segmentSize.toString(),
     "--hls_master_playlist_output",
     "master_tmp.m3u8",
   );

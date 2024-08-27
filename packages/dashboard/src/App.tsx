@@ -4,12 +4,13 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
-import { JobsPage } from "./components/JobsPage";
-import { JobPage } from "./components/JobPage";
-import { ApiPage } from "./components/ApiPage";
-import { ApiEmbedPage } from "./components/ApiEmbedPage";
+import { JobsPage } from "@/pages/JobsPage";
+import { JobPage } from "@/pages/JobPage";
+import { ApiPage } from "@/pages/ApiPage";
+import { ApiEmbedPage } from "@/pages/ApiEmbedPage";
+import { RootLayout } from "@/pages/RootLayout";
 import { Suspense } from "react";
-import { RootLayout } from "./components/RootLayout";
+import { tsr } from "./tsr";
 
 const queryClient = new QueryClient();
 
@@ -46,7 +47,9 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Suspense>
-        <RouterProvider router={router} />
+        <tsr.ReactQueryProvider>
+          <RouterProvider router={router} />
+        </tsr.ReactQueryProvider>
       </Suspense>
     </QueryClientProvider>
   );

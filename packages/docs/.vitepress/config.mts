@@ -37,4 +37,7 @@ export default defineConfig({
       { icon: "github", link: "https://github.com/matvp91/mixwave" },
     ],
   },
+  vite: {
+    clearScreen: false,
+  },
 });

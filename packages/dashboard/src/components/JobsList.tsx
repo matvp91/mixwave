@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { JobState } from "./JobState";
 import { getShortId, getTimeAgo } from "@/lib/helpers";
 import { JobTag } from "./JobTag";
-import type { JobDto } from "@/lib/api";
+import type { JobDto } from "@/tsr";
 
 type JobsListProps = {
   jobs: JobDto[];

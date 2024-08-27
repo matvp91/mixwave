@@ -5,22 +5,22 @@ import { DOMParser } from "@xmldom/xmldom";
 import * as uuid from "uuid";
 import { NAMESPACE_UUID_AD } from "./const.js";
 import type { VmapAdBreak, VmapResponse } from "./vmap.js";
-import type { Ad } from "./types.js";
+import type { Interstitial } from "./types.js";
 import type {
   VastResponse,
   VastCreativeLinear,
   VastAd,
 } from "./extern/vast-client/index.js";
 
-export async function extractAdsFromVmap(vmapResponse: VmapResponse) {
-  const ads: Ad[] = [];
+export async function extractInterstitialsFromVmap(vmapResponse: VmapResponse) {
+  const interstitials: Interstitial[] = [];
 
   for (const adBreak of vmapResponse.adBreaks) {
     const adMedias = await getAdMedias(adBreak);
 
     for (const adMedia of adMedias) {
       if (await isPackaged(adMedia.assetId)) {
-        ads.push({
+        interstitials.push({
           timeOffset: adBreak.timeOffset,
           assetId: adMedia.assetId,
         });
@@ -30,7 +30,7 @@ export async function extractAdsFromVmap(vmapResponse: VmapResponse) {
     }
   }
 
-  return ads;
+  return interstitials;
 }
 
 async function getAdMedias(adBreak: VmapAdBreak): Promise<AdMedia[]> {
@@ -58,7 +58,7 @@ async function isPackaged(assetId: string) {
     `${env.S3_PUBLIC_URL}/package/${assetId}/hls/master.m3u8`,
     {
       method: "HEAD",
-    }
+    },
   );
   return response.ok;
 }

@@ -1,15 +1,11 @@
 import { Worker } from "bullmq";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-
-let port = 6379;
-if (process.env.REDIS_PORT) {
-  port = +process.env.REDIS_PORT;
-}
+import { env } from "./env.js";
 
 export const connection = {
-  host: process.env.REDIS_HOST,
-  port,
+  host: env.REDIS_HOST,
+  port: env.REDIS_PORT,
 };
 
 const fileName = fileURLToPath(import.meta.url);

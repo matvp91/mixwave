@@ -6,7 +6,7 @@ const c = initContract();
 export const postSessionBodySchema = z.object({
   assetId: z.string(),
   vmapUrl: z.string().optional(),
-  ads: z
+  interstitials: z
     .array(
       z.object({
         timeOffset: z.number(),
@@ -14,6 +14,7 @@ export const postSessionBodySchema = z.object({
       }),
     )
     .optional(),
+  bumperAssetId: z.string().optional(),
 });
 
 export const contract = c.router({

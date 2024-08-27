@@ -38,10 +38,10 @@ export async function formatMediaPlaylist(session: Session, path: string) {
 
   media.segments[0].programDateTime = new Date(now);
 
-  session.ads
-    .reduce<number[]>((acc, ad) => {
-      if (!acc.includes(ad.timeOffset)) {
-        acc.push(ad.timeOffset);
+  session.interstitials
+    .reduce<number[]>((acc, interstitial) => {
+      if (!acc.includes(interstitial.timeOffset)) {
+        acc.push(interstitial.timeOffset);
       }
       return acc;
     }, [])
@@ -59,11 +59,13 @@ export async function formatMediaPlaylist(session: Session, path: string) {
 }
 
 export async function formatAssetList(session: Session, timeOffset: number) {
-  const ads = session.ads.filter((ad) => ad.timeOffset === timeOffset);
+  const interstitials = session.interstitials.filter(
+    (ad) => ad.timeOffset === timeOffset,
+  );
 
   const assets = await Promise.all(
-    ads.map(async (ad) => {
-      const uri = `${env.S3_PUBLIC_URL}/package/${ad.assetId}/hls/master.m3u8`;
+    interstitials.map(async (interstitial) => {
+      const uri = `${env.S3_PUBLIC_URL}/package/${interstitial.assetId}/hls/master.m3u8`;
       return {
         URI: uri,
         DURATION: await getDuration(uri),

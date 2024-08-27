@@ -104,6 +104,7 @@ export async function addTranscodeJob(data: AddTranscodeJobData) {
     data: {
       params: {
         assetId: data.assetId,
+        segmentSize: data.segmentSize,
         package: data.package,
       },
       metadata: {
@@ -121,6 +122,7 @@ export async function addTranscodeJob(data: AddTranscodeJobData) {
 
 type AddPackageJobData = {
   assetId: string;
+  segmentSize: number;
   tag: string;
 };
 
@@ -130,6 +132,7 @@ export async function addPackageJob(data: AddPackageJobData) {
     {
       params: {
         assetId: data.assetId,
+        segmentSize: data.segmentSize,
       },
       metadata: {
         tag: data.tag,

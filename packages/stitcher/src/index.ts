@@ -8,7 +8,7 @@ import { createSession, getSession } from "./session.js";
 import {
   formatMasterPlaylist,
   formatMediaPlaylist,
-  formatInterstitialsJson,
+  formatAssetList,
 } from "./playlist.js";
 
 async function buildServer() {
@@ -21,11 +21,12 @@ async function buildServer() {
   const router = s.router(contract, {
     postSession: async ({ request, body }) => {
       const session = await createSession(body);
+      const baseUrl = `${request.protocol}://${request.hostname}`;
 
       return {
         status: 200,
         body: {
-          url: `${request.protocol}://${request.hostname}/session/${session.id}/master.m3u8`,
+          url: `${baseUrl}/session/${session.id}/master.m3u8`,
           session,
         },
       };
@@ -43,7 +44,6 @@ async function buildServer() {
     },
     getMediaPlaylist: async ({ params, reply }) => {
       const session = await getSession(params.sessionId);
-
       const response = await formatMediaPlaylist(session, params.path);
 
       reply.type("application/x-mpegURL");
@@ -53,11 +53,12 @@ async function buildServer() {
         body: response,
       };
     },
-    getInterstitialsList: async ({ query, params }) => {
+    getAssetList: async ({ query, params }) => {
       const session = await getSession(params.sessionId);
+
       return {
         status: 200,
-        body: await formatInterstitialsJson(session, query.offset),
+        body: await formatAssetList(session, query.timeOffset),
       };
     },
     getSpec: async () => {

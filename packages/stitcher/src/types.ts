@@ -1,10 +1,10 @@
 export type Session = {
   id: string;
   assetId: string;
-  ads: Ad[];
+  interstitials: Interstitial[];
 };
 
-export type Ad = {
+export type Interstitial = {
   timeOffset: number;
   assetId: string;
 };

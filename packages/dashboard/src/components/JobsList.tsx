@@ -2,13 +2,19 @@ import { Link } from "react-router-dom";
 import { JobState } from "./JobState";
 import { getShortId, getTimeAgo } from "@/lib/helpers";
 import { JobTag } from "./JobTag";
-import type { JobDto } from "@/lib/api";
+import type { JobDto } from "@/tsr";
+import type { JobsFilterData } from "./types";
 
 type JobsListProps = {
   jobs: JobDto[];
+  filter: JobsFilterData;
 };
 
-export function JobsList({ jobs }: JobsListProps) {
+export function JobsList({ jobs, filter }: JobsListProps) {
+  if (filter.tag) {
+    jobs = jobs.filter((job) => job.tag === filter.tag);
+  }
+
   return (
     <ul>
       {jobs.map((job) => (

@@ -8,6 +8,7 @@ import type { Job } from "bullmq";
 export type TranscodeData = {
   params: {
     assetId: string;
+    segmentSize: number;
     package: boolean;
   };
   metadata: {
@@ -48,6 +49,7 @@ export default async function (job: Job<TranscodeData, TranscodeResult>) {
     await job.log("Will queue package job");
     await addPackageJob({
       assetId: params.assetId,
+      segmentSize: params.segmentSize,
       tag: metadata.tag,
     });
   }

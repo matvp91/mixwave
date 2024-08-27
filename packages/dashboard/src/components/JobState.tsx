@@ -1,6 +1,6 @@
 import { CircleDashed, CircleDotDashed, Loader, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { JobDto } from "@/lib/api";
+import type { JobDto } from "@/tsr";
 
 export function JobState({ state }: { state: JobDto["state"] }) {
   switch (state) {
@@ -25,13 +25,13 @@ export function JobState({ state }: { state: JobDto["state"] }) {
 function createCircle(
   className: string,
   Icon: React.FC<{ className?: string }>,
-  iconClassName?: string
+  iconClassName?: string,
 ) {
   return (
     <div
       className={cn(
         className,
-        "w-6 h-6 rounded-full flex items-center justify-center"
+        "w-6 h-6 rounded-full flex items-center justify-center",
       )}
     >
       <Icon className={cn("w-3 h-3", iconClassName)} />

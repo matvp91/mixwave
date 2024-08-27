@@ -2,7 +2,7 @@ import { getTimeAgo } from "@/lib/helpers";
 import { JobLogs } from "./JobLogs";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import type { JobDto } from "@/lib/api";
+import type { JobDto } from "@/tsr";
 
 type JobViewProps = {
   job: JobDto;

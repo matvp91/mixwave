@@ -1,13 +1,13 @@
 import { DOMParser, XMLSerializer } from "@xmldom/xmldom";
-import { extractAdsFromVmap } from "./vast.js";
+import { extractInterstitialsFromVmap } from "./vast.js";
 import timeFormat from "hh-mm-ss";
 
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36";
 
-export async function getAdsFromVmap(url: string) {
+export async function getInterstitialsFromVmap(url: string) {
   const vmap = await getVmap(url);
-  return await extractAdsFromVmap(vmap);
+  return await extractInterstitialsFromVmap(vmap);
 }
 
 async function getVmap(url: string): Promise<VmapResponse> {

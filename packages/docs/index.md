@@ -4,7 +4,8 @@ layout: home
 
 hero:
   name: "Mixwave"
-  text: "A friendly API to simplify the complexities of video delivery."
+  text: "Convert, package and manipulate your video on the fly."
+  tagline: "A friendly API to simplify the complexities of video delivery."
   actions:
     - theme: brand
       text: Documentation

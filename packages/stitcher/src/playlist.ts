@@ -5,11 +5,6 @@ import { env } from "./env.js";
 import { MasterPlaylist, MediaPlaylist } from "./extern/hls-parser/types.js";
 import type { Session } from "./types.js";
 
-type InterstitialAsset = {
-  URI: string;
-  DURATION: number;
-};
-
 async function fetchPlaylist<T>(url: string) {
   const response = await fetch(url);
   const text = await response.text();
@@ -55,29 +50,26 @@ export async function formatMediaPlaylist(session: Session, path: string) {
         new Interstitial({
           id: `${timeOffset}`,
           startDate: new Date(now + timeOffset * 1000),
-          list: `/interstitials/${session.id}/list.json?offset=${timeOffset}`,
-        })
+          list: `/session/${session.id}/asset-list.json?timeOffset=${timeOffset}`,
+        }),
       );
     });
 
   return stringify(media);
 }
 
-export async function formatInterstitialsJson(
-  session: Session,
-  timeOffset: number
-) {
-  const assets: InterstitialAsset[] = [];
-
+export async function formatAssetList(session: Session, timeOffset: number) {
   const ads = session.ads.filter((ad) => ad.timeOffset === timeOffset);
 
-  for (const ad of ads) {
-    const uri = `${env.S3_PUBLIC_URL}/package/${ad.assetId}/hls/master.m3u8`;
-    assets.push({
-      URI: uri,
-      DURATION: await getDuration(uri),
-    });
-  }
+  const assets = await Promise.all(
+    ads.map(async (ad) => {
+      const uri = `${env.S3_PUBLIC_URL}/package/${ad.assetId}/hls/master.m3u8`;
+      return {
+        URI: uri,
+        DURATION: await getDuration(uri),
+      };
+    }),
+  );
 
   return { ASSETS: assets };
 }
@@ -86,7 +78,7 @@ async function getDuration(url: string) {
   const master = await fetchPlaylist<MasterPlaylist>(url);
   const filePath = parseFilepath(url);
   const media = await fetchPlaylist<MediaPlaylist>(
-    `${filePath.dir}/${master.variants[0].uri}`
+    `${filePath.dir}/${master.variants[0].uri}`,
   );
   return media.segments.reduce((acc, segment) => {
     acc += segment.duration;

@@ -33,11 +33,11 @@ export const contract = c.router({
     path: "/session/:sessionId/:path/playlist.m3u8",
     responses: {},
   },
-  getInterstitialsList: {
+  getAssetList: {
     method: "GET",
-    path: "/interstitials/:sessionId/list.json",
+    path: "/session/:sessionId/asset-list.json",
     query: z.object({
-      offset: z.coerce.number(),
+      timeOffset: z.coerce.number(),
     }),
     responses: {},
   },

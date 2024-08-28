@@ -17,6 +17,9 @@ export default withMermaid({
   ],
   themeConfig: {
     nav: [],
+    search: {
+      provider: "local",
+    },
     sidebar: [
       { text: "Introduction", link: "introduction" },
       { text: "Getting Started", link: "getting-started" },

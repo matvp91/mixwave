@@ -17,8 +17,14 @@ hero:
 features:
   - title: Transcode
     details: Converting a video file from one format or codec to another, at scale.
+    icon:
+      src: /assets/transcode.svg
   - title: Package
     details: Prepare and organize video files for delivery and playback.
+    icon:
+      src: /assets/package.svg
   - title: Stitch
     details: Manipulate and craft HLS playlists on the fly, supports HLS interstitials.
+    icon:
+      src: /assets/stitch.svg
 ---

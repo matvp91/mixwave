@@ -1,7 +1,6 @@
 <p align="center">
- <img src="https://matvp91.github.io/mixwave/logo.svg" width="180" />
+ <img src="https://matvp91.github.io/mixwave/logo.png" width="180" />
 </p>
-<h1 align="center">Mixwave</h1>
 
 <p align="center">
   <a href="https://matvp91.github.io/mixwave">Documentation</a> · 

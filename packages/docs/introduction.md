@@ -15,7 +15,7 @@ Things get more complicated once you go beyond playing a basic <Badge type="info
 flowchart LR
   subgraph S2[ ]
     direction TB
-    T(<img src="assets/transcode.svg" width="25" height="25" /> Transcode) --> S1
+    T(<img src="/mixwave/public/transcode.svg" width="25" height="25" /> Transcode) --> S1
   end
 
   subgraph S1[ ]
@@ -25,7 +25,7 @@ flowchart LR
     TR3(480p <small>1Mbps</small>)
   end
 
-  R(<img src="assets/raw.svg" width="25" height="25" /> Raw files) --> S2 --> P(<img src="assets/package.svg" width="25" height="25" /> Package<br /><small>master.m3u8</small>) --> PO(<img src="assets/publish.svg" width="25" height="25" /> Publish)
+  R(<img src="/mixwave/public/raw.svg" width="25" height="25" /> Raw files) --> S2 --> P(<img src="/mixwave/public/package.svg" width="25" height="25" /> Package<br /><small>master.m3u8</small>) --> PO(<img src="/mixwave/public/publish.svg" width="25" height="25" /> Publish)
 ```
 
 Before we go further, it's important to note that Mixwave intentionally keeps its scope limited. We choose to focus on a single playback protocol <Badge type="info" text="HLS CMAF" /> rather than trying to support a wide range of options.

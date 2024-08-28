@@ -1,13 +1,11 @@
 <p align="center">
  <img src="https://matvp91.github.io/mixwave/logo.svg" width="180" />
 </p>
-<h1 style="border: none" align="center">Mixwave</h1>
+<h1 align="center">Mixwave</h1>
 
 <p align="center">
   <a href="https://matvp91.github.io/mixwave">Documentation</a> · 
   <a href="https://matvp91.github.io/mixwave/getting-started.html">Getting Started</a> · 
-  <a href="https://matvp91.github.io/mixwave/examples/transcode.html">Transcode</a> · 
-  <a href="https://matvp91.github.io/mixwave/examples/package">Package</a>
 </p>
 
 <p align="center">

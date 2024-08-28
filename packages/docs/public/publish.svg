@@ -1,5 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path opacity="0.4" d="M21.97 6.41V12.91H2V6.41C2 3.98 3.98 2 6.41 2H17.56C19.99 2 21.97 3.98 21.97 6.41Z" fill="#292D32"/>
-<path d="M2 12.9199V13.1199C2 15.5599 3.98 17.5299 6.41 17.5299H10.25C10.8 17.5299 11.25 17.9799 11.25 18.5299V19.4999C11.25 20.0499 10.8 20.4999 10.25 20.4999H7.83C7.42 20.4999 7.08 20.8399 7.08 21.2499C7.08 21.6599 7.41 21.9999 7.83 21.9999H16.18C16.59 21.9999 16.93 21.6599 16.93 21.2499C16.93 20.8399 16.59 20.4999 16.18 20.4999H13.76C13.21 20.4999 12.76 20.0499 12.76 19.4999V18.5299C12.76 17.9799 13.21 17.5299 13.76 17.5299H17.57C20.01 17.5299 21.98 15.5499 21.98 13.1199V12.9199H2Z" fill="#292D32"/>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <polygon id="desktop-a" points="0 .046 0 2 18 2 18 0"/>
+    <path id="desktop-c" d="M11,13 L13,13 L18,13 L18,10 L2,10 L2,13 L7,13 L9,13 L11,13 Z M11,15 L9,15 L9,16 L11,16 L11,15 Z M13,15 L13,16 L14,16 C14.5522847,16 15,16.4477153 15,17 C15,17.5522847 14.5522847,18 14,18 L6,18 C5.44771525,18 5,17.5522847 5,17 C5,16.4477153 5.44771525,16 6,16 L7,16 L7,15 L2,15 C0.8954305,15 0,14.1045695 0,13 L0,2 C0,0.8954305 0.8954305,0 2,0 L18,0 C19.1045695,0 20,0.8954305 20,2 L20,13 C20,14.1045695 19.1045695,15 18,15 L13,15 Z M18,8 L18,2 L2,2 L2,8 L18,8 Z"/>
+  </defs>
+  <g fill="none" fill-rule="evenodd" transform="translate(2 3)">
+    <g transform="translate(1 11)">
+      <mask id="desktop-b" fill="#ffffff">
+        <use xlink:href="#desktop-a"/>
+      </mask>
+      <use fill="#D8D8D8" xlink:href="#desktop-a"/>
+      <g fill="#FFA0A0" mask="url(#desktop-b)">
+        <rect width="24" height="24" transform="translate(-3 -14)"/>
+      </g>
+    </g>
+    <mask id="desktop-d" fill="#ffffff">
+      <use xlink:href="#desktop-c"/>
+    </mask>
+    <use fill="#000000" fill-rule="nonzero" xlink:href="#desktop-c"/>
+    <g fill="#7600FF" mask="url(#desktop-d)">
+      <rect width="24" height="24" transform="translate(-2 -3)"/>
+    </g>
+  </g>
 </svg>

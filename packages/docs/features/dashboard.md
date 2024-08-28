@@ -6,8 +6,8 @@ Typically, you'd want to build the dashboard once and upload it to `S3` to serve
 
 You can use the API docs to `Test Request`.
 
-<img src="../assets/dashboard-api.png" alt="Dashboard API" class="image-rounded" />
+<img src="../assets/dashboard-api.png" alt="Dashboard API" />
 
 Each job, or child job, has detailed logs.
 
-<img src="../assets/dashboard-job.png" alt="Dashboard job" class="image-rounded" />
+<img src="../assets/dashboard-job.png" alt="Dashboard job" />

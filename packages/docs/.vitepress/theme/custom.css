@@ -1,3 +1,24 @@
-.image-rounded {
-  border-radius: 8px;
+:root {
+  --vp-c-brand-1: #7600ff;
+  --vp-c-brand-2: #7600ff;
+  --vp-c-brand-3: #7600ff;
+}
+
+.logo {
+  width: 96px;
+}
+
+.hidden {
+  display: none;
+}
+
+.VPHero .name {
+  line-height: 0px;
+}
+
+.title-image {
+  display: inline-block;
+  width: 30px;
+  margin-bottom: -6px;
+  margin-right: 2px;
 }

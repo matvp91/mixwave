@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <circle id="activity-a" cx="1.5" cy="1.5" r="1.5"/>
+    <path id="activity-c" d="M15.2531513,7.80937706 L13.9851073,7.80937706 C13.6241693,7.80937706 13.2912403,7.61487364 13.1139916,7.30045485 L10.8807861,3.33900417 L8.273969,10.1056599 C7.95870721,10.9240019 6.81781087,10.96909 6.43895153,10.1781796 L4.22551663,5.55739166 L3.13595048,7.33249688 C2.95407784,7.62880112 2.63136051,7.80937706 2.28369133,7.80937706 L1,7.80937706 C0.44771525,7.80937706 0,7.36166181 0,6.80937706 C0,6.25709231 0.44771525,5.80937706 1,5.80937706 L1.724143,5.80937706 L3.48172515,2.94594997 C3.89612578,2.27081453 4.89362679,2.32262484 5.235853,3.03705956 L7.24111518,7.22326416 L9.77705624,0.640585193 C10.0810067,-0.148395318 11.1661127,-0.227533506 11.5813207,0.508997854 L14.5693262,5.80937706 L15.0681226,5.80937706 C15.3887787,4.20713928 16.8034181,3 18.5,3 C20.4329966,3 22,4.56700338 22,6.5 C22,8.43299662 20.4329966,10 18.5,10 C17.0299555,10 15.7715872,9.09370687 15.2531513,7.80937706 Z M18.5,8 C19.3284271,8 20,7.32842712 20,6.5 C20,5.67157288 19.3284271,5 18.5,5 C17.6715729,5 17,5.67157288 17,6.5 C17,7.32842712 17.6715729,8 18.5,8 Z"/>
+  </defs>
+  <g fill="none" fill-rule="evenodd" transform="translate(1 6)">
+    <g transform="translate(18 6)">
+      <mask id="activity-b" fill="#ffffff">
+        <use xlink:href="#activity-a"/>
+      </mask>
+      <use fill="#D8D8D8" xlink:href="#activity-a"/>
+      <g fill="#FFA0A0" mask="url(#activity-b)">
+        <rect width="24" height="24" transform="translate(-19 -12)"/>
+      </g>
+    </g>
+    <mask id="activity-d" fill="#ffffff">
+      <use xlink:href="#activity-c"/>
+    </mask>
+    <use fill="#000000" fill-rule="nonzero" xlink:href="#activity-c"/>
+    <g fill="#7600FF" mask="url(#activity-d)">
+      <rect width="24" height="24" transform="translate(-1 -6)"/>
+    </g>
+  </g>
+</svg>

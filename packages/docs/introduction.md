@@ -16,7 +16,7 @@ Before we go further, it's important to note that Mixwave intentionally keeps it
 
 Mixwave makes it easier for you to do the following tasks using a user-friendly API:
 
-### 1. Transcode
+### <img src="/transcode.svg" class="title-image" /> Transcode
 
 The process of converting a video file from one format or codec to another. The [transcode](/features/transcode) job generates video, audio and text fragments from your sources and uploads them to `S3`. We ensure proper keyframes are in place for packaging purposes.
 
@@ -27,7 +27,7 @@ The process of converting a video file from one format or codec to another. The 
 Consider the result of a transcode job as an intermediate format ready for packaging.
 :::
 
-### 2. Package
+### <img src="/package.svg" class="title-image" /> Package
 
 The process of preparing and organizing video files for delivery and playback over various streaming platforms and devices. Packaging isn't as resource intensive as transcoding. The [package](/features/package) job generates an HLS playlist from the output of a transcode job. Basically, it comes down to the following steps:
 
@@ -46,7 +46,7 @@ As with transcode, the end result will be uploaded to your configured `S3` bucke
 At this point, your stream can be played by HLS-compatible players, such as [HLS.js](https://github.com/video-dev/hls.js), or natively on Apple devices.
 :::
 
-### 3. Stitch
+### <img src="/stitch.svg" class="title-image" /> Stitch
 
 At this point, you've created playable assets. Stitching involves serving the manifest through a proxy that can modify the output based on different parameters. If you're looking to dynamically merge manifests, stitch them together, or add interstitials, this is for you.
 

@@ -3,16 +3,19 @@
 layout: home
 
 hero:
-  name: "Mixwave"
-  text: "Convert, package and manipulate your video on the fly."
+  name: <img class="logo" src="/mixwave/logo.svg" /> <span class="hidden">Mixwave</span>
+  text: "Convert, package and manipulate on the fly."
   tagline: "A friendly API to simplify the complexities of video delivery."
   actions:
     - theme: brand
-      text: Documentation
+      text: Introduction
       link: /introduction
     - theme: alt
       text: Getting Started
       link: /getting-started
+    - theme: alt
+      text: GitHub
+      link: https://github.com/matvp91/mixwave
 
 features:
   - title: Transcode

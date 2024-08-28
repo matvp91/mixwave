@@ -12,21 +12,19 @@ import type {
   VastAd,
 } from "./extern/vast-client/index.js";
 
-export async function extractInterstitialsFromVmap(vmapResponse: VmapResponse) {
+export async function extractInterstitialFromVmapAdbreak(adBreak: VmapAdBreak) {
   const interstitials: Interstitial[] = [];
 
-  for (const adBreak of vmapResponse.adBreaks) {
-    const adMedias = await getAdMedias(adBreak);
+  const adMedias = await getAdMedias(adBreak);
 
-    for (const adMedia of adMedias) {
-      if (await isPackaged(adMedia.assetId)) {
-        interstitials.push({
-          timeOffset: adBreak.timeOffset,
-          assetId: adMedia.assetId,
-        });
-      } else {
-        scheduleForPackage(adMedia);
-      }
+  for (const adMedia of adMedias) {
+    if (await isPackaged(adMedia.assetId)) {
+      interstitials.push({
+        timeOffset: adBreak.timeOffset,
+        assetId: adMedia.assetId,
+      });
+    } else {
+      scheduleForPackage(adMedia);
     }
   }
 

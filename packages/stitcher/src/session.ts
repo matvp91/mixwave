@@ -1,6 +1,7 @@
 import { client } from "./redis.js";
 import { randomUUID } from "crypto";
-import { getInterstitialsFromVmap } from "./vmap.js";
+import { extractInterstitialFromVmapAdbreak } from "./vast.js";
+import { getVmap } from "./vmap.js";
 import type { Session, Interstitial } from "./types.js";
 
 const REDIS_PREFIX = `stitcher:session`;
@@ -18,8 +19,15 @@ export async function createSession(data: {
   const interstitials: Interstitial[] = [];
 
   if (data.vmapUrl) {
-    interstitials.push(...(await getInterstitialsFromVmap(data.vmapUrl)));
+    const vmap = await getVmap(data.vmapUrl);
+
+    for (const adBreak of vmap.adBreaks) {
+      interstitials.push(
+        ...(await extractInterstitialFromVmapAdbreak(adBreak)),
+      );
+    }
   }
+
   if (data.interstitials) {
     interstitials.push(...data.interstitials);
   }

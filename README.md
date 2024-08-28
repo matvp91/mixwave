@@ -1,5 +1,5 @@
 <p align="center">
- <img src="https://matvp91.github.io/mixwave/logo.png" width="180" />
+ <img src="https://matvp91.github.io/mixwave/logo.png" width="320" />
 </p>
 
 <p align="center">

@@ -1,6 +1,6 @@
-import { withMermaid } from "vitepress-plugin-mermaid";
+import { defineConfig } from "vitepress";
 
-export default withMermaid({
+export default defineConfig({
   base: "/mixwave/",
   title: "Mixwave",
   description: "A friendly API to simplify the complexities of video delivery.",

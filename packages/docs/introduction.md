@@ -10,24 +10,6 @@ Mixwave is a self hostable platform that aims to simplify the complexities of vi
 
 Things get more complicated once you go beyond playing a basic <Badge type="info" text=".mp4" /> file. To offer different video qualities depending on the viewer's bandwidth, or to include multiple audio or text tracks, you need a different setup.
 
-```mermaid
-%%{init: {'theme': 'neutral' }}%%
-flowchart LR
-  subgraph S2[ ]
-    direction TB
-    T(<img src="/mixwave/transcode.svg" width="25" height="25" /> Transcode) --> S1
-  end
-
-  subgraph S1[ ]
-    direction LR
-    TR1(1080p <small>3Mbps</small>)
-    TR2(720p <small>2Mbps</small>)
-    TR3(480p <small>1Mbps</small>)
-  end
-
-  R(<img src="/mixwave/raw.svg" width="25" height="25" /> Raw files) --> S2 --> P(<img src="/mixwave/package.svg" width="25" height="25" /> Package<br /><small>master.m3u8</small>) --> PO(<img src="/mixwave/publish.svg" width="25" height="25" /> Publish)
-```
-
 Before we go further, it's important to note that Mixwave intentionally keeps its scope limited. We choose to focus on a single playback protocol <Badge type="info" text="HLS CMAF" /> rather than trying to support a wide range of options.
 
 ## Features

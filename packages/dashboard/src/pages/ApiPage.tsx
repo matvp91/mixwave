@@ -1,3 +1,3 @@
 export function ApiPage() {
-  return <iframe className="grow" src="/embed/api" />;
+  return <iframe className="w-full h-full" src="/embed/api" />;
 }

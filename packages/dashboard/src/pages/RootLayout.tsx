@@ -4,11 +4,13 @@ import { Suspense } from "react";
 
 export function RootLayout() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen">
       <Header />
-      <Suspense>
-        <Outlet />
-      </Suspense>
+      <main className="absolute top-16 inset-0 overflow-y-auto">
+        <Suspense>
+          <Outlet />
+        </Suspense>
+      </main>
     </div>
   );
 }

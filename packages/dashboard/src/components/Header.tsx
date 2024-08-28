@@ -1,5 +1,4 @@
 import logo from "../assets/logo.svg";
-import logoText from "../assets/logo-text.svg";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
 
@@ -10,7 +9,7 @@ export function Header() {
     <div className="p-4 border-b border-border flex h-16">
       <Link to="/" className="flex gap-2 items-center">
         <img src={logo} className="w-[24px]" />
-        <img src={logoText} className="w-[60px]" />
+        <span className="font-medium">Mixwave</span>
       </Link>
       <div className="flex gap-2 ml-4">
         <Button

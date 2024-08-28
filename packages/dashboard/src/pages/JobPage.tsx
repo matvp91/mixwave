@@ -15,7 +15,7 @@ export function JobPage() {
   const { job, rootTree } = data.body;
 
   return (
-    <div className="flex flex-col grow">
+    <div className="flex flex-col grow bg-white">
       <div className="p-2 border-b border-border">
         <Button asChild variant="ghost">
           <Link to="/jobs">Jobs</Link>

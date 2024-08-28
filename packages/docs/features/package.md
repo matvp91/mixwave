@@ -8,9 +8,17 @@ next:
 
 The package job will prepare an HLS playlist for your asset. Before you package, check the [transcode](/features/transcode) instructions.
 
-```shell
-POST /package
+::: code-group
+
+```sh [shell]
+curl -X POST https://api.domain.com/package
+  -H "Content-Type: application/json"
+  -d "{body}"
 ```
+
+:::
+
+A minimal body payload may look like this:
 
 ```json
 {

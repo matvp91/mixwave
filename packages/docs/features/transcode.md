@@ -6,11 +6,19 @@ next:
 
 # Transcode
 
-The transcode API will push a job to the queue and instruct ffmpeg to process the input file. Let's take the following example payload:
+The transcode endpoint will push a job to the queue. The trancode job will create a separate ffmpeg job for each output stream defined in the body.
 
-```shell
-POST /transcode
+::: code-group
+
+```sh [shell]
+curl -X POST https://api.domain.com/transcode
+  -H "Content-Type: application/json"
+  -d "{body}"
 ```
+
+:::
+
+A minimal body payload may look like this:
 
 ```json
 {
@@ -55,8 +63,7 @@ POST /transcode
       "type": "text",
       "language": "eng"
     }
-  ],
-  "segmentSize": 4
+  ]
 }
 ```
 
@@ -72,7 +79,7 @@ The job will produce several streams and upload them to `S3`:
 - A video track (h264, avc) of 480 in height, with a bitrate of 1,500 kbps.
 - A audio track (aac) with a language of "English" and a bitrate of 128 kbps.
 
-When we look at the `dashboard`, when our job is finished, it'll respond with the following output data:
+When we look at the [dashboard](/features/dashboard), when our job is finished, it'll respond with the following output data:
 
 ```json
 {
@@ -81,3 +88,9 @@ When we look at the `dashboard`, when our job is finished, it'll respond with th
 ```
 
 At this point, our asset (a collection of streams) is ready for packaging, and can be referenced to by the given `assetId`.
+
+::: info
+Know that the result of a transcode job is merely an intermediary format. Typically, you'd transcode your input once and package as many times as you like for specific devices or use cases.
+:::
+
+Mixwave' transcode API works slightly different than what others do. We emphasize the idea to define what you have (input) and what you need (streams), and the system shall figure out how to craft the streams. There's no need to directly link a stream with a given output.

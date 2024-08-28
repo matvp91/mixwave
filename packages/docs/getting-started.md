@@ -12,14 +12,20 @@ Since Mixwave consists of several packages that need to work together, the easie
 
 First, clone the repository.
 
-```shell
-git clone git@github.com:matvp91/mixwave.git
-cd mixwave
+::: code-group
+
+```sh [shell]
+$ git clone git@github.com:matvp91/mixwave.git
+$ cd mixwave
 ```
+
+:::
 
 Create a `config.env` file at the <Badge type="info" text="root" /> of the project.
 
-```shell
+::: code-group
+
+```sh [config.env]
 S3_ENDPOINT=
 S3_REGION=us-east-1
 S3_ACCESS_KEY=
@@ -28,11 +34,17 @@ S3_BUCKET=mixwave
 S3_PUBLIC_URL=https://s3.us-east-1.amazonaws.com/mixwave
 ```
 
+:::
+
 Bootstrap the necessary services with [Docker Compose](https://docs.docker.com/compose/).
 
-```shell
-docker compose up -d
+::: code-group
+
+```sh [shell]
+$ docker compose up -d
 ```
+
+:::
 
 Next, go to `http://127.0.0.1:52000` in your browser and you'll be greeted with the dashboard.
 
@@ -56,10 +68,14 @@ Mixwave is a monorepo, running `pnpm run build` at the root of the project will 
 
 Once built, you can run each package separately by going to the package directory and running `pnpm run start`. When you run redis locally, add the following variables to the `config.env` file at your root:
 
-```shell
+::: code-group
+
+```sh [config.env]
 REDIS_HOST=localhost
 REDIS_PORT=6379
 ```
+
+:::
 
 There's two packages that provide you with an API:
 

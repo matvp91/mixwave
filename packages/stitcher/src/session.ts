@@ -6,7 +6,9 @@ import type { Session, Interstitial } from "./types.js";
 
 const REDIS_PREFIX = `stitcher:session`;
 
-const key = (sessionId: string) => `${REDIS_PREFIX}:${sessionId}`;
+function getRedisKey(sessionId: string) {
+  return `${REDIS_PREFIX}:${sessionId}`;
+}
 
 export async function createSession(data: {
   assetId: string;
@@ -46,17 +48,21 @@ export async function createSession(data: {
     interstitials,
   } satisfies Session;
 
-  await client.json.set(key(sessionId), `$`, session);
+  const redisKey = getRedisKey(sessionId);
 
-  await client.expire(key(sessionId), 60 * 60 * 6);
+  await client.json.set(redisKey, `$`, session);
+  await client.expire(redisKey, 60 * 60 * 6);
 
   return session;
 }
 
 export async function getSession(sessionId: string) {
-  const data = await client.json.get(key(sessionId));
+  const redisKey = getRedisKey(sessionId);
+
+  const data = await client.json.get(redisKey);
   if (!data) {
     throw new Error("No session found for id");
   }
+
   return data as Session;
 }

@@ -1,4 +1,3 @@
-import "./env-mock";
 import fetchMock from "fetch-mock";
 import { formatMasterPlaylist } from "../src/playlist";
 import { describe, test, expect } from "@jest/globals";

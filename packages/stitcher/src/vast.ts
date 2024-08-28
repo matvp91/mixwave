@@ -4,7 +4,7 @@ import { VASTClient } from "./extern/vast-client/index.js";
 import { DOMParser } from "@xmldom/xmldom";
 import * as uuid from "uuid";
 import { NAMESPACE_UUID_AD } from "./const.js";
-import type { VmapAdBreak, VmapResponse } from "./vmap.js";
+import type { VmapAdBreak } from "./vmap.js";
 import type { Interstitial } from "./types.js";
 import type {
   VastResponse,

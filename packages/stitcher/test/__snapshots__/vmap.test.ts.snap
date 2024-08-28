@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`vmap getVmap with AdData 1`] = `
+{
+  "adBreaks": [
+    {
+      "timeOffset": 620,
+      "vastData": "<VAST>Mocked</VAST>",
+      "vastUrl": undefined,
+    },
+  ],
+}
+`;
+
+exports[`vmap getVmap with AdTagURI 1`] = `
+{
+  "adBreaks": [
+    {
+      "timeOffset": 1840,
+      "vastData": undefined,
+      "vastUrl": "https://vast",
+    },
+  ],
+}
+`;

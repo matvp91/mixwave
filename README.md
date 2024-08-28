@@ -5,7 +5,7 @@
 
 <p align="center">
   <a href="https://matvp91.github.io/mixwave">Documentation</a> · 
-  <a href="https://matvp91.github.io/mixwave/getting-started.html">Getting Started</a> · 
+  <a href="https://matvp91.github.io/mixwave/getting-started.html">Getting Started</a>
 </p>
 
 <p align="center">

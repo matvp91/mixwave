@@ -5,11 +5,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { filterJobs } from "@/lib/jobs-filter";
 import type { JobDto } from "@/tsr";
 import type { JobsFilterData } from "./types";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
-import { filterJobs } from "@/lib/jobs-filter";
 
 type JobsFilterProps = {
   jobs: JobDto[];
@@ -25,38 +23,65 @@ export function JobsFilter({ jobs, filter, onChange }: JobsFilterProps) {
     return acc;
   }, []);
 
+  const names = jobs.reduce<string[]>((acc, job) => {
+    if (!acc.includes(job.name)) {
+      acc.push(job.name);
+    }
+    return acc;
+  }, []);
+
   const filteredJobs = filterJobs(jobs, filter);
+
+  let tagValue = filter.tag;
+  if (tagValue === null) {
+    tagValue = "all";
+  }
+
+  const onTagChange = (value: string) => {
+    const tag = value === "all" ? null : value;
+    onChange({ tag });
+  };
+
+  let nameValue = filter.name;
+  if (nameValue === null) {
+    nameValue = "all";
+  }
+
+  const onNameChange = (value: string) => {
+    const name = value === "all" ? null : value;
+    onChange({ name });
+  };
 
   return (
     <div className="flex gap-2">
       <div className="grow flex items-center">{filteredJobs.length} jobs</div>
-      <div className="flex">
-        {filter.tag ? (
-          <div className="h-10 flex items-center">
-            {filter.tag}
-            <Button
-              variant="secondary"
-              className="ml-2"
-              size="icon"
-              onClick={() => onChange({ tag: null })}
-            >
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
-        ) : (
-          <Select onValueChange={(tag) => onChange({ tag })}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select tag" />
-            </SelectTrigger>
-            <SelectContent>
-              {tags.map((tag) => (
-                <SelectItem key={tag} value={tag}>
-                  {tag}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
+      <div className="flex gap-2">
+        <Select value={nameValue} onValueChange={onNameChange}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select tag" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">name: all</SelectItem>
+            {names.map((name) => (
+              <SelectItem key={name} value={name}>
+                name: {name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={tagValue} onValueChange={onTagChange}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select tag" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">tag: all</SelectItem>
+            {tags.map((tag) => (
+              <SelectItem key={tag} value={tag}>
+                tag: {tag}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

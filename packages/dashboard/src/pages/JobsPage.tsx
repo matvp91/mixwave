@@ -13,6 +13,7 @@ export function JobsPage() {
 
   const [filter, setFilter] = useQueryParams<JobsFilterData>({
     tag: null,
+    name: null,
   });
 
   return (

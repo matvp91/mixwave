@@ -15,6 +15,7 @@ export const postSessionBodySchema = z.object({
     )
     .optional(),
   bumperAssetId: z.string().optional(),
+  maxResolution: z.number().optional(),
 });
 
 export const contract = c.router({

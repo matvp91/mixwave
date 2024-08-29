@@ -15,6 +15,7 @@ export async function createSession(data: {
   vmapUrl?: string;
   interstitials?: Interstitial[];
   bumperAssetId?: string;
+  maxResolution?: number;
 }) {
   const sessionId = randomUUID();
 
@@ -42,10 +43,17 @@ export async function createSession(data: {
     });
   }
 
+  let maxResolution = data.maxResolution;
+  if (!maxResolution) {
+    const MAX_RESOLUTION_8K = 4320;
+    maxResolution = MAX_RESOLUTION_8K;
+  }
+
   const session = {
     id: sessionId,
     assetId: data.assetId,
     interstitials,
+    maxResolution,
   } satisfies Session;
 
   const redisKey = getRedisKey(sessionId);

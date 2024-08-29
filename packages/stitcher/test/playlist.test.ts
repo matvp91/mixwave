@@ -22,6 +22,7 @@ describe("playlist", () => {
       id: "sessionId",
       assetId: "assetId",
       interstitials: [],
+      maxResolution: 1080,
     });
 
     expect(master).toMatchInlineSnapshot(`
@@ -64,6 +65,7 @@ describe("playlist", () => {
         id: "sessionId",
         assetId: "assetId",
         interstitials: [],
+        maxResolution: 1080,
       },
       "video_1080"
     );
@@ -135,6 +137,7 @@ describe("playlist", () => {
             assetId: "ad3",
           },
         ],
+        maxResolution: 1080,
       },
       "video_1080"
     );
@@ -159,6 +162,36 @@ describe("playlist", () => {
       https://s3-public.com/package/assetId/hls/video_1080/url_467/seg.ts
       #EXT-X-DATERANGE:ID="0",CLASS="com.apple.hls.interstitial",START-DATE="2022-02-21T17:35:00.000Z",X-ASSET-LIST="/session/sessionId/asset-list.json?timeOffset=0",X-RESUME-OFFSET=0,X-RESTRICT="SKIP,JUMP"
       #EXT-X-DATERANGE:ID="10",CLASS="com.apple.hls.interstitial",START-DATE="2022-02-21T17:35:10.000Z",X-ASSET-LIST="/session/sessionId/asset-list.json?timeOffset=10",X-RESUME-OFFSET=0,X-RESTRICT="SKIP,JUMP""
+    `);
+  });
+
+  test("should remove resolutions below maxResolution", async () => {
+    fetchMock.mock("https://s3-public.com/package/assetId/hls/master.m3u8", {
+      status: 200,
+      body: `
+        #EXTM3U
+        #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=2149280,CODECS="mp4a.40.2,avc1.64001f",RESOLUTION=100x720,NAME="720" 
+        720.m3u8
+        #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=2149280,CODECS="mp4a.40.2,avc1.64001f",RESOLUTION=100x480,NAME="480" 
+        480.m3u8
+        #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=2149280,CODECS="mp4a.40.2,avc1.64001f",RESOLUTION=100x360,NAME="360" 
+        360.m3u8
+      `,
+    });
+
+    const master = await formatMasterPlaylist({
+      id: "sessionId",
+      assetId: "assetId",
+      interstitials: [],
+      maxResolution: 480,
+    });
+
+    expect(master).toMatchInlineSnapshot(`
+      "#EXTM3U
+      #EXT-X-STREAM-INF:BANDWIDTH=2149280,CODECS="mp4a.40.2,avc1.64001f",RESOLUTION=100x480,PROGRAM-ID=1
+      480.m3u8
+      #EXT-X-STREAM-INF:BANDWIDTH=2149280,CODECS="mp4a.40.2,avc1.64001f",RESOLUTION=100x360,PROGRAM-ID=1
+      360.m3u8"
     `);
   });
 });

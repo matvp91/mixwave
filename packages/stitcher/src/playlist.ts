@@ -16,6 +16,13 @@ export async function formatMasterPlaylist(session: Session) {
 
   const master = await fetchPlaylist<MasterPlaylist>(url);
 
+  master.variants = master.variants.filter((variant) => {
+    if (!variant.resolution) {
+      return true;
+    }
+    return variant.resolution.height <= session.maxResolution;
+  });
+
   return stringify(master);
 }
 

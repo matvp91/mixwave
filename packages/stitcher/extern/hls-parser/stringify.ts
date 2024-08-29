@@ -13,7 +13,7 @@ import {
   SpliceInfo,
   Variant,
   PostProcess,
-} from "./types";
+} from "./types.js";
 
 const ALLOW_REDUNDANCY = [
   "#EXTINF",

@@ -1,19 +1,22 @@
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+
 /** @type {import('ts-jest').JestConfigWithTsJest} **/
 export default {
-  testEnvironment: "node",
+  moduleNameMapper: {
+    "^(\\.{1,2}/.*)\\.js$": "$1",
+    "@mixwave/artisan/producer":
+      "<rootDir>/test/mocks/import-artisan-producer.ts",
+  },
+  extensionsToTreatAsEsm: [".ts"],
   transform: {
-    "^.+.tsx?$": ["ts-jest", {}],
-    "^.+.js$": [
+    "^.+\\.(mt|t|cj|j)s$": [
       "ts-jest",
       {
         useESM: true,
       },
     ],
   },
-  moduleNameMapper: {
-    "^@src(.*)$": "<rootDir>/src$1",
-    "@mixwave/artisan/(.*)": "<rootDir>/test/mocks/mock-artisan.ts",
-  },
-  resolver: "jest-ts-webcompat-resolver",
-  setupFiles: ["./test/setupTests.ts"],
+  prettierPath: require.resolve("jest-prettier"),
 };

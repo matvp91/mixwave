@@ -65,7 +65,6 @@ function getVastData(element: Element) {
 
   const xmlSerializer = new XMLSerializer();
 
-  console.log(xmlSerializer.serializeToString(vastAdData));
   return xmlSerializer.serializeToString(vastAdData.firstChild);
 }
 

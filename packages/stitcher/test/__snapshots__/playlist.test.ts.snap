@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`playlist formatMasterPlaylist 1`] = `
-"#EXTM3U
-#EXT-X-STREAM-INF:BANDWIDTH=2149280,CODECS="mp4a.40.2,avc1.64001f",RESOLUTION=1280x720,PROGRAM-ID=1
-720.m3u8"
-`;

@@ -1,3 +1,4 @@
+import "./mocks/mock-env";
 import fetchMock from "fetch-mock";
 import { getVmap } from "../src/vmap";
 import { describe, test, expect, afterEach } from "@jest/globals";
@@ -7,7 +8,7 @@ describe("vmap", () => {
     fetchMock.reset();
   });
 
-  test("getVmap with AdData", async () => {
+  test("should extract VASTAdData", async () => {
     fetchMock.mock("https://vmap", {
       status: 200,
       body: `
@@ -23,10 +24,20 @@ describe("vmap", () => {
 
     const vmap = await getVmap("https://vmap");
 
-    expect(vmap).toMatchSnapshot();
+    expect(vmap).toMatchInlineSnapshot(`
+      {
+        "adBreaks": [
+          {
+            "timeOffset": 620,
+            "vastData": "<VAST>Mocked</VAST>",
+            "vastUrl": undefined,
+          },
+        ],
+      }
+    `);
   });
 
-  test("getVmap with AdTagURI", async () => {
+  test("should extract AdTagURI", async () => {
     fetchMock.mock("https://vmap", {
       status: 200,
       body: `
@@ -42,6 +53,16 @@ describe("vmap", () => {
 
     const vmap = await getVmap("https://vmap");
 
-    expect(vmap).toMatchSnapshot();
+    expect(vmap).toMatchInlineSnapshot(`
+      {
+        "adBreaks": [
+          {
+            "timeOffset": 1840,
+            "vastData": undefined,
+            "vastUrl": "https://vast",
+          },
+        ],
+      }
+    `);
   });
 });

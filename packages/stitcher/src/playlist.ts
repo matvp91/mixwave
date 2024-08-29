@@ -1,8 +1,8 @@
-import { parse, stringify } from "./extern/hls-parser/index.js";
+import { parse, stringify } from "../extern/hls-parser/index.js";
 import parseFilepath from "parse-filepath";
-import { Interstitial } from "./extern/hls-parser/types.js";
+import { Interstitial } from "../extern/hls-parser/types.js";
 import { env } from "./env.js";
-import { MasterPlaylist, MediaPlaylist } from "./extern/hls-parser/types.js";
+import { MasterPlaylist, MediaPlaylist } from "../extern/hls-parser/types.js";
 import type { Session } from "./types.js";
 
 async function fetchPlaylist<T>(url: string) {

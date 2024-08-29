@@ -1,6 +1,6 @@
 import { env } from "./env.js";
 import { addTranscodeJob } from "@mixwave/artisan/producer";
-import { VASTClient } from "./extern/vast-client/index.js";
+import { VASTClient } from "../extern/vast-client/index.js";
 import { DOMParser } from "@xmldom/xmldom";
 import * as uuid from "uuid";
 import { NAMESPACE_UUID_AD } from "./const.js";
@@ -10,7 +10,7 @@ import type {
   VastResponse,
   VastCreativeLinear,
   VastAd,
-} from "./extern/vast-client/index.js";
+} from "../extern/vast-client/index.js";
 
 export async function extractInterstitialFromVmapAdbreak(adBreak: VmapAdBreak) {
   const interstitials: Interstitial[] = [];

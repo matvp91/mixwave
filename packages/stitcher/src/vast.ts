@@ -136,10 +136,14 @@ function getCreative(ad: VastAd) {
 }
 
 function getAdId(creative: VastCreativeLinear) {
-  // Do not change this, or we'll have a mismatch between the already encoded ad's and the other.
-  // See https://iabtechlab.com/guidance-for-uniquely-identifying-creative-asset-ids-in-vast-2/
-  const adId = [creative.adId, creative.id].join(".");
-  return uuid.v5(adId, NAMESPACE_UUID_AD);
+  if (creative.adId && creative.id) {
+    // Do not change this, or we'll have a mismatch between the already encoded ad's and the other.
+    // See https://iabtechlab.com/guidance-for-uniquely-identifying-creative-asset-ids-in-vast-2/
+    const adId = [creative.adId, creative.id].join(".");
+    return uuid.v5(adId, NAMESPACE_UUID_AD);
+  }
+
+  throw new Error("Failed to generate adId");
 }
 
 type AdMedia = {

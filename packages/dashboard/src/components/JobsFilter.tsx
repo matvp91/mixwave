@@ -6,6 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { filterJobs } from "@/lib/jobs-filter";
+import { JobTag } from "@/components/JobTag";
 import type { JobDto } from "@/tsr";
 import type { JobsFilterData } from "./types";
 
@@ -58,26 +59,26 @@ export function JobsFilter({ jobs, filter, onChange }: JobsFilterProps) {
       <div className="flex gap-2">
         <Select value={nameValue} onValueChange={onNameChange}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select tag" />
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">name: all</SelectItem>
+            <SelectItem value="all">All names</SelectItem>
             {names.map((name) => (
               <SelectItem key={name} value={name}>
-                name: {name}
+                {name}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
         <Select value={tagValue} onValueChange={onTagChange}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select tag" />
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">tag: all</SelectItem>
+            <SelectItem value="all">All tags</SelectItem>
             {tags.map((tag) => (
               <SelectItem key={tag} value={tag}>
-                tag: {tag}
+                {tag === "default" ? "No tags" : <JobTag tag={tag} />}
               </SelectItem>
             ))}
           </SelectContent>

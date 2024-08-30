@@ -5,7 +5,7 @@ export function getDurationStr(duration: number | null) {
   if (!duration) {
     return null;
   }
-  return prettyMs(duration);
+  return prettyMs(Math.trunc(duration / 1000) * 1000, {});
 }
 
 export function getShortId(id: string) {

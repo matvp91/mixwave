@@ -1,7 +1,7 @@
 import { initContract } from "@ts-rest/core";
 import { streamSchema, inputSchema } from "@mixwave/artisan/schemas";
 import * as z from "zod";
-import type { JobDto, JobNodeDto } from "./types.js";
+import type { JobDto } from "./types.js";
 
 const c = initContract();
 
@@ -50,17 +50,11 @@ export const contract = c.router({
     method: "GET",
     path: "/jobs/:id",
     responses: {
-      200: c.type<{
-        job: JobDto;
-        rootTree: JobNodeDto;
-      }>(),
+      200: c.type<JobDto>(),
     },
-  },
-  postJobRetry: {
-    method: "POST",
-    path: "/jobs/:id/retry",
-    body: c.noBody(),
-    responses: {},
+    query: z.object({
+      fromRoot: z.coerce.boolean().default(false),
+    }),
   },
   getJobLogs: {
     method: "GET",

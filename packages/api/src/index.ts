@@ -5,13 +5,7 @@ import { contract } from "./contract.js";
 import { bullBoardPlugin } from "./plugins/bull-board.js";
 import { initServer } from "@ts-rest/fastify";
 import { addTranscodeJob, addPackageJob } from "@mixwave/artisan/producer";
-import {
-  getJobs,
-  getJob,
-  getRootTreeForJobById,
-  getJobLogs,
-  retryJob,
-} from "./jobs.js";
+import { getJobs, getJob, getJobLogs } from "./jobs.js";
 import { generateOpenApi } from "@ts-rest/open-api";
 import { randomUUID } from "crypto";
 
@@ -46,26 +40,16 @@ async function buildServer() {
         body: await getJobs(),
       };
     },
-    getJob: async ({ params }) => {
+    getJob: async ({ params, query }) => {
       return {
         status: 200,
-        body: {
-          job: await getJob(params.id),
-          rootTree: await getRootTreeForJobById(params.id),
-        },
+        body: await getJob(params.id, query.fromRoot),
       };
     },
     getJobLogs: async ({ params }) => {
       return {
         status: 200,
         body: await getJobLogs(params.id),
-      };
-    },
-    postJobRetry: async ({ params }) => {
-      await retryJob(params.id);
-      return {
-        status: 200,
-        body: {},
       };
     },
     getSpec: async () => {

@@ -1,7 +1,7 @@
 import { allQueus, flowProducer } from "@mixwave/artisan/producer";
 import { JobNode, Job, JobState } from "bullmq";
 import extract from "object-property-extractor";
-import type { JobDto, JobNodeDto } from "./types.js";
+import type { JobDto } from "./types.js";
 
 function findQueueByName(name: string) {
   const queue = allQueus.find((queue) => queue.name === name);
@@ -11,14 +11,23 @@ function findQueueByName(name: string) {
   return queue;
 }
 
+function formatIdPair(id: string) {
+  const queueName = id.split("_", 1)[0];
+  return [findQueueByName(queueName), id] as const;
+}
+
 export async function getJobs(): Promise<JobDto[]> {
   const result: JobDto[] = [];
+
   for (const queue of allQueus) {
     const jobs = await queue.getJobs();
 
-    const rootJobs = jobs.filter((job) => !job.parent);
-
-    result.push(...(await Promise.all(rootJobs.map(formatJobDto))));
+    for (const job of jobs) {
+      if (!job.id || job.parent) {
+        continue;
+      }
+      result.push(await getJob(job.id, false));
+    }
   }
 
   result.sort((a, b) => b.createdOn - a.createdOn);
@@ -26,9 +35,59 @@ export async function getJobs(): Promise<JobDto[]> {
   return result;
 }
 
-async function formatJobDto(job: Job): Promise<JobDto> {
+export async function getJob(id: string, fromRoot: boolean) {
+  const node = await getJobNode(id, fromRoot);
+  return await formatJobNode(node);
+}
+
+export async function getJobLogs(id: string) {
+  const [queue, jobId] = formatIdPair(id);
+
+  const { logs } = await queue.getJobLogs(jobId);
+
+  return logs;
+}
+
+async function getJobNode(id: string, fromRoot: boolean) {
+  const [queue, jobId] = formatIdPair(id);
+
+  let job = await Job.fromId(queue, jobId);
+  if (fromRoot) {
+    // If we want the root, resolve it and work with that as our job.
+    job = await findRootJob(job);
+  }
+
+  if (!job?.id) {
+    throw new Error("No job found.");
+  }
+
+  return await flowProducer.getFlow({
+    id: job.id,
+    queueName: job.queueName,
+  });
+}
+
+async function findRootJob(job?: Job) {
+  if (!job) {
+    return;
+  }
+
+  while (job.parent) {
+    const [queue, jobId] = formatIdPair(job.parent.id);
+    const parentJob = await Job.fromId(queue, jobId);
+    if (!parentJob) {
+      throw new Error("No parent job found.");
+    }
+    job = parentJob;
+  }
+
+  return job;
+}
+
+async function formatJobNode(node: JobNode): Promise<JobDto> {
+  const { job, children } = node;
   if (!job.id) {
-    throw new Error("Missing jobId");
+    throw new Error("Missing job id");
   }
 
   let progress = 0;
@@ -40,10 +99,27 @@ async function formatJobDto(job: Job): Promise<JobDto> {
 
   const failedReason = state === "failed" ? job.failedReason : null;
 
-  let duration: number | null = null;
-  if (state === "completed" && job.finishedOn && job.processedOn) {
-    duration = job.finishedOn - job.processedOn;
+  const findParentSortKey = (obj: unknown) =>
+    extract(obj, "data.metadata.parentSortKey", 0);
+  (children ?? []).sort(
+    (a, b) => findParentSortKey(a.job) - findParentSortKey(b.job),
+  );
+
+  const jobChildren = await Promise.all((children ?? []).map(formatJobNode));
+
+  let processedOn = job.processedOn;
+  if (processedOn) {
+    for (const jobChild of jobChildren) {
+      if (jobChild.processedOn && jobChild.processedOn < processedOn) {
+        processedOn = jobChild.processedOn;
+      }
+    }
   }
+
+  const duration =
+    state === "completed" && processedOn && job.finishedOn
+      ? job.finishedOn - processedOn
+      : null;
 
   return {
     id: job.id,
@@ -51,94 +127,15 @@ async function formatJobDto(job: Job): Promise<JobDto> {
     state,
     progress,
     duration,
+    processedOn: job.processedOn ?? null,
+    finishedOn: job.finishedOn ?? null,
     createdOn: job.timestamp,
     inputData: JSON.stringify(job.data),
     outputData: job.returnvalue ? JSON.stringify(job.returnvalue) : null,
     failedReason,
     tag: extract(job.data, "metadata.tag", null),
+    children: jobChildren,
   };
-}
-
-export async function getJobLogs(id: string) {
-  const queueName = id.split("_", 1)[0];
-  const queue = findQueueByName(queueName);
-
-  const { logs } = await queue.getJobLogs(id);
-
-  return logs;
-}
-
-export async function getJob(id: string) {
-  const queueName = id.split("_", 1)[0];
-  const queue = findQueueByName(queueName);
-
-  const job = await Job.fromId(queue, id);
-  if (!job) {
-    throw new Error("No job found.");
-  }
-
-  return await formatJobDto(job);
-}
-
-async function formatJobNodeDto(node: JobNode): Promise<JobNodeDto> {
-  const children = node.children ?? [];
-
-  const findParentSortKey = (obj: unknown) =>
-    extract(obj, "data.metadata.parentSortKey", 0);
-  children.sort((a, b) => findParentSortKey(a.job) - findParentSortKey(b.job));
-
-  return {
-    job: await formatJobDto(node.job),
-    children: await Promise.all(children.map(formatJobNodeDto)),
-  };
-}
-
-export async function getRootTreeForJob(job: Job) {
-  while (job.parent) {
-    // TODO: Replacing bull internals is not a good idea, find another way to
-    // properly get queue.
-    const queue = findQueueByName(job.parent.queueKey.replace("bull:", ""));
-    const parentJob = await Job.fromId(queue, job.parent.id);
-    if (!parentJob) {
-      throw new Error("No parent job found.");
-    }
-    job = parentJob;
-  }
-
-  if (!job.id) {
-    throw new Error("Missing job id.");
-  }
-
-  const node = await flowProducer.getFlow({
-    id: job.id,
-    queueName: job.queueName,
-  });
-
-  return await formatJobNodeDto(node);
-}
-
-export async function getRootTreeForJobById(id: string) {
-  const queueName = id.split("_", 1)[0];
-  const queue = findQueueByName(queueName);
-
-  const job = await Job.fromId(queue, id);
-  if (!job) {
-    throw new Error("No job found.");
-  }
-
-  return await getRootTreeForJob(job);
-}
-
-export async function retryJob(id: string) {
-  const queueName = id.split("_", 1)[0];
-  const queue = findQueueByName(queueName);
-
-  const job = await Job.fromId(queue, id);
-  if (!job) {
-    throw new Error("No job found.");
-  }
-
-  await job.retry();
 }
 
 function mapJobState(jobState: JobState | "unknown"): JobDto["state"] {

@@ -10,14 +10,14 @@ export const postTranscodeBodySchema = z.object({
   streams: z.array(streamSchema),
   segmentSize: z.number().default(4),
   assetId: z.string().uuid().optional(),
-  package: z.boolean().default(false),
-  tag: z.string().default("default"),
+  packageAfter: z.boolean().default(false),
+  tag: z.string().optional(),
 });
 
 export const postPackageBodySchema = z.object({
   assetId: z.string(),
   segmentSize: z.number().default(4),
-  tag: z.string().default("default"),
+  tag: z.string().optional(),
 });
 
 export const contract = c.router({

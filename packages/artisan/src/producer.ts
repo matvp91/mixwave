@@ -30,16 +30,23 @@ const ffmpegQueue = new Queue<FfmpegData>("ffmpeg", {
 export const allQueus = [transcodeQueue, packageQueue, ffmpegQueue];
 
 type AddTranscodeJobData = {
-  assetId: string;
+  assetId?: string;
   inputs: Input[];
   streams: Stream[];
   segmentSize: number;
-  package: boolean;
-  tag: string;
+  packageAfter: boolean;
+  tag?: string;
 };
 
-export async function addTranscodeJob(data: AddTranscodeJobData) {
-  const jobId = `transcode_${data.assetId}`;
+export async function addTranscodeJob({
+  assetId = randomUUID(),
+  inputs,
+  streams,
+  segmentSize,
+  packageAfter,
+  tag,
+}: AddTranscodeJobData) {
+  const jobId = `transcode_${assetId}`;
 
   const pendingJob = await Job.fromId(transcodeQueue, jobId);
   if (pendingJob) {
@@ -49,21 +56,21 @@ export async function addTranscodeJob(data: AddTranscodeJobData) {
   let childJobIndex = 0;
   const childJobs: FlowChildJob[] = [];
 
-  for (const stream of data.streams) {
+  for (const stream of streams) {
     let input: Input | undefined;
 
     if (stream.type === "video") {
-      input = data.inputs.find((input) => input.type === "video");
+      input = inputs.find((input) => input.type === "video");
     }
 
     if (stream.type === "audio") {
-      input = data.inputs.find(
+      input = inputs.find(
         (input) => input.type === "audio" && input.language === stream.language,
       );
     }
 
     if (stream.type === "text") {
-      input = data.inputs.find(
+      input = inputs.find(
         (input) => input.type === "text" && input.language === stream.language,
       );
     }
@@ -83,8 +90,8 @@ export async function addTranscodeJob(data: AddTranscodeJobData) {
           params: {
             input,
             stream,
-            segmentSize: data.segmentSize,
-            assetId: data.assetId,
+            segmentSize,
+            assetId,
           },
           metadata: {
             parentSortKey: ++childJobIndex,
@@ -104,12 +111,12 @@ export async function addTranscodeJob(data: AddTranscodeJobData) {
     queueName: "transcode",
     data: {
       params: {
-        assetId: data.assetId,
-        segmentSize: data.segmentSize,
-        package: data.package,
+        assetId,
+        segmentSize,
+        packageAfter,
       },
       metadata: {
-        tag: data.tag,
+        tag,
       },
     } satisfies TranscodeData,
     children: childJobs,
@@ -124,7 +131,7 @@ export async function addTranscodeJob(data: AddTranscodeJobData) {
 type AddPackageJobData = {
   assetId: string;
   segmentSize: number;
-  tag: string;
+  tag?: string;
 };
 
 export async function addPackageJob(data: AddPackageJobData) {

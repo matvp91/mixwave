@@ -20,7 +20,7 @@ export type PackageData = {
     segmentSize: number;
   };
   metadata: {
-    tag: string;
+    tag?: string;
   };
 };
 

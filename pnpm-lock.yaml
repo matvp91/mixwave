@@ -320,6 +320,9 @@ importers:
       hh-mm-ss:
         specifier: ^1.2.0
         version: 1.2.0
+      hi-base64:
+        specifier: ^0.3.1
+        version: 0.3.1
       parse-filepath:
         specifier: ^1.0.2
         version: 1.0.2
@@ -7904,6 +7907,10 @@ packages:
     resolution: {integrity: sha512-f4I9Hz1dLpX/3mrEs7yq30+FiuO3tt5NWAqAGeBTaoeoBfB8vhcQ3BphuDc5DjZb/K809agqrAaFlP0jhEU/8w==}
     dependencies:
       zero-fill: 2.2.4
+    dev: false
+
+  /hi-base64@0.3.1:
+    resolution: {integrity: sha512-1dcNjxp2VHFnQkDn/Jrvz4IITgpalWbH6HlaTrZGXuZ5jA1+oIjJtGXYjem6V5rD0tCDGCVNYpD+mJRaNi0Jcw==}
     dev: false
 
   /highlight.js@11.10.0:

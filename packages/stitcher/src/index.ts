@@ -31,27 +31,33 @@ async function buildServer() {
         },
       };
     },
+    getDirectMasterPlaylist: async ({ request, params, query, reply }) => {
+      const body = {
+        assetId: params.assetId,
+        // Use params from base64 payload first.
+        ...query.params,
+        // Overwrite them with query params.
+        ...query,
+      };
+
+      const session = await createSession(body);
+
+      return reply.redirect(
+        `${request.protocol}://${request.hostname}/session/${session.id}/master.m3u8`,
+        302,
+      );
+    },
     getMasterPlaylist: async ({ params, reply }) => {
       const session = await getSession(params.sessionId);
       const response = await formatMasterPlaylist(session);
 
-      reply.type("application/x-mpegURL");
-
-      return {
-        status: 200,
-        body: response,
-      };
+      return reply.type("application/x-mpegURL").send(response);
     },
     getMediaPlaylist: async ({ params, reply }) => {
       const session = await getSession(params.sessionId);
       const response = await formatMediaPlaylist(session, params.path);
 
-      reply.type("application/x-mpegURL");
-
-      return {
-        status: 200,
-        body: response,
-      };
+      return reply.type("application/x-mpegURL").send(response);
     },
     getAssetList: async ({ query, params }) => {
       const session = await getSession(params.sessionId);

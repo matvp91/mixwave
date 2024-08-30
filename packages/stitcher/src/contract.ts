@@ -1,10 +1,10 @@
 import { initContract } from "@ts-rest/core";
 import * as z from "zod";
+import base64 from "hi-base64";
 
 const c = initContract();
 
-export const postSessionBodySchema = z.object({
-  assetId: z.string(),
+const sessionParams = z.object({
   vmapUrl: z.string().optional(),
   interstitials: z
     .array(
@@ -15,8 +15,20 @@ export const postSessionBodySchema = z.object({
     )
     .optional(),
   bumperAssetId: z.string().optional(),
-  maxResolution: z.number().optional(),
+  maxResolution: z.coerce.number().optional(),
 });
+
+export const postSessionBodySchema = z
+  .object({
+    assetId: z.string(),
+  })
+  .merge(sessionParams);
+
+export const getDirectMasterPlaylistQuerySchema = z
+  .object({
+    params: base64Type(sessionParams).optional(),
+  })
+  .merge(sessionParams);
 
 export const contract = c.router({
   postSession: {
@@ -24,6 +36,12 @@ export const contract = c.router({
     path: "/session",
     body: postSessionBodySchema,
     responses: {},
+  },
+  getDirectMasterPlaylist: {
+    method: "GET",
+    path: "/direct/:assetId/master.m3u8",
+    responses: {},
+    query: getDirectMasterPlaylistQuerySchema,
   },
   getMasterPlaylist: {
     method: "GET",
@@ -49,3 +67,29 @@ export const contract = c.router({
     responses: {},
   },
 });
+
+function base64Type<T extends z.AnyZodObject>(schema: T) {
+  return z.string().transform((value) => {
+    const raw = base64.decode(value);
+    const obj = JSON.parse(raw);
+    return schema.parse(obj);
+  });
+}
+
+function recursiveToCamel(item: unknown) {
+  if (Array.isArray(item)) {
+    return item.map((el: unknown) => recursiveToCamel(el));
+  } else if (typeof item === "function" || item !== Object(item)) {
+    return item;
+  }
+  return Object.fromEntries(
+    Object.entries(item as Record<string, unknown>).map(
+      ([key, value]: [string, unknown]) => [
+        key.replace(/([-_][a-z])/gi, (c) =>
+          c.toUpperCase().replace(/[-_]/g, ""),
+        ),
+        recursiveToCamel(value),
+      ],
+    ),
+  );
+}

@@ -3,6 +3,8 @@ import { Container } from "@/components/Container";
 import { tsr } from "@/tsr";
 import { JobsFilter } from "@/components/JobsFilter";
 import { useQueryParams } from "@/hooks/useQueryParams";
+import { JobsStats } from "@/components/JobsStats";
+import { filterJobs } from "@/lib/jobs-filter";
 import type { JobsFilterData } from "@/components/types";
 
 export function JobsPage() {
@@ -11,19 +13,25 @@ export function JobsPage() {
     refetchInterval: 2000,
   });
 
-  const [filter, setFilter] = useQueryParams<JobsFilterData>({
-    tag: null,
-    name: null,
-  });
+  const [filter, setFilter] = useQueryParams<JobsFilterData>({});
+
+  const filteredJobs = filterJobs(data.body, filter);
 
   return (
     <div className="min-h-full bg-[#fafafa]">
       <Container className="py-4">
         <h1 className="text-lg font-medium">Jobs</h1>
-        <div className="my-4">
-          <JobsFilter jobs={data.body} filter={filter} onChange={setFilter} />
+        <div className="my-4 flex items-center">
+          <JobsStats jobs={filteredJobs} />
+          <div className="ml-auto">
+            <JobsFilter
+              allJobs={data.body}
+              filter={filter}
+              onChange={setFilter}
+            />
+          </div>
         </div>
-        <JobsList jobs={data.body} filter={filter} />
+        <JobsList jobs={filteredJobs} />
       </Container>
     </div>
   );

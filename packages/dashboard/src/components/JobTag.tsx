@@ -1,27 +1,22 @@
 import uniqolor from "uniqolor";
-import type { JobDto } from "@mixwave/api/client";
 
 type JobTagProps = {
-  job: JobDto;
+  tag: string | null;
 };
 
-export function JobTag({ job }: JobTagProps) {
-  if (!job.tag) {
+export function JobTag({ tag }: JobTagProps) {
+  if (!tag) {
     return null;
   }
 
-  if (job.tag === "default") {
-    return null;
-  }
-
-  const { color } = uniqolor(job.tag, {});
+  const { color } = uniqolor(tag, {});
 
   return (
     <span
       className="text-xs px-2 py-[2px] rounded-full font-medium"
       style={{ color, backgroundColor: hexToRGB(color, 0.25) }}
     >
-      {job.tag}
+      {tag}
     </span>
   );
 }

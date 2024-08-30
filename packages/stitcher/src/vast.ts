@@ -65,7 +65,7 @@ function scheduleForPackage(adMedia: AdMedia) {
   addTranscodeJob({
     tag: "ad",
     assetId: adMedia.assetId,
-    package: true,
+    packageAfter: true,
     segmentSize: 4,
     inputs: [
       {

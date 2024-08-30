@@ -1,20 +1,15 @@
-import type { JobState } from "bullmq";
-
 export type JobDto = {
   id: string;
   name: string;
-  state: JobState | "unknown";
+  state: "waiting" | "running" | "failed" | "completed";
   progress: number;
-  finishedOn: number | null;
-  processedOn: number | null;
   createdOn: number;
+  processedOn: number | null;
+  finishedOn: number | null;
+  duration: number | null;
   inputData: string;
   outputData: string | null;
   failedReason: string | null;
   tag: string | null;
-};
-
-export type JobNodeDto = {
-  job: JobDto;
-  children: JobNodeDto[];
+  children: JobDto[];
 };

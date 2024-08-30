@@ -9,10 +9,10 @@ export type TranscodeData = {
   params: {
     assetId: string;
     segmentSize: number;
-    package: boolean;
+    packageAfter: boolean;
   };
   metadata: {
-    tag: string;
+    tag?: string;
   };
 };
 
@@ -45,7 +45,7 @@ export default async function (job: Job<TranscodeData, TranscodeResult>) {
     JSON.stringify(meta, null, 2),
   );
 
-  if (params.package) {
+  if (params.packageAfter) {
     await job.log("Will queue package job");
     await addPackageJob({
       assetId: params.assetId,

@@ -2,6 +2,7 @@ import { getTimeAgo } from "@/lib/helpers";
 import { JobLogs } from "./JobLogs";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { getDurationStr } from "@/lib/helpers";
 import type { JobDto } from "@/tsr";
 
 type JobViewProps = {
@@ -18,12 +19,8 @@ export function JobView({ job }: JobViewProps) {
           {getTimeAgo(job.createdOn)}
         </div>
         <div>
-          <div className="text-sm font-medium">Started</div>
-          {getTimeAgo(job.processedOn) ?? "N/A"}
-        </div>
-        <div>
-          <div className="text-sm font-medium">Finished</div>
-          {getTimeAgo(job.finishedOn) ?? "N/A"}
+          <div className="text-sm font-medium">Duration</div>
+          {getDurationStr(job.duration) ?? "N/A"}
         </div>
       </div>
       <div className="grid grid-cols-2 gap-2">

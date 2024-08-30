@@ -1,5 +1,5 @@
 import { allQueus, flowProducer } from "@mixwave/artisan/producer";
-import { JobNode, Job } from "bullmq";
+import { JobNode, Job, JobState } from "bullmq";
 import extract from "object-property-extractor";
 import type { JobDto, JobNodeDto } from "./types.js";
 
@@ -16,9 +16,9 @@ export async function getJobs(): Promise<JobDto[]> {
   for (const queue of allQueus) {
     const jobs = await queue.getJobs();
 
-    const filteredJobs = jobs.filter((job) => !job.parent);
+    const rootJobs = jobs.filter((job) => !job.parent);
 
-    result.push(...(await Promise.all(filteredJobs.map(formatJobDto))));
+    result.push(...(await Promise.all(rootJobs.map(formatJobDto))));
   }
 
   result.sort((a, b) => b.createdOn - a.createdOn);
@@ -36,17 +36,25 @@ async function formatJobDto(job: Job): Promise<JobDto> {
     progress = job.progress;
   }
 
+  const state = mapJobState(await job.getState());
+
+  const failedReason = state === "failed" ? job.failedReason : null;
+
+  let duration: number | null = null;
+  if (state === "completed" && job.finishedOn && job.processedOn) {
+    duration = job.finishedOn - job.processedOn;
+  }
+
   return {
     id: job.id,
     name: job.name,
-    state: await job.getState(),
+    state,
     progress,
-    finishedOn: job.finishedOn ?? null,
-    processedOn: job.processedOn ?? null,
+    duration,
     createdOn: job.timestamp,
     inputData: JSON.stringify(job.data),
     outputData: job.returnvalue ? JSON.stringify(job.returnvalue) : null,
-    failedReason: job.failedReason ?? null,
+    failedReason,
     tag: extract(job.data, "metadata.tag", null),
   };
 }
@@ -119,4 +127,29 @@ export async function getRootTreeForJobById(id: string) {
   }
 
   return await getRootTreeForJob(job);
+}
+
+export async function retryJob(id: string) {
+  const queueName = id.split("_", 1)[0];
+  const queue = findQueueByName(queueName);
+
+  const job = await Job.fromId(queue, id);
+  if (!job) {
+    throw new Error("No job found.");
+  }
+
+  await job.retry();
+}
+
+function mapJobState(jobState: JobState | "unknown"): JobDto["state"] {
+  if (jobState === "active" || jobState === "waiting-children") {
+    return "running";
+  }
+  if (jobState === "completed") {
+    return "completed";
+  }
+  if (jobState === "failed") {
+    return "failed";
+  }
+  return "waiting";
 }

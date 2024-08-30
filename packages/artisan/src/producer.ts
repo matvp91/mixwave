@@ -93,6 +93,7 @@ export async function addTranscodeJob(data: AddTranscodeJobData) {
         queueName: "ffmpeg",
         opts: {
           jobId: `ffmpeg_${randomUUID()}`,
+          failParentOnFailure: true,
         },
       });
     }

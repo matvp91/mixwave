@@ -10,7 +10,7 @@ type JobTreeItemProps = {
 };
 
 export function JobTreeItem({ job, activeId }: JobTreeItemProps) {
-  const durationStr = getDurationStr(job);
+  const durationStr = getDurationStr(job.duration);
 
   return (
     <Link

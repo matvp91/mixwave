@@ -56,6 +56,12 @@ export const contract = c.router({
       }>(),
     },
   },
+  postJobRetry: {
+    method: "POST",
+    path: "/jobs/:id/retry",
+    body: c.noBody(),
+    responses: {},
+  },
   getJobLogs: {
     method: "GET",
     path: "/jobs/:id/logs",

@@ -1,13 +1,10 @@
-import type { JobState } from "bullmq";
-
 export type JobDto = {
   id: string;
   name: string;
-  state: JobState | "unknown";
+  state: "waiting" | "running" | "failed" | "completed";
   progress: number;
-  finishedOn: number | null;
-  processedOn: number | null;
   createdOn: number;
+  duration: number | null;
   inputData: string;
   outputData: string | null;
   failedReason: string | null;

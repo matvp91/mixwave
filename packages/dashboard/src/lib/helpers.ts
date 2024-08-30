@@ -1,12 +1,10 @@
 import prettyMs from "pretty-ms";
 import * as timeAgo from "timeago.js";
-import type { JobDto } from "@/tsr";
 
-export function getDurationStr(job: JobDto) {
-  if (!job.finishedOn) {
+export function getDurationStr(duration: number | null) {
+  if (!duration) {
     return null;
   }
-  const duration = job.finishedOn - (job.processedOn ?? 0);
   return prettyMs(duration);
 }
 

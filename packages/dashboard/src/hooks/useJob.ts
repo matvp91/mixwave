@@ -1,20 +1,30 @@
 import { tsr } from "@/tsr";
+import { useEffect, useRef } from "react";
 import type { JobDto } from "@/tsr";
 
 export function useJob(id: string) {
-  const { data: jobData } = tsr.getJob.useSuspenseQuery({
+  const lastResultRef = useRef<JobDto>();
+
+  const { data } = tsr.getJob.useQuery({
     queryKey: ["jobsFromRoot", id],
     queryData: { params: { id }, query: { fromRoot: true } },
     refetchInterval: 2000,
   });
 
-  const rootJob = jobData.body;
-  const job = findJob(rootJob, id);
-  if (!job) {
-    throw new Error("Job not found in tree.");
+  useEffect(() => {
+    if (data) {
+      lastResultRef.current = data.body;
+    }
+  }, [data]);
+
+  const rootJob = data?.body ?? lastResultRef.current;
+  if (!rootJob) {
+    return null;
   }
 
-  return [job, rootJob] as const;
+  const job = findJob(rootJob, id);
+
+  return { job, rootJob };
 }
 
 function findJob(job: JobDto, id: string): JobDto | null {

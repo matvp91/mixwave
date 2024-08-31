@@ -66,6 +66,8 @@ export const contract = c.router({
   getSpec: {
     method: "GET",
     path: "/spec.json",
-    responses: {},
+    responses: {
+      200: c.type<Record<string, any>>(),
+    },
   },
 });

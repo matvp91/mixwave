@@ -5,11 +5,16 @@ type JobLogsProps = {
 };
 
 export function JobLogs({ id }: JobLogsProps) {
-  const { data } = tsr.getJobLogs.useSuspenseQuery({
+  const { data } = tsr.getJobLogs.useQuery({
     queryKey: ["jobs", id, "logs"],
     queryData: { params: { id } },
     refetchInterval: 2000,
   });
+
+  if (!data) {
+    return null;
+  }
+
   const logs = data.body;
 
   return (

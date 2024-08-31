@@ -4,10 +4,17 @@ import { JobView } from "@/components/JobView";
 import { Button } from "@/components/ui/button";
 import { getShortId } from "@/lib/helpers";
 import { useJob } from "@/hooks/useJob";
+import { StretchLoader } from "@/components/StretchLoader";
 
 export function JobPage() {
   const { id } = useParams() as { id: string };
-  const [job, rootJob] = useJob(id);
+  const result = useJob(id);
+
+  if (!result) {
+    return <StretchLoader />;
+  }
+
+  const { job, rootJob } = result;
 
   return (
     <div className="min-h-full flex flex-col grow bg-white">

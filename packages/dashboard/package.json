@@ -29,6 +29,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
+    "ldrs": "^1.0.2",
     "lucide-react": "^0.424.0",
     "pretty-ms": "^9.1.0",
     "react": "^18.3.1",

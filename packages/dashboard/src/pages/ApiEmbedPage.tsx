@@ -7,5 +7,11 @@ const LazyOpenApiReference = lazy(() =>
 );
 
 export function ApiEmbedPage() {
-  return <LazyOpenApiReference url={import.meta.env.VITE_API_URL} />;
+  const onLoad = () => {
+    window.parent.postMessage("mixwave_openapi_loaded", "*");
+  };
+
+  return (
+    <LazyOpenApiReference url={import.meta.env.VITE_API_URL} onLoad={onLoad} />
+  );
 }

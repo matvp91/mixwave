@@ -5,21 +5,26 @@ import { JobsFilter } from "@/components/JobsFilter";
 import { useQueryParams } from "@/hooks/useQueryParams";
 import { JobsStats } from "@/components/JobsStats";
 import { filterJobs } from "@/lib/jobs-filter";
+import { StretchLoader } from "@/components/StretchLoader";
 import type { JobsFilterData } from "@/components/types";
 
 export function JobsPage() {
-  const { data } = tsr.getJobs.useSuspenseQuery({
+  const [filter, setFilter] = useQueryParams<JobsFilterData>({});
+
+  const { data } = tsr.getJobs.useQuery({
     queryKey: ["jobs"],
     refetchInterval: 2000,
   });
 
-  const [filter, setFilter] = useQueryParams<JobsFilterData>({});
+  if (!data) {
+    return <StretchLoader />;
+  }
 
   const filteredJobs = filterJobs(data.body, filter);
 
   return (
     <div className="min-h-full bg-[#fafafa]">
-      <Container className="py-4">
+      <Container className="py-4 min-h-full">
         <h1 className="text-lg font-medium">Jobs</h1>
         <div className="my-4 flex items-center">
           <JobsStats jobs={filteredJobs} />

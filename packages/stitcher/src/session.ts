@@ -2,7 +2,14 @@ import { client } from "./redis.js";
 import { randomUUID } from "crypto";
 import { extractInterstitialFromVmapAdbreak } from "./vast.js";
 import { getVmap } from "./vmap.js";
+import createError from "@fastify/error";
 import type { Session, Interstitial } from "./types.js";
+
+const NoSessionError = createError<[string]>(
+  "NO_SESSION",
+  "A session with id %s is not found.",
+  404,
+);
 
 const REDIS_PREFIX = `stitcher:session`;
 
@@ -69,7 +76,7 @@ export async function getSession(sessionId: string) {
 
   const data = await client.json.get(redisKey);
   if (!data) {
-    throw new Error("No session found for id");
+    throw new NoSessionError(sessionId);
   }
 
   return data as Session;

@@ -1,14 +1,31 @@
-import { parse, stringify } from "../extern/hls-parser/index.js";
+import * as hlsParser from "../extern/hls-parser/index.js";
 import parseFilepath from "parse-filepath";
-import { Interstitial } from "../extern/hls-parser/types.js";
 import { env } from "./env.js";
 import { MasterPlaylist, MediaPlaylist } from "../extern/hls-parser/types.js";
-import type { Session } from "./types.js";
+import createError from "@fastify/error";
+import type { Session, Interstitial } from "./types.js";
+
+const PlaylistUnavailableError = createError<[string]>(
+  "PLAYLIST_UNAVAILABLE",
+  "%s is unavailable.",
+  404,
+);
+
+const NoVariantsError = createError(
+  "NO_VARIANTS",
+  "The playlist does not contain variants, " +
+    "this is possibly caused by variant filtering.",
+  400,
+);
 
 async function fetchPlaylist<T>(url: string) {
-  const response = await fetch(url);
-  const text = await response.text();
-  return parse(text) as T;
+  try {
+    const response = await fetch(url);
+    const text = await response.text();
+    return hlsParser.parse(text) as T;
+  } catch (error) {
+    throw new PlaylistUnavailableError(url);
+  }
 }
 
 export async function formatMasterPlaylist(session: Session) {
@@ -23,7 +40,11 @@ export async function formatMasterPlaylist(session: Session) {
     return variant.resolution.height <= session.maxResolution;
   });
 
-  return stringify(master);
+  if (!master.variants.length) {
+    throw new NoVariantsError();
+  }
+
+  return hlsParser.stringify(master);
 }
 
 export async function formatMediaPlaylist(session: Session, path: string) {
@@ -31,38 +52,11 @@ export async function formatMediaPlaylist(session: Session, path: string) {
 
   const media = await fetchPlaylist<MediaPlaylist>(url);
 
-  const filePath = parseFilepath(url);
+  rewriteSegmentUrls(media, url);
 
-  for (const segment of media.segments) {
-    if (segment.map?.uri === "init.mp4") {
-      segment.map.uri = `${filePath.dir}/init.mp4`;
-    }
+  addInterstitials(media, session.interstitials, session.id);
 
-    segment.uri = `${filePath.dir}/${segment.uri}`;
-  }
-
-  const now = Date.now();
-
-  media.segments[0].programDateTime = new Date(now);
-
-  session.interstitials
-    .reduce<number[]>((acc, interstitial) => {
-      if (!acc.includes(interstitial.timeOffset)) {
-        acc.push(interstitial.timeOffset);
-      }
-      return acc;
-    }, [])
-    .forEach((timeOffset) => {
-      media.interstitials.push(
-        new Interstitial({
-          id: `${timeOffset}`,
-          startDate: new Date(now + timeOffset * 1000),
-          list: `/session/${session.id}/asset-list.json?timeOffset=${timeOffset}`,
-        }),
-      );
-    });
-
-  return stringify(media);
+  return hlsParser.stringify(media);
 }
 
 export async function formatAssetList(session: Session, timeOffset: number) {
@@ -84,13 +78,61 @@ export async function formatAssetList(session: Session, timeOffset: number) {
 }
 
 async function getDuration(url: string) {
-  const master = await fetchPlaylist<MasterPlaylist>(url);
   const filePath = parseFilepath(url);
+
+  const master = await fetchPlaylist<MasterPlaylist>(url);
+
   const media = await fetchPlaylist<MediaPlaylist>(
     `${filePath.dir}/${master.variants[0].uri}`,
   );
+
   return media.segments.reduce((acc, segment) => {
     acc += segment.duration;
     return acc;
   }, 0);
+}
+
+function addInterstitials(
+  media: MediaPlaylist,
+  interstitials: Interstitial[],
+  sessionId: string,
+) {
+  if (!interstitials.length) {
+    // If we have no interstitials, there is nothing to insert and
+    // we can bail out early.
+    return;
+  }
+
+  const now = Date.now();
+
+  media.segments[0].programDateTime = new Date(now);
+
+  interstitials
+    .reduce<number[]>((acc, interstitial) => {
+      if (!acc.includes(interstitial.timeOffset)) {
+        acc.push(interstitial.timeOffset);
+      }
+      return acc;
+    }, [])
+    .forEach((timeOffset) => {
+      media.interstitials.push(
+        new hlsParser.types.Interstitial({
+          id: `${timeOffset}`,
+          startDate: new Date(now + timeOffset * 1000),
+          list: `/session/${sessionId}/asset-list.json?timeOffset=${timeOffset}`,
+        }),
+      );
+    });
+}
+
+function rewriteSegmentUrls(media: MediaPlaylist, url: string) {
+  const filePath = parseFilepath(url);
+
+  for (const segment of media.segments) {
+    if (segment.map?.uri === "init.mp4") {
+      segment.map.uri = `${filePath.dir}/init.mp4`;
+    }
+
+    segment.uri = `${filePath.dir}/${segment.uri}`;
+  }
 }

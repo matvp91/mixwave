@@ -1,4 +1,4 @@
-import { env } from "./env.js";
+import { isAssetAvailable } from "./helpers.js";
 import { addTranscodeJob } from "@mixwave/artisan/producer";
 import { VASTClient } from "../extern/vast-client/index.js";
 import { DOMParser } from "@xmldom/xmldom";
@@ -18,7 +18,7 @@ export async function extractInterstitialFromVmapAdbreak(adBreak: VmapAdBreak) {
   const adMedias = await getAdMedias(adBreak);
 
   for (const adMedia of adMedias) {
-    if (await isPackaged(adMedia.assetId)) {
+    if (await isAssetAvailable(adMedia.assetId)) {
       interstitials.push({
         timeOffset: adBreak.timeOffset,
         assetId: adMedia.assetId,
@@ -49,16 +49,6 @@ async function getAdMedias(adBreak: VmapAdBreak): Promise<AdMedia[]> {
   }
 
   return [];
-}
-
-async function isPackaged(assetId: string) {
-  const response = await fetch(
-    `${env.S3_PUBLIC_URL}/package/${assetId}/hls/master.m3u8`,
-    {
-      method: "HEAD",
-    },
-  );
-  return response.ok;
 }
 
 function scheduleForPackage(adMedia: AdMedia) {

@@ -22,3 +22,13 @@
   margin-bottom: -6px;
   margin-right: 2px;
 }
+
+summary {
+  margin: 0 !important;
+}
+
+.image {
+  overflow: hidden;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+}

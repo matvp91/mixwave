@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <polygon id="gem-a" points="0 6.131 20.074 6.131 16.595 0 3.946 0"/>
+    <path id="gem-c" d="M19.4391855,6 L17.0000013,2 L5.00000133,2 L2.56081717,6 L19.4391855,6 Z M19.1951469,8 L2.80485572,8 L11.0000013,19 L19.1951469,8 Z M5.00000133,0 L17.0000013,0 C17.6974164,0 18.3444666,0.363295711 18.7075634,0.958735433 L21.7075634,5.87841317 C22.1181852,6.5517889 22.0947229,7.40360614 21.647657,8.05335786 L12.647657,20.1336801 C11.8528878,21.2887733 10.1471149,21.2887733 9.35234561,20.1336801 L0.352345611,8.05335786 C-0.0947202486,7.40360614 -0.118182562,6.5517889 0.292439293,5.87841317 L3.29243929,0.958735433 C3.65553608,0.363295711 4.30258629,0 5.00000133,0 Z"/>
+  </defs>
+  <g fill="none" fill-rule="evenodd" transform="translate(1 2)">
+    <g transform="translate(1 1)">
+      <mask id="gem-b" fill="#ffffff">
+        <use xlink:href="#gem-a"/>
+      </mask>
+      <use fill="#D8D8D8" xlink:href="#gem-a"/>
+      <g fill="#FFA0A0" mask="url(#gem-b)">
+        <rect width="24" height="24" transform="translate(-2 -3)"/>
+      </g>
+    </g>
+    <mask id="gem-d" fill="#ffffff">
+      <use xlink:href="#gem-c"/>
+    </mask>
+    <use fill="#000000" fill-rule="nonzero" xlink:href="#gem-c"/>
+    <g fill="#7600FF" mask="url(#gem-d)">
+      <rect width="24" height="24" transform="translate(-1 -2)"/>
+    </g>
+  </g>
+</svg>

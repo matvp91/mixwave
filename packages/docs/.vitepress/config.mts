@@ -43,6 +43,10 @@ export default defineConfig({
     socialLinks: [
       { icon: "github", link: "https://github.com/matvp91/mixwave" },
     ],
+    footer: {
+      message: "Released under the MPL-2.0 License.",
+      copyright: "Copyright © 2024-present Matthias Van Parijs",
+    },
   },
   vite: {
     clearScreen: false,

@@ -12,6 +12,12 @@ Things get more complicated once you go beyond playing a basic <Badge type="info
 
 Before we go further, it's important to note that Mixwave intentionally keeps its scope limited. We choose to focus on a single playback protocol <Badge type="info" text="HLS CMAF" /> rather than trying to support a wide range of options.
 
+## API
+
+Essentially Mixwave is a set of APIs that handle video from ingest to playback. It is designed to be user-friendly, making video transcoding, packaging, and delivery accessible to a wider audience.
+
+Typically, you transcode the video once. The resulting intermediary file is then assigned a generated UUID, which can be used to initiate a packaging job or to configure the stitcher for manipulating or merging playlists.
+
 ## Features
 
 Mixwave makes it easier for you to do the following tasks using a user-friendly API:
@@ -26,6 +32,27 @@ The process of converting a video file from one format or codec to another. The 
 ::: info
 Consider the result of a transcode job as an intermediate format ready for packaging.
 :::
+
+<details>
+<summary>Mock example</summary>
+
+```
+input   = content.mp4
+streams = - video 1080p
+          - video 720p
+          - audio eng
+output  = 67b070fd-5db6-4022-a568-652abdbfac9c
+```
+
+```
+input   = bumper.mp4
+streams = - video 1080p
+          - video 720p
+          - audio eng
+output  = 13b1d432-ec8e-4516-9904-df1aa90db803
+```
+
+</details>
 
 ### <img src="/package.svg" class="title-image" /> Package
 
@@ -46,6 +73,21 @@ As with transcode, the end result will be uploaded to your configured `S3` bucke
 At this point, your stream can be played by HLS-compatible players, such as [HLS.js](https://github.com/video-dev/hls.js), or natively on Apple devices.
 :::
 
+<details>
+<summary>Mock example</summary>
+
+```
+input   = 67b070fd-5db6-4022-a568-652abdbfac9c
+output  = https://my.cdn/package/67b070fd-5db6-4022-a568-652abdbfac9c/hls/master.m3u8
+```
+
+```
+input   = 13b1d432-ec8e-4516-9904-df1aa90db803
+output  = https://my.cdn/package/13b1d432-ec8e-4516-9904-df1aa90db803/hls/master.m3u8
+```
+
+</details>
+
 ### <img src="/stitch.svg" class="title-image" /> Stitch
 
 At this point, you've created playable assets. Stitching involves serving the manifest through a proxy that can modify the output based on different parameters. If you're looking to dynamically merge manifests, stitch them together, or add interstitials, this is for you.
@@ -55,6 +97,17 @@ At this point, you've created playable assets. Stitching involves serving the ma
 ::: warning
 The stitch API is quite limited at the moment, but let us know what features you'd like by submitting a [feature ticket](https://github.com/matvp91/mixwave/issues).
 :::
+
+<details>
+<summary>Mock example</summary>
+
+```
+input   = - assetId: 67b070fd-5db6-4022-a568-652abdbfac9c
+          - bumperAssetId: 13b1d432-ec8e-4516-9904-df1aa90db803
+output  = http://stitcher.mixwave/session/7b2a354a-69e3-4c16-accb-aa521c8b9d5b/master.m3u8
+```
+
+</details>
 
 ## Structure
 

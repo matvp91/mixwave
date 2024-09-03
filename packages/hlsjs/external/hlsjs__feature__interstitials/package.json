@@ -1,0 +1,6 @@
+{
+  "name": "hls.js__feature__interstitials",
+  "type": "module",
+  "main": "./hls.mjs",
+  "types": "./hls.d.ts"
+}

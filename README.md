@@ -29,6 +29,8 @@ We intentionally keeps the scope limited. We choose to focus on a single playbac
 - Dynamically stitch HLS playlists together<sup>experimental</sup>, like a Netflix bumper, with [HLS interstitials](https://developer.apple.com/streaming/GettingStartedWithHLSInterstitials.pdf).
 - Parses a `vmap`, transcodes and packages the ad media files and inserts interstitials, on the fly.
 
+Like what you see? Considering giving us a ⭐, much appreciated!
+
 Want to get started quickly?
 
 ```shell

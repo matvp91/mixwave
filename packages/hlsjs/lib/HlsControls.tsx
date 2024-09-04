@@ -42,12 +42,7 @@ export function HlsControls({ facade }: HlsControlsProps) {
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >
-      <div
-        className={styles.controls}
-        style={{
-          display: visible ? "" : "none",
-        }}
-      >
+      <div className={styles.controls + ` ${visible && styles.visible}`}>
         {Number.isFinite(state.duration) ? (
           <Progress
             state={state}

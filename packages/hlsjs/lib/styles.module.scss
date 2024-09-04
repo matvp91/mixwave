@@ -9,6 +9,8 @@
   bottom: 0;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  transition: opacity 165ms ease-in-out;
 
   &:after {
     content: "";
@@ -18,7 +20,11 @@
     left: 0;
     width: 100%;
     bottom: 100%;
-    height: 500%;
+    height: 200%;
+  }
+
+  &.visible {
+    opacity: 1;
   }
 }
 
@@ -44,8 +50,8 @@
     &::-webkit-slider-thumb {
       appearance: none;
       background-color: #ffffff;
-      height: 1.25em;
-      width: 1.25em;
+      height: 1em;
+      width: 1em;
       transform: translateY(calc(-50% + 0.1em));
       border-radius: 100%;
     }
@@ -61,8 +67,8 @@
 
 .button {
   font-size: inherit;
-  width: 3em;
-  height: 3em;
+  width: 2.5em;
+  height: 2.5em;
   padding: 0.5em;
   background: none;
   border: none;

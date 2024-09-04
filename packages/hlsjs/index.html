@@ -21,12 +21,21 @@
         position: relative;
         background-color: #111111;
       }
+
+      .page {
+        max-width: 500px;
+        width: 100%;
+        margin: 0 auto;
+        padding-top: 1em;
+      }
     </style>
   </head>
   <body>
-    <div class="container">
-      <video></video>
-      <div id="root"></div>
+    <div class="page">
+      <div class="container">
+        <video></video>
+        <div id="root"></div>
+      </div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

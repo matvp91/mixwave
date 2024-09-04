@@ -4,38 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HLSjs wrapper</title>
+    <link rel="stylesheet" href="/lib/Controls/index.scss" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap"
+      rel="stylesheet"
+    />
     <style>
       body {
         margin: 0;
-      }
-
-      video {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-      }
-
-      .container {
-        aspect-ratio: 16 / 9;
-        position: relative;
-        background-color: #111111;
-      }
-
-      .page {
-        max-width: 500px;
-        width: 100%;
-        margin: 0 auto;
-        padding-top: 1em;
+        font-family: "Red Hat Display";
       }
     </style>
   </head>
   <body>
-    <div class="page">
-      <div class="container">
-        <video></video>
-        <div id="root"></div>
-      </div>
+    <div class="mix-container">
+      <video></video>
+      <div id="root"></div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

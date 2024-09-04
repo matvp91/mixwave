@@ -7,6 +7,8 @@ export { HlsControls } from "./HlsControls";
 
 export type HlsState = {
   playheadState: "idle" | "play" | "pause";
+  time: number;
+  duration: number;
 };
 
 export type HlsFacadeEvent = {
@@ -14,24 +16,40 @@ export type HlsFacadeEvent = {
 };
 
 export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
-  private mediaTime_ = 0;
+  private intervalId_: number | undefined;
 
   constructor(public hls: Hls) {
     super();
+
+    if (!hls.media) {
+      throw new HlsFacadeNoMedia();
+    }
+
+    hls.on(Hls.Events.INTERSTITIALS_UPDATED, () => {
+      this.syncState_();
+    });
+  }
+
+  destroy() {
+    clearInterval(this.intervalId_);
   }
 
   state: HlsState = {
     playheadState: "idle",
+    time: NaN,
+    duration: NaN,
   };
 
-  get time() {
-    if (this.hls.media) {
-      this.mediaTime_ = this.hls.media.currentTime;
-    }
-    return this.mediaTime_;
+  private onTick_() {
+    const { integrated } = this.getInterstitialsManager_();
+
+    this.setState_({
+      time: { $set: integrated.currentTime },
+      duration: { $set: integrated.duration },
+    });
   }
 
-  playOrPause = () => {
+  playOrPause() {
     const media = this.getMedia_();
     const { playheadState } = this.state;
 
@@ -46,11 +64,13 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
     }
 
     this.setState_({
-      $set: {
-        playheadState: shouldPause ? "pause" : "play",
-      },
+      playheadState: { $set: shouldPause ? "pause" : "play" },
     });
-  };
+  }
+
+  seekTo(targetTime: number) {
+    this.getInterstitialsManager_().integrated.seekTo(targetTime);
+  }
 
   private setState_(spec: Spec<HlsState>) {
     const nextState = update(this.state, spec);
@@ -60,18 +80,38 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
     this.emit("*");
   }
 
-  private getMedia_ = () => {
-    const media =
-      this.hls.interstitialsManager?.bufferingPlayer?.media ?? this.hls.media;
+  private getInterstitialsManager_() {
+    const { interstitialsManager } = this.hls;
+    if (!interstitialsManager) {
+      throw new HlsFacadeNoInterstitialsManager();
+    }
+    return interstitialsManager;
+  }
+
+  private getMedia_() {
+    const manager = this.getInterstitialsManager_();
+    const media = manager.bufferingPlayer?.media ?? this.hls.media;
     if (!media) {
-      throw new HlsFacadeMediaNotFoundError();
+      throw new HlsFacadeNoMedia();
     }
     return media;
-  };
+  }
+
+  private syncState_() {
+    clearInterval(this.intervalId_);
+    this.intervalId_ = setInterval(() => this.onTick_(), 500);
+    this.onTick_();
+  }
 }
 
-class HlsFacadeMediaNotFoundError extends Error {
+export class HlsFacadeNoMedia extends Error {
   constructor() {
-    super("Media element not found");
+    super("No available media found");
+  }
+}
+
+export class HlsFacadeNoInterstitialsManager extends Error {
+  constructor() {
+    super("No interstitials manager found");
   }
 }

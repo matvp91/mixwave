@@ -12,8 +12,10 @@ const facade = new HlsFacade(hls);
 Object.assign(window, { facade });
 
 hls.loadSource(
-  "http://127.0.0.1:52002/session/28832a1d-c8c5-4840-bb7d-021f92c5edeb/master.m3u8",
+  "http://127.0.0.1:52002/session/cdb7f849-5892-49f7-a778-b5cf01303061/master.m3u8",
 );
+
+// hls.loadSource("https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8");
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 

@@ -40,7 +40,7 @@ export function useVisible() {
   }, []);
 
   return {
-    visible,
+    visible: true,
     elementRef,
   };
 }

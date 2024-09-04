@@ -27,6 +27,10 @@ export function Controls({ facade }: ControlsProps) {
     };
   }, [facade]);
 
+  if (!Number.isFinite(state.duration)) {
+    return null;
+  }
+
   return (
     <>
       <div

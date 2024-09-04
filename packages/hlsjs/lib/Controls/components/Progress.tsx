@@ -1,4 +1,5 @@
 import { PointerEventHandler, useRef, useState } from "react";
+import { useDelta } from "../hooks/useDelta";
 import type { ChangeEventHandler } from "react";
 import type { HlsState } from "../../main";
 
@@ -10,6 +11,8 @@ type ProgressProps = {
 export function Progress({ state, onSeeked }: ProgressProps) {
   const [seeking, setSeeking] = useState(false);
   const [value, setValue] = useState(state.time);
+
+  const deltaTime = useDelta(state.time);
 
   const lastSeekRef = useRef<number | null>(null);
 
@@ -31,16 +34,20 @@ export function Progress({ state, onSeeked }: ProgressProps) {
     onSeeked(targetTime);
   };
 
-  const max = Number.isFinite(state.duration) ? state.duration : 0;
-  let time = Number.isFinite(state.time) ? state.time : 0;
+  let time = state.time;
 
   if (lastSeekRef.current !== null) {
-    time = lastSeekRef.current;
-
-    if (state.time > time) {
+    // When we have a positive delta, thus we're increasing in time
+    // and the time is larger than lastSeek, we no longer need to overwrite
+    // the value.
+    if (deltaTime && time > lastSeekRef.current) {
       lastSeekRef.current = null;
+    } else {
+      time = lastSeekRef.current;
     }
   }
+
+  const progress = seeking ? value : time;
 
   return (
     <div className="mix-progress">
@@ -48,12 +55,19 @@ export function Progress({ state, onSeeked }: ProgressProps) {
         className="mix-progress-range"
         type="range"
         min={0}
-        max={max}
+        max={state.duration}
         step={0.1}
-        value={seeking ? value : time}
+        value={progress}
         onChange={onChange}
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
+      />
+      <div className="mix-progress-bg" />
+      <div
+        className="mix-progress-value"
+        style={{
+          width: `${(progress / state.duration) * 100}%`,
+        }}
       />
       {state.cuePoints.map((cuePoint) => (
         <div

@@ -1,10 +1,11 @@
 import { SettingsMode } from "../hooks/useSettings";
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import cn from "clsx";
 import { SettingsPane } from "./SettingsPane";
 import { QualitiesPane } from "./QualitiesPane";
 import { TextAudioPane } from "./TextAudioPane";
 import type { HlsFacade, HlsState } from "../../main";
+import usePrevious from "../hooks/usePrevious";
 
 type SettingsProps = {
   facade: HlsFacade;
@@ -15,10 +16,22 @@ type SettingsProps = {
 export function Settings({ facade, state, mode }: SettingsProps) {
   const ref = useRef<HTMLDivElement>(null);
   const lastModeRef = useRef<SettingsMode>();
+  const modePrev = usePrevious(mode);
 
   if (mode !== null) {
     lastModeRef.current = mode;
   }
+
+  useEffect(() => {
+    if (mode === null && modePrev) {
+      lastModeRef.current = undefined;
+
+      if (ref.current) {
+        ref.current.style.width = "";
+        ref.current.style.height = "";
+      }
+    }
+  }, [modePrev, mode]);
 
   useLayoutEffect(() => {
     const element = ref.current;
@@ -32,14 +45,12 @@ export function Settings({ facade, state, mode }: SettingsProps) {
     Array.from(paneElements).map((el) => {
       el.style.width = "";
       el.style.height = "";
-      el.style.left = "0";
-      el.style.top = "0";
       el.style.position = "fixed";
 
       const rect = el.getBoundingClientRect();
+
       el.style.width = `${rect.width}px`;
       el.style.height = `${rect.height}px`;
-
       el.style.position = "absolute";
     });
 

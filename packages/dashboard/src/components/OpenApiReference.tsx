@@ -1,7 +1,7 @@
 import { ApiReferenceReact } from "@scalar/api-reference-react";
 import { tsr } from "@/tsr";
-import "@scalar/api-reference-react/style.css";
 import { useEffect } from "react";
+import "@scalar/api-reference-react/style.css";
 
 type OpenApiReferenceProps = {
   url: string;

@@ -47,10 +47,16 @@ export function Controls({ facade }: ControlsProps) {
             {state.playheadState === "play" ? <PauseIcon /> : <PlayIcon />}
           </SqButton>
           <div className="mix-controls-gutter" />
-          <SqButton onClick={() => setSettingsMode("text-audio")}>
+          <SqButton
+            onClick={() => setSettingsMode("text-audio")}
+            selected={settingsMode === "text-audio"}
+          >
             <SubtitlesIcon />
           </SqButton>
-          <SqButton onClick={() => setSettingsMode("quality")}>
+          <SqButton
+            onClick={() => setSettingsMode("quality")}
+            selected={settingsMode === "quality"}
+          >
             <SettingsIcon />
           </SqButton>
         </div>

@@ -23,21 +23,19 @@ export function JobsPage() {
   const filteredJobs = filterJobs(data.body, filter);
 
   return (
-    <div className="min-h-full bg-[#fafafa]">
-      <Container className="py-4 min-h-full">
-        <h1 className="text-lg font-medium">Jobs</h1>
-        <div className="my-4 flex items-center">
-          <JobsStats jobs={filteredJobs} />
-          <div className="ml-auto">
-            <JobsFilter
-              allJobs={data.body}
-              filter={filter}
-              onChange={setFilter}
-            />
-          </div>
+    <Container className="py-4">
+      <h1 className="text-lg font-medium">Jobs</h1>
+      <div className="my-4 flex items-center">
+        <JobsStats jobs={filteredJobs} />
+        <div className="ml-auto">
+          <JobsFilter
+            allJobs={data.body}
+            filter={filter}
+            onChange={setFilter}
+          />
         </div>
-        <JobsList jobs={filteredJobs} />
-      </Container>
-    </div>
+      </div>
+      <JobsList jobs={filteredJobs} />
+    </Container>
   );
 }

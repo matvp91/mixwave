@@ -1,12 +1,6 @@
-import { useRef, useEffect } from "react";
+import usePrevious from "./usePrevious";
 
 export function useDelta(value: number) {
-  const ref = useRef<number>();
-  useEffect(() => {
-    ref.current = value;
-  });
-  if (!ref.current) {
-    return 0;
-  }
-  return value - ref.current;
+  const prev = usePrevious(value);
+  return prev === undefined ? 0 : value - prev;
 }

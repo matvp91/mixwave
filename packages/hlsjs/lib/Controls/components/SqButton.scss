@@ -38,4 +38,10 @@
       opacity: 0.5;
     }
   }
+
+  &.mix-sqbutton--selected {
+    &:after {
+      opacity: 0.75;
+    }
+  }
 }

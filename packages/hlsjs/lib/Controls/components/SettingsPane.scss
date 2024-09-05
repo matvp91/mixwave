@@ -1,7 +1,8 @@
 .mix-settings-pane {
   pointer-events: none;
-  transition: opacity 150ms ease;
   opacity: 0;
+  left: 0;
+  top: 0;
 
   &.mix-settings-pane--active {
     pointer-events: all;

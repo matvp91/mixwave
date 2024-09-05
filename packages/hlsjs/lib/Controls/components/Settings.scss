@@ -2,8 +2,17 @@
   position: absolute;
   right: 1em;
   bottom: 7em;
-  padding: 1em;
-  background-color: rgba(0, 0, 0, 0.75);
-  color: #ffffff;
+
   z-index: 11;
+  transition:
+    all 150ms ease-in-out,
+    opacity 50ms linear;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+
+  &.mix-settings--visible {
+    opacity: 1;
+    pointer-events: all;
+  }
 }

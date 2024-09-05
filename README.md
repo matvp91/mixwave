@@ -37,7 +37,7 @@ Mixwave has a basic video player built on top of HLS.js. Although know that HLS 
 
 Like what you see? Considering giving us a ⭐, much appreciated!
 
-Want to get started quickly?
+## Getting Started
 
 ```shell
 cp config.env.example config.env
@@ -45,5 +45,8 @@ cp config.env.example config.env
 docker compose up -d
 ```
 
-> [!NOTE]
-> **Mixwave is in early development, we would appreciate your feedback.**
+There's more info in the [Getting Started](https://matvp91.github.io/mixwave/getting-started.html) section in the docs.
+
+## Sponsor
+
+Every bit counts, your contribution means the world to us! Mixwave is a free, side project. Consider sponsoring if it brings you value or you feel like supporting our open source work. ❤️

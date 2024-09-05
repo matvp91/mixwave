@@ -297,8 +297,8 @@ importers:
         specifier: ^5.0.1
         version: 5.0.1
       hls.js:
-        specifier: github:video-dev/hls.js#feature/interstitials
-        version: github.com/video-dev/hls.js/e5915a7df3c4f44001ce405fa5bc4785bc68ed63
+        specifier: ^1.5.15
+        version: 1.5.15
       immutability-helper:
         specifier: ^3.1.1
         version: 3.1.1
@@ -8401,6 +8401,10 @@ packages:
     resolution: {integrity: sha512-PDEfEF102G23vHmPhLyPboFCD+BkMGu+GuJe2d9/eH4FsCwvgBpnc9n0pGE+ffKdph38s6foEZiEjdgHdzp+IA==}
     dev: false
 
+  /hls.js@1.5.15:
+    resolution: {integrity: sha512-6cD7xN6bycBHaXz2WyPIaHn/iXFizE5au2yvY5q9aC4wfihxAr16C9fUy4nxh2a3wOw0fEgLRa9dN6wsYjlpNg==}
+    dev: false
+
   /hookable@5.5.3:
     resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
 
@@ -12987,12 +12991,4 @@ packages:
 
   /zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
-    dev: false
-
-  github.com/video-dev/hls.js/e5915a7df3c4f44001ce405fa5bc4785bc68ed63:
-    resolution: {tarball: https://codeload.github.com/video-dev/hls.js/tar.gz/e5915a7df3c4f44001ce405fa5bc4785bc68ed63}
-    name: hls.js
-    version: 0.0.0
-    prepare: true
-    requiresBuild: true
     dev: false

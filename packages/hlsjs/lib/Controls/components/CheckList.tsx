@@ -1,8 +1,14 @@
 import cn from "clsx";
 
+export type CheckListItem = {
+  id: number | null;
+  label: React.ReactNode;
+  checked: boolean;
+};
+
 type CheckListProps = {
-  onSelect(id: number): void;
-  items: { id: number; label: string; checked: boolean }[];
+  onSelect(id: CheckListItem["id"]): void;
+  items: CheckListItem[];
 };
 
 export function CheckList({ items, onSelect }: CheckListProps) {

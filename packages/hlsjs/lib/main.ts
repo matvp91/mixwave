@@ -2,6 +2,7 @@ import Hls from "hls.js";
 import update from "immutability-helper";
 import EventEmitter from "eventemitter3";
 import type { Spec } from "immutability-helper";
+import type { Level, MediaPlaylist } from "hls.js";
 
 export { Controls as HlsControls } from "./Controls";
 
@@ -11,20 +12,20 @@ export type HlsInterstitial = {
 
 export type HlsQuality = {
   id: number;
-  height: number;
   active: boolean;
+  level: Level;
 };
 
 export type HlsSubtitleTrack = {
   id: number;
-  name: string;
   active: boolean;
+  playlist: MediaPlaylist;
 };
 
 export type HlsAudioTrack = {
   id: number;
-  name: string;
   active: boolean;
+  playlist: MediaPlaylist;
 };
 
 export type HlsSeekRange = {
@@ -39,6 +40,7 @@ export type HlsState = {
   interstitial: HlsInterstitial | null;
   cuePoints: number[];
   qualities: HlsQuality[];
+  autoQuality: boolean;
   subtitleTracks: HlsSubtitleTrack[];
   audioTracks: HlsAudioTrack[];
 };
@@ -54,7 +56,13 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
     super();
 
     hls.once(Hls.Events.BUFFER_CREATED, () => {
-      this.syncState_();
+      this.syncTimings_();
+    });
+
+    hls.on(Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED, (_, data) => {
+      data.player.once(Hls.Events.BUFFER_CREATED, () => {
+        this.syncTimings_();
+      });
     });
 
     hls.on(Hls.Events.LEVEL_SWITCHING, () => {
@@ -65,14 +73,12 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
       this.syncAudioTracks_();
     });
 
-    hls.on(Hls.Events.SUBTITLE_TRACK_SWITCH, () => {
+    hls.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, () => {
       this.syncSubtitleTracks_();
     });
 
-    hls.on(Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED, (_, data) => {
-      data.player.once(Hls.Events.BUFFER_CREATED, () => {
-        this.syncState_();
-      });
+    hls.on(Hls.Events.SUBTITLE_TRACK_SWITCH, () => {
+      this.syncSubtitleTracks_();
     });
 
     hls.on(Hls.Events.INTERSTITIAL_STARTED, (_, data) => {
@@ -115,18 +121,10 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
     interstitial: null,
     cuePoints: [],
     qualities: [],
+    autoQuality: this.hls.autoLevelEnabled,
     subtitleTracks: [],
     audioTracks: [],
   };
-
-  private onTick_() {
-    const { integrated } = this.getInterstitialsManager_();
-
-    this.setState_({
-      time: { $set: integrated.currentTime },
-      seekRange: { $set: { start: 0, end: integrated.duration } },
-    });
-  }
 
   playOrPause() {
     const media = this.getMedia_();
@@ -152,27 +150,18 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
   }
 
   setQuality(id: number | null) {
-    if (id) {
-      this.hls.nextLevel = id - 1;
-    } else {
-      this.hls.nextLevel = -1;
-    }
+    this.setState_({
+      autoQuality: { $set: id === null },
+    });
+    this.hls.nextLevel = id ? id - 1 : -1;
   }
 
   setSubtitleTrack(id: number | null) {
-    if (id) {
-      this.hls.subtitleTrack = id - 1;
-    } else {
-      this.hls.subtitleTrack = -1;
-    }
+    this.hls.subtitleTrack = id ? id - 1 : -1;
   }
 
   setAudioTrack(id: number | null) {
-    if (id) {
-      this.hls.audioTrack = id - 1;
-    } else {
-      this.hls.audioTrack = -1;
-    }
+    this.hls.audioTrack = id ? id - 1 : -1;
   }
 
   private setState_(spec: Spec<HlsState>) {
@@ -200,20 +189,30 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
     return media;
   }
 
-  private syncState_() {
+  private syncTimings_() {
     clearInterval(this.intervalId_);
-    this.intervalId_ = setInterval(() => this.onTick_(), 500);
-    this.onTick_();
+
+    const onTick = () => {
+      const { integrated } = this.getInterstitialsManager_();
+
+      this.setState_({
+        time: { $set: integrated.currentTime },
+        seekRange: { $merge: { start: 0, end: integrated.duration } },
+      });
+    };
+
+    this.intervalId_ = setInterval(onTick, 500);
+    onTick();
   }
 
   private syncQualities_() {
     const qualities = this.hls.levels.map<HlsQuality>((level, index) => ({
       id: index + 1,
-      height: level.height ?? 0,
       active: index === this.hls.nextLoadLevel,
+      level,
     }));
 
-    qualities.sort((a, b) => b.height - a.height);
+    qualities.sort((a, b) => b.level.height - a.level.height);
 
     this.setState_({
       qualities: { $set: qualities },
@@ -224,8 +223,8 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
     const audioTracks = this.hls.audioTracks.map<HlsAudioTrack>(
       (audioTrack, index) => ({
         id: index + 1,
-        name: audioTrack.name,
         active: index === this.hls.audioTrack,
+        playlist: audioTrack,
       }),
     );
 
@@ -238,8 +237,8 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
     const subtitleTracks = this.hls.subtitleTracks.map<HlsSubtitleTrack>(
       (subtitleTrack, index) => ({
         id: index + 1,
-        name: subtitleTrack.name,
         active: index === this.hls.subtitleTrack,
+        playlist: subtitleTrack,
       }),
     );
 

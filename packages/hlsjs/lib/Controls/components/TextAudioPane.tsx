@@ -1,6 +1,7 @@
 import { CheckList } from "./CheckList";
 import { Pane } from "./Pane";
 import type { HlsFacade, HlsState } from "../../main";
+import type { CheckListItem } from "./CheckList";
 
 type QualitiesPaneProps = {
   state: HlsState;
@@ -8,25 +9,33 @@ type QualitiesPaneProps = {
 };
 
 export function TextAudioPane({ facade, state }: QualitiesPaneProps) {
+  const subtitleItems = state.subtitleTracks.map<CheckListItem>((it) => ({
+    id: it.id,
+    label: toLang(it.playlist.name),
+    checked: it.active,
+  }));
+
+  subtitleItems.push({
+    id: null,
+    label: "None",
+    checked: !state.subtitleTracks.some((it) => it.active),
+  });
+
   return (
     <div className="mix-textaudiopane">
       <Pane title="Subtitles">
         <CheckList
           onSelect={(id) => facade.setSubtitleTrack(id)}
-          items={state.subtitleTracks.map((subtitleTrack) => ({
-            id: subtitleTrack.id,
-            label: toLang(subtitleTrack.name),
-            checked: subtitleTrack.active,
-          }))}
+          items={subtitleItems}
         />
       </Pane>
       <Pane title="Audio">
         <CheckList
           onSelect={(id) => facade.setAudioTrack(id)}
-          items={state.audioTracks.map((audioTrack) => ({
-            id: audioTrack.id,
-            label: toLang(audioTrack.name),
-            checked: audioTrack.active,
+          items={state.audioTracks.map((it) => ({
+            id: it.id,
+            label: toLang(it.playlist.name),
+            checked: it.active,
           }))}
         />
       </Pane>

@@ -14,7 +14,7 @@ Object.assign(window, { facade });
 // hls.config.startPosition = 10;
 
 hls.loadSource(
-  "http://127.0.0.1:52002/session/6371e172-bf65-4e7c-a0bd-b167c1256ba0/master.m3u8",
+  "https://streamer.ams3.cdn.digitaloceanspaces.com/package/293e9584-f5b0-4d43-a365-ac1c5e232af8/hls/master.m3u8",
 );
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);

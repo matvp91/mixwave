@@ -2,6 +2,8 @@ import { SettingsMode } from "../hooks/useSettings";
 import { useLayoutEffect, useRef } from "react";
 import cn from "clsx";
 import { SettingsPane } from "./SettingsPane";
+import { QualitiesPane } from "./QualitiesPane";
+import { TextAudioPane } from "./TextAudioPane";
 import type { HlsFacade, HlsState } from "../../main";
 
 type SettingsProps = {
@@ -59,19 +61,10 @@ export function Settings({ facade, state, mode }: SettingsProps) {
       ref={ref}
     >
       <SettingsPane active={lastMode === "quality"}>
-        {state.qualities.map((quality) => (
-          <div
-            key={quality.id}
-            onClick={() => {
-              facade.setQuality(quality.id);
-            }}
-          >
-            {quality.active ? "•" : ""} {quality.height}p
-          </div>
-        ))}
+        <QualitiesPane facade={facade} state={state} />
       </SettingsPane>
       <SettingsPane active={lastMode === "text-audio"}>
-        Audio and text
+        <TextAudioPane facade={facade} state={state} />
       </SettingsPane>
     </div>
   );

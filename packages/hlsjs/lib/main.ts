@@ -15,6 +15,18 @@ export type HlsQuality = {
   active: boolean;
 };
 
+export type HlsSubtitleTrack = {
+  id: number;
+  name: string;
+  active: boolean;
+};
+
+export type HlsAudioTrack = {
+  id: number;
+  name: string;
+  active: boolean;
+};
+
 export type HlsState = {
   playheadState: "idle" | "play" | "pause";
   time: number;
@@ -22,6 +34,8 @@ export type HlsState = {
   interstitial: HlsInterstitial | null;
   cuePoints: number[];
   qualities: HlsQuality[];
+  subtitleTracks: HlsSubtitleTrack[];
+  audioTracks: HlsAudioTrack[];
 };
 
 export type HlsFacadeEvent = {
@@ -40,6 +54,14 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
 
     hls.on(Hls.Events.LEVEL_SWITCHING, () => {
       this.syncQualities_();
+    });
+
+    hls.on(Hls.Events.AUDIO_TRACK_SWITCHING, () => {
+      this.syncAudioTracks_();
+    });
+
+    hls.on(Hls.Events.SUBTITLE_TRACK_SWITCH, () => {
+      this.syncSubtitleTracks_();
     });
 
     hls.on(Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED, (_, data) => {
@@ -88,6 +110,8 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
     interstitial: null,
     cuePoints: [],
     qualities: [],
+    textTracks: [],
+    audioTracks: [],
   };
 
   private onTick_() {
@@ -130,6 +154,22 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
     }
   }
 
+  setSubtitleTrack(id: number | null) {
+    if (id) {
+      this.hls.subtitleTrack = id - 1;
+    } else {
+      this.hls.subtitleTrack = -1;
+    }
+  }
+
+  setAudioTrack(id: number | null) {
+    if (id) {
+      this.hls.audioTrack = id - 1;
+    } else {
+      this.hls.audioTrack = -1;
+    }
+  }
+
   private setState_(spec: Spec<HlsState>) {
     const nextState = update(this.state, spec);
     if (nextState !== this.state) {
@@ -168,8 +208,38 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
       active: index === this.hls.nextLoadLevel,
     }));
 
+    qualities.sort((a, b) => b.height - a.height);
+
     this.setState_({
       qualities: { $set: qualities },
+    });
+  }
+
+  private syncAudioTracks_() {
+    const audioTracks = this.hls.audioTracks.map<HlsAudioTrack>(
+      (audioTrack, index) => ({
+        id: index + 1,
+        name: audioTrack.name,
+        active: index === this.hls.audioTrack,
+      }),
+    );
+
+    this.setState_({
+      audioTracks: { $set: audioTracks },
+    });
+  }
+
+  private syncSubtitleTracks_() {
+    const subtitleTracks = this.hls.subtitleTracks.map<HlsSubtitleTrack>(
+      (subtitleTrack, index) => ({
+        id: index + 1,
+        name: subtitleTrack.name,
+        active: index === this.hls.subtitleTrack,
+      }),
+    );
+
+    this.setState_({
+      subtitleTracks: { $set: subtitleTracks },
     });
   }
 }

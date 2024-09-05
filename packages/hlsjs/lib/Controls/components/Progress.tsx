@@ -49,13 +49,19 @@ export function Progress({ state, onSeeked }: ProgressProps) {
 
   const progress = seeking ? value : time;
 
+  const duration = state.seekRange.end - state.seekRange.start;
+
+  if (!duration) {
+    return null;
+  }
+
   return (
     <div className="mix-progress">
       <input
         className="mix-progress-range"
         type="range"
-        min={0}
-        max={state.duration}
+        min={state.seekRange.start}
+        max={state.seekRange.end}
         step={0.1}
         value={progress}
         onChange={onChange}
@@ -66,14 +72,14 @@ export function Progress({ state, onSeeked }: ProgressProps) {
       <div
         className="mix-progress-value"
         style={{
-          width: `${(progress / state.duration) * 100}%`,
+          width: `${(progress / duration) * 100}%`,
         }}
       />
       {state.cuePoints.map((cuePoint) => (
         <div
           key={cuePoint}
           className="mix-progress-cuepoint"
-          style={{ left: `${(cuePoint / state.duration) * 100}%` }}
+          style={{ left: `${(cuePoint / duration) * 100}%` }}
         />
       ))}
     </div>

@@ -8,8 +8,8 @@ import SubtitlesIcon from "../icons/subtitles.svg?react";
 import { useVisible } from "../hooks/useVisible";
 import { Settings } from "./Settings";
 import { useSettings } from "../hooks/useSettings";
-import type { HlsState, HlsFacade } from "../../main";
 import { SqButton } from "./SqButton";
+import type { HlsState, HlsFacade } from "../../main";
 
 type ControlsProps = {
   facade: HlsFacade;
@@ -27,10 +27,6 @@ export function Controls({ facade }: ControlsProps) {
       facade.off("*", update);
     };
   }, [facade]);
-
-  if (!Number.isFinite(state.duration)) {
-    return null;
-  }
 
   return (
     <>

@@ -27,10 +27,15 @@ export type HlsAudioTrack = {
   active: boolean;
 };
 
+export type HlsSeekRange = {
+  start: number;
+  end: number;
+};
+
 export type HlsState = {
   playheadState: "idle" | "play" | "pause";
   time: number;
-  duration: number;
+  seekRange: HlsSeekRange;
   interstitial: HlsInterstitial | null;
   cuePoints: number[];
   qualities: HlsQuality[];
@@ -105,12 +110,12 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
 
   state: HlsState = {
     playheadState: "idle",
-    time: NaN,
-    duration: NaN,
+    time: 0,
+    seekRange: { start: 0, end: 0 },
     interstitial: null,
     cuePoints: [],
     qualities: [],
-    textTracks: [],
+    subtitleTracks: [],
     audioTracks: [],
   };
 
@@ -119,7 +124,7 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
 
     this.setState_({
       time: { $set: integrated.currentTime },
-      duration: { $set: integrated.duration },
+      seekRange: { $set: { start: 0, end: integrated.duration } },
     });
   }
 

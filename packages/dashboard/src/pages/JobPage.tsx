@@ -17,7 +17,7 @@ export function JobPage() {
   const { job, rootJob } = result;
 
   return (
-    <div className="min-h-full flex flex-col grow bg-white">
+    <div className="min-h-full flex flex-col grow">
       <div className="p-2 border-b border-border">
         <Button asChild variant="ghost">
           <Link to="/jobs">Jobs</Link>

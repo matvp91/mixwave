@@ -1,0 +1,36 @@
+.mix-controls {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  opacity: 0;
+  transition: opacity 165ms ease-in-out;
+  z-index: 10;
+
+  &:after {
+    content: "";
+    pointer-events: none;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.8), transparent);
+    position: absolute;
+    left: 0;
+    width: 100%;
+    bottom: 0;
+    height: 300%;
+    z-index: -6;
+  }
+
+  &.mix-controls--visible {
+    opacity: 1;
+  }
+}
+
+.mix-controls-buttons {
+  display: flex;
+  column-gap: 1em;
+  height: 4em;
+  margin: 0 1.5em;
+}
+
+.mix-controls-gutter {
+  flex-grow: 1;
+}

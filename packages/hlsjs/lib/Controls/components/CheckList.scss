@@ -1,0 +1,20 @@
+.mix-checklist {
+  min-width: 5em;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mix-checklist-item {
+  height: 2.5em;
+  display: flex;
+  align-items: center;
+  border-radius: 0.25em;
+  padding: 0 1em;
+  transition: background-color 100ms ease-in-out;
+  cursor: pointer;
+
+  &.mix-checklist-item--active {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}

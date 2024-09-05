@@ -40,6 +40,16 @@ export async function formatMasterPlaylist(session: Session) {
     return variant.resolution.height <= session.maxResolution;
   });
 
+  const filePath = parseFilepath(url);
+  for (const v of master.variants) {
+    for (const audioRendition of v.audio) {
+      audioRendition.uri = `${filePath.dir}/${audioRendition.uri}`;
+    }
+    for (const subtitleRendition of v.subtitles) {
+      subtitleRendition.uri = `${filePath.dir}/${subtitleRendition.uri}`;
+    }
+  }
+
   if (!master.variants.length) {
     throw new NoVariantsError();
   }

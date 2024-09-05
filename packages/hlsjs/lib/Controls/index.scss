@@ -1,0 +1,25 @@
+$size: 1em;
+$size-sm: 0.85em;
+
+@import "./components//Controls.scss";
+@import "./components/Progress.scss";
+@import "./components//Settings.scss";
+@import "./components/SettingsPane.scss";
+@import "./components/CheckList.scss";
+@import "./components/Pane.scss";
+@import "./components/TextAudioPane.scss";
+@import "./components/SqButton.scss";
+
+.mix-container {
+  aspect-ratio: 16 / 9;
+  position: relative;
+  background-color: #000000;
+  overflow: hidden;
+
+  video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+}

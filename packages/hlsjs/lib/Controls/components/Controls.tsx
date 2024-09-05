@@ -9,6 +9,7 @@ import { useVisible } from "../hooks/useVisible";
 import { Settings } from "./Settings";
 import { useSettings } from "../hooks/useSettings";
 import type { HlsState, HlsFacade } from "../../main";
+import { SqButton } from "./SqButton";
 
 type ControlsProps = {
   facade: HlsFacade;
@@ -46,25 +47,16 @@ export function Controls({ facade }: ControlsProps) {
           />
         ) : null}
         <div className="mix-controls-buttons">
-          <button
-            className="mix-controls-button"
-            onClick={() => facade.playOrPause()}
-          >
+          <SqButton onClick={() => facade.playOrPause()}>
             {state.playheadState === "play" ? <PauseIcon /> : <PlayIcon />}
-          </button>
+          </SqButton>
           <div className="mix-controls-gutter" />
-          <button
-            className="mix-controls-button"
-            onClick={() => setSettingsMode("text-audio")}
-          >
+          <SqButton onClick={() => setSettingsMode("text-audio")}>
             <SubtitlesIcon />
-          </button>
-          <button
-            className="mix-controls-button"
-            onClick={() => setSettingsMode("quality")}
-          >
+          </SqButton>
+          <SqButton onClick={() => setSettingsMode("quality")}>
             <SettingsIcon />
-          </button>
+          </SqButton>
         </div>
       </div>
       <Settings facade={facade} state={state} mode={settingsMode} />

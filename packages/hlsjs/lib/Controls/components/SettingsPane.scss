@@ -2,9 +2,6 @@
   pointer-events: none;
   transition: opacity 150ms ease;
   opacity: 0;
-  border-radius: 0.25em;
-  background-color: rgba(0, 0, 0, 0.75);
-  color: #ffffff;
 
   &.mix-settings-pane--active {
     pointer-events: all;

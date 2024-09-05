@@ -11,6 +11,11 @@
   pointer-events: none;
   opacity: 0;
 
+  background-color: rgba(0, 0, 0, 0.85);
+  color: #ffffff;
+
+  border-radius: 0.25em;
+
   &.mix-settings--visible {
     opacity: 1;
     pointer-events: all;

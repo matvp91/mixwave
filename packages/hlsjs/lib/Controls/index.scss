@@ -5,11 +5,13 @@
 @import "./components/CheckList.scss";
 @import "./components/Pane.scss";
 @import "./components/TextAudioPane.scss";
+@import "./components/SqButton.scss";
 
 .mix-container {
   aspect-ratio: 16 / 9;
   position: relative;
   background-color: #000000;
+  overflow: hidden;
 
   video {
     position: absolute;

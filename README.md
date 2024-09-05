@@ -17,6 +17,9 @@
   <a href="#">
     <img src="https://img.shields.io/github/stars/matvp91/mixwave" alt="stars">
   </a>
+  <a href="#">
+    <img src="https://img.shields.io/badge/PR's-welcome-0437F2" alt="pr">
+  </a>
 </p>
 
 Mixwave is a self hostable platform that aims to simplify the complexities of video delivery. Transcode and package your media for online streaming with simple API calls and sane defaults. Craft dynamic HLS playlists on the fly.

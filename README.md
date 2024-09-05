@@ -52,4 +52,4 @@ There's more info in the [Getting Started](https://matvp91.github.io/mixwave/get
 
 ## Sponsor
 
-Every bit counts, your contribution means the world to us! Mixwave is a free, side project. Consider sponsoring if it brings you value or you feel like supporting our open source work. ❤️
+Every bit counts, your contribution means the world to us! Mixwave is a project we work on in our free time. Consider sponsoring if it brings you value or you feel like supporting our open source work. ❤️

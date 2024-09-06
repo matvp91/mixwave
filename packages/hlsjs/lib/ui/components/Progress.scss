@@ -9,7 +9,7 @@
 .mix-progress-value {
   position: absolute;
   left: 0;
-  background-color: #ffffff;
+  background-color: #7f00ff;
   height: 0.25em;
 }
 
@@ -39,7 +39,7 @@
   transform: translateX(-50%);
   bottom: 3em;
   opacity: 0;
-  transition: opacity 250ms ease;
+  transition: opacity 150ms ease;
   height: 2em;
   padding: 0 1em;
   display: flex;

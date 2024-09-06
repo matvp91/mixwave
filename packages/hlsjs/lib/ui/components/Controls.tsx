@@ -10,6 +10,7 @@ import { SqButton } from "./SqButton";
 import { useSettings } from "../hooks/useSettings";
 import { TimeStat } from "./TimeStat";
 import type { HlsState, HlsFacade } from "../../main";
+import { useTime } from "../hooks/useTime";
 
 type ControlsProps = {
   facade: HlsFacade;
@@ -29,6 +30,8 @@ export function Controls({ facade, state }: ControlsProps) {
     controlsVisible = true;
   }
 
+  const [time, setTargetTime] = useTime(state.time);
+
   return (
     <>
       <div
@@ -41,12 +44,14 @@ export function Controls({ facade, state }: ControlsProps) {
         {showSeekbar(state) ? (
           <div className="mix-controls-progress">
             <Progress
+              time={time}
               state={state}
               onSeeked={(time) => {
+                setTargetTime(time);
                 facade.seekTo(time);
               }}
             />
-            <TimeStat state={state} />
+            <TimeStat time={time} state={state} />
           </div>
         ) : null}
         <div className="mix-controls-bottom">
@@ -81,6 +86,9 @@ export function Controls({ facade, state }: ControlsProps) {
 }
 
 function showSeekbar(state: HlsState) {
+  if (!state.duration) {
+    return false;
+  }
   if (state.interstitial && !state.interstitial.seekAllowed) {
     return false;
   }

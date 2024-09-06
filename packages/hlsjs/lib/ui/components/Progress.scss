@@ -67,3 +67,22 @@
   border-radius: 100%;
   border: 0.125em solid #000000;
 }
+
+.mix-progress-tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.95);
+  color: #ffffff;
+  border-radius: 0.25em;
+  transform: translateX(-50%);
+  bottom: 3em;
+  opacity: 0;
+  transition: opacity 250ms ease;
+  height: 2em;
+  padding: 0 1em;
+  display: flex;
+  align-items: center;
+
+  &.mix-progress-tooltip--active {
+    opacity: 1;
+  }
+}

@@ -28,15 +28,10 @@ export type HlsAudioTrack = {
   playlist: MediaPlaylist;
 };
 
-export type HlsSeekRange = {
-  start: number;
-  end: number;
-};
-
 export type HlsState = {
-  playheadState: "idle" | "play" | "pause";
+  playheadState: "idle" | "play" | "pause" | "ended";
   time: number;
-  seekRange: HlsSeekRange;
+  duration: number;
   interstitial: HlsInterstitial | null;
   cuePoints: number[];
   qualities: HlsQuality[];
@@ -49,13 +44,44 @@ export type HlsFacadeEvent = {
   "*": () => void;
 };
 
+const defaultState: HlsState = {
+  playheadState: "idle",
+  time: 0,
+  duration: 0,
+  interstitial: null,
+  cuePoints: [],
+  qualities: [],
+  autoQuality: false,
+  subtitleTracks: [],
+  audioTracks: [],
+};
+
 export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
   private intervalId_: number | undefined;
 
   constructor(public hls: Hls) {
     super();
 
+    const { media } = hls;
+    if (!media) {
+      throw new HlsFacadeNoMedia();
+    }
+
+    hls.on(Hls.Events.BUFFER_RESET, () => {
+      media.removeAttribute("autoplay");
+      this.setState_({ $set: defaultState });
+    });
+
+    media.addEventListener("play", () => this.syncTimings_());
+
+    media.addEventListener("seeked", () => this.syncTimings_());
+
+    media.addEventListener("playing", () => this.syncTimings_(true));
+
     hls.once(Hls.Events.BUFFER_CREATED, () => {
+      this.setState_({
+        autoQuality: { $set: this.hls.autoLevelEnabled },
+      });
       this.syncTimings_();
     });
 
@@ -108,23 +134,22 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
         },
       });
     });
+
+    hls.on(Hls.Events.MEDIA_ENDED, () => {
+      this.syncTimings_(false);
+
+      this.setState_({
+        playheadState: { $set: "ended" },
+        time: { $set: this.state.duration },
+      });
+    });
   }
 
   destroy() {
     clearInterval(this.intervalId_);
   }
 
-  state: HlsState = {
-    playheadState: "idle",
-    time: 0,
-    seekRange: { start: 0, end: 0 },
-    interstitial: null,
-    cuePoints: [],
-    qualities: [],
-    autoQuality: this.hls.autoLevelEnabled,
-    subtitleTracks: [],
-    audioTracks: [],
-  };
+  state: HlsState = defaultState;
 
   playOrPause() {
     const media = this.getMedia_();
@@ -168,8 +193,8 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
     const nextState = update(this.state, spec);
     if (nextState !== this.state) {
       this.state = nextState;
+      this.emit("*");
     }
-    this.emit("*");
   }
 
   private getInterstitialsManager_() {
@@ -189,20 +214,23 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
     return media;
   }
 
-  private syncTimings_() {
+  private syncTimings_(repeat?: boolean) {
     clearInterval(this.intervalId_);
 
     const onTick = () => {
       const { integrated } = this.getInterstitialsManager_();
 
       this.setState_({
-        time: { $set: integrated.currentTime },
-        seekRange: { $merge: { start: 0, end: integrated.duration } },
+        time: { $set: precise(integrated.currentTime) },
+        duration: { $set: precise(integrated.duration) },
       });
     };
 
-    this.intervalId_ = setInterval(onTick, 500);
-    onTick();
+    if (repeat === undefined) {
+      onTick();
+    } else if (repeat === true) {
+      this.intervalId_ = setInterval(onTick, 500);
+    }
   }
 
   private syncQualities_() {
@@ -258,4 +286,8 @@ export class HlsFacadeNoInterstitialsManager extends Error {
   constructor() {
     super("No interstitials manager found");
   }
+}
+
+function precise(value: number) {
+  return Math.round((value + Number.EPSILON) * 100) / 100;
 }

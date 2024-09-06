@@ -9,3 +9,5 @@ Using https://www.svgrepo.com/collection/solar-broken-line-icons for icons.
 - When interstitials startTime is beyond the end of the content duration, there are stalls sometimes and content stops buffering. This can be replicated manually when setting interstitials further away.
 
 - Selecting audio and quality during interstitials works for the main asset, but subtitles not.
+
+- Seeking to `this.getInterstitialsManager_().integrated.duration` does not work properly.

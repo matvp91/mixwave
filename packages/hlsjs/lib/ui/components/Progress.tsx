@@ -1,20 +1,18 @@
-import { PointerEventHandler, useRef, useState } from "react";
-import { useDelta } from "../hooks/useDelta";
+import { PointerEventHandler, useState } from "react";
+import { toHMS } from "../utils";
+import cn from "clsx";
 import type { ChangeEventHandler } from "react";
 import type { HlsState } from "../../main";
 
 type ProgressProps = {
+  time: number;
   state: HlsState;
   onSeeked(value: number): void;
 };
 
-export function Progress({ state, onSeeked }: ProgressProps) {
+export function Progress({ time, state, onSeeked }: ProgressProps) {
   const [seeking, setSeeking] = useState(false);
-  const [value, setValue] = useState(state.time);
-
-  const deltaTime = useDelta(state.time);
-
-  const lastSeekRef = useRef<number | null>(null);
+  const [value, setValue] = useState(0);
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setValue(event.target.valueAsNumber);
@@ -27,41 +25,30 @@ export function Progress({ state, onSeeked }: ProgressProps) {
 
   const onPointerUp: PointerEventHandler<HTMLInputElement> = (event) => {
     const targetTime = event.currentTarget.valueAsNumber;
-
-    lastSeekRef.current = targetTime;
-
-    setSeeking(false);
     onSeeked(targetTime);
+    setSeeking(false);
   };
-
-  let time = state.time;
-
-  if (lastSeekRef.current !== null) {
-    // When we have a positive delta, thus we're increasing in time
-    // and the time is larger than lastSeek, we no longer need to overwrite
-    // the value.
-    if (deltaTime && time > lastSeekRef.current) {
-      lastSeekRef.current = null;
-    } else {
-      time = lastSeekRef.current;
-    }
-  }
 
   const progress = seeking ? value : time;
 
-  const duration = state.seekRange.end - state.seekRange.start;
-
-  if (!duration) {
-    return null;
-  }
-
   return (
     <div className="mix-progress">
+      <div
+        className={cn(
+          "mix-progress-tooltip",
+          seeking && "mix-progress-tooltip--active",
+        )}
+        style={{
+          left: `${(value / state.duration) * 100}%`,
+        }}
+      >
+        {toHMS(value)}
+      </div>
       <input
         className="mix-progress-range"
         type="range"
-        min={state.seekRange.start}
-        max={state.seekRange.end}
+        min={0}
+        max={state.duration}
         step={0.1}
         value={progress}
         onChange={onChange}
@@ -72,14 +59,14 @@ export function Progress({ state, onSeeked }: ProgressProps) {
       <div
         className="mix-progress-value"
         style={{
-          width: `${(progress / duration) * 100}%`,
+          width: `${(progress / state.duration) * 100}%`,
         }}
       />
       {state.cuePoints.map((cuePoint) => (
         <div
           key={cuePoint}
           className="mix-progress-cuepoint"
-          style={{ left: `${(cuePoint / duration) * 100}%` }}
+          style={{ left: `${(cuePoint / state.duration) * 100}%` }}
         />
       ))}
     </div>

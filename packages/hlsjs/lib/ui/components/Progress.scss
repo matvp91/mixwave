@@ -9,7 +9,7 @@
 .mix-progress-value {
   position: absolute;
   left: 0;
-  background-color: #7f00ff;
+  background-color: #ffffff;
   height: 0.25em;
 }
 
@@ -25,10 +25,9 @@
   width: 0.75em;
   height: 0.75em;
   background-color: #ffd32c;
-  top: 50%;
-  transform: translate(-50%, -50%);
   border-radius: 100%;
   border: 0.125em solid #000000;
+  transform: translateX(-50%);
 }
 
 .mix-progress-tooltip {
@@ -66,6 +65,7 @@
   border-radius: 100%;
   transform: translateX(-50%);
   transition: box-shadow 250ms ease-in-out;
+  z-index: 10;
 
   &.mix-progress-scrubber--active {
     box-shadow:

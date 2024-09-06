@@ -4,7 +4,7 @@ import EventEmitter from "eventemitter3";
 import type { Spec } from "immutability-helper";
 import type { Level, MediaPlaylist } from "hls.js";
 
-export { Controls as HlsControls } from "./Controls";
+export { Root as HlsUi } from "./ui";
 
 export type HlsInterstitial = {
   seekAllowed: boolean;

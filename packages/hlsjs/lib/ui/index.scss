@@ -9,6 +9,7 @@ $size-sm: 0.85em;
 @import "./components/Pane.scss";
 @import "./components/TextAudioPane.scss";
 @import "./components/SqButton.scss";
+@import "./components/TimeStat.scss";
 
 .mix-container {
   aspect-ratio: 16 / 9;

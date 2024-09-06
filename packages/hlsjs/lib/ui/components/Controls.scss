@@ -24,7 +24,7 @@
   }
 }
 
-.mix-controls-buttons {
+.mix-controls-bottom {
   display: flex;
   column-gap: 1em;
   height: 4em;
@@ -33,4 +33,8 @@
 
 .mix-controls-gutter {
   flex-grow: 1;
+}
+
+.mix-controls-progress {
+  display: flex;
 }

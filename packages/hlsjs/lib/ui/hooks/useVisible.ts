@@ -6,6 +6,16 @@ export function useVisible() {
 
   const [visible, setVisible] = useState(false);
 
+  const onPointerMove = () => {
+    clearTimeout(ref.current);
+
+    setVisible(true);
+
+    ref.current = setTimeout(() => {
+      setVisible(false);
+    }, 3000);
+  };
+
   useEffect(() => {
     const container = elementRef.current?.closest(".mix-container") as
       | HTMLDivElement
@@ -14,16 +24,6 @@ export function useVisible() {
     if (!container) {
       return;
     }
-
-    const onPointerMove = () => {
-      clearTimeout(ref.current);
-
-      setVisible(true);
-
-      ref.current = setTimeout(() => {
-        setVisible(false);
-      }, 3000);
-    };
 
     const onPointerLeave = () => {
       clearTimeout(ref.current);
@@ -39,8 +39,13 @@ export function useVisible() {
     };
   }, []);
 
+  const nudge = () => {
+    onPointerMove();
+  };
+
   return {
     visible,
     elementRef,
+    nudge,
   };
 }

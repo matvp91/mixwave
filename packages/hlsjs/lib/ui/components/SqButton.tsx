@@ -6,11 +6,17 @@ type SqButtonProps = {
   selected?: boolean;
 };
 
-export function SqButton({ children, onClick, selected }: SqButtonProps) {
+export function SqButton({
+  children,
+  onClick,
+  selected,
+  ...rest
+}: SqButtonProps) {
   return (
     <button
       className={cn("mix-sqbutton", selected && "mix-sqbutton--selected")}
       onClick={onClick}
+      {...rest}
     >
       {children}
     </button>

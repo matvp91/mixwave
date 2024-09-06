@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import cn from "clsx";
 import { Progress } from "./Progress";
 import PlayIcon from "../icons/play.svg?react";
@@ -7,42 +6,50 @@ import SettingsIcon from "../icons/settings.svg?react";
 import SubtitlesIcon from "../icons/subtitles.svg?react";
 import { useVisible } from "../hooks/useVisible";
 import { Settings } from "./Settings";
-import { useSettings } from "../hooks/useSettings";
 import { SqButton } from "./SqButton";
+import { useSettings } from "../hooks/useSettings";
+import { TimeStat } from "./TimeStat";
 import type { HlsState, HlsFacade } from "../../main";
 
 type ControlsProps = {
   facade: HlsFacade;
+  state: HlsState;
 };
 
-export function Controls({ facade }: ControlsProps) {
-  const [state, setState] = useState<HlsState>(facade.state);
-  const { visible, elementRef } = useVisible();
-  const [settingsMode, setSettingsMode] = useSettings();
+export function Controls({ facade, state }: ControlsProps) {
+  const { visible, elementRef, nudge } = useVisible();
+  const [settingsMode, setSettingsMode] = useSettings({
+    onChange: () => {
+      nudge();
+    },
+  });
 
-  useEffect(() => {
-    const update = () => setState(facade.state);
-    facade.on("*", update);
-    return () => {
-      facade.off("*", update);
-    };
-  }, [facade]);
+  let controlsVisible = visible;
+  if (settingsMode) {
+    controlsVisible = true;
+  }
 
   return (
     <>
       <div
         ref={elementRef}
-        className={cn("mix-controls", visible && "mix-controls--visible")}
+        className={cn(
+          "mix-controls",
+          controlsVisible && "mix-controls--visible",
+        )}
       >
         {showSeekbar(state) ? (
-          <Progress
-            state={state}
-            onSeeked={(time) => {
-              facade.seekTo(time);
-            }}
-          />
+          <div className="mix-controls-progress">
+            <Progress
+              state={state}
+              onSeeked={(time) => {
+                facade.seekTo(time);
+              }}
+            />
+            <TimeStat state={state} />
+          </div>
         ) : null}
-        <div className="mix-controls-buttons">
+        <div className="mix-controls-bottom">
           <SqButton onClick={() => facade.playOrPause()}>
             {state.playheadState === "play" ? <PauseIcon /> : <PlayIcon />}
           </SqButton>
@@ -50,18 +57,25 @@ export function Controls({ facade }: ControlsProps) {
           <SqButton
             onClick={() => setSettingsMode("text-audio")}
             selected={settingsMode === "text-audio"}
+            data-settings-action
           >
             <SubtitlesIcon />
           </SqButton>
           <SqButton
             onClick={() => setSettingsMode("quality")}
             selected={settingsMode === "quality"}
+            data-settings-action
           >
             <SettingsIcon />
           </SqButton>
         </div>
       </div>
-      <Settings facade={facade} state={state} mode={settingsMode} />
+      <Settings
+        facade={facade}
+        state={state}
+        mode={settingsMode}
+        onClose={() => setSettingsMode(null)}
+      />
     </>
   );
 }

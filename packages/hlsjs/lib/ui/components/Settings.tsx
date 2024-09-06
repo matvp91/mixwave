@@ -11,9 +11,10 @@ type SettingsProps = {
   facade: HlsFacade;
   state: HlsState;
   mode: SettingsMode | null;
+  onClose(): void;
 };
 
-export function Settings({ facade, state, mode }: SettingsProps) {
+export function Settings({ facade, state, mode, onClose }: SettingsProps) {
   const ref = useRef<HTMLDivElement>(null);
   const lastModeRef = useRef<SettingsMode>();
   const modePrev = usePrevious(mode);
@@ -32,6 +33,38 @@ export function Settings({ facade, state, mode }: SettingsProps) {
       }
     }
   }, [modePrev, mode]);
+
+  useEffect(() => {
+    if (mode === null) {
+      return;
+    }
+
+    const onPointerDown = (event: MouseEvent) => {
+      const element = event.target as HTMLElement;
+
+      const SETTINGS_ACTION_ATTR = "data-settings-action";
+      if (
+        element.hasAttribute(SETTINGS_ACTION_ATTR) ||
+        element.closest("button")?.hasAttribute(SETTINGS_ACTION_ATTR)
+      ) {
+        return;
+      }
+
+      const isOver = element
+        .closest(".mix-container")
+        ?.querySelector(".mix-settings")
+        ?.contains(element);
+
+      if (!isOver) {
+        onClose();
+      }
+    };
+
+    window.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      window.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [mode, onClose]);
 
   useLayoutEffect(() => {
     const element = ref.current;

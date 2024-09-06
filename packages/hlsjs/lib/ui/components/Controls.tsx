@@ -43,14 +43,16 @@ export function Controls({ facade, state }: ControlsProps) {
       >
         {showSeekbar(state) ? (
           <div className="mix-controls-progress">
-            <Progress
-              time={time}
-              state={state}
-              onSeeked={(time) => {
-                setTargetTime(time);
-                facade.seekTo(time);
-              }}
-            />
+            <div className="mix-controls-progress-container">
+              <Progress
+                time={time}
+                state={state}
+                onSeeked={(time) => {
+                  setTargetTime(time);
+                  facade.seekTo(time);
+                }}
+              />
+            </div>
             <TimeStat time={time} state={state} />
           </div>
         ) : null}

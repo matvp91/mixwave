@@ -38,3 +38,8 @@
 .mix-controls-progress {
   display: flex;
 }
+
+.mix-controls-progress-container {
+  flex-grow: 1;
+  margin: 0 1.5em;
+}

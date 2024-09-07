@@ -9,5 +9,9 @@ type RootProps = {
 export function Root({ facade }: RootProps) {
   const state = useHlsState(facade);
 
+  if (!state.duration) {
+    return null;
+  }
+
   return <Controls facade={facade} state={state} />;
 }

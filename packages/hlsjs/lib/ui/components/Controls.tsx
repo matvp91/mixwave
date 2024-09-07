@@ -4,11 +4,13 @@ import PlayIcon from "../icons/play.svg?react";
 import PauseIcon from "../icons/pause.svg?react";
 import SettingsIcon from "../icons/settings.svg?react";
 import SubtitlesIcon from "../icons/subtitles.svg?react";
+import ForwardIcon from "../icons/forward.svg?react";
 import { useVisible } from "../hooks/useVisible";
 import { Settings } from "./Settings";
 import { SqButton } from "./SqButton";
 import { useSettings } from "../hooks/useSettings";
 import { TimeStat } from "./TimeStat";
+import { useTime } from "../hooks/useTime";
 import type { HlsState, HlsFacade } from "../../main";
 
 type ControlsProps = {
@@ -29,6 +31,8 @@ export function Controls({ facade, state }: ControlsProps) {
     controlsVisible = true;
   }
 
+  const [time, setTargetTime] = useTime(state.time);
+
   return (
     <>
       <div
@@ -40,18 +44,35 @@ export function Controls({ facade, state }: ControlsProps) {
       >
         {showSeekbar(state) ? (
           <div className="mix-controls-progress">
-            <Progress
-              state={state}
-              onSeeked={(time) => {
-                facade.seekTo(time);
-              }}
-            />
-            <TimeStat state={state} />
+            <div className="mix-controls-progress-container">
+              <Progress
+                time={time}
+                state={state}
+                onSeeked={(time) => {
+                  setTargetTime(time);
+                  facade.seekTo(time);
+                }}
+              />
+            </div>
+            <TimeStat time={time} state={state} />
           </div>
         ) : null}
         <div className="mix-controls-bottom">
-          <SqButton onClick={() => facade.playOrPause()}>
+          <SqButton
+            onClick={() => {
+              facade.playOrPause();
+              nudge();
+            }}
+          >
             {state.playheadState === "play" ? <PauseIcon /> : <PlayIcon />}
+          </SqButton>
+          <SqButton
+            onClick={() => {
+              facade.seekTo(time + 10);
+              nudge();
+            }}
+          >
+            <ForwardIcon />
           </SqButton>
           <div className="mix-controls-gutter" />
           <SqButton

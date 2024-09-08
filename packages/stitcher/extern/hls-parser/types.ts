@@ -60,6 +60,7 @@ class Interstitial {
   startDate: Date;
   resumeOffset?: number;
   restrict?: string;
+  custom?: Record<string, string>;
 
   constructor({
     id,
@@ -69,6 +70,7 @@ class Interstitial {
     startDate,
     resumeOffset = 0,
     restrict = "SKIP,JUMP",
+    custom,
   }: any) {
     this.id = id;
     this.uri = uri;
@@ -77,6 +79,7 @@ class Interstitial {
     this.startDate = startDate;
     this.resumeOffset = resumeOffset;
     this.restrict = restrict;
+    this.custom = custom;
   }
 }
 

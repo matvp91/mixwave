@@ -47,6 +47,7 @@ export async function createSession(data: {
     interstitials.push({
       timeOffset: 0,
       assetId: data.bumperAssetId,
+      type: "bumper",
     });
   }
 

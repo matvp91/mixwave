@@ -370,6 +370,12 @@ function buildMediaPlaylist(
       `X-RESTRICT="${interstitial.restrict}"`,
     );
 
+    if (interstitial.custom) {
+      Object.entries(interstitial.custom).forEach(([key, value]) => {
+        params.push(`X-${key}="${value}"`);
+      });
+    }
+
     lines.push(`#EXT-X-DATERANGE:${params.join(",")}`);
   }
 }

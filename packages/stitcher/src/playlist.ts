@@ -3,7 +3,7 @@ import parseFilepath from "parse-filepath";
 import { env } from "./env.js";
 import { MasterPlaylist, MediaPlaylist } from "../extern/hls-parser/types.js";
 import createError from "@fastify/error";
-import type { Session, Interstitial } from "./types.js";
+import type { Session, Interstitial, InterstitialType } from "./types.js";
 
 const PlaylistUnavailableError = createError<[string]>(
   "PLAYLIST_UNAVAILABLE",
@@ -80,6 +80,7 @@ export async function formatAssetList(session: Session, timeOffset: number) {
       return {
         URI: uri,
         DURATION: await getDuration(uri),
+        "MIX-TYPE": interstitial.type,
       };
     }),
   );
@@ -118,18 +119,40 @@ function addInterstitials(
   media.segments[0].programDateTime = new Date(now);
 
   interstitials
-    .reduce<number[]>((acc, interstitial) => {
-      if (!acc.includes(interstitial.timeOffset)) {
-        acc.push(interstitial.timeOffset);
+    .reduce<
+      {
+        timeOffset: number;
+        types: InterstitialType[];
+      }[]
+    >((acc, interstitial) => {
+      let foundItem = acc.find(
+        (item) => item.timeOffset === interstitial.timeOffset,
+      );
+      if (!foundItem) {
+        foundItem = {
+          timeOffset: interstitial.timeOffset,
+          types: [],
+        };
+        acc.push(foundItem);
       }
+
+      if (interstitial.type && !foundItem.types.includes(interstitial.type)) {
+        foundItem.types.push(interstitial.type);
+      }
+
       return acc;
     }, [])
-    .forEach((timeOffset) => {
+    .forEach((item) => {
+      const custom = {
+        "MIX-TYPES": item.types.join(","),
+      };
+
       media.interstitials.push(
         new hlsParser.types.Interstitial({
-          id: `${timeOffset}`,
-          startDate: new Date(now + timeOffset * 1000),
-          list: `/session/${sessionId}/asset-list.json?timeOffset=${timeOffset}`,
+          id: `${item.timeOffset}`,
+          startDate: new Date(now + item.timeOffset * 1000),
+          list: `/session/${sessionId}/asset-list.json?timeOffset=${item.timeOffset}`,
+          custom,
         }),
       );
     });

@@ -5,7 +5,10 @@ export type Session = {
   maxResolution: number;
 };
 
+export type InterstitialType = "ad" | "bumper";
+
 export type Interstitial = {
   timeOffset: number;
   assetId: string;
+  type?: InterstitialType;
 };

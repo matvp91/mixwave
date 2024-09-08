@@ -2,7 +2,7 @@ import Hls from "hls.js";
 import update from "immutability-helper";
 import EventEmitter from "eventemitter3";
 import type { Spec } from "immutability-helper";
-import type { Level, MediaPlaylist } from "hls.js";
+import type { InterstitialScheduleItem, Level, MediaPlaylist } from "hls.js";
 
 export { Root as HlsUi } from "./ui";
 
@@ -123,10 +123,20 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
     });
 
     hls.on(Hls.Events.INTERSTITIALS_UPDATED, (_, data) => {
+      const isAd = (item: InterstitialScheduleItem) => {
+        const types = item.event?.dateRange.attr.enumeratedStringList(
+          "X-MIX-TYPES",
+          {
+            ad: false,
+          },
+        );
+        return !!types?.ad;
+      };
+
       this.setState_({
         cuePoints: {
           $set: data.schedule.reduce<number[]>((acc, item) => {
-            if (!acc.includes(item.start)) {
+            if (isAd(item) && !acc.includes(item.start)) {
               acc.push(item.start);
             }
             return acc;

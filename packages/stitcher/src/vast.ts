@@ -22,6 +22,7 @@ export async function extractInterstitialFromVmapAdbreak(adBreak: VmapAdBreak) {
       interstitials.push({
         timeOffset: adBreak.timeOffset,
         assetId: adMedia.assetId,
+        type: "ad",
       });
     } else {
       scheduleForPackage(adMedia);

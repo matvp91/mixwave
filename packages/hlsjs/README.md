@@ -11,3 +11,9 @@ Using https://www.svgrepo.com/collection/solar-broken-line-icons for icons.
 - Selecting audio and quality during interstitials works for the main asset, but subtitles not.
 
 - Seeking to `this.getInterstitialsManager_().integrated.duration` does not work properly.
+
+- InterstitialEvent should contain custom tags (like X-MIX-TYPES).
+
+- Need to talk about ABR & interstitials, do they share the same instance? Same bandwidth estimation? That might give troubles as for all we know eg; interstitials might be on a different CDN.
+
+- Custom HLS tags? Is this needed?

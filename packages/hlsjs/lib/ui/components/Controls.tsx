@@ -11,8 +11,8 @@ import { SqButton } from "./SqButton";
 import { useSettings } from "../hooks/useSettings";
 import { TimeStat } from "./TimeStat";
 import { useTime } from "../hooks/useTime";
+import { useState } from "react";
 import type { HlsState, HlsFacade } from "../../main";
-import { useEffect, useState } from "react";
 
 type ControlsProps = {
   facade: HlsFacade;

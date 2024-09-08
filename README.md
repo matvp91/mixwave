@@ -22,6 +22,11 @@
   </a>
 </p>
 
+<p align="center">
+  <a href="https://www.buymeacoffee.com/matvp91" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="width: 120px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+
+</p>
+
 Mixwave is a self hostable platform that aims to simplify the complexities of video delivery. Transcode and package your media for online streaming with simple API calls and sane defaults. Craft dynamic HLS playlists on the fly.
 
 We intentionally keeps the scope limited. We choose to focus on a single playback protocol `HLS CMAF` rather than trying to support a wide range of options such as MPEG-DASH. End to end video is complex enough already. We'd rather pick a well defined stack and aim for perfection.

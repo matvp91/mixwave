@@ -1,23 +1,25 @@
-import {
-  PointerEventHandler,
-  useRef,
-  useState,
-  useEffect,
-  useCallback,
-} from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { toHMS } from "../utils";
 import cn from "clsx";
 import type { HlsState } from "../../main";
+import type { Dispatch, PointerEventHandler } from "react";
 
 type ProgressProps = {
   time: number;
   state: HlsState;
+  seeking: boolean;
+  setSeeking: Dispatch<boolean>;
   onSeeked(value: number): void;
 };
 
-export function Progress({ time, state, onSeeked }: ProgressProps) {
+export function Progress({
+  time,
+  state,
+  seeking,
+  setSeeking,
+  onSeeked,
+}: ProgressProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [seeking, setSeeking] = useState(false);
   const [hover, setHover] = useState(false);
   const [value, setValue] = useState(0);
 

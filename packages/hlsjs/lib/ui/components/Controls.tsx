@@ -12,6 +12,7 @@ import { useSettings } from "../hooks/useSettings";
 import { TimeStat } from "./TimeStat";
 import { useTime } from "../hooks/useTime";
 import type { HlsState, HlsFacade } from "../../main";
+import { useEffect, useState } from "react";
 
 type ControlsProps = {
   facade: HlsFacade;
@@ -25,9 +26,10 @@ export function Controls({ facade, state }: ControlsProps) {
       nudge();
     },
   });
+  const [progressSeeking, setProgressSeeking] = useState(false);
 
   let controlsVisible = visible;
-  if (settingsMode) {
+  if (settingsMode || progressSeeking) {
     controlsVisible = true;
   }
 
@@ -48,7 +50,10 @@ export function Controls({ facade, state }: ControlsProps) {
               <Progress
                 time={time}
                 state={state}
+                seeking={progressSeeking}
+                setSeeking={setProgressSeeking}
                 onSeeked={(time) => {
+                  nudge();
                   setTargetTime(time);
                   facade.seekTo(time);
                 }}

@@ -20,5 +20,5 @@
       "hls.js": ["./external/hlsjs__feature__interstitials/hls"]
     }
   },
-  "include": ["src", "lib"]
+  "include": ["example", "lib"]
 }

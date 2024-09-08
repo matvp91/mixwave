@@ -25,6 +25,7 @@ export default defineConfig({
       external: ["react", "hls.js"],
     },
   },
+  clearScreen: false,
   server: {
     port: 52005,
   },

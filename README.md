@@ -40,6 +40,10 @@ We intentionally keeps the scope limited. We choose to focus on a single playbac
 Mixwave has a basic video player built on top of HLS.js. Although know that HLS interstitials support is a [pending feature](https://github.com/video-dev/hls.js/issues/5730), we included a build for you to work with and a wrapper with basic state management.
 
 <p align="center">
+<img src="https://matvp91.github.io/mixwave/preview-dashboard.png" width="800">
+</p>
+
+<p align="center">
 <img src="https://matvp91.github.io/mixwave/preview-player.png" width="800">
 </p>
 

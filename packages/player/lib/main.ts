@@ -67,6 +67,11 @@ export class HlsFacade extends EventEmitter<HlsFacadeEvent> {
       throw new HlsFacadeNoMedia();
     }
 
+    hls.on(Hls.Events.INTERSTITIALS_UPDATED, () => {
+      console.log(hls.levels, hls.audioTracks, hls.subtitleTracks);
+      console.log(hls.interstitialsManager?.integrated.currentTime);
+    });
+
     hls.on(Hls.Events.BUFFER_RESET, () => {
       media.removeAttribute("autoplay");
       this.setState_({ $set: defaultState });

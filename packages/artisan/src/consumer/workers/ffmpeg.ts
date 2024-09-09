@@ -7,7 +7,7 @@ import type { Job } from "bullmq";
 import type { Stream, Input } from "../../schemas.js";
 import type { FfmpegCommand } from "fluent-ffmpeg";
 
-console.log("Set ffmpeg path to", ffmpegBin.path);
+console.log(`Set ffmpeg path to "${ffmpegBin.path}"`);
 
 ffmpeg.setFfmpegPath(ffmpegBin.path);
 

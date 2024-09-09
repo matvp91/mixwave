@@ -2,9 +2,14 @@ import { dirSync } from "tmp";
 import ffmpeg from "fluent-ffmpeg";
 import { downloadFile, uploadFile } from "../s3.js";
 import parseFilePath from "parse-filepath";
+import ffmpegBin from "@ffmpeg-installer/ffmpeg";
 import type { Job } from "bullmq";
 import type { Stream, Input } from "../../schemas.js";
 import type { FfmpegCommand } from "fluent-ffmpeg";
+
+console.log("Set ffmpeg path to", ffmpegBin.path);
+
+ffmpeg.setFfmpegPath(ffmpegBin.path);
 
 export type FfmpegData = {
   params: {

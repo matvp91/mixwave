@@ -21,7 +21,8 @@ async function buildServer() {
   const router = s.router(contract, {
     postSession: async ({ request, body }) => {
       const session = await createSession(body);
-      const baseUrl = `${request.protocol}://${request.hostname}`;
+      const baseUrl =
+        env.STITCHER_BASE_URL ?? `${request.protocol}://${request.hostname}`;
 
       return {
         status: 200,

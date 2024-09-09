@@ -8,6 +8,7 @@ if (configPath) {
 }
 
 const envSchema = z.object({
+  STITCHER_BASE_URL: z.string().optional(),
   PORT: z.coerce.number().default(52002),
   HOST: z.string().default("0.0.0.0"),
   REDIS_HOST: z.string().default("redis"),

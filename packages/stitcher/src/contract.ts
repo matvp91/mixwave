@@ -11,6 +11,7 @@ const sessionParams = z.object({
       z.object({
         timeOffset: z.number(),
         assetId: z.string(),
+        type: z.enum(["ad", "bumper"]).optional(),
       }),
     )
     .optional(),

@@ -43,8 +43,11 @@ async function buildServer() {
 
       const session = await createSession(body);
 
+      const baseUrl =
+        env.STITCHER_BASE_URL ?? `${request.protocol}://${request.hostname}`;
+
       return reply.redirect(
-        `${request.protocol}://${request.hostname}/session/${session.id}/master.m3u8`,
+        `${baseUrl}/session/${session.id}/master.m3u8`,
         302,
       );
     },

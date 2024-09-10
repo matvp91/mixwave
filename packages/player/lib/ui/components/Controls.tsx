@@ -73,9 +73,9 @@ export function Controls({ facade, state }: ControlsProps) {
             }}
           >
             {state.playheadState === "play" ? (
-              <PauseIcon className="w-6 h-6" />
+              <PauseIcon className="w-6 h-6 group-hover:scale-110 transition-transform" />
             ) : (
-              <PlayIcon className="w-6 h-6" />
+              <PlayIcon className="w-6 h-6 group-hover:scale-110 transition-transform" />
             )}
           </SqButton>
           <SqButton
@@ -84,7 +84,7 @@ export function Controls({ facade, state }: ControlsProps) {
               nudge();
             }}
           >
-            <ForwardIcon className="w-6 h-6" />
+            <ForwardIcon className="w-6 h-6 group-hover:scale-110 transition-transform" />
           </SqButton>
           <div className="grow" />
           <SqButton
@@ -93,7 +93,7 @@ export function Controls({ facade, state }: ControlsProps) {
             selected={settingsMode === "text-audio"}
             data-mix-settings-action
           >
-            <SubtitlesIcon className="w-6 h-6" />
+            <SubtitlesIcon className="w-6 h-6 group-hover:scale-110 transition-transform" />
           </SqButton>
           <SqButton
             onClick={() => setSettingsMode("quality")}
@@ -101,7 +101,7 @@ export function Controls({ facade, state }: ControlsProps) {
             selected={settingsMode === "quality"}
             data-mix-settings-action
           >
-            <SettingsIcon className="w-6 h-6" />
+            <SettingsIcon className="w-6 h-6 group-hover:scale-110 transition-transform" />
           </SqButton>
         </div>
       </div>

@@ -9,7 +9,10 @@ type UseSettingsParams = {
 export function useSettings({ onChange }: UseSettingsParams) {
   const [settings, setSettings_] = useState<SettingsMode | null>(null);
 
-  const setSettings = (value: SettingsMode | null) => {
+  const setSettings = (value: SettingsMode | null, strict?: boolean) => {
+    if (strict && settings === value) {
+      return;
+    }
     if (value === null) {
       setSettings_(null);
     } else {

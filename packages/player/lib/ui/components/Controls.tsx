@@ -40,36 +40,43 @@ export function Controls({ facade, state }: ControlsProps) {
       <div
         ref={elementRef}
         className={cn(
-          "mix-controls",
-          controlsVisible && "mix-controls--visible",
+          "absolute left-0 bottom-0 w-full opacity-0 transition-opacity z-10 before:absolute before:bg-gradient-to-t before:from-black/50 before:to-transparent before:w-full before:pointer-events-none before:h-[300%] before:-z-10 before:bottom-0",
+          controlsVisible && "opacity-100",
         )}
       >
         {showSeekbar(state) ? (
-          <div className="mix-controls-progress">
-            <div className="mix-controls-progress-container">
-              <Progress
-                time={time}
-                state={state}
-                seeking={progressSeeking}
-                setSeeking={setProgressSeeking}
-                onSeeked={(time) => {
-                  nudge();
-                  setTargetTime(time);
-                  facade.seekTo(time);
-                }}
-              />
-            </div>
+          <div
+            className={cn(
+              "flex px-4 mb-2 transition-opacity",
+              settingsMode !== null && "opacity-0",
+            )}
+          >
+            <Progress
+              time={time}
+              state={state}
+              seeking={progressSeeking}
+              setSeeking={setProgressSeeking}
+              onSeeked={(time) => {
+                nudge();
+                setTargetTime(time);
+                facade.seekTo(time);
+              }}
+            />
             <TimeStat time={time} state={state} />
           </div>
         ) : null}
-        <div className="mix-controls-bottom">
+        <div className="flex gap-1 px-4 mb-2">
           <SqButton
             onClick={() => {
               facade.playOrPause();
               nudge();
             }}
           >
-            {state.playheadState === "play" ? <PauseIcon /> : <PlayIcon />}
+            {state.playheadState === "play" ? (
+              <PauseIcon className="w-6 h-6" />
+            ) : (
+              <PlayIcon className="w-6 h-6" />
+            )}
           </SqButton>
           <SqButton
             onClick={() => {
@@ -77,22 +84,24 @@ export function Controls({ facade, state }: ControlsProps) {
               nudge();
             }}
           >
-            <ForwardIcon />
+            <ForwardIcon className="w-6 h-6" />
           </SqButton>
-          <div className="mix-controls-gutter" />
+          <div className="grow" />
           <SqButton
             onClick={() => setSettingsMode("text-audio")}
+            onIdle={() => setSettingsMode("text-audio", true)}
             selected={settingsMode === "text-audio"}
-            data-settings-action
+            data-mix-settings-action
           >
-            <SubtitlesIcon />
+            <SubtitlesIcon className="w-6 h-6" />
           </SqButton>
           <SqButton
             onClick={() => setSettingsMode("quality")}
+            onIdle={() => setSettingsMode("quality", true)}
             selected={settingsMode === "quality"}
-            data-settings-action
+            data-mix-settings-action
           >
-            <SettingsIcon />
+            <SettingsIcon className="w-6 h-6" />
           </SqButton>
         </div>
       </div>

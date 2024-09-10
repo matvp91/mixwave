@@ -5,9 +5,9 @@ type PaneProps = {
 
 export function Pane({ title, children }: PaneProps) {
   return (
-    <div className="mix-pane">
-      <div className="mix-pane-title">{title}</div>
-      <div className="mix-pane-body">{children}</div>
+    <div className="p-4">
+      <div className="font-medium text-sm mb-2">{title}</div>
+      <div className="ml-1">{children}</div>
     </div>
   );
 }

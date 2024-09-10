@@ -4,8 +4,8 @@ import cn from "clsx";
 import { SettingsPane } from "./SettingsPane";
 import { QualitiesPane } from "./QualitiesPane";
 import { TextAudioPane } from "./TextAudioPane";
-import type { HlsFacade, HlsState } from "../../main";
 import usePrevious from "../hooks/usePrevious";
+import type { HlsFacade, HlsState } from "../../main";
 
 type SettingsProps = {
   facade: HlsFacade;
@@ -42,7 +42,7 @@ export function Settings({ facade, state, mode, onClose }: SettingsProps) {
     const onPointerDown = (event: MouseEvent) => {
       const element = event.target as HTMLElement;
 
-      const SETTINGS_ACTION_ATTR = "data-settings-action";
+      const SETTINGS_ACTION_ATTR = "data-mix-settings-action";
       if (
         element.hasAttribute(SETTINGS_ACTION_ATTR) ||
         element.closest("button")?.hasAttribute(SETTINGS_ACTION_ATTR)
@@ -51,8 +51,8 @@ export function Settings({ facade, state, mode, onClose }: SettingsProps) {
       }
 
       const isOver = element
-        .closest(".mix-container")
-        ?.querySelector(".mix-settings")
+        .closest("[data-mix-container]")
+        ?.querySelector("[data-mix-settings]")
         ?.contains(element);
 
       if (!isOver) {
@@ -72,8 +72,9 @@ export function Settings({ facade, state, mode, onClose }: SettingsProps) {
       return;
     }
 
-    const paneElements =
-      element.querySelectorAll<HTMLDivElement>(".mix-settings-pane");
+    const paneElements = element.querySelectorAll<HTMLDivElement>(
+      "[data-mix-settings-pane]",
+    );
 
     Array.from(paneElements).map((el) => {
       el.style.width = "";
@@ -88,7 +89,7 @@ export function Settings({ facade, state, mode, onClose }: SettingsProps) {
     });
 
     const activePane = element.querySelector<HTMLDivElement>(
-      ".mix-settings-pane--active",
+      "[data-mix-settings-pane=active]",
     );
     if (activePane) {
       const rect = activePane.getBoundingClientRect();
@@ -101,8 +102,12 @@ export function Settings({ facade, state, mode, onClose }: SettingsProps) {
 
   return (
     <div
-      className={cn("mix-settings", mode !== null && "mix-settings--visible")}
+      className={cn(
+        "absolute right-4 bottom-16 z-20 transition-all overflow-hidden pointer-events-none opacity-0 bg-black/85 text-white rounded-md",
+        mode !== null && "opacity-100 pointer-events-auto",
+      )}
       ref={ref}
+      data-mix-settings
     >
       <SettingsPane active={lastMode === "quality"}>
         <QualitiesPane facade={facade} state={state} />

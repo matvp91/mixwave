@@ -4,6 +4,7 @@ import { extractInterstitialFromVmapAdbreak } from "./vast.js";
 import { getVmap } from "./vmap.js";
 import createError from "@fastify/error";
 import type { Session, Interstitial } from "./types.js";
+import { isAssetAvailable } from "./helpers.js";
 
 const NoSessionError = createError<[string]>(
   "NO_SESSION",
@@ -17,6 +18,12 @@ function getRedisKey(sessionId: string) {
   return `${REDIS_PREFIX}:${sessionId}`;
 }
 
+const PlaylistUnavailableError = createError<[string]>(
+  "PLAYLIST_UNAVAILABLE",
+  "%s is unavailable.",
+  404,
+);
+
 export async function createSession(data: {
   assetId: string;
   vmapUrl?: string;
@@ -24,6 +31,10 @@ export async function createSession(data: {
   bumperAssetId?: string;
   maxResolution?: number;
 }) {
+  if (!(await isAssetAvailable(data.assetId))) {
+    throw new PlaylistUnavailableError(data.assetId);
+  }
+
   const sessionId = randomUUID();
 
   const interstitials: Interstitial[] = [];

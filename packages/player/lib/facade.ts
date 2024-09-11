@@ -37,12 +37,15 @@ export class HlsFacade extends EventEmitter<Events> {
   constructor(public hls: Hls) {
     super();
 
-    this.intervalId_ = setInterval(() => {
-      if (!hls.interstitialsManager || !hls.media) {
-        return;
-      }
+    const onInit = () => {
+      hls.off(Hls.Events.BUFFER_CREATED, onInit);
+      hls.off(Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED, onInit);
 
-      clearInterval(this.intervalId_);
+      if (!hls.interstitialsManager || !hls.media) {
+        const message = "Missing hls.interstitialsManager or hls.media";
+        console.error(message);
+        throw new Error(message);
+      }
 
       this.mgr_ = hls.interstitialsManager;
       this.media_ = hls.media;
@@ -51,7 +54,10 @@ export class HlsFacade extends EventEmitter<Events> {
 
       this.initMediaListeners_();
       this.initHlsListeners_();
-    });
+    };
+
+    hls.once(Hls.Events.BUFFER_CREATED, onInit);
+    hls.once(Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED, onInit);
   }
 
   private initMediaListeners_() {

@@ -10,6 +10,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@mixwave/api": "workspace:*",
+    "@mixwave/player": "workspace:*",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-collapsible": "^1.1.0",
@@ -29,7 +30,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
-    "ldrs": "^1.0.2",
+    "hls.js": "file:../../external/hlsjs__feature__interstitials",
     "lucide-react": "^0.424.0",
     "monaco-editor": "^0.51.0",
     "pretty-ms": "^9.1.0",
@@ -42,9 +43,7 @@
     "tailwindcss-animate": "^1.0.7",
     "timeago.js": "4.0.0-beta.3",
     "uniqolor": "^1.1.1",
-    "zod": "^3.23.8",
-    "hls.js": "file:../../external/hlsjs__feature__interstitials",
-    "@mixwave/player": "workspace:*"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^22.1.0",

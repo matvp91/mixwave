@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import "ldrs/cardio";
+import Loader from "lucide-react/icons/loader";
 
 // Default values shown
 
@@ -10,8 +10,7 @@ type StretchLoaderProps = {
 export function StretchLoader({ className }: StretchLoaderProps) {
   return (
     <div className={cn("flex justify-center items-center min-h-44", className)}>
-      {/* @ts-expect-error */}
-      <l-cardio size="50" stroke="4" speed="2" color="#7600ff"></l-cardio>
+      <Loader className="animate-spin" />
     </div>
   );
 }

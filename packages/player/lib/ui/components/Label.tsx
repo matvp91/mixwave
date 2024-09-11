@@ -1,13 +1,13 @@
-import type { SlotAsset } from "../..";
+import type { Slot } from "../..";
 import type { Metadata } from "../types";
 
 type LabelProps = {
-  slotAsset: SlotAsset | null;
+  slot: Slot | null;
   metadata?: Metadata;
 };
 
-export function Label({ slotAsset, metadata }: LabelProps) {
-  if (slotAsset?.type === "ad") {
+export function Label({ slot, metadata }: LabelProps) {
+  if (slot?.type === "ad") {
     return (
       <div className="text-white text-sm font-medium flex items-center px-2">
         Ad

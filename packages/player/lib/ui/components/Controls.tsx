@@ -1,6 +1,6 @@
 import cn from "clsx";
 import { Progress } from "./Progress";
-import { SlotAssetProgress } from "./SlotAssetProgress";
+import { SlotProgress } from "./SlotProgress";
 import PlayIcon from "../icons/play.svg?react";
 import PauseIcon from "../icons/pause.svg?react";
 import SettingsIcon from "../icons/settings.svg?react";
@@ -69,14 +69,14 @@ export function Controls({ facade, state, metadata }: ControlsProps) {
           />
           <TimeStat time={time} state={state} />
         </div>
-        {state.slotAsset ? (
+        {state.slot ? (
           <div
             className={cn(
               "flex px-4 mb-2 transition-opacity",
               settings !== null && "opacity-0",
             )}
           >
-            <SlotAssetProgress slotAsset={state.slotAsset} />
+            <SlotProgress slot={state.slot} />
           </div>
         ) : null}
         <div className="flex gap-1 px-4 mb-2">
@@ -102,7 +102,7 @@ export function Controls({ facade, state, metadata }: ControlsProps) {
               <ForwardIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
             </SqButton>
           ) : null}
-          <Label slotAsset={state.slotAsset} metadata={metadata} />
+          <Label slot={state.slot} metadata={metadata} />
           <div className="grow" />
           <SqButton
             onClick={() => setSettings("text-audio")}

@@ -4,6 +4,7 @@ import { Player } from "@/components/player/Player";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert } from "@/components/ui/alert";
+import { BrowserMockup } from "@/components/BrowserMockup";
 
 export function PlayerPage() {
   const [schema, setSchema] = useState<object>();
@@ -64,16 +65,19 @@ export function PlayerPage() {
       <div className="basis-1/2 p-4">
         {masterUrl ? (
           <>
-            <div>
+            <BrowserMockup>
+              <Player url={masterUrl} />
+            </BrowserMockup>
+            <div className="mt-4">
               <Label>Playlist URL</Label>
               <Input
                 value={masterUrl}
                 onClick={(event) => {
                   (event.target as HTMLInputElement).select();
                 }}
+                onChange={() => {}}
               />
             </div>
-            <Player url={masterUrl} />
           </>
         ) : null}
         {error ? (

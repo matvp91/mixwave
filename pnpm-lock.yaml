@@ -160,6 +160,9 @@ importers:
       '@mixwave/api':
         specifier: workspace:*
         version: link:../api
+      '@mixwave/player':
+        specifier: workspace:*
+        version: link:../player
       '@radix-ui/react-accordion':
         specifier: ^1.2.0
         version: 1.2.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
@@ -217,6 +220,9 @@ importers:
       date-fns:
         specifier: ^3.6.0
         version: 3.6.0
+      hls.js:
+        specifier: file:../../external/hlsjs__feature__interstitials
+        version: file:external/hlsjs__feature__interstitials
       ldrs:
         specifier: ^1.0.2
         version: 1.0.2
@@ -302,9 +308,6 @@ importers:
       eventemitter3:
         specifier: ^5.0.1
         version: 5.0.1
-      hls.js:
-        specifier: ^1.5.15
-        version: 1.5.15
       immutability-helper:
         specifier: ^3.1.1
         version: 3.1.1
@@ -336,6 +339,9 @@ importers:
       globals:
         specifier: ^15.9.0
         version: 15.9.0
+      hls.js:
+        specifier: file:../../external/hlsjs__feature__interstitials
+        version: file:external/hlsjs__feature__interstitials
       postcss:
         specifier: ^8.4.41
         version: 8.4.44
@@ -8481,10 +8487,6 @@ packages:
     resolution: {integrity: sha512-PDEfEF102G23vHmPhLyPboFCD+BkMGu+GuJe2d9/eH4FsCwvgBpnc9n0pGE+ffKdph38s6foEZiEjdgHdzp+IA==}
     dev: false
 
-  /hls.js@1.5.15:
-    resolution: {integrity: sha512-6cD7xN6bycBHaXz2WyPIaHn/iXFizE5au2yvY5q9aC4wfihxAr16C9fUy4nxh2a3wOw0fEgLRa9dN6wsYjlpNg==}
-    dev: false
-
   /hookable@5.5.3:
     resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
 
@@ -13090,3 +13092,7 @@ packages:
   /zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
     dev: false
+
+  file:external/hlsjs__feature__interstitials:
+    resolution: {directory: external/hlsjs__feature__interstitials, type: directory}
+    name: hls.js__feature__interstitials

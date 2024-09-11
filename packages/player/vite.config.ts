@@ -8,18 +8,19 @@ import svgr from "vite-plugin-svgr";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    tsconfigPaths(),
     dts({
-      insertTypesEntry: true,
+      rollupTypes: true,
+      tsconfigPath: "./tsconfig.app.json",
     }),
+    tsconfigPaths(),
     react(),
     svgr(),
   ],
   build: {
     lib: {
-      entry: resolve(__dirname, "lib/main.ts"),
-      name: "MixwaveHLSjs",
-      fileName: "main",
+      entry: resolve(__dirname, "lib/index.ts"),
+      fileName: "index",
+      formats: ["es"],
     },
     rollupOptions: {
       external: ["react", "hls.js"],

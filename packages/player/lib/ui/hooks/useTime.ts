@@ -1,18 +1,25 @@
 import { useEffect, useState } from "react";
 import { useDelta } from "./useDelta";
+import type { State } from "../..";
 
-export function useTime(time: number) {
+export function useTime(state: State) {
   const [targetTime, setTargetTime] = useState<null | number>(null);
 
-  const delta = useDelta(time);
+  const delta = useDelta(state.time);
 
   useEffect(() => {
-    if (targetTime !== null && delta > 0 && time > targetTime) {
+    if (targetTime !== null && delta > 0 && state.time > targetTime) {
       setTargetTime(null);
     }
-  }, [time, delta, targetTime]);
+  }, [state.time, delta, targetTime]);
 
-  let fakeTime = time;
+  useEffect(() => {
+    if (state.playheadState === "ended") {
+      setTargetTime(null);
+    }
+  }, [state.playheadState]);
+
+  let fakeTime = state.time;
   if (targetTime !== null) {
     fakeTime = targetTime;
   }

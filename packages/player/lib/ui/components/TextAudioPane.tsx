@@ -1,10 +1,10 @@
 import { CheckList } from "./CheckList";
 import { Pane } from "./Pane";
-import type { HlsFacade, HlsState } from "../../main";
+import type { HlsFacade, State } from "../..";
 import type { CheckListItem } from "./CheckList";
 
 type QualitiesPaneProps = {
-  state: HlsState;
+  state: State;
   facade: HlsFacade;
 };
 
@@ -22,7 +22,7 @@ export function TextAudioPane({ facade, state }: QualitiesPaneProps) {
   });
 
   return (
-    <div className="mix-textaudiopane">
+    <div className="flex">
       <Pane title="Subtitles">
         <CheckList
           onSelect={(id) => facade.setSubtitleTrack(id)}

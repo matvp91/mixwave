@@ -4,9 +4,7 @@ export type Anything = any;
 
 export type MixType = "ad" | "bumper";
 
-export type Slot = {};
-
-export type SlotAsset = {
+export type Slot = {
   type?: "ad" | "bumper";
   time: number;
   duration: number;
@@ -40,7 +38,6 @@ export type State = {
   audioTracks: AudioTrack[];
   subtitleTracks: SubtitleTrack[];
   slot: Slot | null;
-  slotAsset: SlotAsset | null;
 };
 
 export type Events = {

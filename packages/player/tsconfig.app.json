@@ -15,10 +15,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
-    "paths": {
-      "hls.js": ["./external/hlsjs__feature__interstitials/hls"]
-    }
+    "baseUrl": "."
   },
   "include": ["example", "lib"]
 }

@@ -6,16 +6,10 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/main.umd.cjs",
-  "module": "./dist/main.js",
-  "exports": {
-    ".": {
-      "import": "./dist/main.js",
-      "require": "./dist/main.umd.cjs"
-    }
-  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite build --watch",
     "build": "tsc -b && vite build"
   },
   "peerDependencies": {
@@ -44,6 +38,7 @@
     "vite": "^5.4.1",
     "vite-plugin-dts": "^4.1.0",
     "vite-plugin-svgr": "^4.2.0",
-    "vite-tsconfig-paths": "^5.0.1"
+    "vite-tsconfig-paths": "^5.0.1",
+    "hls.js": "file:../../external/hlsjs__feature__interstitials"
   }
 }

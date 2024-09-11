@@ -5,7 +5,7 @@ import type { Metadata } from "../types";
 
 type UiProps = {
   facade: HlsFacade;
-  metadata: Metadata;
+  metadata?: Metadata;
 };
 
 export function Ui({ facade, metadata }: UiProps) {

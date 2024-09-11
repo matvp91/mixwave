@@ -131,7 +131,7 @@ export function Progress({
         return (
           <div
             key={cuePoint}
-            className="absolute w-2 h-2 bg-[#ffd32c] rounded-full border border-black -translate-x-1/2"
+            className="absolute w-3 h-3 bg-[#ffd32c] rounded-full border-2 border-black -translate-x-1/2"
             style={{ left: `${(cuePoint / state.duration) * 100}%` }}
           />
         );

@@ -1,12 +1,12 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { toHMS } from "../utils";
 import cn from "clsx";
-import type { HlsState } from "../../main";
+import type { State } from "../..";
 import type { Dispatch, PointerEventHandler } from "react";
 
 type ProgressProps = {
   time: number;
-  state: HlsState;
+  state: State;
   seeking: boolean;
   setSeeking: Dispatch<boolean>;
   onSeeked(value: number): void;
@@ -25,8 +25,8 @@ export function Progress({
 
   const updateValue = useCallback(
     (event: PointerEvent | React.PointerEvent) => {
-      let x =
-        (event.pageX - ref.current!.offsetLeft) / ref.current!.offsetWidth;
+      const rect = ref.current!.getBoundingClientRect();
+      let x = (event.pageX - (rect.left + window.scrollX)) / rect.width;
       x = Math.min(Math.max(x, 0), 1);
       x *= state.duration;
 

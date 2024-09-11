@@ -1,9 +1,10 @@
 import cn from "clsx";
 import { useRef } from "react";
+import type { MouseEventHandler } from "react";
 
 type SqButtonProps = {
   children: React.ReactNode;
-  onClick(): void;
+  onClick: MouseEventHandler<HTMLButtonElement>;
   onIdle?: () => void;
   selected?: boolean;
 };
@@ -21,20 +22,20 @@ export function SqButton({
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       onIdle?.();
-    }, 500);
+    }, 200);
   };
 
   return (
     <button
       className={cn(
-        "group relative flex items-center justify-center w-12 h-12 text-white after:absolute after:left-0 after:top-0 after:w-12 after:h-12 after:bg-black/50 after:rounded-full after:-z-10 after:pointer-events-none after:opacity-0 after:transition-all active:after:scale-105",
+        "relative flex items-center justify-center w-12 h-12 text-white after:absolute after:left-0 after:top-0 after:w-12 after:h-12 after:bg-black/75 after:rounded-full after:-z-10 after:pointer-events-none after:opacity-0 after:transition-all",
         selected
-          ? "after:opacity-75"
-          : "hover:after:opacity-25 active:after:opacity-50",
+          ? "after:opacity-95"
+          : "hover:after:opacity-50 active:after:opacity-85 group active:after:scale-105",
       )}
-      onClick={() => {
+      onClick={(event) => {
         clearTimeout(timerRef.current);
-        onClick();
+        onClick(event);
       }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={() => {

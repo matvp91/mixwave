@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { HlsFacade, HlsState } from "../../main";
+import { HlsFacade, State } from "../..";
 
 export function useHlsState(facade: HlsFacade) {
-  const [state, setState] = useState<HlsState>(facade.state);
+  const [state, setState] = useState<State | null>(facade.state);
 
   useEffect(() => {
     const update = () => setState(facade.state);

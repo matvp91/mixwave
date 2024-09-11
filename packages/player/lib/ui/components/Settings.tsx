@@ -5,16 +5,15 @@ import { SettingsPane } from "./SettingsPane";
 import { QualitiesPane } from "./QualitiesPane";
 import { TextAudioPane } from "./TextAudioPane";
 import usePrevious from "../hooks/usePrevious";
-import type { HlsFacade, HlsState } from "../../main";
+import type { HlsFacade, State } from "../..";
 
 type SettingsProps = {
   facade: HlsFacade;
-  state: HlsState;
+  state: State;
   mode: SettingsMode | null;
-  onClose(): void;
 };
 
-export function Settings({ facade, state, mode, onClose }: SettingsProps) {
+export function Settings({ facade, state, mode }: SettingsProps) {
   const ref = useRef<HTMLDivElement>(null);
   const lastModeRef = useRef<SettingsMode>();
   const modePrev = usePrevious(mode);
@@ -33,38 +32,6 @@ export function Settings({ facade, state, mode, onClose }: SettingsProps) {
       }
     }
   }, [modePrev, mode]);
-
-  useEffect(() => {
-    if (mode === null) {
-      return;
-    }
-
-    const onPointerDown = (event: MouseEvent) => {
-      const element = event.target as HTMLElement;
-
-      const SETTINGS_ACTION_ATTR = "data-mix-settings-action";
-      if (
-        element.hasAttribute(SETTINGS_ACTION_ATTR) ||
-        element.closest("button")?.hasAttribute(SETTINGS_ACTION_ATTR)
-      ) {
-        return;
-      }
-
-      const isOver = element
-        .closest("[data-mix-container]")
-        ?.querySelector("[data-mix-settings]")
-        ?.contains(element);
-
-      if (!isOver) {
-        onClose();
-      }
-    };
-
-    window.addEventListener("pointerdown", onPointerDown);
-    return () => {
-      window.removeEventListener("pointerdown", onPointerDown);
-    };
-  }, [mode, onClose]);
 
   useLayoutEffect(() => {
     const element = ref.current;
@@ -103,7 +70,7 @@ export function Settings({ facade, state, mode, onClose }: SettingsProps) {
   return (
     <div
       className={cn(
-        "absolute right-4 bottom-16 z-20 transition-all overflow-hidden pointer-events-none opacity-0 bg-black/85 text-white rounded-md",
+        "absolute right-4 bottom-16 z-50 transition-all overflow-hidden pointer-events-none opacity-0 bg-black/85 text-white rounded-md border border-white/20",
         mode !== null && "opacity-100 pointer-events-auto",
       )}
       ref={ref}

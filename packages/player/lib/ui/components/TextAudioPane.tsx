@@ -1,10 +1,10 @@
 import { CheckList } from "./CheckList";
 import { Pane } from "./Pane";
-import type { HlsFacade, HlsState } from "../../main";
+import type { HlsFacade, State } from "../..";
 import type { CheckListItem } from "./CheckList";
 
 type QualitiesPaneProps = {
-  state: HlsState;
+  state: State;
   facade: HlsFacade;
 };
 

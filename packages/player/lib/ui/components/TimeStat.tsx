@@ -1,9 +1,9 @@
 import { toHMS } from "../utils";
-import type { HlsState } from "../../main";
+import type { State } from "../..";
 
 type TimeStatProps = {
   time: number;
-  state: HlsState;
+  state: State;
 };
 
 export function TimeStat({ time, state }: TimeStatProps) {

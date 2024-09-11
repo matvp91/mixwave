@@ -56,7 +56,7 @@ export function PlayerPage() {
               <span className="font-bold bg-white/20 py-1 px-2 mr-1 rounded-md">
                 POST
               </span>{" "}
-              stitcher.tld/session
+              {import.meta.env.VITE_STITCHER_URL}/session
             </div>
           }
           onSave={onSave}

@@ -2,18 +2,10 @@
   <img src="https://matvp91.github.io/mixwave/preview-logo.png" width="420" />
 
   <p align="center">
-    <a href="#">
-      <img src="https://img.shields.io/github/license/matvp91/mixwave">
-    </a>
-    <a href="#">
-      <img src="https://img.shields.io/github/last-commit/matvp91/mixwave">
-    </a>
-    <a href="#">
-      <img src="https://img.shields.io/github/stars/matvp91/mixwave" alt="stars">
-    </a>
-    <a href="#">
-      <img src="https://img.shields.io/badge/PR's-welcome-0437F2" alt="pr">
-    </a>
+    <img src="https://img.shields.io/github/license/matvp91/mixwave">
+    <img src="https://img.shields.io/github/last-commit/matvp91/mixwave">
+    <img src="https://img.shields.io/github/stars/matvp91/mixwave" alt="stars">
+    <img src="https://img.shields.io/badge/PR's-welcome-0437F2" alt="pr">
   </p>
 
   <p align="center">

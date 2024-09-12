@@ -1,31 +1,21 @@
-<p align="center">
- <img src="https://matvp91.github.io/mixwave/preview-logo.png" width="420" />
-</p>
+<div align="center">
+  <img src="https://matvp91.github.io/mixwave/preview-logo.png" width="420" />
 
-<p align="center">
-  <a href="https://matvp91.github.io/mixwave">Documentation</a> · 
-  <a href="https://matvp91.github.io/mixwave/getting-started.html">Getting Started</a>
-</p>
-
-<p align="center">
-  <a href="#">
+  <p align="center">
     <img src="https://img.shields.io/github/license/matvp91/mixwave">
-  </a>
-  <a href="#">
     <img src="https://img.shields.io/github/last-commit/matvp91/mixwave">
-  </a>
-  <a href="#">
     <img src="https://img.shields.io/github/stars/matvp91/mixwave" alt="stars">
-  </a>
-  <a href="#">
     <img src="https://img.shields.io/badge/PR's-welcome-0437F2" alt="pr">
-  </a>
-</p>
+  </p>
 
-<p align="center">
-  <a href="https://www.buymeacoffee.com/matvp91" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="width: 120px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+  <p align="center">
+    <a href="https://matvp91.github.io/mixwave">Documentation</a> · 
+    <a href="https://matvp91.github.io/mixwave/getting-started.html">Getting Started</a>
+  </p>
 
-</p>
+  [<img src="./public/button-buy-me-a-coffee.png" width="150" alt="Buy me a coffee button"/>](https://www.buymeacoffee.com/matvp91)
+</div>
+
 
 Mixwave is a self hostable platform that aims to simplify the complexities of video delivery. Transcode and package your media for online streaming with simple API calls and sane defaults. Craft dynamic HLS playlists on the fly.
 

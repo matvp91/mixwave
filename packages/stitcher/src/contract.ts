@@ -5,7 +5,11 @@ import base64 from "hi-base64";
 const c = initContract();
 
 const sessionParams = z.object({
-  vmapUrl: z.string().optional(),
+  vmap: z
+    .object({
+      url: z.string(),
+    })
+    .optional(),
   interstitials: z
     .array(
       z.object({
@@ -15,7 +19,6 @@ const sessionParams = z.object({
       }),
     )
     .optional(),
-  bumperAssetId: z.string().optional(),
   maxResolution: z.coerce.number().optional(),
 });
 

@@ -26,9 +26,10 @@ const PlaylistUnavailableError = createError<[string]>(
 
 export async function createSession(data: {
   assetId: string;
-  vmapUrl?: string;
+  vmap?: {
+    url: string;
+  };
   interstitials?: Interstitial[];
-  bumperAssetId?: string;
   maxResolution?: number;
 }) {
   if (!(await isAssetAvailable(data.assetId))) {
@@ -39,8 +40,8 @@ export async function createSession(data: {
 
   const interstitials: Interstitial[] = [];
 
-  if (data.vmapUrl) {
-    const vmap = await getVmap(data.vmapUrl);
+  if (data.vmap) {
+    const vmap = await getVmap(data.vmap.url);
 
     for (const adBreak of vmap.adBreaks) {
       interstitials.push(
@@ -51,15 +52,6 @@ export async function createSession(data: {
 
   if (data.interstitials) {
     interstitials.push(...data.interstitials);
-  }
-
-  // When we have a bumper, we'll push it at the end of the interstitials list.
-  if (data.bumperAssetId) {
-    interstitials.push({
-      timeOffset: 0,
-      assetId: data.bumperAssetId,
-      type: "bumper",
-    });
   }
 
   let maxResolution = data.maxResolution;

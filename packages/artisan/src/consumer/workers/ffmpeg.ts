@@ -68,24 +68,7 @@ export default async function (job: Job<FfmpegData, FfmpegResult>) {
 
   let name: string | undefined;
 
-<<<<<<< HEAD
-  if (params.stream.type === "video") {
-    const keyFrameInterval = params.segmentSize * params.stream.framerate;
-
-    let codec: string;
-    switch (params.stream.codec) {
-      case "h264":
-        codec = "libx264";
-        break;
-      // case "hevc":
-      // codec = "libx265";
-      default:
-        codec = params.stream.codec;
-        break;
-    }
-=======
   const outputOptions: string[] = [];
->>>>>>> fa3d524d1d446cd26e2d2c0e252333439d787544
 
   if (params.stream.type === "video") {
     name = `video_${params.stream.height}_${params.stream.bitrate}_${params.stream.codec}.m4v`;

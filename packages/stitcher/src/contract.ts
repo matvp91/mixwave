@@ -19,7 +19,7 @@ const sessionParams = z.object({
       }),
     )
     .optional(),
-  maxResolution: z.coerce.number().optional(),
+  resolution: z.string().optional(),
 });
 
 export const postSessionBodySchema = z

@@ -1,8 +1,8 @@
 export type Session = {
   id: string;
   assetId: string;
-  interstitials: Interstitial[];
-  maxResolution: number;
+  interstitials?: Interstitial[];
+  resolution?: string;
 };
 
 export type InterstitialType = "ad" | "bumper";

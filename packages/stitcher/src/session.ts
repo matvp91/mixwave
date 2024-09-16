@@ -3,8 +3,8 @@ import { randomUUID } from "crypto";
 import { extractInterstitialFromVmapAdbreak } from "./vast.js";
 import { getVmap } from "./vmap.js";
 import createError from "@fastify/error";
-import type { Session, Interstitial } from "./types.js";
 import { isAssetAvailable } from "./helpers.js";
+import type { Session, Interstitial } from "./types.js";
 
 const NoSessionError = createError<[string]>(
   "NO_SESSION",
@@ -30,7 +30,7 @@ export async function createSession(data: {
     url: string;
   };
   interstitials?: Interstitial[];
-  maxResolution?: number;
+  resolution?: string;
 }) {
   if (!(await isAssetAvailable(data.assetId))) {
     throw new PlaylistUnavailableError(data.assetId);
@@ -38,38 +38,42 @@ export async function createSession(data: {
 
   const sessionId = randomUUID();
 
-  const interstitials: Interstitial[] = [];
+  let interstitials: Interstitial[] | undefined;
 
   if (data.vmap) {
     const vmap = await getVmap(data.vmap.url);
 
     for (const adBreak of vmap.adBreaks) {
+      if (!interstitials) {
+        interstitials = [];
+      }
+
       interstitials.push(
         ...(await extractInterstitialFromVmapAdbreak(adBreak)),
       );
     }
   }
 
-  if (data.interstitials) {
-    interstitials.push(...data.interstitials);
-  }
+  if (data.interstitials?.length) {
+    if (!interstitials) {
+      interstitials = [];
+    }
 
-  let maxResolution = data.maxResolution;
-  if (!maxResolution) {
-    const MAX_RESOLUTION_8K = 4320;
-    maxResolution = MAX_RESOLUTION_8K;
+    interstitials.push(...data.interstitials);
   }
 
   const session = {
     id: sessionId,
     assetId: data.assetId,
     interstitials,
-    maxResolution,
+    resolution: data.resolution,
   } satisfies Session;
 
   const redisKey = getRedisKey(sessionId);
 
-  await client.json.set(redisKey, `$`, session);
+  const rawSession = JSON.parse(JSON.stringify(session));
+
+  await client.json.set(redisKey, `$`, rawSession);
   await client.expire(redisKey, 60 * 60 * 6);
 
   return session;

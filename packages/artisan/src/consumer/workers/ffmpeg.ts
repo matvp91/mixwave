@@ -1,15 +1,19 @@
 import { dirSync } from "tmp";
-import ffmpeg from "fluent-ffmpeg";
 import { downloadFile, uploadFile } from "../s3.js";
 import parseFilePath from "parse-filepath";
-import ffmpegBin from "@ffmpeg-installer/ffmpeg";
+import { FFmpeggy } from "ffmpeggy";
+import ffmpegBin from "ffmpeg-static";
 import type { Job } from "bullmq";
 import type { Stream, Input } from "../../schemas.js";
-import type { FfmpegCommand } from "fluent-ffmpeg";
 
-console.log(`Set ffmpeg path to "${ffmpegBin.path}"`);
+if (!ffmpegBin) {
+  throw new Error("Cannot find ffmpeg bin");
+}
 
-ffmpeg.setFfmpegPath(ffmpegBin.path);
+FFmpeggy.DefaultConfig = {
+  ...FFmpeggy.DefaultConfig,
+  ffmpegBin,
+};
 
 // The guys at shaka-streamer did a great job implementing an ffmpeg pipeline, we can always learn from it:
 // https://github.com/shaka-project/shaka-streamer/blob/8bee20a09efab659ea3ecea8ff67db32202a807c/streamer/transcoder_node.py
@@ -31,26 +35,40 @@ export type FfmpegResult = {
   stream: Stream;
 };
 
+async function prepareInput(input: Input) {
+  const filePath = parseFilePath(input.path);
+
+  if (filePath.dir.startsWith("s3://")) {
+    // If the input is on S3, download the file locally.
+    const dir = dirSync();
+
+    const s3SourcePath = filePath.path.replace("s3://", "");
+
+    await downloadFile(dir.name, s3SourcePath);
+
+    return parseFilePath(`${dir.name}/${filePath.basename}`);
+  }
+
+  return filePath;
+}
+
 export default async function (job: Job<FfmpegData, FfmpegResult>) {
   const { params } = job.data;
 
   const dir = dirSync();
-  let inputFile = parseFilePath(params.input.path);
 
-  if (inputFile.dir.startsWith("s3://")) {
-    const s3SourcePath = inputFile.path.replace("s3://", "");
-
-    job.log(`Source is on s3, downloading ${s3SourcePath} to ${dir.name}`);
-
-    await downloadFile(dir.name, s3SourcePath);
-    inputFile = parseFilePath(`${dir.name}/${inputFile.basename}`);
-  }
+  const inputFile = await prepareInput(params.input);
 
   job.log(`Input is ${inputFile.path}`);
 
-  let name: string | undefined;
-  let ffmpegCmd: FfmpegCommand | undefined;
+  const ffmpeg = new FFmpeggy({
+    input: inputFile.path,
+    globalOptions: ["-loglevel error"],
+  });
 
+  let name: string | undefined;
+
+<<<<<<< HEAD
   if (params.stream.type === "video") {
     const keyFrameInterval = params.segmentSize * params.stream.framerate;
 
@@ -65,70 +83,53 @@ export default async function (job: Job<FfmpegData, FfmpegResult>) {
         codec = params.stream.codec;
         break;
     }
+=======
+  const outputOptions: string[] = [];
+>>>>>>> fa3d524d1d446cd26e2d2c0e252333439d787544
 
+  if (params.stream.type === "video") {
     name = `video_${params.stream.height}_${params.stream.bitrate}_${params.stream.codec}.m4v`;
-
-    ffmpegCmd = ffmpeg(inputFile.path)
-      .noAudio()
-      .format("mp4")
-      .size(`?x${params.stream.height}`)
-      .aspectRatio("16:9")
-      .autoPad(true)
-      .videoCodec(codec)
-      .videoBitrate(params.stream.bitrate)
-      .outputOptions([
-        `-frag_duration ${params.segmentSize * 1e6}`,
-        "-movflags +frag_keyframe",
-        `-r ${params.stream.framerate}`,
-        `-keyint_min ${keyFrameInterval}`,
-        `-g ${keyFrameInterval}`,
-      ])
-      .output(`${dir.name}/${name}`);
+    outputOptions.push(
+      ...getVideoOutputOptions(params.stream, params.segmentSize),
+    );
   }
 
   if (params.stream.type === "audio") {
     name = `audio_${params.stream.language}_${params.stream.bitrate}.m4a`;
-
-    ffmpegCmd = ffmpeg(inputFile.path)
-      .noVideo()
-      .format("mp4")
-      .audioCodec(params.stream.codec)
-      .audioBitrate(params.stream.bitrate)
-      .outputOptions([
-        `-metadata language=${params.stream.language}`,
-        `-frag_duration ${params.segmentSize * 1e6}`,
-      ])
-      .output(`${dir.name}/${name}`);
+    outputOptions.push(
+      ...getAudioOutputOptions(params.stream, params.segmentSize),
+    );
   }
 
   if (params.stream.type === "text") {
     name = `text_${params.stream.language}.vtt`;
-
-    ffmpegCmd = ffmpeg(inputFile.path).output(`${dir.name}/${name}`);
+    outputOptions.push(...getTextOutputOptions(params.stream));
   }
 
-  if (!ffmpegCmd || !name) {
-    throw new Error("No ffmpeg cmd or file created.");
+  if (!name) {
+    throw new Error(
+      "Missing name, this is most likely a bug. Report it, please.",
+    );
   }
+
+  ffmpeg.setOutput(`${dir.name}/${name}`);
+  ffmpeg.setOutputOptions(outputOptions);
 
   job.log(`Transcode to ${name}`);
 
-  await new Promise((resolve, reject) => {
-    ffmpegCmd
-      .on("error", reject)
-      .on("end", () => {
-        job.updateProgress(100);
-        job.log("Finished transcode");
-        resolve(undefined);
-      })
-      .on("start", (cmdLine) => {
-        job.log(cmdLine);
-      })
-      .on("progress", (event) => {
-        job.updateProgress(event.percent ?? 0);
-      })
-      .run();
+  ffmpeg.on("start", (args) => {
+    job.log(args.join(" "));
   });
+
+  ffmpeg.on("progress", (event) => {
+    job.updateProgress(event.percent ?? 0);
+  });
+
+  ffmpeg.run();
+
+  await ffmpeg.done();
+
+  job.updateProgress(100);
 
   job.log(
     `Uploading ${dir.name}/${name} to transcode/${params.assetId}/${name}`,
@@ -143,4 +144,69 @@ export default async function (job: Job<FfmpegData, FfmpegResult>) {
     name,
     stream: params.stream,
   };
+}
+
+function getVideoOutputOptions(
+  stream: Extract<Stream, { type: "video" }>,
+  segmentSize: number,
+) {
+  const args: string[] = [
+    "-f mp4",
+    "-an",
+    `-c:v ${stream.codec}`,
+    `-b:v ${stream.bitrate}`,
+    `-r ${stream.framerate}`,
+    "-movflags +frag_keyframe",
+    `-frag_duration ${segmentSize * 1_000_000}`,
+  ];
+
+  if (stream.codec === "h264") {
+    let profile = "main";
+    if (stream.height >= 720) {
+      profile = "high";
+    }
+    args.push(`-profile:v ${profile}`);
+  }
+
+  if (stream.codec === "h264" || stream.codec === "hevc") {
+    args.push(
+      "-preset slow",
+      "-flags +loop",
+      "-pix_fmt yuv420p",
+      "-flags +cgop",
+    );
+  }
+
+  const filters: string[] = ["setsar=1:1", `scale=-2:${stream.height}`];
+
+  args.push(`-vf ${filters.join(",")}`);
+
+  const keyFrameRate = segmentSize * stream.framerate;
+  args.push(`-keyint_min ${keyFrameRate}`, `-g ${keyFrameRate}`);
+
+  return args;
+}
+
+function getAudioOutputOptions(
+  stream: Extract<Stream, { type: "audio" }>,
+  segmentSize: number,
+) {
+  const args: string[] = [
+    "-f mp4",
+    "-vn",
+    "-ac 2",
+    `-c:a ${stream.codec}`,
+    `-b:a ${stream.bitrate}`,
+    `-frag_duration ${segmentSize * 1_000_000}`,
+    `-metadata language=${stream.language}`,
+    "-strict experimental",
+  ];
+
+  return args;
+}
+
+function getTextOutputOptions(stream: Extract<Stream, { type: "text" }>) {
+  const args: string[] = ["-f webvtt"];
+
+  return args;
 }

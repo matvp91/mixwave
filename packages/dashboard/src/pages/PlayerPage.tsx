@@ -1,5 +1,4 @@
 import { useEffect, useState, lazy, Suspense } from "react";
-import { Player } from "@/components/player/Player";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert } from "@/components/ui/alert";

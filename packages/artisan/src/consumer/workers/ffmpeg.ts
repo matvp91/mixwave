@@ -11,6 +11,9 @@ console.log(`Set ffmpeg path to "${ffmpegBin.path}"`);
 
 ffmpeg.setFfmpegPath(ffmpegBin.path);
 
+// The guys at shaka-streamer did a great job implementing an ffmpeg pipeline, we can always learn from it:
+// https://github.com/shaka-project/shaka-streamer/blob/8bee20a09efab659ea3ecea8ff67db32202a807c/streamer/transcoder_node.py
+
 export type FfmpegData = {
   params: {
     input: Input;
@@ -56,6 +59,8 @@ export default async function (job: Job<FfmpegData, FfmpegResult>) {
       case "h264":
         codec = "libx264";
         break;
+      // case "hevc":
+      // codec = "libx265";
       default:
         codec = params.stream.codec;
         break;

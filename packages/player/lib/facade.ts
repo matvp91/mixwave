@@ -1,10 +1,11 @@
 import Hls from "hls.js";
 import EventEmitter from "eventemitter3";
+import { assert } from "./assert";
+import { EventManager } from "./event-manager";
 import type {
   InterstitialsManager,
   InterstitialScheduleItem,
   InterstitialAssetStartedData,
-  HlsListeners,
 } from "hls.js";
 import type {
   Anything,
@@ -26,20 +27,24 @@ export class HlsFacade extends EventEmitter<Events> {
 
   private batchTimerId_?: number;
 
-  private media_?: HTMLMediaElement;
-
-  private hlsListeners_: $HlsListener[] = [];
-
-  private mediaListeners_: $MediaListener[] = [];
-
   private intervalId_?: number;
 
-  constructor(public hls: Hls) {
+  private eventMgr_: EventManager;
+
+  constructor(
+    public hls: Hls,
+    private media_: HTMLMediaElement,
+  ) {
     super();
 
+    this.eventMgr_ = new EventManager(hls, media_);
+
     const onInit = () => {
-      hls.off(Hls.Events.BUFFER_CREATED, onInit);
-      hls.off(Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED, onInit);
+      this.eventMgr_.hlsOff(Hls.Events.BUFFER_CREATED, onInit);
+      this.eventMgr_.hlsOff(
+        Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED,
+        onInit,
+      );
 
       if (!hls.interstitialsManager || !hls.media) {
         const message = "Missing hls.interstitialsManager or hls.media";
@@ -48,7 +53,6 @@ export class HlsFacade extends EventEmitter<Events> {
       }
 
       this.mgr_ = hls.interstitialsManager;
-      this.media_ = hls.media;
 
       this.initState_();
 
@@ -56,33 +60,35 @@ export class HlsFacade extends EventEmitter<Events> {
       this.initHlsListeners_();
     };
 
-    hls.once(Hls.Events.BUFFER_CREATED, onInit);
-    hls.once(Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED, onInit);
+    this.eventMgr_.hlsOn(Hls.Events.BUFFER_CREATED, onInit);
+    this.eventMgr_.hlsOn(Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED, onInit);
   }
 
   private initMediaListeners_() {
-    this.mediaOn_("play", () => {
-      this.setState_({ playheadState: "play" });
+    const mediaOn = this.eventMgr_.mediaOn;
+
+    mediaOn("play", () => {
       this.pollTime_();
     });
 
-    this.mediaOn_("pause", () => {
-      this.setState_({ playheadState: "pause" });
+    mediaOn("pause", () => {
       this.pollTime_();
     });
 
-    this.mediaOn_("seeked", () => {
+    mediaOn("seeked", () => {
       this.pollTime_();
     });
   }
 
   private initHlsListeners_() {
-    this.hlsOn_(Hls.Events.MEDIA_ENDED, () => {
+    const hlsOn = this.eventMgr_.hlsOn;
+
+    hlsOn(Hls.Events.MEDIA_ENDED, () => {
       clearTimeout(this.timerId_);
       this.setState_({ playheadState: "ended", time: this.state?.duration });
     });
 
-    this.hlsOn_(Hls.Events.LEVEL_SWITCHING, () => {
+    hlsOn(Hls.Events.LEVEL_SWITCHING, () => {
       assert(this.state);
 
       updateActive_(
@@ -94,7 +100,7 @@ export class HlsFacade extends EventEmitter<Events> {
       );
     });
 
-    this.hlsOn_(Hls.Events.AUDIO_TRACK_SWITCHING, () => {
+    hlsOn(Hls.Events.AUDIO_TRACK_SWITCHING, () => {
       assert(this.state);
 
       updateActive_(
@@ -106,7 +112,7 @@ export class HlsFacade extends EventEmitter<Events> {
       );
     });
 
-    this.hlsOn_(Hls.Events.SUBTITLE_TRACK_SWITCH, () => {
+    hlsOn(Hls.Events.SUBTITLE_TRACK_SWITCH, () => {
       assert(this.state);
 
       updateActive_(
@@ -118,7 +124,7 @@ export class HlsFacade extends EventEmitter<Events> {
       );
     });
 
-    this.hlsOn_(Hls.Events.INTERSTITIAL_ASSET_STARTED, (_, data) => {
+    hlsOn(Hls.Events.INTERSTITIAL_ASSET_STARTED, (_, data) => {
       const listItem = getAssetListItem(data);
       const slot: Slot = {
         type: listItem.type,
@@ -129,7 +135,7 @@ export class HlsFacade extends EventEmitter<Events> {
       this.pollTime_();
     });
 
-    this.hlsOn_(Hls.Events.INTERSTITIAL_ASSET_ENDED, () => {
+    hlsOn(Hls.Events.INTERSTITIAL_ASSET_ENDED, () => {
       this.setState_({ slot: null });
     });
   }
@@ -234,18 +240,8 @@ export class HlsFacade extends EventEmitter<Events> {
     clearTimeout(this.timerId_);
     clearInterval(this.intervalId_);
 
-    const media = this.media_;
-    this.mediaListeners_.forEach(([type, listener]) => {
-      media?.removeEventListener(type, listener);
-    });
-    this.mediaListeners_ = [];
+    this.eventMgr_.releaseAll();
 
-    this.hlsListeners_.forEach(([event, listener]) => {
-      this.hls.off(event, listener);
-    });
-    this.hlsListeners_ = [];
-
-    this.media_ = undefined;
     this.mgr_ = undefined;
     this.state = null;
   }
@@ -256,8 +252,10 @@ export class HlsFacade extends EventEmitter<Events> {
 
     if (this.state.playheadState === "play") {
       this.media_.pause();
+      this.setState_({ playheadState: "pause" });
     } else {
       this.media_.play();
+      this.setState_({ playheadState: "play" });
     }
   }
 
@@ -281,33 +279,6 @@ export class HlsFacade extends EventEmitter<Events> {
 
   setAudioTrack(id: number | null) {
     this.hls.audioTrack = id ? id - 1 : -1;
-  }
-
-  private hlsOn_<E extends keyof HlsListeners>(
-    event: E,
-    listener: HlsListeners[E],
-  ) {
-    this.hls.on(event, listener);
-    this.hlsListeners_.push([event, listener]);
-  }
-
-  private mediaOn_<K extends keyof HTMLMediaElementEventMap>(
-    type: K,
-    listener: (this: HTMLMediaElement, ev: HTMLMediaElementEventMap[K]) => void,
-  ) {
-    assert(this.media_);
-    this.media_.addEventListener(type, listener);
-    // @ts-expect-error
-    this.mediaListeners_.push([type, listener]);
-  }
-}
-
-function assert<T>(
-  value: T,
-  message: string = "value is null",
-): asserts value is NonNullable<T> {
-  if (value === null || value === undefined) {
-    throw Error(message);
   }
 }
 
@@ -361,15 +332,3 @@ function getAssetListItem(data: InterstitialAssetStartedData): {
     type: (assetListItem as Anything)?.["MIX-TYPE"],
   };
 }
-
-type $HlsListener<E extends keyof HlsListeners = keyof HlsListeners> = [
-  event: E,
-  listener: HlsListeners[E],
-];
-
-type $MediaListener<
-  K extends keyof HTMLMediaElementEventMap = keyof HTMLMediaElementEventMap,
-> = [
-  type: K,
-  listener: (this: HTMLMediaElement, ev: HTMLMediaElementEventMap[K]) => void,
-];

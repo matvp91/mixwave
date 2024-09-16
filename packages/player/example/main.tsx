@@ -9,7 +9,7 @@ const hls = new Hls({
 const mediaElement = document.querySelector("video")!;
 hls.attachMedia(mediaElement);
 
-const facade = new HlsFacade(hls);
+const facade = new HlsFacade(hls, mediaElement);
 
 Object.assign(window, { facade });
 

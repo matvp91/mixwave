@@ -15,5 +15,9 @@ export function filterJobs(jobs: JobDto[], filter: JobsFilterData) {
     jobs = jobs.filter((job) => job.name === filter.name);
   }
 
+  if (filter.state) {
+    jobs = jobs.filter((job) => job.state === filter.state);
+  }
+
   return jobs;
 }

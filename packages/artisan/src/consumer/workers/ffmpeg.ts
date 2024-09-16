@@ -15,6 +15,9 @@ FFmpeggy.DefaultConfig = {
   ffmpegBin,
 };
 
+// The guys at shaka-streamer did a great job implementing an ffmpeg pipeline, we can always learn from it:
+// https://github.com/shaka-project/shaka-streamer/blob/8bee20a09efab659ea3ecea8ff67db32202a807c/streamer/transcoder_node.py
+
 export type FfmpegData = {
   params: {
     input: Input;

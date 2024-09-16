@@ -35,6 +35,13 @@ export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
     }
   }
 
+  const filterJobState = (state?: JobDto["state"]) => {
+    if (state === filter.state) {
+      state = undefined;
+    }
+    onChange({ state });
+  };
+
   return (
     <TooltipProvider delayDuration={0}>
       <ul className="flex bg-white border border-border rounded-md overflow-hidden">
@@ -44,7 +51,7 @@ export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
               value={completed}
               className="bg-emerald-400"
               outerClassName="border-r border-border"
-              onClick={() => onChange({ state: "completed" })}
+              onClick={() => filterJobState("completed")}
               active={filter.state === "completed"}
             />
           </TooltipTrigger>
@@ -58,7 +65,7 @@ export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
               value={failed}
               className="bg-red-400"
               outerClassName="border-r border-border"
-              onClick={() => onChange({ state: "failed" })}
+              onClick={() => filterJobState("failed")}
               active={filter.state === "failed"}
             />
           </TooltipTrigger>
@@ -72,7 +79,7 @@ export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
               value={running}
               className="bg-blue-400"
               outerClassName="border-r border-border"
-              onClick={() => onChange({ state: "running" })}
+              onClick={() => filterJobState("running")}
               active={filter.state === "running"}
             />
           </TooltipTrigger>
@@ -85,7 +92,7 @@ export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
             <Tile
               value={waiting}
               className="bg-violet-400"
-              onClick={() => onChange({ state: "waiting" })}
+              onClick={() => filterJobState("waiting")}
               active={filter.state === "waiting"}
             />
           </TooltipTrigger>

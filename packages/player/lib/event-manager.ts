@@ -50,7 +50,6 @@ export class EventManager {
       if (lookup[1][logCallOrig] === listener) {
         // @ts-expect-error
         listener = lookup[1];
-        console.log("FOUND IT");
         break;
       }
     }

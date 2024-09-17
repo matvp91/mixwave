@@ -1,6 +1,6 @@
 import { getTimeAgo } from "@/lib/helpers";
 import { JobLogs } from "./JobLogs";
-import { AlertCircle } from "lucide-react";
+import AlertCircle from "lucide-react/icons/alert-circle";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { getDurationStr } from "@/lib/helpers";
 import type { JobDto } from "@/tsr";

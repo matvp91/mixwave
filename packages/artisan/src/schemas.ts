@@ -4,7 +4,7 @@ import { zodEnumLanguage } from "./lib/zod-helpers.js";
 export const streamSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("video"),
-    codec: z.enum(["h264", "vp9"]),
+    codec: z.enum(["h264", "vp9", "hevc"]),
     height: z.number(),
     bitrate: z.number(),
     framerate: z.number(),

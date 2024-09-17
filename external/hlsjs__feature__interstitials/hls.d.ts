@@ -916,6 +916,7 @@ export declare class EMEController extends Logger implements ComponentAPI {
     private registerListeners;
     private unregisterListeners;
     private getLicenseServerUrl;
+    private getLicenseServerUrlOrThrow;
     private getServerCertificateUrl;
     private attemptKeySystemAccess;
     private requestMediaKeySystemAccess;
@@ -1491,6 +1492,7 @@ declare class Hls implements HlsEventEmitter {
      */
     static getMediaSource(): typeof MediaSource | undefined;
     static get Events(): typeof Events;
+    static get MetadataSchema(): typeof MetadataSchema;
     static get ErrorTypes(): typeof ErrorTypes;
     static get ErrorDetails(): typeof ErrorDetails;
     /**
@@ -2229,6 +2231,7 @@ export declare class InterstitialsController extends Logger implements NetworkCo
     private waitingItem;
     private playingAsset;
     private bufferingAsset;
+    private shouldPlay;
     constructor(hls: Hls, HlsPlayerClass: typeof Hls);
     private registerListeners;
     private unregisterListeners;
@@ -2238,6 +2241,7 @@ export declare class InterstitialsController extends Logger implements NetworkCo
     pauseBuffering(): void;
     destroy(): void;
     private onDestroying;
+    private removeMediaListeners;
     private onMediaAttaching;
     private onMediaAttached;
     private clearScheduleState;
@@ -2251,6 +2255,7 @@ export declare class InterstitialsController extends Logger implements NetworkCo
     private retreiveMediaSource;
     private transferMediaFromPlayer;
     private transferMediaTo;
+    private onPlay;
     private onSeeking;
     private onTimeupdate;
     private checkStart;
@@ -2927,6 +2932,7 @@ export declare type MediaPlaylistType = MainPlaylistType | SubtitlePlaylistType;
 export declare type MetadataControllerConfig = {
     enableDateRangeMetadataCues: boolean;
     enableEmsgMetadataCues: boolean;
+    enableEmsgKLVMetadata: boolean;
     enableID3MetadataCues: boolean;
 };
 
@@ -2939,10 +2945,11 @@ export declare interface MetadataSample {
     type: MetadataSchema;
 }
 
-export declare const enum MetadataSchema {
+export declare enum MetadataSchema {
     audioId3 = "org.id3",
     dateRange = "com.apple.quicktime.HLS",
-    emsg = "https://aomedia.org/emsg/ID3"
+    emsg = "https://aomedia.org/emsg/ID3",
+    misbklv = "urn:misb:KLV:bin:1910.1"
 }
 
 export declare type MP4RemuxerConfig = {
@@ -3063,7 +3070,7 @@ export declare type PlayheadTimes = {
     bufferedEnd: number;
     currentTime: number;
     duration: number;
-    slidingStart: number;
+    seekableStart: number;
     seekTo: (time: number) => void;
 };
 

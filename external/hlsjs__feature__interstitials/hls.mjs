@@ -1317,15 +1317,19 @@ function keySystemFormatToKeySystemDomain(format) {
 
 // System IDs for which we can extract a key ID from "encrypted" event PSSH
 var KeySystemIds = {
+  CENC: "1077efecc0b24d02ace33c1e52e2fb4b",
+  CLEARKEY: "e2719d58a985b3c9781ab030af78d30e",
+  FAIRPLAY: "94ce86fb07ff4f43adb893d2fa968ca2",
+  PLAYREADY: "9a04f07998404286ab92e65be0885f95",
   WIDEVINE: "edef8ba979d64acea3c827dcd51d21ed"
 };
 function keySystemIdToKeySystemDomain(systemId) {
   if (systemId === KeySystemIds.WIDEVINE) {
     return KeySystems.WIDEVINE;
-    // } else if (systemId === KeySystemIds.PLAYREADY) {
-    //   return KeySystems.PLAYREADY;
-    // } else if (systemId === KeySystemIds.CENC || systemId === KeySystemIds.CLEARKEY) {
-    //   return KeySystems.CLEARKEY;
+  } else if (systemId === KeySystemIds.PLAYREADY) {
+    return KeySystems.PLAYREADY;
+  } else if (systemId === KeySystemIds.CENC || systemId === KeySystemIds.CLEARKEY) {
+    return KeySystems.CLEARKEY;
   }
 }
 function keySystemDomainToKeySystemFormat(keySystem) {
@@ -1398,6 +1402,27 @@ function createMediaKeySystemConfigurations(initDataTypes, audioCodecs, videoCod
     }))
   };
   return [baseConfig];
+}
+function parsePlayReadyWRM(keyBytes) {
+  const keyBytesUtf16 = new Uint16Array(keyBytes.buffer, keyBytes.byteOffset, keyBytes.byteLength / 2);
+  const keyByteStr = String.fromCharCode.apply(null, Array.from(keyBytesUtf16));
+
+  // Parse Playready WRMHeader XML
+  const xmlKeyBytes = keyByteStr.substring(keyByteStr.indexOf('<'), keyByteStr.length);
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(xmlKeyBytes, 'text/xml');
+  const keyData = xmlDoc.getElementsByTagName('KID')[0];
+  if (keyData) {
+    const keyId = keyData.childNodes[0] ? keyData.childNodes[0].nodeValue : keyData.getAttribute('VALUE');
+    if (keyId) {
+      const keyIdArray = base64Decode(keyId).subarray(0, 16);
+      // KID value in PRO is a base64-encoded little endian GUID interpretation of UUID
+      // KID value in ‘tenc’ is a big endian UUID GUID interpretation of UUID
+      changeEndianness(keyIdArray);
+      return keyIdArray;
+    }
+  }
+  return null;
 }
 
 function sliceUint8(array, start, end) {
@@ -1931,7 +1956,6 @@ function parseSinf(sinf) {
       return findBox(sinf, ['schi', 'tenc'])[0];
     }
   }
-  logger.error(`[eme] missing 'schm' box`);
   return null;
 }
 
@@ -2596,43 +2620,77 @@ function mp4pssh(systemId, keyids, data) {
   // 16 bytes
   kidCount, kids, dataSize, data || new Uint8Array());
 }
-function parsePssh(initData) {
-  if (!(initData instanceof ArrayBuffer) || initData.byteLength < 32) {
-    return null;
+function parseMultiPssh(initData) {
+  const results = [];
+  if (initData instanceof ArrayBuffer) {
+    const length = initData.byteLength;
+    let offset = 0;
+    while (offset + 32 < length) {
+      const view = new DataView(initData, offset);
+      const pssh = parsePssh(view);
+      results.push(pssh);
+      offset += pssh.size;
+    }
   }
-  const result = {
-    version: 0,
-    systemId: '',
-    kids: null,
-    data: null
-  };
-  const view = new DataView(initData);
-  const boxSize = view.getUint32(0);
-  if (initData.byteLength !== boxSize && boxSize > 44) {
-    return null;
+  return results;
+}
+function parsePssh(view) {
+  const size = view.getUint32(0);
+  const offset = view.byteOffset;
+  const length = view.byteLength;
+  if (length < size) {
+    return {
+      offset,
+      size: length
+    };
   }
   const type = view.getUint32(4);
   if (type !== 0x70737368) {
-    return null;
+    return {
+      offset,
+      size
+    };
   }
-  result.version = view.getUint32(8) >>> 24;
-  if (result.version > 1) {
-    return null;
+  const version = view.getUint32(8) >>> 24;
+  if (version !== 0 && version !== 1) {
+    return {
+      offset,
+      size
+    };
   }
-  result.systemId = Hex.hexDump(new Uint8Array(initData, 12, 16));
+  const buffer = view.buffer;
+  const systemId = Hex.hexDump(new Uint8Array(buffer, offset + 12, 16));
   const dataSizeOrKidCount = view.getUint32(28);
-  if (result.version === 0) {
-    if (boxSize - 32 < dataSizeOrKidCount) {
-      return null;
+  let kids = null;
+  let data = null;
+  if (version === 0) {
+    if (size - 32 < dataSizeOrKidCount || dataSizeOrKidCount < 22) {
+      return {
+        offset,
+        size
+      };
     }
-    result.data = new Uint8Array(initData, 32, dataSizeOrKidCount);
-  } else if (result.version === 1) {
-    result.kids = [];
+    data = new Uint8Array(buffer, offset + 32, dataSizeOrKidCount);
+  } else if (version === 1) {
+    if (!dataSizeOrKidCount || length < offset + 32 + dataSizeOrKidCount * 16 + 16) {
+      return {
+        offset,
+        size
+      };
+    }
+    kids = [];
     for (let i = 0; i < dataSizeOrKidCount; i++) {
-      result.kids.push(new Uint8Array(initData, 32 + i * 16, 16));
+      kids.push(new Uint8Array(buffer, offset + 32 + i * 16, 16));
     }
   }
-  return result;
+  return {
+    version,
+    systemId,
+    kids,
+    data,
+    offset,
+    size
+  };
 }
 
 let keyUriToKeyIdMap = {};
@@ -2704,6 +2762,8 @@ class LevelKey {
     if (keyBytes) {
       switch (this.keyFormat) {
         case KeySystemFormats.WIDEVINE:
+          // Setting `pssh` on this LevelKey/DecryptData allows HLS.js to generate a session using
+          // the playlist-key before the "encrypted" event. (Comment out to only use "encrypted" path.)
           this.pssh = keyBytes;
           // In case of widevine keyID is embedded in PSSH box. Read Key ID.
           if (keyBytes.length >= 22) {
@@ -2713,25 +2773,11 @@ class LevelKey {
         case KeySystemFormats.PLAYREADY:
           {
             const PlayReadyKeySystemUUID = new Uint8Array([0x9a, 0x04, 0xf0, 0x79, 0x98, 0x40, 0x42, 0x86, 0xab, 0x92, 0xe6, 0x5b, 0xe0, 0x88, 0x5f, 0x95]);
-            this.pssh = mp4pssh(PlayReadyKeySystemUUID, null, keyBytes);
-            const keyBytesUtf16 = new Uint16Array(keyBytes.buffer, keyBytes.byteOffset, keyBytes.byteLength / 2);
-            const keyByteStr = String.fromCharCode.apply(null, Array.from(keyBytesUtf16));
 
-            // Parse Playready WRMHeader XML
-            const xmlKeyBytes = keyByteStr.substring(keyByteStr.indexOf('<'), keyByteStr.length);
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xmlKeyBytes, 'text/xml');
-            const keyData = xmlDoc.getElementsByTagName('KID')[0];
-            if (keyData) {
-              const keyId = keyData.childNodes[0] ? keyData.childNodes[0].nodeValue : keyData.getAttribute('VALUE');
-              if (keyId) {
-                const keyIdArray = base64Decode(keyId).subarray(0, 16);
-                // KID value in PRO is a base64-encoded little endian GUID interpretation of UUID
-                // KID value in ‘tenc’ is a big endian UUID GUID interpretation of UUID
-                changeEndianness(keyIdArray);
-                this.keyId = keyIdArray;
-              }
-            }
+            // Setting `pssh` on this LevelKey/DecryptData allows HLS.js to generate a session using
+            // the playlist-key before the "encrypted" event. (Comment out to only use "encrypted" path.)
+            this.pssh = mp4pssh(PlayReadyKeySystemUUID, null, keyBytes);
+            this.keyId = parsePlayReadyWRM(keyBytes);
             break;
           }
         default:
@@ -4317,11 +4363,13 @@ function filterSubtitleTracks(textTrackList) {
   return tracks;
 }
 
-var MetadataSchema = {
-  audioId3: "org.id3",
-  dateRange: "com.apple.quicktime.HLS",
-  emsg: "https://aomedia.org/emsg/ID3"
-};
+let MetadataSchema = /*#__PURE__*/function (MetadataSchema) {
+  MetadataSchema["audioId3"] = "org.id3";
+  MetadataSchema["dateRange"] = "com.apple.quicktime.HLS";
+  MetadataSchema["emsg"] = "https://aomedia.org/emsg/ID3";
+  MetadataSchema["misbklv"] = "urn:misb:KLV:bin:1910.1";
+  return MetadataSchema;
+}({});
 
 /**
  * Decode an ID3 PRIV frame.
@@ -11006,7 +11054,11 @@ class BaseAudioDemuxer {
       textTrack: dummyTrack()
     };
   }
-  destroy() {}
+  destroy() {
+    this.cachedData = null;
+    // @ts-ignore
+    this._audioTrack = this._id3Track = undefined;
+  }
 }
 
 /**
@@ -11023,23 +11075,11 @@ const initPTSFn = (timestamp, timeOffset, initPTS) => {
   return timeOffset * 90000 + init90kHz;
 };
 
-/**
- * ADTS parser helper
- * @link https://wiki.multimedia.cx/index.php?title=ADTS
- */
-function getAudioConfig(observer, data, offset, audioCodec) {
-  let adtsObjectType;
-  let originalAdtsObjectType;
-  let adtsExtensionSamplingIndex;
-  let adtsChannelConfig;
-  let config;
-  const userAgent = navigator.userAgent.toLowerCase();
-  const manifestCodec = audioCodec;
+function getAudioConfig(observer, data, offset, manifestCodec) {
   const adtsSamplingRates = [96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050, 16000, 12000, 11025, 8000, 7350];
-  // byte 2
-  adtsObjectType = originalAdtsObjectType = ((data[offset + 2] & 0xc0) >>> 6) + 1;
-  const adtsSamplingIndex = (data[offset + 2] & 0x3c) >>> 2;
-  if (adtsSamplingIndex > adtsSamplingRates.length - 1) {
+  const byte2 = data[offset + 2];
+  const adtsSamplingIndex = byte2 >> 2 & 0xf;
+  if (adtsSamplingIndex > 12) {
     const error = new Error(`invalid ADTS sampling index:${adtsSamplingIndex}`);
     observer.emit(Events.ERROR, Events.ERROR, {
       type: ErrorTypes.MEDIA_ERROR,
@@ -11050,53 +11090,12 @@ function getAudioConfig(observer, data, offset, audioCodec) {
     });
     return;
   }
-  adtsChannelConfig = (data[offset + 2] & 0x01) << 2;
-  // byte 3
-  adtsChannelConfig |= (data[offset + 3] & 0xc0) >>> 6;
-  logger.log(`manifest codec:${audioCodec}, ADTS type:${adtsObjectType}, samplingIndex:${adtsSamplingIndex}`);
-  // Firefox and Pale Moon: freq less than 24kHz = AAC SBR (HE-AAC)
-  if (/firefox|palemoon/i.test(userAgent)) {
-    if (adtsSamplingIndex >= 6) {
-      adtsObjectType = 5;
-      config = new Array(4);
-      // HE-AAC uses SBR (Spectral Band Replication) , high frequencies are constructed from low frequencies
-      // there is a factor 2 between frame sample rate and output sample rate
-      // multiply frequency by 2 (see table below, equivalent to substract 3)
-      adtsExtensionSamplingIndex = adtsSamplingIndex - 3;
-    } else {
-      adtsObjectType = 2;
-      config = new Array(2);
-      adtsExtensionSamplingIndex = adtsSamplingIndex;
-    }
-    // Android : always use AAC
-  } else if (userAgent.indexOf('android') !== -1) {
-    adtsObjectType = 2;
-    config = new Array(2);
-    adtsExtensionSamplingIndex = adtsSamplingIndex;
-  } else {
-    /*  for other browsers (Chrome/Vivaldi/Opera ...)
-        always force audio type to be HE-AAC SBR, as some browsers do not support audio codec switch properly (like Chrome ...)
-    */
-    adtsObjectType = 5;
-    config = new Array(4);
-    // if (manifest codec is HE-AAC or HE-AACv2) OR (manifest codec not specified AND frequency less than 24kHz)
-    if (audioCodec && (audioCodec.indexOf('mp4a.40.29') !== -1 || audioCodec.indexOf('mp4a.40.5') !== -1) || !audioCodec && adtsSamplingIndex >= 6) {
-      // HE-AAC uses SBR (Spectral Band Replication) , high frequencies are constructed from low frequencies
-      // there is a factor 2 between frame sample rate and output sample rate
-      // multiply frequency by 2 (see table below, equivalent to substract 3)
-      adtsExtensionSamplingIndex = adtsSamplingIndex - 3;
-    } else {
-      // if (manifest codec is AAC) AND (frequency less than 24kHz AND nb channel is 1) OR (manifest codec not specified and mono audio)
-      // Chrome fails to play back with low frequency AAC LC mono when initialized with HE-AAC.  This is not a problem with stereo.
-      if (audioCodec && audioCodec.indexOf('mp4a.40.2') !== -1 && (adtsSamplingIndex >= 6 && adtsChannelConfig === 1 || /vivaldi/i.test(userAgent)) || !audioCodec && adtsChannelConfig === 1) {
-        adtsObjectType = 2;
-        config = new Array(2);
-      }
-      adtsExtensionSamplingIndex = adtsSamplingIndex;
-    }
-  }
+  // MPEG-4 Audio Object Type (profile_ObjectType+1)
+  const adtsObjectType = (byte2 >> 6 & 0x3) + 1;
+  const channelCount = data[offset + 3] >> 6 & 0x3 | (byte2 & 1) << 2;
+  const codec = 'mp4a.40.' + adtsObjectType;
   /* refer to http://wiki.multimedia.cx/index.php?title=MPEG-4_Audio#Audio_Specific_Config
-      ISO 14496-3 (AAC).pdf - Table 1.13 — Syntax of AudioSpecificConfig()
+      ISO/IEC 14496-3 - Table 1.13 — Syntax of AudioSpecificConfig()
     Audio Profile / Audio Object Type
     0: Null
     1: AAC Main
@@ -11129,27 +11128,22 @@ function getAudioConfig(observer, data, offset, audioCodec) {
     2: 2 channels: front-left, front-right
   */
   // audioObjectType = profile => profile, the MPEG-4 Audio Object Type minus 1
-  config[0] = adtsObjectType << 3;
-  // samplingFrequencyIndex
-  config[0] |= (adtsSamplingIndex & 0x0e) >> 1;
-  config[1] |= (adtsSamplingIndex & 0x01) << 7;
-  // channelConfiguration
-  config[1] |= adtsChannelConfig << 3;
-  if (adtsObjectType === 5) {
-    // adtsExtensionSamplingIndex
-    config[1] |= (adtsExtensionSamplingIndex & 0x0e) >> 1;
-    config[2] = (adtsExtensionSamplingIndex & 0x01) << 7;
-    // adtsObjectType (force to 2, chrome is checking that object type is less than 5 ???
-    //    https://chromium.googlesource.com/chromium/src.git/+/master/media/formats/mp4/aac.cc
-    config[2] |= 2 << 2;
-    config[3] = 0;
+  const samplerate = adtsSamplingRates[adtsSamplingIndex];
+  let aacSampleIndex = adtsSamplingIndex;
+  if (adtsObjectType === 5 || adtsObjectType === 29) {
+    // HE-AAC uses SBR (Spectral Band Replication) , high frequencies are constructed from low frequencies
+    // there is a factor 2 between frame sample rate and output sample rate
+    // multiply frequency by 2 (see table above, equivalent to substract 3)
+    aacSampleIndex -= 3;
   }
+  const config = [adtsObjectType << 3 | (aacSampleIndex & 0x0e) >> 1, (aacSampleIndex & 0x01) << 7 | channelCount << 3];
+  logger.log(`manifest codec:${manifestCodec}, parsed codec:${codec}, channels:${channelCount}, rate:${samplerate} (ADTS object type:${adtsObjectType} sampling index:${adtsSamplingIndex})`);
   return {
     config,
-    samplerate: adtsSamplingRates[adtsSamplingIndex],
-    channelCount: adtsChannelConfig,
-    codec: 'mp4a.40.' + adtsObjectType,
-    parsedCodec: 'mp4a.40.' + originalAdtsObjectType,
+    samplerate,
+    channelCount,
+    codec,
+    parsedCodec: codec,
     manifestCodec
   };
 }
@@ -11199,13 +11193,7 @@ function initTrackConfig(track, observer, data, offset, audioCodec) {
     if (!config) {
       return;
     }
-    track.config = config.config;
-    track.samplerate = config.samplerate;
-    track.channelCount = config.channelCount;
-    track.codec = config.codec;
-    track.manifestCodec = config.manifestCodec;
-    track.parsedCodec = config.parsedCodec;
-    logger.log(`parsed codec:${track.parsedCodec}, codec:${track.codec}, rate:${config.samplerate}, channels:${config.channelCount}`);
+    _extends(track, config);
   }
 }
 function getFrameDuration(samplerate) {
@@ -11583,7 +11571,7 @@ class MP4Demuxer {
         emsgs.forEach(data => {
           const emsgInfo = parseEmsg(data);
           if (emsgSchemePattern.test(emsgInfo.schemeIdUri)) {
-            const pts = isFiniteNumber(emsgInfo.presentationTime) ? emsgInfo.presentationTime / emsgInfo.timeScale : timeOffset + emsgInfo.presentationTimeDelta / emsgInfo.timeScale;
+            const pts = getEmsgStartTime(emsgInfo, timeOffset);
             let duration = emsgInfo.eventDuration === 0xffffffff ? Number.POSITIVE_INFINITY : emsgInfo.eventDuration / emsgInfo.timeScale;
             // Safari takes anything <= 0.001 seconds and maps it to Infinity
             if (duration <= 0.001) {
@@ -11598,6 +11586,16 @@ class MP4Demuxer {
               type: MetadataSchema.emsg,
               duration: duration
             });
+          } else if (this.config.enableEmsgKLVMetadata && emsgInfo.schemeIdUri.startsWith('urn:misb:KLV:bin:1910.1')) {
+            const pts = getEmsgStartTime(emsgInfo, timeOffset);
+            id3Track.samples.push({
+              data: emsgInfo.payload,
+              len: emsgInfo.payload.byteLength,
+              dts: pts,
+              pts: pts,
+              type: MetadataSchema.misbklv,
+              duration: Number.POSITIVE_INFINITY
+            });
           }
         });
       }
@@ -11607,7 +11605,15 @@ class MP4Demuxer {
   demuxSampleAes(data, keyData, timeOffset) {
     return Promise.reject(new Error('The MP4 demuxer does not support SAMPLE-AES decryption'));
   }
-  destroy() {}
+  destroy() {
+    // @ts-ignore
+    this.config = null;
+    this.remainderData = null;
+    this.videoTrack = this.audioTrack = this.id3Track = this.txtTrack = undefined;
+  }
+}
+function getEmsgStartTime(emsgInfo, timeOffset) {
+  return isFiniteNumber(emsgInfo.presentationTime) ? emsgInfo.presentationTime / emsgInfo.timeScale : timeOffset + emsgInfo.presentationTimeDelta / emsgInfo.timeScale;
 }
 
 const getAudioBSID = (data, offset) => {
@@ -11749,14 +11755,13 @@ class BaseVideoParser {
   constructor() {
     this.VideoSample = null;
   }
-  createVideoSample(key, pts, dts, debug) {
+  createVideoSample(key, pts, dts) {
     return {
       key,
       frame: false,
       pts,
       dts,
       units: [],
-      debug,
       length: 0
     };
   }
@@ -11791,9 +11796,6 @@ class BaseVideoParser {
         }
       }
       videoTrack.samples.push(VideoSample);
-    }
-    if (VideoSample.debug.length) {
-      logger.log(VideoSample.pts + '/' + VideoSample.dts + ':' + VideoSample.debug);
     }
   }
   parseNALu(track, array, endOfSegment) {
@@ -12045,7 +12047,7 @@ class ExpGolomb {
 }
 
 class AvcVideoParser extends BaseVideoParser {
-  parsePES(track, textTrack, pes, endOfSegment, duration) {
+  parsePES(track, textTrack, pes, endOfSegment) {
     const units = this.parseNALu(track, pes.data, endOfSegment);
     let VideoSample = this.VideoSample;
     let push;
@@ -12057,10 +12059,10 @@ class AvcVideoParser extends BaseVideoParser {
     // this helps parsing streams with missing AUD (only do this if AUD never found)
     if (VideoSample && units.length && !track.audFound) {
       this.pushAccessUnit(VideoSample, track);
-      VideoSample = this.VideoSample = this.createVideoSample(false, pes.pts, pes.dts, '');
+      VideoSample = this.VideoSample = this.createVideoSample(false, pes.pts, pes.dts);
     }
     units.forEach(unit => {
-      var _VideoSample2;
+      var _VideoSample2, _VideoSample3;
       switch (unit.type) {
         // NDR
         case 1:
@@ -12090,7 +12092,7 @@ class AvcVideoParser extends BaseVideoParser {
               }
             }
             if (!VideoSample) {
-              VideoSample = this.VideoSample = this.createVideoSample(true, pes.pts, pes.dts, '');
+              VideoSample = this.VideoSample = this.createVideoSample(true, pes.pts, pes.dts);
             }
             VideoSample.frame = true;
             VideoSample.key = iskey;
@@ -12106,7 +12108,7 @@ class AvcVideoParser extends BaseVideoParser {
             VideoSample = this.VideoSample = null;
           }
           if (!VideoSample) {
-            VideoSample = this.VideoSample = this.createVideoSample(true, pes.pts, pes.dts, '');
+            VideoSample = this.VideoSample = this.createVideoSample(true, pes.pts, pes.dts);
           }
           VideoSample.key = true;
           VideoSample.frame = true;
@@ -12131,7 +12133,6 @@ class AvcVideoParser extends BaseVideoParser {
               track.height = config.height;
               track.pixelRatio = config.pixelRatio;
               track.sps = [sps];
-              track.duration = duration;
               const codecarray = sps.subarray(1, 4);
               let codecstring = 'avc1.';
               for (let i = 0; i < 3; i++) {
@@ -12154,10 +12155,13 @@ class AvcVideoParser extends BaseVideoParser {
         case 9:
           push = true;
           track.audFound = true;
-          if (VideoSample) {
+          if ((_VideoSample3 = VideoSample) != null && _VideoSample3.frame) {
             this.pushAccessUnit(VideoSample, track);
+            VideoSample = null;
           }
-          VideoSample = this.VideoSample = this.createVideoSample(false, pes.pts, pes.dts, '');
+          if (!VideoSample) {
+            VideoSample = this.VideoSample = this.createVideoSample(false, pes.pts, pes.dts);
+          }
           break;
         // Filler Data
         case 12:
@@ -12165,9 +12169,6 @@ class AvcVideoParser extends BaseVideoParser {
           break;
         default:
           push = false;
-          if (VideoSample) {
-            VideoSample.debug += 'unknown NAL ' + unit.type + ' ';
-          }
           break;
       }
       if (VideoSample && push) {
@@ -12375,7 +12376,7 @@ class HevcVideoParser extends BaseVideoParser {
     super(...args);
     this.initVPS = null;
   }
-  parsePES(track, textTrack, pes, endOfSegment, duration) {
+  parsePES(track, textTrack, pes, endOfSegment) {
     const units = this.parseNALu(track, pes.data, endOfSegment);
     let VideoSample = this.VideoSample;
     let push;
@@ -12387,10 +12388,10 @@ class HevcVideoParser extends BaseVideoParser {
     // this helps parsing streams with missing AUD (only do this if AUD never found)
     if (VideoSample && units.length && !track.audFound) {
       this.pushAccessUnit(VideoSample, track);
-      VideoSample = this.VideoSample = this.createVideoSample(false, pes.pts, pes.dts, '');
+      VideoSample = this.VideoSample = this.createVideoSample(false, pes.pts, pes.dts);
     }
     units.forEach(unit => {
-      var _VideoSample2;
+      var _VideoSample2, _VideoSample3;
       switch (unit.type) {
         // NON-IDR, NON RANDOM ACCESS SLICE
         case 0:
@@ -12404,7 +12405,7 @@ class HevcVideoParser extends BaseVideoParser {
         case 8:
         case 9:
           if (!VideoSample) {
-            VideoSample = this.VideoSample = this.createVideoSample(false, pes.pts, pes.dts, '');
+            VideoSample = this.VideoSample = this.createVideoSample(false, pes.pts, pes.dts);
           }
           VideoSample.frame = true;
           push = true;
@@ -12426,7 +12427,7 @@ class HevcVideoParser extends BaseVideoParser {
             }
           }
           if (!VideoSample) {
-            VideoSample = this.VideoSample = this.createVideoSample(true, pes.pts, pes.dts, '');
+            VideoSample = this.VideoSample = this.createVideoSample(true, pes.pts, pes.dts);
           }
           VideoSample.key = true;
           VideoSample.frame = true;
@@ -12443,7 +12444,7 @@ class HevcVideoParser extends BaseVideoParser {
             VideoSample = this.VideoSample = null;
           }
           if (!VideoSample) {
-            VideoSample = this.VideoSample = this.createVideoSample(true, pes.pts, pes.dts, '');
+            VideoSample = this.VideoSample = this.createVideoSample(true, pes.pts, pes.dts);
           }
           VideoSample.key = true;
           VideoSample.frame = true;
@@ -12482,7 +12483,6 @@ class HevcVideoParser extends BaseVideoParser {
               track.width = config.width;
               track.height = config.height;
               track.pixelRatio = config.pixelRatio;
-              track.duration = duration;
               track.codec = config.codecString;
               track.sps = [];
               for (const prop in config.params) {
@@ -12494,7 +12494,7 @@ class HevcVideoParser extends BaseVideoParser {
             }
           }
           if (!VideoSample) {
-            VideoSample = this.VideoSample = this.createVideoSample(true, pes.pts, pes.dts, '');
+            VideoSample = this.VideoSample = this.createVideoSample(true, pes.pts, pes.dts);
           }
           VideoSample.key = true;
           break;
@@ -12520,16 +12520,16 @@ class HevcVideoParser extends BaseVideoParser {
         case 35:
           push = true;
           track.audFound = true;
-          if (VideoSample) {
+          if ((_VideoSample3 = VideoSample) != null && _VideoSample3.frame) {
             this.pushAccessUnit(VideoSample, track);
+            VideoSample = null;
           }
-          VideoSample = this.VideoSample = this.createVideoSample(false, pes.pts, pes.dts, '');
+          if (!VideoSample) {
+            VideoSample = this.VideoSample = this.createVideoSample(false, pes.pts, pes.dts);
+          }
           break;
         default:
           push = false;
-          if (VideoSample) {
-            VideoSample.debug += 'unknown or irrelevant NAL ' + unit.type + ' ';
-          }
           break;
       }
       if (VideoSample && push) {
@@ -13080,7 +13080,6 @@ class TSDemuxer {
     this.pmtParsed = false;
     this.audioCodec = void 0;
     this.videoCodec = void 0;
-    this._duration = 0;
     this._pmtId = -1;
     this._videoTrack = void 0;
     this._audioTrack = void 0;
@@ -13165,6 +13164,7 @@ class TSDemuxer {
     this.pmtParsed = false;
     this._pmtId = -1;
     this._videoTrack = TSDemuxer.createTrack('video');
+    this._videoTrack.duration = trackDuration;
     this._audioTrack = TSDemuxer.createTrack('audio', trackDuration);
     this._id3Track = TSDemuxer.createTrack('id3');
     this._txtTrack = TSDemuxer.createTrack('text');
@@ -13175,7 +13175,6 @@ class TSDemuxer {
     this.remainderData = null;
     this.audioCodec = audioCodec;
     this.videoCodec = videoCodec;
-    this._duration = trackDuration;
   }
   resetTimeStamp() {}
   resetContiguity() {
@@ -13271,7 +13270,7 @@ class TSDemuxer {
                   }
                 }
                 if (this.videoParser !== null) {
-                  this.videoParser.parsePES(videoTrack, textTrack, pes, false, this._duration);
+                  this.videoParser.parsePES(videoTrack, textTrack, pes, false);
                 }
               }
               videoData = {
@@ -13445,7 +13444,7 @@ class TSDemuxer {
         }
       }
       if (this.videoParser !== null) {
-        this.videoParser.parsePES(videoTrack, textTrack, pes, true, this._duration);
+        this.videoParser.parsePES(videoTrack, textTrack, pes, true);
         videoTrack.pesData = null;
       }
     } else {
@@ -13512,7 +13511,13 @@ class TSDemuxer {
     });
   }
   destroy() {
-    this._duration = 0;
+    if (this.observer) {
+      this.observer.removeAllListeners();
+    }
+    // @ts-ignore
+    this.config = this.logger = this.observer = null;
+    this.aacOverFlow = this.videoParser = this.remainderData = this.sampleAes = null;
+    this._videoTrack = this._audioTrack = this._id3Track = this._txtTrack = undefined;
   }
   parseAACPES(track, pes) {
     let startOffset = 0;
@@ -14367,7 +14372,7 @@ class MP4 {
     vSpacing >> 16 & 0xff, vSpacing >> 8 & 0xff, vSpacing & 0xff])));
   }
   static esds(track) {
-    const configlen = track.config.length;
+    const config = track.config;
     return new Uint8Array([0x00,
     // version 0
     0x00, 0x00, 0x00,
@@ -14375,16 +14380,18 @@ class MP4 {
 
     0x03,
     // descriptor_type
-    0x17 + configlen,
+    0x19,
     // length
+
     0x00, 0x01,
     // es_id
+
     0x00,
     // stream_priority
 
     0x04,
     // descriptor_type
-    0x0f + configlen,
+    0x11,
     // length
     0x40,
     // codec : mpeg4_audio
@@ -14397,8 +14404,12 @@ class MP4 {
     0x00, 0x00, 0x00, 0x00,
     // avgBitrate
 
-    0x05 // descriptor_type
-    ].concat([configlen]).concat(track.config).concat([0x06, 0x01, 0x02])); // GASpecificConfig)); // length + audio config descriptor
+    0x05,
+    // descriptor_type
+    0x02,
+    // length
+    ...config, 0x06, 0x01, 0x02 // GASpecificConfig)); // length + audio config descriptor
+    ]);
   }
   static audioStsd(track) {
     const samplerate = track.samplerate;
@@ -20202,7 +20213,7 @@ class AudioStreamController extends BaseStreamController {
     }
     super._handleFragmentLoadComplete(fragLoadedData);
   }
-  onBufferReset( /* event: Events.BUFFER_RESET */
+  onBufferReset(/* event: Events.BUFFER_RESET */
   ) {
     // reset reference to sourcebuffers
     this.mediaBuffer = null;
@@ -21485,6 +21496,9 @@ class SubtitleTrackController extends BasePlaylistController {
 
   /** get/set index of the selected subtitle track (based on index in subtitle track lists) **/
   get subtitleTrack() {
+    if (this.queuedDefaultTrack !== -1) {
+      return this.queuedDefaultTrack;
+    }
     return this.trackId;
   }
   set subtitleTrack(newId) {
@@ -21598,6 +21612,12 @@ class SubtitleTrackController extends BasePlaylistController {
     // and we'll set subtitleTrack when onMediaAttached is triggered
     if (!this.media) {
       this.queuedDefaultTrack = newId;
+      // we'll handle setting the queued track when media is attached but
+      // emit a switch event anyways as we expose queuedDefaultTrack in the
+      // subtitleTrack getter
+      this.hls.trigger(Events.SUBTITLE_TRACK_SWITCH, {
+        id: newId
+      });
       return;
     }
 
@@ -23032,8 +23052,8 @@ transfer tracks: ${JSON.stringify(transferredTracks, (key, value) => key === 'in
     }
   }
   get mediaSrc() {
-    var _this$media2;
-    const media = ((_this$media2 = this.media) == null ? void 0 : _this$media2.firstChild) || this.media;
+    var _this$media2, _this$media2$querySel;
+    const media = ((_this$media2 = this.media) == null ? void 0 : (_this$media2$querySel = _this$media2.querySelector) == null ? void 0 : _this$media2$querySel.call(_this$media2, 'source')) || this.media;
     return media == null ? void 0 : media.src;
   }
   onSBUpdateStart(type) {
@@ -26547,7 +26567,8 @@ class EMEController extends Logger {
         initDataType,
         initData
       } = event;
-      this.debug(`"${event.type}" event: init data type: "${initDataType}"`);
+      const logMessage = `"${event.type}" event: init data type: "${initDataType}"`;
+      this.debug(logMessage);
 
       // Ignore event when initData is null
       if (initData === null) {
@@ -26555,31 +26576,51 @@ class EMEController extends Logger {
       }
       let keyId;
       let keySystemDomain;
-      if (initDataType === 'sinf' && this.config.drmSystems[KeySystems.FAIRPLAY]) {
+      if (initDataType === 'sinf' && this.getLicenseServerUrl(KeySystems.FAIRPLAY)) {
         // Match sinf keyId to playlist skd://keyId=
         const json = bin2str(new Uint8Array(initData));
         try {
           const sinf = base64Decode(JSON.parse(json).sinf);
           const tenc = parseSinf(new Uint8Array(sinf));
           if (!tenc) {
-            return;
+            throw new Error(`'schm' box missing or not cbcs/cenc with schi > tenc`);
           }
           keyId = tenc.subarray(8, 24);
           keySystemDomain = KeySystems.FAIRPLAY;
         } catch (error) {
-          this.warn('Failed to parse sinf "encrypted" event message initData');
+          this.warn(`${logMessage} Failed to parse sinf: ${error}`);
           return;
         }
-      } else {
-        // Support clear-lead key-session creation (otherwise depend on playlist keys)
-        const psshInfo = parsePssh(initData);
-        if (psshInfo === null) {
-          return;
+      } else if (this.getLicenseServerUrl(KeySystems.WIDEVINE)) {
+        // Support Widevine clear-lead key-session creation (otherwise depend on playlist keys)
+        const psshResults = parseMultiPssh(initData);
+
+        // TODO: If using keySystemAccessPromises we might want to wait until one is resolved
+        let keySystems = Object.keys(this.keySystemAccessPromises);
+        if (!keySystems.length) {
+          keySystems = getKeySystemsForConfig(this.config);
         }
-        if (psshInfo.version === 0 && psshInfo.systemId === KeySystemIds.WIDEVINE && psshInfo.data) {
-          keyId = psshInfo.data.subarray(8, 24);
+        const psshInfo = psshResults.filter(pssh => {
+          const keySystem = pssh.systemId ? keySystemIdToKeySystemDomain(pssh.systemId) : null;
+          return keySystem ? keySystems.indexOf(keySystem) > -1 : false;
+        })[0];
+        if (!psshInfo) {
+          if (psshResults.length === 0 || psshResults.some(pssh => !pssh.systemId)) {
+            this.warn(`${logMessage} contains incomplete or invalid pssh data`);
+          } else {
+            this.log(`ignoring ${logMessage} for ${psshResults.map(pssh => keySystemIdToKeySystemDomain(pssh.systemId)).join(',')} pssh data in favor of playlist keys`);
+          }
+          return;
         }
         keySystemDomain = keySystemIdToKeySystemDomain(psshInfo.systemId);
+        if (psshInfo.version === 0 && psshInfo.data) {
+          if (keySystemDomain === KeySystems.WIDEVINE) {
+            const offset = psshInfo.data.length - 22;
+            keyId = psshInfo.data.subarray(offset, offset + 16);
+          } else if (keySystemDomain === KeySystems.PLAYREADY) {
+            keyId = parsePlayReadyWRM(psshInfo.data);
+          }
+        }
       }
       if (!keySystemDomain || !keyId) {
         return;
@@ -26594,12 +26635,15 @@ class EMEController extends Logger {
         // Match playlist key
         const keyContext = mediaKeySessions[i];
         const decryptdata = keyContext.decryptdata;
-        if (decryptdata.pssh || !decryptdata.keyId) {
+        if (!decryptdata.keyId) {
           continue;
         }
         const oldKeyIdHex = Hex.hexDump(decryptdata.keyId);
         if (keyIdHex === oldKeyIdHex || decryptdata.uri.replace(/-/g, '').indexOf(keyIdHex) !== -1) {
           keySessionContextPromise = keyIdToKeySessionPromise[oldKeyIdHex];
+          if (decryptdata.pssh) {
+            break;
+          }
           delete keyIdToKeySessionPromise[oldKeyIdHex];
           decryptdata.pssh = new Uint8Array(initData);
           decryptdata.keyId = keyId;
@@ -26679,7 +26723,13 @@ class EMEController extends Logger {
     if (keySystem === KeySystems.WIDEVINE && widevineLicenseUrl) {
       return widevineLicenseUrl;
     }
-    throw new Error(`no license server URL configured for key-system "${keySystem}"`);
+  }
+  getLicenseServerUrlOrThrow(keySystem) {
+    const url = this.getLicenseServerUrl(keySystem);
+    if (url === undefined) {
+      throw new Error(`no license server URL configured for key-system "${keySystem}"`);
+    }
+    return url;
   }
   getServerCertificateUrl(keySystem) {
     const {
@@ -26846,9 +26896,9 @@ class EMEController extends Logger {
     const keyId = this.getKeyIdString(decryptdata);
     const keyDetails = `(keyId: ${keyId} format: "${decryptdata.keyFormat}" method: ${decryptdata.method} uri: ${decryptdata.uri})`;
     this.log(`Starting session for key ${keyDetails}`);
-    let keySessionContextPromise = this.keyIdToKeySessionPromise[keyId];
-    if (!keySessionContextPromise) {
-      keySessionContextPromise = this.keyIdToKeySessionPromise[keyId] = this.getKeySystemForKeyPromise(decryptdata).then(({
+    let keyContextPromise = this.keyIdToKeySessionPromise[keyId];
+    if (!keyContextPromise) {
+      keyContextPromise = this.getKeySystemForKeyPromise(decryptdata).then(({
         keySystem,
         mediaKeys
       }) => {
@@ -26856,18 +26906,20 @@ class EMEController extends Logger {
         this.log(`Handle encrypted media sn: ${data.frag.sn} ${data.frag.type}: ${data.frag.level} using key ${keyDetails}`);
         return this.attemptSetMediaKeys(keySystem, mediaKeys).then(() => {
           this.throwIfDestroyed();
-          const keySessionContext = this.createMediaKeySessionContext({
+          return this.createMediaKeySessionContext({
             keySystem,
             mediaKeys,
             decryptdata
           });
-          const scheme = 'cenc';
-          return this.generateRequestWithPreferredKeySession(keySessionContext, scheme, decryptdata.pssh, 'playlist-key');
         });
+      });
+      const keySessionContextPromise = this.keyIdToKeySessionPromise[keyId] = keyContextPromise.then(keySessionContext => {
+        const scheme = 'cenc';
+        return this.generateRequestWithPreferredKeySession(keySessionContext, scheme, decryptdata.pssh, 'playlist-key');
       });
       keySessionContextPromise.catch(error => this.handleError(error));
     }
-    return keySessionContextPromise;
+    return keyContextPromise;
   }
   throwIfDestroyed(message = 'Invalid state') {
     if (!this.hls) {
@@ -27207,7 +27259,7 @@ class EMEController extends Logger {
   requestLicense(keySessionContext, licenseChallenge) {
     const keyLoadPolicy = this.config.keyLoadPolicy.default;
     return new Promise((resolve, reject) => {
-      const url = this.getLicenseServerUrl(keySessionContext.keySystem);
+      const url = this.getLicenseServerUrlOrThrow(keySessionContext.keySystem);
       this.log(`Sending license request to URL: ${url}`);
       const xhr = new XMLHttpRequest();
       xhr.responseType = 'arraybuffer';
@@ -27281,6 +27333,7 @@ class EMEController extends Logger {
     media.addEventListener('waitingforkey', this.onWaitingForKey);
   }
   onMediaDetached() {
+    var _media$setMediaKeys;
     const media = this.media;
     const mediaKeysList = this.mediaKeySessions;
     if (media) {
@@ -27296,7 +27349,7 @@ class EMEController extends Logger {
 
     // Close all sessions and remove media keys from the video element.
     const keySessionCount = mediaKeysList.length;
-    EMEController.CDMCleanupPromise = Promise.all(mediaKeysList.map(mediaKeySessionContext => this.removeSession(mediaKeySessionContext)).concat(media == null ? void 0 : media.setMediaKeys(null).catch(error => {
+    EMEController.CDMCleanupPromise = Promise.all(mediaKeysList.map(mediaKeySessionContext => this.removeSession(mediaKeySessionContext)).concat(media == null ? void 0 : (_media$setMediaKeys = media.setMediaKeys(null)) == null ? void 0 : _media$setMediaKeys.catch(error => {
       this.log(`Could not clear media keys: ${error}`);
     }))).then(() => {
       if (keySessionCount) {
@@ -29576,7 +29629,7 @@ class InterstitialsSchedule {
         const playoutStart = playoutDuration;
         playoutDuration += segmentDuration;
         schedule.push({
-          previousEvent: interstitialEvents[interstitialEvents.length - 1],
+          previousEvent: schedule[schedule.length - 1].event || null,
           nextEvent: null,
           start: primaryPosition,
           end: timelineStart + segmentDuration,
@@ -29993,6 +30046,10 @@ class InterstitialsController extends Logger {
     this.waitingItem = null;
     this.playingAsset = null;
     this.bufferingAsset = null;
+    this.shouldPlay = false;
+    this.onPlay = () => {
+      this.shouldPlay = true;
+    };
     this.onSeeking = () => {
       const currentTime = this.currentTime;
       if (currentTime === undefined || this.playbackDisabled) {
@@ -30014,7 +30071,11 @@ class InterstitialsController extends Logger {
         return;
       }
       if (backwardSeek && currentTime < playingItem.start || currentTime >= playingItem.end) {
+        var _this$media;
         const scheduleIndex = this.schedule.findItemIndexAtTime(this.timelinePos);
+        if (!this.isInterstitial(playingItem) && (_this$media = this.media) != null && _this$media.paused) {
+          this.shouldPlay = false;
+        }
         if (!backwardSeek) {
           // check if an Interstitial between the current item and target item has an X-RESTRICT JUMP restriction
           const playingIndex = this.findItemIndex(playingItem);
@@ -30235,23 +30296,27 @@ Schedule: ${scheduleItems.map(seg => segmentToString(seg))}`);
     // @ts-ignore
     this.assetListLoader = null;
     // @ts-ignore
-    this.onSeeking = this.onTimeupdate = null;
+    this.onPlay = this.onSeeking = this.onTimeupdate = null;
     // @ts-ignore
     this.onScheduleUpdate = null;
   }
   onDestroying() {
     const media = this.primaryMedia;
     if (media) {
-      media.removeEventListener('seeking', this.onSeeking);
-      media.removeEventListener('timeupdate', this.onTimeupdate);
+      this.removeMediaListeners(media);
     }
+  }
+  removeMediaListeners(media) {
+    media.removeEventListener('play', this.onPlay);
+    media.removeEventListener('seeking', this.onSeeking);
+    media.removeEventListener('timeupdate', this.onTimeupdate);
   }
   onMediaAttaching(event, data) {
     const media = this.media = data.media;
-    media.removeEventListener('seeking', this.onSeeking);
-    media.removeEventListener('timeupdate', this.onTimeupdate);
+    this.removeMediaListeners(media);
     media.addEventListener('seeking', this.onSeeking);
     media.addEventListener('timeupdate', this.onTimeupdate);
+    media.addEventListener('play', this.onPlay);
   }
   onMediaAttached(event, data) {
     const playingItem = this.playingItem;
@@ -30277,8 +30342,7 @@ Schedule: ${scheduleItems.map(seg => segmentToString(seg))}`);
       return;
     }
     if (media) {
-      media.removeEventListener('seeking', this.onSeeking);
-      media.removeEventListener('timeupdate', this.onTimeupdate);
+      this.removeMediaListeners(media);
     }
     // If detachMedia is called while in an Interstitial, detach the asset player as well and reset the schedule position
     if (this.detachedData) {
@@ -30291,6 +30355,7 @@ Schedule: ${scheduleItems.map(seg => segmentToString(seg))}`);
         this.detachedData = null;
         player.detachMedia();
       }
+      this.shouldPlay = false;
     }
   }
   get interstitialsManager() {
@@ -30462,7 +30527,7 @@ Schedule: ${scheduleItems.map(seg => segmentToString(seg))}`);
           get duration() {
             return getMappedDuration('primary');
           },
-          get slidingStart() {
+          get seekableStart() {
             var _c$primaryDetails2;
             return ((_c$primaryDetails2 = c.primaryDetails) == null ? void 0 : _c$primaryDetails2.fragmentStart) || 0;
           },
@@ -30478,7 +30543,7 @@ Schedule: ${scheduleItems.map(seg => segmentToString(seg))}`);
           get duration() {
             return getMappedDuration('playout');
           },
-          get slidingStart() {
+          get seekableStart() {
             var _c$primaryDetails3;
             return findMappedTime(((_c$primaryDetails3 = c.primaryDetails) == null ? void 0 : _c$primaryDetails3.fragmentStart) || 0, 'playout');
           },
@@ -30494,7 +30559,7 @@ Schedule: ${scheduleItems.map(seg => segmentToString(seg))}`);
           get duration() {
             return getMappedDuration('integrated');
           },
-          get slidingStart() {
+          get seekableStart() {
             var _c$primaryDetails4;
             return findMappedTime(((_c$primaryDetails4 = c.primaryDetails) == null ? void 0 : _c$primaryDetails4.fragmentStart) || 0, 'integrated');
           },
@@ -30586,6 +30651,8 @@ Schedule: ${scheduleItems.map(seg => segmentToString(seg))}`);
       this.log(`transfer MediaSource from ${player} ${JSON.stringify(attachMediaSourceData)}`);
       this.bufferingAsset = null;
       this.detachedData = attachMediaSourceData;
+    } else if (toSegment && playerMedia) {
+      this.shouldPlay || (this.shouldPlay = !playerMedia.paused);
     }
   }
   transferMediaTo(player, media) {
@@ -30824,8 +30891,16 @@ MediaSource ${JSON.stringify(attachMediaSourceData)} from ${logFromSource}`);
         }
       }
       this.startAssetPlayer(player, assetListIndex, scheduleItems, index, media);
+      if (this.shouldPlay) {
+        var _player$media;
+        (_player$media = player.media) == null ? void 0 : _player$media.play();
+      }
     } else if (scheduledItem !== null) {
       this.resumePrimary(scheduledItem, index);
+      if (this.shouldPlay) {
+        var _this$hls$media;
+        (_this$hls$media = this.hls.media) == null ? void 0 : _this$hls$media.play();
+      }
     } else if (playingLastItem && this.isInterstitial(currentItem)) {
       // Maintain playingItem state at end of schedule (setSchedulePosition(-1) called to end program)
       // this allows onSeeking handler to update schedule position
@@ -31404,6 +31479,7 @@ MediaSource ${JSON.stringify(attachMediaSourceData)} from ${logFromSource}`);
         if (!inQueuPlayer) {
           return;
         }
+        this.shouldPlay = true;
         const scheduleIndex = this.schedule.findEventIndex(interstitial.identifier);
         this.advanceAfterAssetEnded(interstitial, scheduleIndex, assetIndex);
       };
@@ -32368,6 +32444,7 @@ const hlsDefaultConfig = _objectSpread2(_objectSpread2({
   cmcd: undefined,
   enableDateRangeMetadataCues: true,
   enableEmsgMetadataCues: true,
+  enableEmsgKLVMetadata: false,
   enableID3MetadataCues: true,
   enableInterstitialPlayback: true,
   interstitialAppendInPlace: true,
@@ -32653,6 +32730,9 @@ class Hls {
   }
   static get Events() {
     return Events;
+  }
+  static get MetadataSchema() {
+    return MetadataSchema;
   }
   static get ErrorTypes() {
     return ErrorTypes;

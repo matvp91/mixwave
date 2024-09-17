@@ -1,4 +1,7 @@
-import { CircleDotDashed, Loader, Check, X } from "lucide-react";
+import Loader from "lucide-react/icons/loader";
+import CircleDotDashed from "lucide-react/icons/circle-dot-dashed";
+import Check from "lucide-react/icons/check";
+import X from "lucide-react/icons/x";
 import { cn } from "@/lib/utils";
 import type { JobDto } from "@/tsr";
 

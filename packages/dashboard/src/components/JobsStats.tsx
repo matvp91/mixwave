@@ -1,11 +1,20 @@
 import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { JobDto } from "@/tsr";
+import type { JobsFilterData } from "./types";
 
 type JobsStatsProps = {
   jobs: JobDto[];
+  filter: JobsFilterData;
+  onChange(value: Partial<JobsFilterData>): void;
 };
 
-export function JobsStats({ jobs }: JobsStatsProps) {
+export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
   let completed = 0;
   let failed = 0;
   let running = 0;
@@ -26,25 +35,73 @@ export function JobsStats({ jobs }: JobsStatsProps) {
     }
   }
 
+  const filterJobState = (state?: JobDto["state"]) => {
+    if (state === filter.state) {
+      state = undefined;
+    }
+    onChange({ state });
+  };
+
   return (
-    <ul className="flex bg-white border border-border rounded-md overflow-hidden">
-      <Tile
-        value={completed}
-        className="bg-emerald-400"
-        outerClassName="border-r border-border"
-      />
-      <Tile
-        value={failed}
-        className="bg-red-400"
-        outerClassName="border-r border-border"
-      />
-      <Tile
-        value={running}
-        className="bg-blue-400"
-        outerClassName="border-r border-border"
-      />
-      <Tile value={waiting} className="bg-violet-400" />
-    </ul>
+    <TooltipProvider delayDuration={0}>
+      <ul className="flex bg-white border border-border rounded-md overflow-hidden">
+        <Tooltip>
+          <TooltipTrigger>
+            <Tile
+              value={completed}
+              className="bg-emerald-400"
+              outerClassName="border-r border-border"
+              onClick={() => filterJobState("completed")}
+              active={filter.state === "completed"}
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Completed</p>
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger>
+            <Tile
+              value={failed}
+              className="bg-red-400"
+              outerClassName="border-r border-border"
+              onClick={() => filterJobState("failed")}
+              active={filter.state === "failed"}
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Failed</p>
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger>
+            <Tile
+              value={running}
+              className="bg-blue-400"
+              outerClassName="border-r border-border"
+              onClick={() => filterJobState("running")}
+              active={filter.state === "running"}
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Running</p>
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger>
+            <Tile
+              value={waiting}
+              className="bg-violet-400"
+              onClick={() => filterJobState("waiting")}
+              active={filter.state === "waiting"}
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Waiting</p>
+          </TooltipContent>
+        </Tooltip>
+      </ul>
+    </TooltipProvider>
   );
 }
 
@@ -52,16 +109,22 @@ function Tile({
   value,
   className,
   outerClassName,
+  onClick,
+  active,
 }: {
   value: number;
   className: string;
   outerClassName?: string;
+  onClick: () => void;
+  active: boolean;
 }) {
   return (
     <li
+      onClick={onClick}
       className={cn(
-        "flex items-center justify-center w-10 h-10 bg-white text-xs font-medium",
+        "flex items-center justify-center px-2 h-10 text-xs font-medium",
         outerClassName,
+        active && "bg-secondary",
       )}
     >
       {value}

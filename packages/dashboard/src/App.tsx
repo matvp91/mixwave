@@ -11,6 +11,7 @@ import { ApiEmbedPage } from "@/pages/ApiEmbedPage";
 import { RootLayout } from "@/pages/RootLayout";
 import { Suspense } from "react";
 import { tsr } from "./tsr";
+import { PlayerPage } from "./pages/PlayerPage";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: "/api",
         element: <ApiPage />,
+      },
+      {
+        path: "/player",
+        element: <PlayerPage />,
       },
     ],
   },

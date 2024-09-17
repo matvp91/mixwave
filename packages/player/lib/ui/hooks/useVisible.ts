@@ -17,7 +17,7 @@ export function useVisible() {
   };
 
   useEffect(() => {
-    const container = elementRef.current?.closest(".mix-container") as
+    const container = elementRef.current?.closest("[data-mix-container]") as
       | HTMLDivElement
       | undefined;
 

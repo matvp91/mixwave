@@ -10,6 +10,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@mixwave/api": "workspace:*",
+    "@mixwave/player": "workspace:*",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-collapsible": "^1.1.0",
@@ -29,8 +30,9 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
-    "ldrs": "^1.0.2",
+    "hls.js": "file:../../external/hlsjs__feature__interstitials",
     "lucide-react": "^0.424.0",
+    "monaco-editor": "^0.51.0",
     "pretty-ms": "^9.1.0",
     "react": "^18.3.1",
     "react-day-picker": "8.10.1",

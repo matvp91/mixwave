@@ -3,6 +3,7 @@ import { randomUUID } from "crypto";
 import { extractInterstitialFromVmapAdbreak } from "./vast.js";
 import { getVmap } from "./vmap.js";
 import createError from "@fastify/error";
+import { isAssetAvailable } from "./helpers.js";
 import type { Session, Interstitial } from "./types.js";
 
 const NoSessionError = createError<[string]>(
@@ -17,56 +18,62 @@ function getRedisKey(sessionId: string) {
   return `${REDIS_PREFIX}:${sessionId}`;
 }
 
+const PlaylistUnavailableError = createError<[string]>(
+  "PLAYLIST_UNAVAILABLE",
+  "%s is unavailable.",
+  404,
+);
+
 export async function createSession(data: {
   assetId: string;
-  vmapUrl?: string;
+  vmap?: {
+    url: string;
+  };
   interstitials?: Interstitial[];
-  bumperAssetId?: string;
-  maxResolution?: number;
+  resolution?: string;
 }) {
+  if (!(await isAssetAvailable(data.assetId))) {
+    throw new PlaylistUnavailableError(data.assetId);
+  }
+
   const sessionId = randomUUID();
 
-  const interstitials: Interstitial[] = [];
+  let interstitials: Interstitial[] | undefined;
 
-  if (data.vmapUrl) {
-    const vmap = await getVmap(data.vmapUrl);
+  if (data.vmap) {
+    const vmap = await getVmap(data.vmap.url);
 
     for (const adBreak of vmap.adBreaks) {
+      if (!interstitials) {
+        interstitials = [];
+      }
+
       interstitials.push(
         ...(await extractInterstitialFromVmapAdbreak(adBreak)),
       );
     }
   }
 
-  if (data.interstitials) {
+  if (data.interstitials?.length) {
+    if (!interstitials) {
+      interstitials = [];
+    }
+
     interstitials.push(...data.interstitials);
-  }
-
-  // When we have a bumper, we'll push it at the end of the interstitials list.
-  if (data.bumperAssetId) {
-    interstitials.push({
-      timeOffset: 0,
-      assetId: data.bumperAssetId,
-      type: "bumper",
-    });
-  }
-
-  let maxResolution = data.maxResolution;
-  if (!maxResolution) {
-    const MAX_RESOLUTION_8K = 4320;
-    maxResolution = MAX_RESOLUTION_8K;
   }
 
   const session = {
     id: sessionId,
     assetId: data.assetId,
     interstitials,
-    maxResolution,
+    resolution: data.resolution,
   } satisfies Session;
 
   const redisKey = getRedisKey(sessionId);
 
-  await client.json.set(redisKey, `$`, session);
+  const rawSession = JSON.parse(JSON.stringify(session));
+
+  await client.json.set(redisKey, `$`, rawSession);
   await client.expire(redisKey, 60 * 60 * 6);
 
   return session;

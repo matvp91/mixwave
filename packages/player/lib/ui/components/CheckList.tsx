@@ -13,14 +13,14 @@ type CheckListProps = {
 
 export function CheckList({ items, onSelect }: CheckListProps) {
   return (
-    <ul className="mix-checklist">
+    <ul className="min-w-28">
       {items.map((item) => (
         <li
           key={item.id}
           onClick={() => onSelect(item.id)}
           className={cn(
-            "mix-checklist-item",
-            item.checked && "mix-checklist-item--active",
+            "h-8 flex items-center rounded-md px-4 transition-colors cursor-pointer",
+            item.checked && "bg-white/20",
           )}
         >
           {item.label}

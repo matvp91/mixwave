@@ -3,6 +3,7 @@ import parseFilepath from "parse-filepath";
 import { env } from "./env.js";
 import { MasterPlaylist, MediaPlaylist } from "../extern/hls-parser/types.js";
 import createError from "@fastify/error";
+import { filterByString } from "./helpers.js";
 import type { Session, Interstitial, InterstitialType } from "./types.js";
 
 const PlaylistUnavailableError = createError<[string]>(
@@ -17,6 +18,13 @@ const NoVariantsError = createError(
     "this is possibly caused by variant filtering.",
   400,
 );
+
+const NoInterstitialsError = createError(
+  "NO_INTERSTITIALS",
+  "The playlist does not contain interstitials",
+);
+
+const InvalidFilter = createError("INVALID_FILTER", "Invalid filter");
 
 async function fetchPlaylist<T>(url: string) {
   try {
@@ -48,12 +56,13 @@ export async function formatMasterPlaylist(session: Session) {
     }),
   );
 
-  master.variants = master.variants.filter((variant) => {
-    if (!variant.resolution) {
-      return true;
+  if (session.resolution) {
+    try {
+      master.variants = filterByString(master.variants, session.resolution);
+    } catch {
+      throw new InvalidFilter();
     }
-    return variant.resolution.height <= session.maxResolution;
-  });
+  }
 
   // Direct audio and subtitle uris to their original base, they do not
   // need to be rewritten by the media playlist proxy.
@@ -92,12 +101,18 @@ export async function formatMediaPlaylist(session: Session, path: string) {
 
   rewriteSegmentUrls(media);
 
-  addInterstitials(media, session.interstitials, session.id);
+  if (session.interstitials) {
+    addInterstitials(media, session.interstitials, session.id);
+  }
 
   return hlsParser.stringify(media);
 }
 
 export async function formatAssetList(session: Session, timeOffset: number) {
+  if (!session.interstitials) {
+    throw new NoInterstitialsError();
+  }
+
   const interstitials = session.interstitials.filter(
     (ad) => ad.timeOffset === timeOffset,
   );

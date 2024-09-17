@@ -26,6 +26,13 @@ export function Header() {
         >
           <Link to="/api">api</Link>
         </Button>
+        <Button
+          asChild
+          variant={pathname.startsWith("/player") ? "secondary" : "link"}
+          className="h-8"
+        >
+          <Link to="/player">player</Link>
+        </Button>
       </div>
     </div>
   );

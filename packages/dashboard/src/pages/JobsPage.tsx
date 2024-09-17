@@ -2,14 +2,14 @@ import { JobsList } from "@/components/JobsList";
 import { Container } from "@/components/Container";
 import { tsr } from "@/tsr";
 import { JobsFilter } from "@/components/JobsFilter";
-import { useQueryParams } from "@/hooks/useQueryParams";
+import { useJobsFilter } from "@/hooks/useJobsFilter";
 import { JobsStats } from "@/components/JobsStats";
 import { filterJobs } from "@/lib/jobs-filter";
 import { StretchLoader } from "@/components/StretchLoader";
-import type { JobsFilterData } from "@/components/types";
+import cookieSvg from "@/assets/cookie.svg";
 
 export function JobsPage() {
-  const [filter, setFilter] = useQueryParams<JobsFilterData>({});
+  const [filter, setFilter] = useJobsFilter();
 
   const { data } = tsr.getJobs.useQuery({
     queryKey: ["jobs"],
@@ -26,7 +26,7 @@ export function JobsPage() {
     <Container className="py-4">
       <h1 className="text-lg font-medium">Jobs</h1>
       <div className="my-4 flex items-center">
-        <JobsStats jobs={filteredJobs} />
+        <JobsStats jobs={data.body} filter={filter} onChange={setFilter} />
         <div className="ml-auto">
           <JobsFilter
             allJobs={data.body}
@@ -35,7 +35,16 @@ export function JobsPage() {
           />
         </div>
       </div>
-      <JobsList jobs={filteredJobs} />
+      {filteredJobs.length ? (
+        <JobsList jobs={filteredJobs} />
+      ) : (
+        <div className="py-4 flex justify-center">
+          <div className="flex flex-col gap-2 items-center text-muted-foreground">
+            <img className="w-12" src={cookieSvg} />
+            <p>There's no jobs here</p>
+          </div>
+        </div>
+      )}
     </Container>
   );
 }

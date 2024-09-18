@@ -12,7 +12,7 @@ RUN turbo prune @mixwave/stitcher --docker
 FROM base AS installer
 WORKDIR /app
 COPY --from=builder /app/out/json/ .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 COPY --from=builder /app/out/full/ .
 RUN turbo run build
 

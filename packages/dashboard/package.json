@@ -30,7 +30,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
-    "hls.js": "file:../../external/hlsjs__feature__interstitials",
+    "hls.js": "workspace:*",
     "lucide-react": "^0.424.0",
     "monaco-editor": "^0.51.0",
     "pretty-ms": "^9.1.0",

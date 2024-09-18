@@ -1,5 +1,5 @@
 {
-  "name": "hls.js__feature__interstitials",
+  "name": "hls.js",
   "type": "module",
   "main": "./hls.mjs",
   "types": "./hls.d.ts"

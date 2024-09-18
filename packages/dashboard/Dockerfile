@@ -12,7 +12,7 @@ RUN turbo prune @mixwave/dashboard --docker
 FROM base AS installer
 WORKDIR /app
 COPY --from=builder /app/out/json/ .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 COPY --from=builder /app/out/full/ .
 ARG API_URL
 ENV VITE_API_URL=$API_URL

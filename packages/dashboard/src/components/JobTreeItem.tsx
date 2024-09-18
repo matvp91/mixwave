@@ -16,8 +16,8 @@ export function JobTreeItem({ job, activeId }: JobTreeItemProps) {
     <Link
       to={`/jobs/${job.id}`}
       className={cn(
-        "p-2 flex gap-2 items-center",
-        activeId === job.id && "bg-gray-200 rounded-md",
+        "p-2 flex gap-2 items-center rounded-md",
+        activeId === job.id && "bg-muted",
       )}
     >
       <JobState state={job.state} />

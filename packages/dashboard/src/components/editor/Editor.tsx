@@ -5,7 +5,11 @@ import { Button } from "@/components/ui/button";
 import "./worker";
 
 const uri = monaco.Uri.parse("mixwave/body.json");
-const model = monaco.editor.createModel(["{", "", "}"].join("\n"), "json", uri);
+const model = monaco.editor.createModel(
+  ["{", '  "assetId": ""', "}"].join("\n"),
+  "json",
+  uri,
+);
 
 type EditorProps = {
   schema?: object;

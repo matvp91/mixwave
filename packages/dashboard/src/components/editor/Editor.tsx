@@ -58,8 +58,8 @@ export function Editor({ schema, title, onSave }: EditorProps) {
   }, [schema]);
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="p-4 flex gap-2 bg-[#1e1e1e]">
+    <div className="h-full flex flex-col bg-[#1e1e1e]">
+      <div className="p-4 flex gap-2">
         <div className="text-white flex items-center">{title}</div>
         <div className="grow" />
         <Button

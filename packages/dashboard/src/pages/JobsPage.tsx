@@ -6,7 +6,6 @@ import { useJobsFilter } from "@/hooks/useJobsFilter";
 import { JobsStats } from "@/components/JobsStats";
 import { filterJobs } from "@/lib/jobs-filter";
 import { StretchLoader } from "@/components/StretchLoader";
-import cookieSvg from "@/assets/cookie.svg";
 
 export function JobsPage() {
   const [filter, setFilter] = useJobsFilter();
@@ -38,12 +37,7 @@ export function JobsPage() {
       {filteredJobs.length ? (
         <JobsList jobs={filteredJobs} />
       ) : (
-        <div className="py-4 flex justify-center">
-          <div className="flex flex-col gap-2 items-center text-muted-foreground">
-            <img className="w-12" src={cookieSvg} />
-            <p>There's no jobs here</p>
-          </div>
-        </div>
+        <p className="text-center">No jobs found...</p>
       )}
     </Container>
   );

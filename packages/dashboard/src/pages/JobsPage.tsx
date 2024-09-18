@@ -22,8 +22,7 @@ export function JobsPage() {
   const filteredJobs = filterJobs(data.body, filter);
 
   return (
-    <Container className="py-4">
-      <h1 className="text-lg font-medium">Jobs</h1>
+    <Container>
       <div className="my-4 flex items-center">
         <JobsStats jobs={data.body} filter={filter} onChange={setFilter} />
         <div className="ml-auto">

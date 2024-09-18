@@ -12,22 +12,22 @@ export function Header() {
       </Link>
       <div className="flex items-center gap-8 ml-8">
         <Link
-          to="/jobs"
-          className={cn(
-            "text-muted-foreground",
-            pathname.startsWith("/jobs") && "text-black",
-          )}
-        >
-          jobs
-        </Link>
-        <Link
           to="/api"
           className={cn(
             "text-muted-foreground",
             pathname.startsWith("/api") && "text-black",
           )}
         >
-          api
+          API
+        </Link>
+        <Link
+          to="/jobs"
+          className={cn(
+            "text-muted-foreground",
+            pathname.startsWith("/jobs") && "text-black",
+          )}
+        >
+          Jobs
         </Link>
         <Link
           to="/player"
@@ -36,7 +36,7 @@ export function Header() {
             pathname.startsWith("/player") && "text-black",
           )}
         >
-          player
+          Player
         </Link>
       </div>
     </div>

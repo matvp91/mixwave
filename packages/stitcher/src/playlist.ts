@@ -41,6 +41,21 @@ export async function formatMasterPlaylist(session: Session) {
 
   const master = await fetchPlaylist<MasterPlaylist>(url);
 
+  const filePath = parseFilepath(url);
+
+  master.defines.push(
+    new hlsParser.types.Define({
+      type: "NAME",
+      name: "mix-session-id",
+      value: session.id,
+    }),
+    new hlsParser.types.Define({
+      type: "NAME",
+      name: "mix-base",
+      value: filePath.dir,
+    }),
+  );
+
   if (session.resolution) {
     try {
       master.variants = filterByString(master.variants, session.resolution);
@@ -49,13 +64,14 @@ export async function formatMasterPlaylist(session: Session) {
     }
   }
 
-  const filePath = parseFilepath(url);
+  // Direct audio and subtitle uris to their original base, they do not
+  // need to be rewritten by the media playlist proxy.
   for (const v of master.variants) {
     for (const audioRendition of v.audio) {
-      audioRendition.uri = `${filePath.dir}/${audioRendition.uri}`;
+      audioRendition.uri = `{$mix-base}/${audioRendition.uri}`;
     }
     for (const subtitleRendition of v.subtitles) {
-      subtitleRendition.uri = `${filePath.dir}/${subtitleRendition.uri}`;
+      subtitleRendition.uri = `{$mix-base}/${subtitleRendition.uri}`;
     }
   }
 
@@ -71,7 +87,19 @@ export async function formatMediaPlaylist(session: Session, path: string) {
 
   const media = await fetchPlaylist<MediaPlaylist>(url);
 
-  rewriteSegmentUrls(media, url);
+  media.defines.push(
+    new hlsParser.types.Define({
+      type: "IMPORT",
+      value: "mix-base",
+    }),
+    new hlsParser.types.Define({
+      type: "NAME",
+      name: "mix-pbase",
+      value: `{$mix-base}/${path}`,
+    }),
+  );
+
+  rewriteSegmentUrls(media);
 
   if (session.interstitials) {
     addInterstitials(media, session.interstitials, session.id);
@@ -173,14 +201,12 @@ function addInterstitials(
     });
 }
 
-function rewriteSegmentUrls(media: MediaPlaylist, url: string) {
-  const filePath = parseFilepath(url);
-
+function rewriteSegmentUrls(media: MediaPlaylist) {
   for (const segment of media.segments) {
     if (segment.map?.uri === "init.mp4") {
-      segment.map.uri = `${filePath.dir}/init.mp4`;
+      segment.map.uri = `{$mix-pbase}/init.mp4`;
     }
 
-    segment.uri = `${filePath.dir}/${segment.uri}`;
+    segment.uri = `{$mix-pbase}/${segment.uri}`;
   }
 }

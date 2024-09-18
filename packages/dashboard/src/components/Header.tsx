@@ -1,6 +1,6 @@
 import logo from "../assets/logo.svg";
+import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
-import { Button } from "./ui/button";
 
 export function Header() {
   const { pathname } = useLocation();
@@ -11,28 +11,34 @@ export function Header() {
         <img src={logo} className="w-[24px]" />
         <span className="font-medium">Mixwave</span>
       </Link>
-      <div className="flex gap-2 ml-4">
-        <Button
-          asChild
-          variant={pathname.startsWith("/jobs") ? "secondary" : "link"}
-          className="h-8"
+      <div className="flex items-center gap-8 ml-8">
+        <Link
+          to="/jobs"
+          className={cn(
+            "text-muted-foreground",
+            pathname.startsWith("/jobs") && "text-black",
+          )}
         >
-          <Link to="/jobs">jobs</Link>
-        </Button>
-        <Button
-          asChild
-          variant={pathname.startsWith("/api") ? "secondary" : "link"}
-          className="h-8"
+          jobs
+        </Link>
+        <Link
+          to="/api"
+          className={cn(
+            "text-muted-foreground",
+            pathname.startsWith("/api") && "text-black",
+          )}
         >
-          <Link to="/api">api</Link>
-        </Button>
-        <Button
-          asChild
-          variant={pathname.startsWith("/player") ? "secondary" : "link"}
-          className="h-8"
+          api
+        </Link>
+        <Link
+          to="/player"
+          className={cn(
+            "text-muted-foreground",
+            pathname.startsWith("/player") && "text-black",
+          )}
         >
-          <Link to="/player">player</Link>
-        </Button>
+          player
+        </Link>
       </div>
     </div>
   );

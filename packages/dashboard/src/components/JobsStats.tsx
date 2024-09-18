@@ -44,63 +44,39 @@ export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
 
   return (
     <TooltipProvider delayDuration={0}>
-      <ul className="flex bg-white border border-border rounded-md overflow-hidden">
-        <Tooltip>
-          <TooltipTrigger>
-            <Tile
-              value={completed}
-              className="bg-emerald-400"
-              outerClassName="border-r border-border"
-              onClick={() => filterJobState("completed")}
-              active={filter.state === "completed"}
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Completed</p>
-          </TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger>
-            <Tile
-              value={failed}
-              className="bg-red-400"
-              outerClassName="border-r border-border"
-              onClick={() => filterJobState("failed")}
-              active={filter.state === "failed"}
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Failed</p>
-          </TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger>
-            <Tile
-              value={running}
-              className="bg-blue-400"
-              outerClassName="border-r border-border"
-              onClick={() => filterJobState("running")}
-              active={filter.state === "running"}
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Running</p>
-          </TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger>
-            <Tile
-              value={waiting}
-              className="bg-violet-400"
-              onClick={() => filterJobState("waiting")}
-              active={filter.state === "waiting"}
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Waiting</p>
-          </TooltipContent>
-        </Tooltip>
-      </ul>
+      <div className="flex bg-white border border-border rounded-md overflow-hidden">
+        <Tile
+          value={completed}
+          className="bg-emerald-400"
+          outerClassName="border-r border-border"
+          onClick={() => filterJobState("completed")}
+          active={filter.state === "completed"}
+          tooltip="Completed"
+        />
+        <Tile
+          value={failed}
+          className="bg-red-400"
+          outerClassName="border-r border-border"
+          onClick={() => filterJobState("failed")}
+          active={filter.state === "failed"}
+          tooltip="Failed"
+        />
+        <Tile
+          value={running}
+          className="bg-blue-400"
+          outerClassName="border-r border-border"
+          onClick={() => filterJobState("running")}
+          active={filter.state === "running"}
+          tooltip="Running"
+        />
+        <Tile
+          value={waiting}
+          className="bg-violet-400"
+          onClick={() => filterJobState("waiting")}
+          active={filter.state === "waiting"}
+          tooltip="Waiting"
+        />
+      </div>
     </TooltipProvider>
   );
 }
@@ -111,24 +87,33 @@ function Tile({
   outerClassName,
   onClick,
   active,
+  tooltip,
 }: {
   value: number;
   className: string;
   outerClassName?: string;
   onClick: () => void;
   active: boolean;
+  tooltip: string;
 }) {
   return (
-    <li
-      onClick={onClick}
-      className={cn(
-        "flex items-center justify-center px-2 h-10 text-xs font-medium",
-        outerClassName,
-        active && "bg-secondary",
-      )}
-    >
-      {value}
-      <div className={cn("ml-1 w-2 h-2 rounded-full", className)} />
-    </li>
+    <Tooltip>
+      <TooltipTrigger>
+        <li
+          onClick={onClick}
+          className={cn(
+            "flex items-center justify-center px-2 h-10 text-xs font-medium",
+            outerClassName,
+            active && "bg-secondary",
+          )}
+        >
+          {value}
+          <div className={cn("ml-1 w-2 h-2 rounded-full", className)} />
+        </li>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>{tooltip}</p>
+      </TooltipContent>
+    </Tooltip>
   );
 }

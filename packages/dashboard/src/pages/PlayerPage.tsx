@@ -2,7 +2,6 @@ import { useEffect, useState, lazy, Suspense } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert } from "@/components/ui/alert";
-import { BrowserMockup } from "@/components/BrowserMockup";
 import { StretchLoader } from "@/components/StretchLoader";
 
 const LazyEditor = lazy(() =>
@@ -73,9 +72,7 @@ export function PlayerPage() {
         <div className="basis-1/2 p-4">
           {masterUrl ? (
             <>
-              <BrowserMockup>
-                <LazyPlayer url={masterUrl} />
-              </BrowserMockup>
+              <LazyPlayer url={masterUrl} />
               <div className="mt-4">
                 <Label>Playlist URL</Label>
                 <Input

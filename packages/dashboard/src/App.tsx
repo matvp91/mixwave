@@ -7,7 +7,6 @@ import {
 import { JobsPage } from "@/pages/JobsPage";
 import { JobPage } from "@/pages/JobPage";
 import { ApiPage } from "@/pages/ApiPage";
-import { ApiEmbedPage } from "@/pages/ApiEmbedPage";
 import { RootLayout } from "@/pages/RootLayout";
 import { Suspense } from "react";
 import { tsr } from "./tsr";
@@ -41,10 +40,6 @@ const router = createBrowserRouter([
         element: <PlayerPage />,
       },
     ],
-  },
-  {
-    path: "/embed/api",
-    element: <ApiEmbedPage />,
   },
 ]);
 

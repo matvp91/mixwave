@@ -3,7 +3,7 @@ import cors from "@fastify/cors";
 import { env } from "./env.js";
 import { contract } from "./contract.js";
 import { initServer } from "@ts-rest/fastify";
-import { generateOpenApi } from "@ts-rest/open-api";
+import { openApiSpec } from "./openapi.js";
 import { createSession, getSession } from "./session.js";
 import {
   formatMasterPlaylist,
@@ -74,12 +74,7 @@ async function buildServer() {
     getSpec: async () => {
       return {
         status: 200,
-        body: generateOpenApi(contract, {
-          info: {
-            title: "Stitcher",
-            version: "1.0.0",
-          },
-        }),
+        body: openApiSpec,
       };
     },
   });

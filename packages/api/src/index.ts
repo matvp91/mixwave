@@ -6,7 +6,7 @@ import { bullBoardPlugin } from "./plugins/bull-board.js";
 import { initServer } from "@ts-rest/fastify";
 import { addTranscodeJob, addPackageJob } from "@mixwave/artisan/producer";
 import { getJobs, getJob, getJobLogs } from "./jobs.js";
-import { generateOpenApi } from "@ts-rest/open-api";
+import { openApiSpec } from "./openapi.js";
 
 async function buildServer() {
   const app = Fastify();
@@ -51,12 +51,7 @@ async function buildServer() {
     getSpec: async () => {
       return {
         status: 200,
-        body: generateOpenApi(contract, {
-          info: {
-            title: "API",
-            version: "1.0.0",
-          },
-        }),
+        body: openApiSpec,
       };
     },
   });

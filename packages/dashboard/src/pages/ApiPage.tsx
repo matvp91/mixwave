@@ -1,27 +1,17 @@
 import { StretchLoader } from "@/components/StretchLoader";
-import { useEffect, useState } from "react";
+import { lazy, Suspense } from "react";
+import "@scalar/api-reference-react/style.css";
+
+const LazyOpenApiReference = lazy(() =>
+  import("@/components/OpenApiReference").then((mod) => ({
+    default: mod.OpenApiReference,
+  })),
+);
 
 export function ApiPage() {
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    const onMessage = () => {
-      setLoaded(true);
-    };
-
-    window.addEventListener("message", onMessage);
-
-    return () => window.removeEventListener("message", onMessage);
-  }, []);
-
   return (
-    <div className="w-full h-full">
-      {loaded ? null : (
-        <div className="absolute inset-0 bg-white">
-          <StretchLoader />
-        </div>
-      )}
-      <iframe className="w-full h-full" src="/embed/api" />
-    </div>
+    <Suspense fallback={<StretchLoader />}>
+      <LazyOpenApiReference url={import.meta.env.VITE_API_URL} />
+    </Suspense>
   );
 }

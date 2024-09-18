@@ -3,6 +3,7 @@ import { JobLogs } from "./JobLogs";
 import AlertCircle from "lucide-react/icons/alert-circle";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { getDurationStr } from "@/lib/helpers";
+import { JsonHighlight } from "./JsonHighlight";
 import type { JobDto } from "@/tsr";
 
 type JobViewProps = {
@@ -27,11 +28,11 @@ export function JobView({ job }: JobViewProps) {
         <div>
           <div className="mb-4">
             <div className="mb-2">Input</div>
-            <Format data={job.inputData} />
+            <JsonHighlight json={job.inputData} />
           </div>
           <div>
             <div className="mb-2">Output</div>
-            <Format data={job.outputData} />
+            {job.outputData ? <JsonHighlight json={job.outputData} /> : null}
           </div>
         </div>
         <div>
@@ -41,21 +42,6 @@ export function JobView({ job }: JobViewProps) {
       </div>
     </>
   );
-}
-
-function Format({ data }: { data: string | null }) {
-  let parsedData: unknown;
-  try {
-    if (data) {
-      parsedData = JSON.parse(data);
-    }
-  } catch {}
-
-  return parsedData ? (
-    <pre className="p-2 text-xs border border-border rounded-md whitespace-pre-wrap break-all">
-      {JSON.stringify(parsedData, null, 2)}
-    </pre>
-  ) : null;
 }
 
 function JobError({ error }: { error: string }) {

@@ -7,7 +7,7 @@ type OpenApiReferenceProps = {
 };
 
 export function OpenApiReference({ url }: OpenApiReferenceProps) {
-  const { data } = tsr.getSpec.useQuery({
+  const { data } = tsr.getSpec.useSuspenseQuery({
     queryKey: ["spec"],
   });
 

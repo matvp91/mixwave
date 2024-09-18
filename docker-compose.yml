@@ -8,6 +8,7 @@ services:
       dockerfile: ./packages/dashboard/Dockerfile
       args:
         - API_URL=http://127.0.0.1:52001
+        - STITCHER_URL=http://127.0.0.1:52002
     restart: always
     ports:
       - 127.0.0.1:52000:8080

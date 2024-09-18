@@ -41,7 +41,7 @@ Bootstrap the necessary services with [Docker Compose](https://docs.docker.com/c
 ::: code-group
 
 ```sh [shell]
-$ docker compose up -d
+$ docker compose up -d --build
 ```
 
 :::

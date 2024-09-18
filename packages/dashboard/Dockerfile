@@ -15,7 +15,9 @@ COPY --from=builder /app/out/json/ .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 COPY --from=builder /app/out/full/ .
 ARG API_URL
+ARG STITCHER_URL
 ENV VITE_API_URL=$API_URL
+ENV VITE_STITCHER_URL=$STITCHER_URL
 RUN turbo run build --filter=@mixwave/dashboard
 
 FROM devforth/spa-to-http as runner

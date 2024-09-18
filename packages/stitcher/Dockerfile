@@ -19,4 +19,4 @@ RUN turbo run build
 FROM base as runner
 WORKDIR /app
 COPY --from=installer ./app .
-CMD [ "node", "packages/stitcher/dist/index.js" ]
+CMD [ "node", "packages/stitcher/dist/src/index.js" ]

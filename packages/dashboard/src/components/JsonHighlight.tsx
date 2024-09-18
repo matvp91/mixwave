@@ -1,12 +1,6 @@
 import { useMemo } from "react";
-
-// @ts-expect-error
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
-
-// @ts-expect-error
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
-
-// @ts-expect-error
 import style from "react-syntax-highlighter/dist/esm/styles/hljs/stackoverflow-light";
 
 style["hljs"].padding = "1rem";

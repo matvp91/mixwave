@@ -73,6 +73,13 @@ function scheduleForPackage(adMedia: AdMedia) {
       {
         type: "video",
         codec: "h264",
+        height: 720,
+        bitrate: 4000000,
+        framerate: 24,
+      },
+      {
+        type: "video",
+        codec: "h264",
         height: 480,
         bitrate: 1500000,
         framerate: 24,

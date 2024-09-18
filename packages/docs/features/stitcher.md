@@ -48,13 +48,11 @@ Behind the scenes, stitcher will create a session and return you a personalised 
 ```json
 {
   "assetId": "f7e89553-0d3b-4982-ba7b-3ce5499ac689",
-  "maxResolution": 480
+  "resolution": "> 480"
 }
 ```
 
-## Interstitials
-
-### Manual
+### Interstitials
 
 Let's say you transcoded and packaged a new asset with the id `abbda878-8e08-40f6-ac8b-3507f263450a`. The example below will add it as an interstitial. An HLS interstitials supported player will then switch to the new asset at position `10` and when finished, it'll go back to the main master playlist.
 
@@ -70,21 +68,6 @@ Let's say you transcoded and packaged a new asset with the id `abbda878-8e08-40f
 }
 ```
 
-### Bumper
-
-You can manually add a bumper at timeOffset 0 but it is advised to use the `bumperAssetId` option instead.
-
-```json
-{
-  "assetId": "f7e89553-0d3b-4982-ba7b-3ce5499ac689",
-  "bumperAssetId": "abbda878-8e08-40f6-ac8b-3507f263450a"
-}
-```
-
-::: info
-When you use both vmapUrl and bumperAssetId, it'll add the bumper interstitial as the last asset in a preroll (starting from 0).
-:::
-
 ### VMAP
 
 Instruct stitcher to add interstitials based on VMAP definitions. Each VMAP contains one or more `AdBreak` elements with a position of where the interstitial should be.
@@ -92,7 +75,9 @@ Instruct stitcher to add interstitials based on VMAP definitions. Each VMAP cont
 ```json
 {
   "assetId": "f7e89553-0d3b-4982-ba7b-3ce5499ac689",
-  "vmapUrl": "https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/vmap_ad_samples&sz=640x480&cust_params=sample_ar%3Dpremidpost&ciu_szs=300x250&gdfp_req=1&ad_rule=1&output=vmap&unviewed_position_start=1&env=vp&impl=s&cmsid=496&vid=short_onecue&correlator="
+  "vmap": {
+    "url": "https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/vmap_ad_samples&sz=640x480&cust_params=sample_ar%3Dpremidpost&ciu_szs=300x250&gdfp_req=1&ad_rule=1&output=vmap&unviewed_position_start=1&env=vp&impl=s&cmsid=496&vid=short_onecue&correlator="
+  }
 }
 ```
 

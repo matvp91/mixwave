@@ -10,13 +10,13 @@ const style: CSSProperties = {
 
 export function VolumeButton() {
   return (
-    <div className="relative">
-      <div className="absolute w-full flex justify-center bottom-12">
-        <div className="p-2 mb-1 bg-black/85 text-white rounded-md border border-white/20">
+    <div className="relative group">
+      <div className="absolute w-full flex justify-center bottom-12 opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="px-2 py-3 mb-1 bg-black/85 text-white rounded-md border border-white/20">
           <input
             type="range"
             style={style}
-            className="appearance-none bg-transparent [&::-webkit-slider-runnable-track]:transparent [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:h-2 [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:rounded-full"
+            className="cursor-pointer appearance-none w-4 bg-transparent [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-white/50 [&::-webkit-slider-runnable-track]:w-2 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:-ml-1 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
           />
         </div>
       </div>

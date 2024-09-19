@@ -38,6 +38,7 @@ export type State = {
   audioTracks: AudioTrack[];
   subtitleTracks: SubtitleTrack[];
   slot: Slot | null;
+  volume: number;
 };
 
 export type Events = {

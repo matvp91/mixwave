@@ -1,16 +1,9 @@
-import { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert } from "@/components/ui/alert";
-import { StretchLoader } from "@/components/StretchLoader";
-
-const LazyEditor = lazy(() =>
-  import("@/components/editor/Editor").then((mod) => ({ default: mod.Editor })),
-);
-
-const LazyPlayer = lazy(() =>
-  import("@/components/player/Player").then((mod) => ({ default: mod.Player })),
-);
+import { Editor } from "@/components/editor/Editor";
+import { Player } from "@/components/player/Player";
 
 export function PlayerPage() {
   const [schema, setSchema] = useState<object>();
@@ -53,45 +46,43 @@ export function PlayerPage() {
   };
 
   return (
-    <Suspense fallback={<StretchLoader />}>
-      <div className="min-h-full flex grow">
-        <div className="basis-1/2 min-w-0">
-          <LazyEditor
-            schema={schema}
-            title={
-              <div className="text-xs">
-                <span className="font-bold bg-white/20 py-1 px-2 mr-1 rounded-md">
-                  POST
-                </span>{" "}
-                {import.meta.env.VITE_STITCHER_URL}/session
-              </div>
-            }
-            onSave={onSave}
-          />
-        </div>
-        <div className="basis-1/2 p-4">
-          {masterUrl ? (
-            <>
-              <LazyPlayer url={masterUrl} />
-              <div className="mt-4">
-                <Label>Playlist URL</Label>
-                <Input
-                  value={masterUrl}
-                  onClick={(event) => {
-                    (event.target as HTMLInputElement).select();
-                  }}
-                  onChange={() => {}}
-                />
-              </div>
-            </>
-          ) : null}
-          {error ? (
-            <Alert variant="destructive" className="text-xs">
-              <pre>{JSON.stringify(error, null, 2)}</pre>
-            </Alert>
-          ) : null}
-        </div>
+    <div className="min-h-full flex grow">
+      <div className="basis-1/2 min-w-0">
+        <Editor
+          schema={schema}
+          title={
+            <div className="text-xs">
+              <span className="font-bold bg-white/20 py-1 px-2 mr-1 rounded-md">
+                POST
+              </span>{" "}
+              {import.meta.env.VITE_STITCHER_URL}/session
+            </div>
+          }
+          onSave={onSave}
+        />
       </div>
-    </Suspense>
+      <div className="basis-1/2 p-4">
+        {masterUrl ? (
+          <>
+            <Player url={masterUrl} />
+            <div className="mt-4">
+              <Label>Playlist URL</Label>
+              <Input
+                value={masterUrl}
+                onClick={(event) => {
+                  (event.target as HTMLInputElement).select();
+                }}
+                onChange={() => {}}
+              />
+            </div>
+          </>
+        ) : null}
+        {error ? (
+          <Alert variant="destructive" className="text-xs">
+            <pre>{JSON.stringify(error, null, 2)}</pre>
+          </Alert>
+        ) : null}
+      </div>
+    </div>
   );
 }

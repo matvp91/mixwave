@@ -6,7 +6,7 @@ module.exports = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
-    "./node_modules/@mixwave/player/dist/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@mixwave/player/dist/*.{js,ts,jsx,tsx}",
   ],
   prefix: "",
   theme: {

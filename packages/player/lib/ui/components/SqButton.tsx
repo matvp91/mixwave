@@ -6,6 +6,7 @@ type SqButtonProps = {
   children: React.ReactNode;
   onClick: MouseEventHandler<HTMLButtonElement>;
   onIdle?: () => void;
+  idleTime?: number;
   selected?: boolean;
 };
 
@@ -13,6 +14,7 @@ export function SqButton({
   children,
   onClick,
   onIdle,
+  idleTime,
   selected,
   ...rest
 }: SqButtonProps) {
@@ -22,7 +24,7 @@ export function SqButton({
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       onIdle?.();
-    }, 200);
+    }, idleTime ?? 200);
   };
 
   return (

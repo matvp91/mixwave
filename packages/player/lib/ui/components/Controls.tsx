@@ -103,7 +103,10 @@ export function Controls({ facade, state, metadata }: ControlsProps) {
               <ForwardIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
             </SqButton>
           ) : null}
-          <VolumeButton />
+          <VolumeButton
+            volume={state.volume}
+            setVolume={(volume) => facade.setVolume(volume)}
+          />
           <Label slot={state.slot} metadata={metadata} />
           <div className="grow" />
           <SqButton

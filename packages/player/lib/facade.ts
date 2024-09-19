@@ -78,6 +78,10 @@ export class HlsFacade extends EventEmitter<Events> {
     mediaOn("seeked", () => {
       this.pollTime_();
     });
+
+    mediaOn("volumechange", () => {
+      this.setState_({ volume: this.media_.volume });
+    });
   }
 
   private initHlsListeners_() {
@@ -185,6 +189,7 @@ export class HlsFacade extends EventEmitter<Events> {
       audioTracks,
       subtitleTracks,
       slot: null,
+      volume: this.media_.volume,
     };
 
     this.pollTime_();
@@ -266,6 +271,10 @@ export class HlsFacade extends EventEmitter<Events> {
       targetTime = this.mgr_.integrated.duration - SAFE_OFFSET;
     }
     this.mgr_.integrated.seekTo(targetTime);
+  }
+
+  setVolume(volume: number) {
+    this.media_.volume = volume;
   }
 
   setQuality(id: number | null) {

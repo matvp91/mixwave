@@ -18,6 +18,7 @@ import { useState } from "react";
 import { Center } from "./Center";
 import { Label } from "./Label";
 import { useFullscreen } from "../hooks/useFullscreen";
+import { VolumeButton } from "./VolumeButton";
 import type { State, HlsFacade } from "../..";
 import type { Metadata } from "../types";
 
@@ -102,6 +103,7 @@ export function Controls({ facade, state, metadata }: ControlsProps) {
               <ForwardIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
             </SqButton>
           ) : null}
+          <VolumeButton />
           <Label slot={state.slot} metadata={metadata} />
           <div className="grow" />
           <SqButton

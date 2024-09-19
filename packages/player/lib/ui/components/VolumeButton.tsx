@@ -31,16 +31,23 @@ export function VolumeButton({ volume, setVolume }: VolumeButtonProps) {
     }
   };
 
-  let Icon = VolumeMutedIcon;
+  let Icon;
   let iconStyle: CSSProperties = {};
   if (volume > 0.8) {
     Icon = Volume2Icon;
+    iconStyle.width = iconStyle.height = "1.6rem";
   } else if (volume > 0.5) {
     Icon = Volume1Icon;
-    iconStyle.left = "-1px";
+    iconStyle.width = iconStyle.height = "1.4rem";
+    iconStyle.left = "-0.1rem";
   } else if (volume > 0.2) {
     Icon = Volume0Icon;
-    iconStyle.left = "-2px";
+    iconStyle.width = iconStyle.height = "1.07rem";
+    iconStyle.left = "-0.48rem";
+  } else {
+    Icon = VolumeMutedIcon;
+    iconStyle.width = iconStyle.height = "1.3rem";
+    iconStyle.left = "-0.16rem";
   }
 
   return (
@@ -77,7 +84,7 @@ export function VolumeButton({ volume, setVolume }: VolumeButtonProps) {
         idleTime={0}
       >
         <Icon
-          className="relative w-6 h-6 group-hover:scale-110 transition-transform origin-center"
+          className="relative group-hover:scale-110 transition-transform origin-center"
           style={iconStyle}
         />
       </SqButton>

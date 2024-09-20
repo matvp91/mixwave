@@ -1,6 +1,8 @@
 <div align="center">
-  <img src="https://matvp91.github.io/mixwave/preview-logo.png" width="420" />
+  <img src="./public/logo-full.png" width="420" />
 
+  <h3>Simplify the complexities of video delivery</h3>
+  
   <p align="center">
     <img src="https://img.shields.io/github/license/matvp91/mixwave">
     <img src="https://img.shields.io/github/last-commit/matvp91/mixwave">

@@ -68,7 +68,7 @@ Let's say you transcoded and packaged a new asset with the id `abbda878-8e08-40f
 }
 ```
 
-<video class="video-frame" src="/dashboard-player-bumper.mp4" controls></video>
+<video class="video-frame" src="/dashboard-player-bumper.mp4#t=19" controls></video>
 
 ### VMAP
 
@@ -92,7 +92,7 @@ Instruct stitcher to add interstitials based on VMAP definitions. Each VMAP cont
 Ad impressions are not tracked yet, we'd eventually like to provide a client wrapper that tracks ads in a certified manner.
 :::
 
-<video class="video-frame" src="/dashboard-player-vmap.mp4" controls></video>
+<video class="video-frame" src="/dashboard-player-vmap.mp4#t=4" controls></video>
 
 ## Example
 

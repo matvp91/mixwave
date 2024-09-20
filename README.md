@@ -1,7 +1,7 @@
 <div align="center">
   <img src="./public/logo-full.png" width="420" />
 
-  <h3>Simplify the complexities of video delivery</h3>
+  <h3>A friendly API to simplify the complexities of video delivery</h3>
   
   <p align="center">
     <img src="https://img.shields.io/github/license/matvp91/mixwave">

@@ -8,7 +8,7 @@ import { by639_2T } from "iso-language-codes";
 import { copyFile, downloadFolder, uploadFolder } from "../s3.js";
 import parseFilePath from "parse-filepath";
 import * as z from "zod";
-import { streamSchema } from "../../schemas.js";
+import { streamSchema } from "@mixwave/shared/artisan";
 import type { Job } from "bullmq";
 import type { Code } from "iso-language-codes";
 

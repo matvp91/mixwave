@@ -1,0 +1,27 @@
+{
+  "name": "@mixwave/shared",
+  "type": "module",
+  "exports": {
+    "./artisan": "./dist/artisan.js"
+  },
+  "typesVersions": {
+    "*": {
+      "artisan": [
+        "./src/artisan.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc-watch --noClear"
+  },
+  "dependencies": {
+    "@anatine/zod-openapi": "^2.2.6",
+    "iso-language-codes": "^2.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "tsc-watch": "^6.2.0",
+    "typescript": "^5.6.2"
+  }
+}

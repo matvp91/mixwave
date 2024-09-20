@@ -32,3 +32,17 @@ summary {
   border: 1px solid #aaa;
   border-radius: 6px;
 }
+
+.navitem-img {
+  display: flex;
+}
+
+.navitem-img img {
+  width: 16px;
+  margin-right: 4px;
+}
+
+.video-frame {
+  border-radius: 12px;
+  overflow: hidden;
+}

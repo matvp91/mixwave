@@ -23,11 +23,15 @@ features:
     icon:
       src: /transcode.svg
   - title: Package
-    details: Prepare and organize video files for delivery and playback.
+    details: Prepare and organize video files for delivery and playback. Upload directly to S3.
     icon:
       src: /package.svg
-  - title: Stitch
+  - title: Stitcher
     details: Manipulate and craft HLS playlists on the fly, supports HLS interstitials.
     icon:
-      src: /stitch.svg
+      src: /stitcher.svg
+  - title: Player
+    details: A unified <a href="https://github.com/video-dev/hls.js">hls.js</a> API and React components that integrate seamlessly.
+    icon:
+      src: /player.svg
 ---

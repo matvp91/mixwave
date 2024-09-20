@@ -33,27 +33,6 @@ The process of converting a video file from one format or codec to another. The 
 Consider the result of a transcode job as an intermediate format ready for packaging.
 :::
 
-<details>
-<summary>Mock example</summary>
-
-```
-input   = content.mp4
-streams = - video 1080p
-          - video 720p
-          - audio eng
-output  = 67b070fd-5db6-4022-a568-652abdbfac9c
-```
-
-```
-input   = bumper.mp4
-streams = - video 1080p
-          - video 720p
-          - audio eng
-output  = 13b1d432-ec8e-4516-9904-df1aa90db803
-```
-
-</details>
-
 ### <img src="/package.svg" class="title-image" /> Package
 
 The process of preparing and organizing video files for delivery and playback over various streaming platforms and devices. Packaging isn't as resource intensive as transcoding. The [package](/features/package) job generates an HLS playlist from the output of a transcode job. Basically, it comes down to the following steps:
@@ -73,22 +52,7 @@ As with transcode, the end result will be uploaded to your configured `S3` bucke
 At this point, your stream can be played by HLS-compatible players, such as [HLS.js](https://github.com/video-dev/hls.js), or natively on Apple devices.
 :::
 
-<details>
-<summary>Mock example</summary>
-
-```
-input   = 67b070fd-5db6-4022-a568-652abdbfac9c
-output  = https://my.cdn/package/67b070fd-5db6-4022-a568-652abdbfac9c/hls/master.m3u8
-```
-
-```
-input   = 13b1d432-ec8e-4516-9904-df1aa90db803
-output  = https://my.cdn/package/13b1d432-ec8e-4516-9904-df1aa90db803/hls/master.m3u8
-```
-
-</details>
-
-### <img src="/stitch.svg" class="title-image" /> Stitch
+### <img src="/stitcher.svg" class="title-image" /> Stitch
 
 At this point, you've created playable assets. Stitching involves serving the manifest through a proxy that can modify the output based on different parameters. If you're looking to dynamically merge manifests, stitch them together, or add interstitials, this is for you.
 
@@ -97,17 +61,6 @@ At this point, you've created playable assets. Stitching involves serving the ma
 ::: warning
 The stitch API is quite limited at the moment, but let us know what features you'd like by submitting a [feature ticket](https://github.com/matvp91/mixwave/issues).
 :::
-
-<details>
-<summary>Mock example</summary>
-
-```
-input   = - assetId: 67b070fd-5db6-4022-a568-652abdbfac9c
-          - bumperAssetId: 13b1d432-ec8e-4516-9904-df1aa90db803
-output  = http://stitcher.mixwave/session/7b2a354a-69e3-4c16-accb-aa521c8b9d5b/master.m3u8
-```
-
-</details>
 
 ## Structure
 

@@ -2,18 +2,17 @@
   "name": "@mixwave/api",
   "type": "module",
   "exports": {
-    "./client": "./dist/client.js"
+    "./client": "./dist/client/index.js"
   },
   "typesVersions": {
     "*": {
       "client": [
-        "src/client.ts"
+        "src/client/index.ts"
       ]
     }
   },
   "scripts": {
     "build": "tsc",
-    "start": "node ./dist/index.js",
     "dev": "tsc-watch --noClear --onSuccess \"node ./dist/index.js\""
   },
   "devDependencies": {
@@ -23,12 +22,14 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "@anatine/zod-openapi": "^2.2.6",
     "@bull-board/api": "^5.21.3",
     "@bull-board/fastify": "^5.21.3",
     "@fastify/cors": "^9.0.1",
     "@fastify/swagger": "^8.15.0",
     "@fastify/swagger-ui": "^4.0.1",
     "@mixwave/artisan": "workspace:*",
+    "@mixwave/shared": "workspace:*",
     "@ts-rest/core": "^3.49.3",
     "@ts-rest/fastify": "^3.49.3",
     "@ts-rest/open-api": "^3.49.3",

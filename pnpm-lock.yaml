@@ -15,8 +15,17 @@ importers:
         specifier: ^2.0.11
         version: 2.0.11
 
+  docs:
+    devDependencies:
+      vitepress:
+        specifier: ^1.3.2
+        version: 1.3.2(@algolia/client-search@4.24.0)(search-insights@2.16.2)
+
   packages/api:
     dependencies:
+      '@anatine/zod-openapi':
+        specifier: ^2.2.6
+        version: 2.2.6(openapi3-ts@4.4.0)(zod@3.23.8)
       '@bull-board/api':
         specifier: ^5.21.3
         version: 5.21.3(@bull-board/ui@5.21.3)
@@ -35,6 +44,9 @@ importers:
       '@mixwave/artisan':
         specifier: workspace:*
         version: link:../artisan
+      '@mixwave/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@ts-rest/core':
         specifier: ^3.49.3
         version: 3.49.3(zod@3.23.8)
@@ -87,6 +99,9 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.623.0
         version: 3.623.0
+      '@mixwave/shared':
+        specifier: workspace:*
+        version: link:../shared
       bullmq:
         specifier: ^5.12.0
         version: 5.12.0
@@ -294,12 +309,6 @@ importers:
         specifier: ^5.3.4
         version: 5.3.5(@types/node@22.1.0)
 
-  packages/docs:
-    devDependencies:
-      vitepress:
-        specifier: ^1.3.2
-        version: 1.3.2(@algolia/client-search@4.24.0)(search-insights@2.16.2)
-
   packages/hls.js: {}
 
   packages/player:
@@ -368,6 +377,25 @@ importers:
       vite-tsconfig-paths:
         specifier: ^5.0.1
         version: 5.0.1(typescript@5.5.4)(vite@5.4.1)
+
+  packages/shared:
+    dependencies:
+      '@anatine/zod-openapi':
+        specifier: ^2.2.6
+        version: 2.2.6(openapi3-ts@4.4.0)(zod@3.23.8)
+      iso-language-codes:
+        specifier: ^2.0.0
+        version: 2.0.0
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
+      tsc-watch:
+        specifier: ^6.2.0
+        version: 6.2.0(typescript@5.6.2)
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
 
   packages/stitcher:
     dependencies:
@@ -640,6 +668,17 @@ packages:
       zod: ^3.20.0
     dependencies:
       openapi3-ts: 2.0.2
+      ts-deepmerge: 6.2.1
+      zod: 3.23.8
+    dev: false
+
+  /@anatine/zod-openapi@2.2.6(openapi3-ts@4.4.0)(zod@3.23.8):
+    resolution: {integrity: sha512-Z5sr2Nq2xifEpPbPdUcvyl776LY652oR3VHMV++WFSmRrRL8RDP2XTkbuGn+vgfVNOD7UrndYwCWnxaiw7IZog==}
+    peerDependencies:
+      openapi3-ts: ^4.1.2
+      zod: ^3.20.0
+    dependencies:
+      openapi3-ts: 4.4.0
       ts-deepmerge: 6.2.1
       zod: 3.23.8
     dev: false
@@ -10461,6 +10500,12 @@ packages:
       yaml: 1.10.2
     dev: false
 
+  /openapi3-ts@4.4.0:
+    resolution: {integrity: sha512-9asTNB9IkKEzWMcHmVZE7Ts3kC9G7AFHfs8i7caD8HbI76gEjdkId4z/AkP83xdZsH7PLAnnbl47qZkXuxpArw==}
+    dependencies:
+      yaml: 2.5.0
+    dev: false
+
   /ora@5.4.1:
     resolution: {integrity: sha512-5b6Y85tPxZZ7QytO+BQzysW31HJku27cRIlkbAXaNx+BdcVi+LlRFmVXzeF6a7JCwJpyw5c4b+YSVImQIrBpuQ==}
     engines: {node: '>=10'}
@@ -12376,6 +12421,20 @@ packages:
       typescript: 5.5.4
     dev: true
 
+  /tsc-watch@6.2.0(typescript@5.6.2):
+    resolution: {integrity: sha512-2LBhf9kjKXnz7KQ/puLHlozMzzUNHAdYBNMkg3eksQJ9GBAgMg8czznM83T5PmsoUvDnXzfIeQn2lNcIYDr8LA==}
+    engines: {node: '>=12.12.0'}
+    hasBin: true
+    peerDependencies:
+      typescript: '*'
+    dependencies:
+      cross-spawn: 7.0.3
+      node-cleanup: 2.1.2
+      ps-tree: 1.2.0
+      string-argv: 0.3.2
+      typescript: 5.6.2
+    dev: true
+
   /tsconfck@3.1.3(typescript@5.5.4):
     resolution: {integrity: sha512-ulNZP1SVpRDesxeMLON/LtWM8HIgAJEIVpVVhBM6gsmvQ8+Rh+ZG7FWGvHh7Ah3pRABwVJWklWCr/BTZSv0xnQ==}
     engines: {node: ^18 || >=20}
@@ -12509,6 +12568,12 @@ packages:
     resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  /typescript@5.6.2:
+    resolution: {integrity: sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: true
 
   /ufo@1.5.4:
     resolution: {integrity: sha512-UsUk3byDzKd04EyoZ7U4DOlxQaD14JUKQl6/P7wiX4FNvUfm3XL246n9W5AmqwW5RSFJ27NAuM0iLscAOYUiGQ==}

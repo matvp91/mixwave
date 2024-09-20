@@ -5,11 +5,17 @@ import { Button } from "@/components/ui/button";
 import "./worker";
 
 const uri = monaco.Uri.parse("mixwave/body.json");
-const model = monaco.editor.createModel(
-  ["{", '  "assetId": "f2617a1f-57be-4d41-836f-350e4ac7a765"', "}"].join("\n"),
-  "json",
-  uri,
-);
+
+let model = monaco.editor.getModel(uri);
+if (!model) {
+  // Only assign the model when it's not yet present, or this can recreate the model
+  // with each hot reload.
+  model = monaco.editor.createModel(
+    ["{", '  "assetId": ""', "}"].join("\n"),
+    "json",
+    uri,
+  );
+}
 
 type EditorProps = {
   schema?: object;

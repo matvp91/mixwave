@@ -26,10 +26,31 @@ export default defineConfig({
       {
         text: "Features",
         items: [
-          { text: "Transcode", link: "features/transcode" },
-          { text: "Package", link: "features/package" },
-          { text: "Stitcher", link: "features/stitcher" },
-          { text: "Dashboard", link: "features/dashboard" },
+          {
+            text: '<div class="navitem-img"><img src="/mixwave/transcode.svg" /> Transcode</div>',
+            link: "features/transcode",
+          },
+          {
+            text: '<div class="navitem-img"><img src="/mixwave/package.svg" /> Package</div>',
+            link: "features/package",
+          },
+          {
+            text: '<div class="navitem-img"><img src="/mixwave/stitcher.svg" /> Stitcher</div>',
+            link: "features/stitcher",
+          },
+        ],
+      },
+      {
+        text: "Frontend",
+        items: [
+          {
+            text: '<div class="navitem-img"><img src="/mixwave/player.svg" /> Player</div>',
+            link: "frontend/player",
+          },
+          {
+            text: '<div class="navitem-img"><img src="/mixwave/dashboard.svg" /> Dashboard</div>',
+            link: "frontend/dashboard",
+          },
         ],
       },
       {

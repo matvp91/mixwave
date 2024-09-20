@@ -1,10 +1,10 @@
 import { Queue, FlowProducer, Job } from "bullmq";
-import { connection } from "./connection.js";
+import { connection } from "../connection.js";
 import { randomUUID } from "crypto";
-import type { Input, Stream } from "./schemas.js";
-import type { TranscodeData } from "./consumer/workers/transcode.js";
-import type { PackageData } from "./consumer/workers/package.js";
-import type { FfmpegData } from "./consumer/workers/ffmpeg.js";
+import type { Input, Stream } from "@mixwave/shared/artisan";
+import type { TranscodeData } from "../consumer/workers/transcode.js";
+import type { PackageData } from "../consumer/workers/package.js";
+import type { FfmpegData } from "../consumer/workers/ffmpeg.js";
 import type { FlowChildJob } from "bullmq";
 
 export const flowProducer = new FlowProducer({

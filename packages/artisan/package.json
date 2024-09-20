@@ -2,22 +2,17 @@
   "name": "@mixwave/artisan",
   "type": "module",
   "exports": {
-    "./producer": "./dist/producer.js",
-    "./schemas": "./dist/schemas.js"
+    "./producer": "./dist/producer/index.js"
   },
   "typesVersions": {
     "*": {
       "producer": [
-        "src/producer.ts"
-      ],
-      "schemas": [
-        "src/schemas.ts"
+        "src/producer/index.ts"
       ]
     }
   },
   "scripts": {
     "build": "tsc",
-    "start": "node ./dist/consumer/index.js",
     "dev": "tsc-watch --noClear --onSuccess \"node ./dist/consumer/index.js\""
   },
   "devDependencies": {
@@ -43,6 +38,7 @@
     "s3-sync-client": "^4.3.1",
     "shaka-packager": "^3.2.0",
     "tmp": "^0.2.3",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "@mixwave/shared": "workspace:*"
   }
 }

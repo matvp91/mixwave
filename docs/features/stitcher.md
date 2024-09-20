@@ -1,7 +1,7 @@
 ---
 next:
-  text: "Features: Dashboard"
-  link: "/features/dashboard"
+  text: "Frontend: Player"
+  link: "/frontend/player"
 ---
 
 # Stitcher
@@ -68,6 +68,8 @@ Let's say you transcoded and packaged a new asset with the id `abbda878-8e08-40f
 }
 ```
 
+<video class="video-frame" src="/dashboard-player-bumper.mp4" controls></video>
+
 ### VMAP
 
 Instruct stitcher to add interstitials based on VMAP definitions. Each VMAP contains one or more `AdBreak` elements with a position of where the interstitial should be.
@@ -89,3 +91,21 @@ Instruct stitcher to add interstitials based on VMAP definitions. Each VMAP cont
 ::: warning
 Ad impressions are not tracked yet, we'd eventually like to provide a client wrapper that tracks ads in a certified manner.
 :::
+
+<video class="video-frame" src="/dashboard-player-vmap.mp4" controls></video>
+
+## Example
+
+In the [package](/features/package#example) and [transcode](/features/transcode#example) example we created 2 HLS master playlists, we can create a new master playlist on the fly which mimics the content asset id (originally from content.mp4), and add a bumper interstitial at time 0.
+
+```
+input   = - assetId: 67b070fd-5db6-4022-a568-652abdbfac9c
+          - interstitials: [
+              {
+                timeOffset: 0,
+                assetId: 13b1d432-ec8e-4516-9904-df1aa90db803
+              }
+            ]
+
+output  = http://my.stitcher/session/7b2a354a-69e3-4c16-accb-aa521c8b9d5b/master.m3u8
+```

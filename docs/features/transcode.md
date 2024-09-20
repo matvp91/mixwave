@@ -6,6 +6,22 @@ next:
 
 # Transcode
 
+Video transcoding is the process of converting video from one format to another. This involves changing the file's encoding to make it compatible with different devices, reduce its size, or adjust its quality. Why is it important, you may ask?
+
+- Different devices and internet connections handle video data differently. High-quality video can consume a lot of bandwidth, which might not be available to all users, especially those with slower internet speeds. By transcoding videos into lower-resolution formats, the video becomes more accessible without consuming too much bandwidth.
+
+- Platforms like YouTube and Netflix use adaptive streaming to deliver videos. They transcode videos into multiple resolutions (e.g., 1080p, 720p, 480p). When you watch a video, the platform automatically adjusts the video quality based on your internet speed. If your connection is fast, you get high-quality video; if it's slow, you get a lower-quality version to prevent buffering.
+
+This dynamic delivery ensures smooth playback across various network conditions and devices, making the video experience better for everyone.
+
+## Dashboard
+
+You can use the dashboard to either view pending, processing, finished or failed transcode jobs, or you can use it to interact with the API. In the video below, we'll demonstrate how to transcode an mp4 file to a variety of streams.
+
+<video class="video-frame" src="/dashboard-transcode.mp4" controls></video>
+
+## API
+
 The transcode endpoint will push a job to the queue. The trancode job will create a separate ffmpeg job for each output stream defined in the body.
 
 ::: code-group
@@ -93,4 +109,27 @@ At this point, our asset (a collection of streams) is ready for packaging, and c
 Know that the result of a transcode job is merely an intermediary format. Typically, you'd transcode your input once and package as many times as you like for specific devices or use cases.
 :::
 
-Mixwave' transcode API works slightly different than what others do. We emphasize the idea to define what you have (input) and what you need (streams), and the system shall figure out how to craft the streams. There's no need to directly link a stream with a given output.
+Mixwave' transcode API works slightly different than what others do. We emphasize the idea to define what you have (input) and what you need (streams), and the system shall figure out how to craft the streams. There's no need to directly link an input with a given output.
+
+## Example
+
+In the example below, we'll transcode 2 mp4 files (content.mp4 and bumper.mp4) to 2 video tracks and an English audio track. The result are 2 asset id's, one for each.
+
+```
+input   = content.mp4
+
+streams = - video 1080p
+          - video 720p
+          - audio eng
+
+output  = 67b070fd-5db6-4022-a568-652abdbfac9c
+```
+
+```
+input   = bumper.mp4
+
+streams = - video 720p
+          - audio eng
+
+output  = 13b1d432-ec8e-4516-9904-df1aa90db803
+```

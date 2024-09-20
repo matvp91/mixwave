@@ -95,7 +95,7 @@ The job will produce several streams and upload them to `S3`:
 - A video track (h264, avc) of 480 in height, with a bitrate of 1,500 kbps.
 - A audio track (aac) with a language of "English" and a bitrate of 128 kbps.
 
-When we look at the [dashboard](/features/dashboard), when our job is finished, it'll respond with the following output data:
+When we look at the [dashboard](/frontend/dashboard), when our job is finished, it'll respond with the following output data:
 
 ```json
 {

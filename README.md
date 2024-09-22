@@ -40,11 +40,13 @@ Very briefly, the video demonstrates the following:
 - Creates a playback session that uses a previously transcoded and packaged bumper mp4 source, and adds it at an interstitial at position `0`.
 - Uses a Google [IMA sample](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags) to serve two ads, one preroll and a midroll at position `15`.
 
-## ❔ Reasoning
+## Why?
 
 Video is quite fragmented, particularly in the way video content is delivered and protected across different platforms and devices. Think [MPEG-DASH vs. HLS](https://www.gumlet.com/learn/hls-vs-dash/), CTR vs. CBCS, [SSAI vs. CSAI](https://clearcode.cc/blog/client-side-server-side-ad-insertion/). Besides, there's also a lot of cool things happening behind closed doors, like [SGAI](https://docs.aws.amazon.com/mediatailor/latest/ug/server-guided.html). We aim to avoid fragmentation by picking the right tools for the job. If you don't have to do the same thing multiple times, aiming for perfection is a lot easier. We believe `HLS CMAF` is the right way forward, and when playlist manipulation is required, we tend to lean towards `HLS Interstitials`. There's obviously going to be roadblocks ahead, think of devices not supporting multiple video elements or partially serving encrypted fragments opposed to plain ads. We'll tackle these once we get there.
 
 There's a lot of video tooling out there, think of ffmpeg, bento4, shaka-packager, but not in a unified manner. Mixwave implements the excellent work done by others, and tries to make it approachable in the form of a simple API with a strong focus on scalability.
+
+Video from source to consumer is a hard task to get right, [howvideo.works](https://howvideo.works/) is a great resource to get you started. Beware, you might get hooked on how interesting video is! ;-)
 
 ## Getting Started
 

@@ -1,7 +1,8 @@
 <div align="center">
   <img src="./public/logo-full.png" width="420" />
 
-  <h3>A friendly API to simplify the complexities of video online</h3>
+  <h3>Mixwave</h3>
+  <h4>From video processing to playback in a matter of minutes</h4>
   
   <p align="center">
     <img src="https://img.shields.io/github/license/matvp91/mixwave">
@@ -18,10 +19,7 @@
   [<img src="./public/button-buy-me-a-coffee.png" width="150" alt="Buy me a coffee button"/>](https://www.buymeacoffee.com/matvp91)
 </div>
 
-
-Mixwave is a self hostable platform that aims to simplify the complexities of video delivery. Transcode and package your media for online streaming with simple API calls and sane defaults. Craft dynamic HLS playlists on the fly.
-
-We intentionally keep the scope limited. We choose to focus on a single playback protocol `HLS CMAF` rather than trying to support a wide range of options such as MPEG-DASH. End to end video is complex enough already. We'd rather pick a well defined stack and aim for perfection.
+Mixwave is a self hostable platform that aims to simplify the complexities of video delivery. Transcode and package your media for online streaming with simple API calls and sane defaults, or craft dynamic HLS playlists on the fly with bumpers, ads and filters.
 
 - Transcode your video file into separate quality tracks (eg; 1080p, 720p, 480p).
 - Write `HLS CMAF` playlists directly to S3, ready to be played by [HLS.js](https://github.com/video-dev/hls.js).
@@ -30,7 +28,17 @@ We intentionally keep the scope limited. We choose to focus on a single playback
 - Parses a `vmap`, transcodes and packages the ad media files and inserts interstitials, on the fly.
 - Ships with a `HLS.js` wrapper that simplifies working with interstitials and a React UI.
 
-https://github.com/user-attachments/assets/019427cb-ef95-4a5e-980c-dd0dcaac176e
+## Demo
+
+https://github.com/user-attachments/assets/035cd10e-53b4-4b0f-99cd-79c76c26e0b0
+
+This video contains recordings from the dashboard, a simple, unified, way to interact with the API, view transcode and package jobs with their statuses, or toy around with the player devtools.
+
+## ❔ Reasoning
+
+Video is quite fragmented, particularly in the way video content is delivered and protected across different platforms and devices. Think [MPEG-DASH vs. HLS](https://www.gumlet.com/learn/hls-vs-dash/), CTR vs. CBCS, [SSAI vs. CSAI](https://clearcode.cc/blog/client-side-server-side-ad-insertion/). Besides, there's also a lot of cool things happening behind closed doors, like [SGAI](https://docs.aws.amazon.com/mediatailor/latest/ug/server-guided.html). We aim to avoid fragmentation by picking the right tools for the job. If you don't have to do the same thing multiple times, aiming for perfection is a lot easier. We believe `HLS CMAF` is the right way forward, and when playlist manipulation is required, we tend to lean towards `HLS Interstitials`. There's obviously going to be roadblocks ahead, think of devices not supporting multiple video elements or partially serving encrypted fragments opposed to plain ads. We'll tackle these once we get there.
+
+There's a lot of video tooling out there, think of ffmpeg, bento4, shaka-packager, but not in a unified manner. Mixwave implements the excellent work done by others, and tries to make it approachable in the form of a simple API with a strong focus on scalability.
 
 ## Getting Started
 

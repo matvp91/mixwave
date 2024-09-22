@@ -28,8 +28,9 @@ We intentionally keep the scope limited. We choose to focus on a single playback
 - Scale `ffmpeg` jobs horizontally, at up to 80% cost reduction on [EC2 Spot Instances](https://aws.amazon.com/ec2/spot/).
 - Dynamically stitch HLS playlists together<sup>experimental</sup>, like a Netflix bumper, with [HLS interstitials](https://developer.apple.com/streaming/GettingStartedWithHLSInterstitials.pdf).
 - Parses a `vmap`, transcodes and packages the ad media files and inserts interstitials, on the fly.
+- Ships with a `HLS.js` wrapper that simplifies working with interstitials and a React UI.
 
-Mixwave has a basic video player built on top of HLS.js. Although know that HLS interstitials support is a [pending feature](https://github.com/video-dev/hls.js/issues/5730), we included a build for you to work with and a wrapper with basic state management.
+https://github.com/user-attachments/assets/019427cb-ef95-4a5e-980c-dd0dcaac176e
 
 ## Getting Started
 

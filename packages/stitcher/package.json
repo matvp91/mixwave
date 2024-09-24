@@ -2,7 +2,7 @@
   "name": "@mixwave/stitcher",
   "type": "module",
   "scripts": {
-    "build": "cp -r ./extern/vast-client ./dist/extern && tsc",
+    "build": "tsc && cp -r ./extern/vast-client ./dist/extern",
     "dev": "cp -r ./extern/vast-client ./dist/extern && tsc-watch --noClear --onSuccess \"node ./dist/src/index.js\"",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },

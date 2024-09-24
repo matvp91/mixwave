@@ -51,6 +51,10 @@ Video from source to consumer is a hard task to get right, [howvideo.works](http
 ## Getting Started
 
 ```shell
+# Clone repository locally.
+git clone git@github.com:matvp91/mixwave.git
+cd mixwave
+
 cp config.env.example config.env
 # Open config.env and change the variables.
 docker compose up -d

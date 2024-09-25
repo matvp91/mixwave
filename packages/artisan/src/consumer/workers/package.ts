@@ -18,6 +18,7 @@ export type PackageData = {
   params: {
     assetId: string;
     segmentSize: number;
+    name: string;
   };
   metadata: {
     tag?: string;
@@ -121,8 +122,8 @@ export default async function (job: Job<PackageData, PackageResult>) {
   // becomes available on CDN.
   // This way we ensure we have all the segments on S3 before we make the manifest available.
   await copyFile(
-    `package/${params.assetId}/hls/master_tmp.m3u8`,
-    `package/${params.assetId}/hls/master.m3u8`,
+    `package/${params.assetId}/${params.name}/master_tmp.m3u8`,
+    `package/${params.assetId}/${params.name}/master.m3u8`,
     "public-read",
   );
 

@@ -83,7 +83,7 @@ export const contract = c.router({
       200: jobDtoSchema,
     },
     query: z.object({
-      fromRoot: z.coerce.boolean().optional(),
+      fromRoot: z.string().transform(Boolean).optional(),
     }),
   },
   getJobLogs: {

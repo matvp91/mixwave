@@ -78,7 +78,7 @@ export default async function (job: Job<FfmpegData, FfmpegResult>) {
   }
 
   if (params.stream.type === "audio") {
-    name = `audio_${params.stream.language}_${params.stream.bitrate}.m4a`;
+    name = `audio_${params.stream.language}_${params.stream.bitrate}_${params.stream.codec}.m4a`;
     outputOptions.push(
       ...getAudioOutputOptions(params.stream, params.segmentSize),
     );

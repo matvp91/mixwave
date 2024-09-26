@@ -1,8 +1,8 @@
 import { JobTag } from "@/components/JobTag";
-import { ObjSelect } from "./ObjSelect";
+import { SelectObject } from "./SelectObject";
 import type { JobDto } from "@/tsr";
 import type { JobsFilterData } from "./types";
-import type { ObjSelectItem } from "./ObjSelect";
+import type { SelectObjectItem } from "./SelectObject";
 
 type JobsFilterProps = {
   allJobs: JobDto[];
@@ -11,7 +11,7 @@ type JobsFilterProps = {
 };
 
 export function JobsFilter({ allJobs, filter, onChange }: JobsFilterProps) {
-  const tags = getTags(allJobs).map<ObjSelectItem>((tag) => ({
+  const tags = getTags(allJobs).map<SelectObjectItem>((tag) => ({
     value: tag,
     label: <JobTag tag={tag} />,
   }));
@@ -21,7 +21,7 @@ export function JobsFilter({ allJobs, filter, onChange }: JobsFilterProps) {
     { value: "none", label: "No tags" },
   );
 
-  const names = getNames(allJobs).map<ObjSelectItem>((name) => ({
+  const names = getNames(allJobs).map<SelectObjectItem>((name) => ({
     value: name,
     label: name,
   }));
@@ -30,12 +30,12 @@ export function JobsFilter({ allJobs, filter, onChange }: JobsFilterProps) {
 
   return (
     <div className="flex gap-2">
-      <ObjSelect
+      <SelectObject
         items={names}
         value={filter.name}
         onChange={(name) => onChange({ name })}
       />
-      <ObjSelect
+      <SelectObject
         items={tags}
         value={filter.tag}
         onChange={(tag) => onChange({ tag })}

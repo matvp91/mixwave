@@ -6,18 +6,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export type ObjSelectItem = {
+export type SelectObjectItem = {
   label: React.ReactNode;
   value?: string;
 };
 
-type ObjSelectProps = {
-  items: ObjSelectItem[];
+type SelectObjectProps = {
+  items: SelectObjectItem[];
   value?: string;
   onChange(value?: string): void;
 };
 
-export function ObjSelect({ items, value, onChange }: ObjSelectProps) {
+export function SelectObject({ items, value, onChange }: SelectObjectProps) {
   return (
     <Select
       value={toString(value)}

@@ -7,8 +7,10 @@ import {
 } from "@/components/ui/table";
 import { StoragePathBreadcrumbs } from "./StoragePathBreadcrumbs";
 import { StorageRow } from "./StorageRow";
-import type { FolderDto } from "@/tsr";
+import { useState } from "react";
+import { StoragePreview } from "./StoragePreview";
 import type { UIEventHandler } from "react";
+import type { PreviewDto, FolderDto } from "@/tsr";
 
 type StorageExplorerProps = {
   path: string;
@@ -21,6 +23,8 @@ export function StorageExplorer({
   contents,
   onNext,
 }: StorageExplorerProps) {
+  const [preview, setPreview] = useState<PreviewDto | null>(null);
+
   const onScroll: UIEventHandler<HTMLDivElement> = (event) => {
     const target = event.target as HTMLDivElement;
     const totalHeight = target.scrollHeight - target.offsetHeight;
@@ -40,16 +44,23 @@ export function StorageExplorer({
             <TableRow>
               <TableHead className="w-[50px]"></TableHead>
               <TableHead>Name</TableHead>
-              <TableHead>Size</TableHead>
+              <TableHead className="w-[200px]">Size</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {contents.map((content) => {
-              return <StorageRow key={content.path} content={content} />;
+              return (
+                <StorageRow
+                  key={content.path}
+                  content={content}
+                  setPreview={setPreview}
+                />
+              );
             })}
           </TableBody>
         </Table>
       </div>
+      <StoragePreview preview={preview} onClose={() => setPreview(null)} />
     </div>
   );
 }

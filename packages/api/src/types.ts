@@ -42,3 +42,10 @@ export const folderDtoSchema = z.object({
 });
 
 export type FolderDto = z.infer<typeof folderDtoSchema>;
+
+export const previewDtoSchema = z.object({
+  path: z.string(),
+  data: z.string(),
+});
+
+export type PreviewDto = z.infer<typeof previewDtoSchema>;

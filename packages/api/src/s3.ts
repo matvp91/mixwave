@@ -1,6 +1,6 @@
-import { S3, ListObjectsCommand } from "@aws-sdk/client-s3";
+import { S3, ListObjectsCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { env } from "./env.js";
-import type { FolderDto } from "./types.js";
+import type { FolderDto, PreviewDto } from "./types.js";
 
 const client = new S3({
   endpoint: env.S3_ENDPOINT,
@@ -54,4 +54,22 @@ export async function getStorage(
   });
 
   return folder;
+}
+
+export async function getStoragePreview(path: string): Promise<PreviewDto> {
+  const response = await client.send(
+    new GetObjectCommand({
+      Bucket: env.S3_BUCKET,
+      Key: path,
+    }),
+  );
+
+  if (!response.Body) {
+    throw new Error("Missing body");
+  }
+
+  return {
+    path,
+    data: await response.Body.transformToString("utf-8"),
+  };
 }

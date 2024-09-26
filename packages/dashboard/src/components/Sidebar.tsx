@@ -1,11 +1,11 @@
 import logo from "../assets/logo.svg";
-import { cn } from "@/lib/utils";
-import { Link, useLocation } from "react-router-dom";
+import { SidebarTitle } from "./SidebarTitle";
+import { Link } from "react-router-dom";
 import Rows3 from "lucide-react/icons/rows-3";
 import Sailboat from "lucide-react/icons/sailboat";
 import Play from "lucide-react/icons/play";
 import Box from "lucide-react/icons/box";
-import type { ReactNode } from "react";
+import { SidebarNavLink } from "./SidebarNavLink";
 
 export function Sidebar() {
   return (
@@ -17,60 +17,29 @@ export function Sidebar() {
         </Link>
       </div>
       <div className="flex-1">
-        <Title className="mb-4 mt-2">Manage</Title>
+        <SidebarTitle className="mb-4 mt-2">Manage</SidebarTitle>
         <nav className="grid items-start px-4 text-sm font-medium mb-4">
-          <NavLink to="/jobs">
+          <SidebarNavLink to="/jobs">
             <Rows3 className="h-4 w-4" />
             Jobs
-          </NavLink>
-          <NavLink to="/storage">
+          </SidebarNavLink>
+          <SidebarNavLink to="/storage">
             <Box className="h-4 w-4" />
             Storage
-          </NavLink>
+          </SidebarNavLink>
         </nav>
-        <Title className="my-4">Tools</Title>
+        <SidebarTitle className="my-4">Tools</SidebarTitle>
         <nav className="grid items-start px-4 text-sm font-medium">
-          <NavLink to="/player">
+          <SidebarNavLink to="/player">
             <Play className="h-4 w-4" />
             Player
-          </NavLink>
-          <NavLink to="/api">
+          </SidebarNavLink>
+          <SidebarNavLink to="/api">
             <Sailboat className="h-4 w-4" />
             API
-          </NavLink>
+          </SidebarNavLink>
         </nav>
       </div>
-    </div>
-  );
-}
-
-function NavLink({ children, to }: { children: ReactNode; to: string }) {
-  const { pathname } = useLocation();
-
-  return (
-    <Link
-      to={to}
-      className={cn(
-        "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-
-        pathname.startsWith(to) && "bg-muted text-primary",
-      )}
-    >
-      {children}
-    </Link>
-  );
-}
-
-function Title({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={cn("text-xs px-3 ml-4 font-medium", className)}>
-      {children}
     </div>
   );
 }

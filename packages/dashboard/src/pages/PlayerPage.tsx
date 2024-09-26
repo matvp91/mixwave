@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Alert } from "@/components/ui/alert";
-import { Editor } from "@/components/editor/Editor";
-import { Player } from "@/components/player/Player";
+import { Editor } from "@/components/Editor";
+import { Player } from "@/components/Player";
 import { Loader } from "@/components/Loader";
 
 export function PlayerPage() {

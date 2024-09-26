@@ -25,7 +25,7 @@ export function JobPage() {
 
   return (
     <>
-      <div className="h-14 border-b flex px-4 items-center">
+      <div className="min-h-14 border-b flex px-4 items-center">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>

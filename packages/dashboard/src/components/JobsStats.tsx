@@ -1,10 +1,5 @@
-import { cn } from "@/lib/utils";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { JobStatsTile } from "./JobStatsTile";
 import type { JobDto } from "@/tsr";
 import type { JobsFilterData } from "./types";
 
@@ -45,28 +40,28 @@ export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
   return (
     <TooltipProvider delayDuration={0}>
       <div className="flex">
-        <Tile
+        <JobStatsTile
           value={completed}
           className="bg-emerald-400"
           onClick={() => filterJobState("completed")}
           active={filter.state === "completed"}
           tooltip="Completed"
         />
-        <Tile
+        <JobStatsTile
           value={failed}
           className="bg-red-400"
           onClick={() => filterJobState("failed")}
           active={filter.state === "failed"}
           tooltip="Failed"
         />
-        <Tile
+        <JobStatsTile
           value={running}
           className="bg-blue-400"
           onClick={() => filterJobState("running")}
           active={filter.state === "running"}
           tooltip="Running"
         />
-        <Tile
+        <JobStatsTile
           value={waiting}
           className="bg-violet-400"
           onClick={() => filterJobState("waiting")}
@@ -75,39 +70,5 @@ export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
         />
       </div>
     </TooltipProvider>
-  );
-}
-
-function Tile({
-  value,
-  className,
-  onClick,
-  active,
-  tooltip,
-}: {
-  value: number;
-  className: string;
-  onClick: () => void;
-  active: boolean;
-  tooltip: string;
-}) {
-  return (
-    <Tooltip>
-      <TooltipTrigger>
-        <li
-          onClick={onClick}
-          className={cn(
-            "flex flex-col items-center justify-center text-xs w-10 h-10 rounded-lg",
-            active && "bg-muted text-primary",
-          )}
-        >
-          {value}
-          <div className={cn("w-2 h-2 rounded-full", className)} />
-        </li>
-      </TooltipTrigger>
-      <TooltipContent>
-        <p>{tooltip}</p>
-      </TooltipContent>
-    </Tooltip>
   );
 }

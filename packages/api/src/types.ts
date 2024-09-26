@@ -22,3 +22,22 @@ export type JobDto = z.infer<typeof baseJobDtoSchema> & {
 export const jobDtoSchema: z.ZodType<JobDto> = baseJobDtoSchema.extend({
   children: z.lazy(() => jobDtoSchema.array()),
 });
+
+export const folderDtoSchema = z.object({
+  path: z.string(),
+  files: z.array(
+    z.object({
+      name: z.string(),
+      path: z.string(),
+      size: z.number(),
+    }),
+  ),
+  subFolders: z.array(
+    z.object({
+      name: z.string(),
+      path: z.string(),
+    }),
+  ),
+});
+
+export type FolderDto = z.infer<typeof folderDtoSchema>;

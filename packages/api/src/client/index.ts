@@ -1,3 +1,3 @@
 export * from "../contract";
 
-export type { JobDto } from "../types";
+export type { JobDto, FolderDto } from "../types";

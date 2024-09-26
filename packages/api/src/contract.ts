@@ -2,7 +2,7 @@ import { initContract } from "@ts-rest/core";
 import { streamSchema, inputSchema } from "@mixwave/shared/artisan";
 import * as z from "zod";
 import { extendZodWithOpenApi } from "@anatine/zod-openapi";
-import { jobDtoSchema } from "./types.js";
+import { jobDtoSchema, folderDtoSchema } from "./types.js";
 
 extendZodWithOpenApi(z);
 
@@ -84,6 +84,16 @@ export const contract = c.router({
     },
     query: z.object({
       fromRoot: z.string().transform(Boolean).optional(),
+    }),
+  },
+  getStorage: {
+    method: "GET",
+    path: "/storage",
+    responses: {
+      200: folderDtoSchema,
+    },
+    query: z.object({
+      path: z.string(),
     }),
   },
   getJobLogs: {

@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import Rows3 from "lucide-react/icons/rows-3";
 import Sailboat from "lucide-react/icons/sailboat";
 import Play from "lucide-react/icons/play";
+import Box from "lucide-react/icons/box";
 import type { ReactNode } from "react";
 
 export function Sidebar() {
@@ -21,6 +22,10 @@ export function Sidebar() {
           <NavLink to="/jobs">
             <Rows3 className="h-4 w-4" />
             Jobs
+          </NavLink>
+          <NavLink to="/storage">
+            <Box className="h-4 w-4" />
+            Storage
           </NavLink>
         </nav>
         <Title className="my-4">Tools</Title>

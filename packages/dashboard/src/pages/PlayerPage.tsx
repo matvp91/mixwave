@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Alert } from "@/components/ui/alert";
 import { Editor } from "@/components/editor/Editor";
 import { Player } from "@/components/player/Player";
+import { Loader } from "@/components/Loader";
 
 export function PlayerPage() {
   const [schema, setSchema] = useState<object>();
@@ -44,6 +45,10 @@ export function PlayerPage() {
       setError(data);
     }
   };
+
+  if (!schema) {
+    return <Loader className="min-h-44" />;
+  }
 
   return (
     <div className="min-h-full flex grow">

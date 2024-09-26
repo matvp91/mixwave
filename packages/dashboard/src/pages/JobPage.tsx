@@ -3,7 +3,7 @@ import { JobTree } from "@/components/JobTree";
 import { JobView } from "@/components/JobView";
 import { getShortId } from "@/lib/helpers";
 import { useJob } from "@/hooks/useJob";
-import { StretchLoader } from "@/components/StretchLoader";
+import { Loader } from "@/components/Loader";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,7 +18,7 @@ export function JobPage() {
   const result = useJob(id);
 
   if (!result) {
-    return <StretchLoader />;
+    return <Loader className="min-h-44" />;
   }
 
   const { job, rootJob } = result;

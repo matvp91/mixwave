@@ -4,7 +4,7 @@ import { JobsFilter } from "@/components/JobsFilter";
 import { useJobsFilter } from "@/hooks/useJobsFilter";
 import { JobsStats } from "@/components/JobsStats";
 import { filterJobs } from "@/lib/jobs-filter";
-import { StretchLoader } from "@/components/StretchLoader";
+import { Loader } from "@/components/Loader";
 
 export function JobsPage() {
   const [filter, setFilter] = useJobsFilter();
@@ -15,7 +15,7 @@ export function JobsPage() {
   });
 
   if (!data) {
-    return <StretchLoader />;
+    return <Loader className="min-h-44" />;
   }
 
   const filteredJobs = filterJobs(data.body, filter);

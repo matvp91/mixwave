@@ -11,6 +11,7 @@
     "@hookform/resolvers": "^3.9.0",
     "@mixwave/api": "workspace:*",
     "@mixwave/player": "workspace:*",
+    "@monaco-editor/react": "^4.6.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-collapsible": "^1.1.0",

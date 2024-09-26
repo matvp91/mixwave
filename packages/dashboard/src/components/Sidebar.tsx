@@ -16,20 +16,22 @@ export function Sidebar() {
         </Link>
       </div>
       <div className="flex-1">
+        <Title className="mb-4 mt-2">Manage</Title>
         <nav className="grid items-start px-4 text-sm font-medium mb-4">
           <NavLink to="/jobs">
             <Rows3 className="h-4 w-4" />
             Jobs
           </NavLink>
         </nav>
+        <Title className="my-4">Tools</Title>
         <nav className="grid items-start px-4 text-sm font-medium">
-          <NavLink to="/api">
-            <Sailboat className="h-4 w-4" />
-            API
-          </NavLink>
           <NavLink to="/player">
             <Play className="h-4 w-4" />
             Player
+          </NavLink>
+          <NavLink to="/api">
+            <Sailboat className="h-4 w-4" />
+            API
           </NavLink>
         </nav>
       </div>
@@ -54,14 +56,16 @@ function NavLink({ children, to }: { children: ReactNode; to: string }) {
   );
 }
 
-/*
- <Link
-            to="/jobs"
-            className={cn(
-              "text-muted-foreground",
-              pathname.startsWith("/jobs") && "text-black",
-            )}
-          >
-            Jobs
-          </Link>
-          */
+function Title({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={cn("text-xs px-3 ml-4 font-medium", className)}>
+      {children}
+    </div>
+  );
+}

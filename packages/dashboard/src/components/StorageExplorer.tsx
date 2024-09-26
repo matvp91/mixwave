@@ -7,7 +7,15 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Fragment, UIEventHandler, useEffect, useRef } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Fragment, UIEventHandler, useRef } from "react";
 import Folder from "lucide-react/icons/folder";
 import type { FolderDto } from "@/tsr";
 
@@ -28,64 +36,40 @@ export function StorageExplorer({
     if (!ref.current) {
       return;
     }
-    const bottom =
-      ref.current.scrollHeight - ref.current.scrollTop ===
-      ref.current.clientHeight;
-    if (bottom) {
+
+    const totalHeight = ref.current.scrollHeight - ref.current.offsetHeight;
+
+    if (totalHeight - ref.current.scrollTop < 10) {
       onNext();
     }
   };
-
-  useEffect(() => {
-    if (!ref.current) {
-      return;
-    }
-    const isOverflown =
-      ref.current.scrollHeight > ref.current.clientHeight ||
-      ref.current.scrollWidth > ref.current.clientWidth;
-    if (!isOverflown) {
-      onNext();
-    }
-  }, [contents.length]);
 
   return (
     <div className="flex flex-col grow">
       <div className="p-4 h-14 border-b">
         <PathBreadcrumbs path={path} />
       </div>
-      <div
-        className="flex grow basis-0 overflow-auto p-4"
-        onScroll={onScroll}
-        ref={ref}
-      >
-        <ul>
-          {contents.map((content) => {
-            const chunks = content.path.split("/");
-
-            if (content.type === "folder") {
-              const name = chunks[chunks.length - 2];
-              return (
-                <li key={content.path}>
-                  <Link
-                    to={`/storage?path=${content.path}`}
-                    className="flex gap-2 text-sm items-center"
-                  >
-                    <Folder className="w-4 h-4" /> {name}
-                  </Link>
-                </li>
-              );
-            }
-
-            if (content.type === "file") {
-              const name = chunks[chunks.length - 1];
-              return (
-                <li key={content.path}>
-                  <File content={content} name={name} />
-                </li>
-              );
-            }
-          })}
-        </ul>
+      <div className="grow relative">
+        <div
+          className="absolute inset-0 overflow-auto"
+          onScroll={onScroll}
+          ref={ref}
+        >
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[50px]"></TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Size</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {contents.map((content) => {
+                return <Row key={content.path} content={content} />;
+              })}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );
@@ -132,12 +116,38 @@ function PathBreadcrumbs({ path }: { path: string }) {
   );
 }
 
-function File({
-  content,
-  name,
-}: {
-  content: Extract<FolderDto["contents"][0], { type: "file" }>;
-  name: string;
-}) {
-  return <div className="text-sm">{name}</div>;
+function Row({ content }: { content: FolderDto["contents"][0] }) {
+  const chunks = content.path.split("/");
+
+  if (content.type === "folder") {
+    const name = chunks[chunks.length - 2];
+    return (
+      <TableRow>
+        <TableCell>
+          <Folder className="w-4 h-4" />
+        </TableCell>
+        <TableCell>
+          <Link
+            to={`/storage?path=${content.path}`}
+            className="flex gap-2 text-sm items-center hover:underline w-full"
+          >
+            {name}
+          </Link>
+        </TableCell>
+        <TableCell></TableCell>
+      </TableRow>
+    );
+  }
+
+  if (content.type === "file") {
+    const name = chunks[chunks.length - 1];
+    return (
+      <TableRow>
+        <TableCell></TableCell>
+        <TableCell>{name}</TableCell>
+        <TableCell>{content.size} bytes</TableCell>
+      </TableRow>
+    );
+  }
+  return null;
 }

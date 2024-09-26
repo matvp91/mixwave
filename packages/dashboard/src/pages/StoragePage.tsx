@@ -13,7 +13,7 @@ export function StoragePage() {
       query: {
         path,
         skip: pageParam.skip,
-        take: 100,
+        take: 30,
       },
     }),
     initialPageParam: { skip: "" },

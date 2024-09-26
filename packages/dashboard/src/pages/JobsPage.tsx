@@ -23,7 +23,7 @@ export function JobsPage() {
   return (
     <>
       <div className="h-14 border-b flex px-4">
-        <div className="container flex gap-2 h-14 items-center">
+        <div className="flex gap-2 h-14 items-center w-full">
           <JobsStats jobs={data.body} filter={filter} onChange={setFilter} />
           <div className="ml-auto">
             <JobsFilter
@@ -35,7 +35,7 @@ export function JobsPage() {
         </div>
       </div>
       <div className="p-4 grow basis-0 overflow-auto">
-        <div className="container">
+        <div className="max-w-2xl w-full mx-auto">
           {filteredJobs.length ? (
             <JobsList jobs={filteredJobs} />
           ) : (

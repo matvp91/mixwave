@@ -68,16 +68,14 @@ export function PlayerPage() {
         {masterUrl ? (
           <>
             <Player url={masterUrl} />
-            <div className="mt-4">
-              <Label>Playlist URL</Label>
-              <Input
-                value={masterUrl}
-                onClick={(event) => {
-                  (event.target as HTMLInputElement).select();
-                }}
-                onChange={() => {}}
-              />
-            </div>
+            <Input
+              className="mt-2"
+              value={masterUrl}
+              onClick={(event) => {
+                (event.target as HTMLInputElement).select();
+              }}
+              onChange={() => {}}
+            />
           </>
         ) : null}
         {error ? (

@@ -7,7 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Fragment, UIEventHandler, useRef } from "react";
+import { Fragment, UIEventHandler, useEffect, useRef } from "react";
 import Folder from "lucide-react/icons/folder";
 import type { FolderDto } from "@/tsr";
 
@@ -35,6 +35,18 @@ export function StorageExplorer({
       onNext();
     }
   };
+
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+    const isOverflown =
+      ref.current.scrollHeight > ref.current.clientHeight ||
+      ref.current.scrollWidth > ref.current.clientWidth;
+    if (!isOverflown) {
+      onNext();
+    }
+  }, [contents.length]);
 
   return (
     <div className="flex flex-col grow">

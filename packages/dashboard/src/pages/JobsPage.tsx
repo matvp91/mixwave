@@ -34,7 +34,7 @@ export function JobsPage() {
           </div>
         </div>
       </div>
-      <div className="p-4">
+      <div className="p-4 grow basis-0 overflow-auto">
         <div className="container">
           {filteredJobs.length ? (
             <JobsList jobs={filteredJobs} />

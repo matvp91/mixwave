@@ -25,18 +25,18 @@ export const jobDtoSchema: z.ZodType<JobDto> = baseJobDtoSchema.extend({
 
 export const folderDtoSchema = z.object({
   path: z.string(),
-  files: z.array(
-    z.object({
-      name: z.string(),
-      path: z.string(),
-      size: z.number(),
-    }),
-  ),
-  subFolders: z.array(
-    z.object({
-      name: z.string(),
-      path: z.string(),
-    }),
+  skip: z.string().optional(),
+  contents: z.array(
+    z.discriminatedUnion("type", [
+      z.object({
+        type: z.literal("file"),
+        path: z.string(),
+      }),
+      z.object({
+        type: z.literal("folder"),
+        path: z.string(),
+      }),
+    ]),
   ),
 });
 

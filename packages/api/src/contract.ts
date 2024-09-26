@@ -44,6 +44,10 @@ export const postPackageBodySchema = z.object({
   tag: z.string().optional().openapi({
     description: "An arbitrary tag, used to group jobs.",
   }),
+  name: z.string().optional().openapi({
+    default: "hls",
+    description: "The name of the package, will be used in storage.",
+  }),
 });
 
 export const contract = c.router({
@@ -83,7 +87,7 @@ export const contract = c.router({
       200: jobDtoSchema,
     },
     query: z.object({
-      fromRoot: z.string().transform(Boolean).optional(),
+      fromRoot: z.coerce.boolean().optional(),
     }),
   },
   getStorage: {
@@ -94,6 +98,8 @@ export const contract = c.router({
     },
     query: z.object({
       path: z.string(),
+      skip: z.string().optional(),
+      take: z.coerce.number().optional(),
     }),
   },
   getJobLogs: {

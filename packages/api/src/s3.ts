@@ -1,6 +1,5 @@
 import { S3, ListObjectsCommand } from "@aws-sdk/client-s3";
 import { env } from "./env.js";
-import { basename } from "path";
 import type { FolderDto } from "./types.js";
 
 const client = new S3({
@@ -12,51 +11,46 @@ const client = new S3({
   },
 });
 
-export async function getStorage(path: string): Promise<FolderDto> {
+export async function getStorage(
+  path: string,
+  take: number = 10,
+  skip?: string,
+): Promise<FolderDto> {
   const response = await client.send(
     new ListObjectsCommand({
       Bucket: env.S3_BUCKET,
       Delimiter: "/",
       Prefix: path,
+      MaxKeys: take,
+      Marker: skip,
     }),
   );
 
   const folder: FolderDto = {
     path,
-    files: [],
-    subFolders: [],
+    contents: [],
+    skip: response.IsTruncated ? response.NextMarker : undefined,
   };
 
-  if (response.CommonPrefixes) {
-    for (const commonPrefix of response.CommonPrefixes) {
-      if (!commonPrefix.Prefix) {
-        continue;
-      }
-
-      let name = commonPrefix.Prefix.substring(path.length);
-      if (name.endsWith("/")) {
-        name = name.substring(0, name.length - 1);
-      }
-
-      folder.subFolders.push({
-        name,
-        path: commonPrefix.Prefix,
-      });
+  response.CommonPrefixes?.forEach((prefix) => {
+    if (!prefix.Prefix) {
+      return;
     }
-  }
+    folder.contents.push({
+      type: "folder",
+      path: prefix.Prefix,
+    });
+  });
 
-  if (response.Contents) {
-    for (const content of response.Contents) {
-      if (!content.Key) {
-        continue;
-      }
-      folder.files.push({
-        name: basename(content.Key),
-        path: content.Key,
-        size: content.Size ?? 0,
-      });
+  response.Contents?.forEach((content) => {
+    if (!content.Key) {
+      return;
     }
-  }
+    folder.contents.push({
+      type: "file",
+      path: content.Key,
+    });
+  });
 
   return folder;
 }

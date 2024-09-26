@@ -110,7 +110,7 @@ export default async function (job: Job<PackageData, PackageResult>) {
 
   await once(packagerProcess, "close");
 
-  await uploadFolder(outDir.name, `package/${params.assetId}/hls`, {
+  await uploadFolder(outDir.name, `package/${params.assetId}/${params.name}`, {
     del: true,
     commandInput: (input) => ({
       ContentType: lookup(input.Key) || "binary/octet-stream",

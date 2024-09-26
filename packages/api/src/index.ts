@@ -52,7 +52,7 @@ async function buildServer() {
     getStorage: async ({ query }) => {
       return {
         status: 200,
-        body: await getStorage(query.path),
+        body: await getStorage(query.path, query.take, query.skip),
       };
     },
     getSpec: async () => {

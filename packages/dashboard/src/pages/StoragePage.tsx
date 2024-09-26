@@ -7,10 +7,18 @@ export function StoragePage() {
   const [searchParams] = useSearchParams();
   const path = searchParams.get("path") ?? "";
 
-  const { data } = tsr.getStorage.useQuery({
+  const { data, fetchNextPage } = tsr.getStorage.useInfiniteQuery({
     queryKey: ["storage", path],
-    queryData: {
-      query: { path },
+    queryData: ({ pageParam }) => ({
+      query: {
+        path,
+        skip: pageParam.skip,
+        take: 100,
+      },
+    }),
+    initialPageParam: { skip: "" },
+    getNextPageParam: (lastPage) => {
+      return lastPage.body.skip ? { skip: lastPage.body.skip } : undefined;
     },
   });
 
@@ -18,9 +26,15 @@ export function StoragePage() {
     return <Loader className="min-h-44" />;
   }
 
+  const contents = data.pages.flatMap((page) =>
+    page.status === 200 ? page.body.contents : [],
+  );
+
   return (
-    <div className="p-4">
-      <StorageExplorer folder={data.body} />
-    </div>
+    <StorageExplorer
+      path={data.pages[0].body.path}
+      contents={contents}
+      onNext={fetchNextPage}
+    />
   );
 }

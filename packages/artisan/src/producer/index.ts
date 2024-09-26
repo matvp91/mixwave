@@ -154,7 +154,7 @@ export async function addPackageJob({
       },
     } satisfies PackageData,
     {
-      jobId: `package_${assetId}`,
+      jobId: `package_${randomUUID()}`,
     },
   );
 }

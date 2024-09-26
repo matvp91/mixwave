@@ -7,39 +7,87 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Fragment } from "react";
+import { Fragment, UIEventHandler, useEffect, useRef } from "react";
 import Folder from "lucide-react/icons/folder";
 import type { FolderDto } from "@/tsr";
 
 type StorageExplorerProps = {
-  folder: FolderDto;
+  path: string;
+  contents: FolderDto["contents"];
+  onNext(): void;
 };
 
-export function StorageExplorer({ folder }: StorageExplorerProps) {
+export function StorageExplorer({
+  path,
+  contents,
+  onNext,
+}: StorageExplorerProps) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const onScroll: UIEventHandler<HTMLDivElement> = () => {
+    if (!ref.current) {
+      return;
+    }
+    const bottom =
+      ref.current.scrollHeight - ref.current.scrollTop ===
+      ref.current.clientHeight;
+    if (bottom) {
+      onNext();
+    }
+  };
+
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+    const isOverflown =
+      ref.current.scrollHeight > ref.current.clientHeight ||
+      ref.current.scrollWidth > ref.current.clientWidth;
+
+    if (!isOverflown) {
+      onNext();
+    }
+  }, [contents]);
+
   return (
-    <div>
-      <div className="mb-4">
-        <PathBreadcrumbs path={folder.path} />
+    <div className="flex flex-col grow">
+      <div className="p-4 h-14 border-b">
+        <PathBreadcrumbs path={path} />
       </div>
-      <ul>
-        {folder.subFolders.map((subFolder) => {
-          return (
-            <li key={subFolder.path}>
-              <Link
-                to={`/storage?path=${subFolder.path}`}
-                className="flex gap-2"
-              >
-                <Folder /> {subFolder.name}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-      <ul>
-        {folder.files.map((file) => {
-          return <li key={file.path}>{file.name}</li>;
-        })}
-      </ul>
+      <div
+        className="flex grow basis-0 overflow-auto p-4"
+        onScroll={onScroll}
+        ref={ref}
+      >
+        <ul>
+          {contents.map((content) => {
+            const chunks = content.path.split("/");
+
+            if (content.type === "folder") {
+              const name = chunks[chunks.length - 2];
+              return (
+                <li key={content.path}>
+                  <Link
+                    to={`/storage?path=${content.path}`}
+                    className="flex gap-2 text-sm items-center"
+                  >
+                    <Folder className="w-4 h-4" /> {name}
+                  </Link>
+                </li>
+              );
+            }
+
+            if (content.type === "file") {
+              const name = chunks[chunks.length - 1];
+              return (
+                <li key={content.path}>
+                  <div className="text-sm">{name}</div>
+                </li>
+              );
+            }
+          })}
+        </ul>
+      </div>
     </div>
   );
 }
@@ -59,7 +107,6 @@ function PathBreadcrumbs({ path }: { path: string }) {
   });
 
   const lastChunk = chunks.pop();
-  console.log(chunks);
 
   return (
     <Breadcrumb>
@@ -76,9 +123,11 @@ function PathBreadcrumbs({ path }: { path: string }) {
             </Fragment>
           );
         })}
-        <BreadcrumbItem>
-          <BreadcrumbPage>{lastChunk?.name}</BreadcrumbPage>
-        </BreadcrumbItem>
+        {lastChunk ? (
+          <BreadcrumbItem>
+            <BreadcrumbPage>{lastChunk.name}</BreadcrumbPage>
+          </BreadcrumbItem>
+        ) : null}
       </BreadcrumbList>
     </Breadcrumb>
   );

@@ -40,8 +40,8 @@ export function JobPage() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <div className="flex grow">
-        <div className="px-4 py-2 border-r min-w-[300px]">
+      <div className="flex grow basis-0 overflow-hidden">
+        <div className="px-4 py-2 border-r min-w-[300px] overflow-auto grow">
           <JobTree job={rootJob} activeId={id!} depth={0} />
         </div>
         <div className="overflow-auto p-4 grow">

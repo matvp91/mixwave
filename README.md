@@ -65,3 +65,7 @@ There's more info in the [Getting Started](https://matvp91.github.io/mixwave/get
 ## 🤝 Contribute
 
 New contributors are welcome! See `CONTRIBUTING.md` for contributing to the project.
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=matvp91/mixwave&type=Date)](https://star-history.com/#matvp91/mixwave&Date)

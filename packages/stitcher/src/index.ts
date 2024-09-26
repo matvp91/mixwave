@@ -22,7 +22,8 @@ async function buildServer() {
     postSession: async ({ request, body }) => {
       const session = await createSession(body);
       const baseUrl =
-        env.STITCHER_BASE_URL ?? `${request.protocol}://${request.hostname}`;
+        env.PUBLIC_STITCHER_ENDPOINT ??
+        `${request.protocol}://${request.hostname}`;
 
       return {
         status: 200,
@@ -44,7 +45,8 @@ async function buildServer() {
       const session = await createSession(body);
 
       const baseUrl =
-        env.STITCHER_BASE_URL ?? `${request.protocol}://${request.hostname}`;
+        env.PUBLIC_STITCHER_ENDPOINT ??
+        `${request.protocol}://${request.hostname}`;
 
       return reply.redirect(
         `${baseUrl}/session/${session.id}/master.m3u8`,

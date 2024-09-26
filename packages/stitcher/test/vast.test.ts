@@ -49,6 +49,7 @@ describe("vmap", () => {
         {
           "assetId": "212880b4-bc28-5194-a9a8-81203c6203f4",
           "timeOffset": 0,
+          "type": "ad",
         },
       ]
     `);
@@ -105,9 +106,16 @@ describe("vmap", () => {
             "type": "audio",
           },
         ],
-        "package": true,
+        "packageAfter": true,
         "segmentSize": 4,
         "streams": [
+          {
+            "bitrate": 4000000,
+            "codec": "h264",
+            "framerate": 24,
+            "height": 720,
+            "type": "video",
+          },
           {
             "bitrate": 1500000,
             "codec": "h264",

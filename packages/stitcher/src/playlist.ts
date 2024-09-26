@@ -37,7 +37,7 @@ async function fetchPlaylist<T>(url: string) {
 }
 
 export async function formatMasterPlaylist(session: Session) {
-  const url = `${env.S3_PUBLIC_URL}/package/${session.assetId}/hls/master.m3u8`;
+  const url = `${env.PUBLIC_S3_ENDPOINT}/package/${session.assetId}/hls/master.m3u8`;
 
   const master = await fetchPlaylist<MasterPlaylist>(url);
 
@@ -83,7 +83,7 @@ export async function formatMasterPlaylist(session: Session) {
 }
 
 export async function formatMediaPlaylist(session: Session, path: string) {
-  const url = `${env.S3_PUBLIC_URL}/package/${session.assetId}/hls/${path}/playlist.m3u8`;
+  const url = `${env.PUBLIC_S3_ENDPOINT}/package/${session.assetId}/hls/${path}/playlist.m3u8`;
 
   const media = await fetchPlaylist<MediaPlaylist>(url);
 
@@ -119,7 +119,7 @@ export async function formatAssetList(session: Session, timeOffset: number) {
 
   const assets = await Promise.all(
     interstitials.map(async (interstitial) => {
-      const uri = `${env.S3_PUBLIC_URL}/package/${interstitial.assetId}/hls/master.m3u8`;
+      const uri = `${env.PUBLIC_S3_ENDPOINT}/package/${interstitial.assetId}/hls/master.m3u8`;
       return {
         URI: uri,
         DURATION: await getDuration(uri),

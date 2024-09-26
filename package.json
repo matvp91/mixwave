@@ -1,7 +1,7 @@
 {
   "name": "mixwave",
   "scripts": {
-    "dev": "turbo dev",
+    "dev": "turbo watch dev",
     "build": "turbo build",
     "start": "turbo start"
   },

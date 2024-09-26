@@ -13,8 +13,8 @@ const envSchema = z.object({
   S3_ACCESS_KEY: z.string(),
   S3_SECRET_KEY: z.string(),
   S3_BUCKET: z.string(),
-  REDIS_HOST: z.string().default("redis"),
-  REDIS_PORT: z.coerce.number().default(6379),
+  REDIS_HOST: z.string(),
+  REDIS_PORT: z.coerce.number(),
 });
 
 export const env = envSchema.parse(process.env);

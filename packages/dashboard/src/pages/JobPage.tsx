@@ -1,37 +1,53 @@
 import { Link, useParams } from "react-router-dom";
 import { JobTree } from "@/components/JobTree";
 import { JobView } from "@/components/JobView";
-import { Button } from "@/components/ui/button";
 import { getShortId } from "@/lib/helpers";
 import { useJob } from "@/hooks/useJob";
-import { StretchLoader } from "@/components/StretchLoader";
+import { Loader } from "@/components/Loader";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export function JobPage() {
   const { id } = useParams() as { id: string };
   const result = useJob(id);
 
   if (!result) {
-    return <StretchLoader />;
+    return <Loader className="min-h-44" />;
   }
 
   const { job, rootJob } = result;
 
   return (
-    <div className="min-h-full flex flex-col grow">
-      <div className="p-2 border-b border-border">
-        <Button asChild variant="ghost">
-          <Link to="/jobs">Jobs</Link>
-        </Button>
-        <span className="mr-3">/</span> {getShortId(job.id)}
+    <>
+      <div className="h-14 border-b flex px-4 items-center">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/jobs">Jobs</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{getShortId(id)}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
-      <div className="flex grow">
-        <div className="p-2 border-r border-border min-w-[300px]">
+      <div className="flex grow basis-0 overflow-hidden">
+        <div className="px-4 py-2 border-r min-w-[300px] overflow-auto grow">
           <JobTree job={rootJob} activeId={id!} depth={0} />
         </div>
         <div className="overflow-auto p-4 grow">
           <JobView job={job} />
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -3,7 +3,7 @@ import type * as hlsParser from "../extern/hls-parser/index.js";
 
 export async function isAssetAvailable(assetId: string) {
   const response = await fetch(
-    `${env.S3_PUBLIC_URL}/package/${assetId}/hls/master.m3u8`,
+    `${env.PUBLIC_S3_ENDPOINT}/package/${assetId}/hls/master.m3u8`,
     {
       method: "HEAD",
     },

@@ -8,12 +8,12 @@ if (configPath) {
 }
 
 const envSchema = z.object({
-  STITCHER_BASE_URL: z.string().optional(),
   PORT: z.coerce.number().default(52002),
   HOST: z.string().default("0.0.0.0"),
-  REDIS_HOST: z.string().default("redis"),
-  REDIS_PORT: z.coerce.number().default(6379),
-  S3_PUBLIC_URL: z.string(),
+  REDIS_HOST: z.string(),
+  REDIS_PORT: z.coerce.number(),
+  PUBLIC_S3_ENDPOINT: z.string(),
+  PUBLIC_STITCHER_ENDPOINT: z.string(),
 });
 
 export const env = envSchema.parse(process.env);

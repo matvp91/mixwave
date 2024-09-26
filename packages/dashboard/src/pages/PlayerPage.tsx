@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Alert } from "@/components/ui/alert";
 import { Editor } from "@/components/editor/Editor";
 import { Player } from "@/components/player/Player";
+import { Loader } from "@/components/Loader";
 
 export function PlayerPage() {
   const [schema, setSchema] = useState<object>();
@@ -11,7 +12,7 @@ export function PlayerPage() {
   const [error, setError] = useState<object>();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_STITCHER_URL}/spec.json`)
+    fetch(`${import.meta.env.PUBLIC_STITCHER_ENDPOINT}/spec.json`)
       .then((response) => response.json())
       .then((data) => {
         setSchema(
@@ -26,7 +27,7 @@ export function PlayerPage() {
     setMasterUrl(undefined);
 
     const response = await fetch(
-      `${import.meta.env.VITE_STITCHER_URL}/session`,
+      `${import.meta.env.PUBLIC_STITCHER_ENDPOINT}/session`,
       {
         method: "post",
         headers: {
@@ -45,17 +46,19 @@ export function PlayerPage() {
     }
   };
 
+  if (!schema) {
+    return <Loader className="min-h-44" />;
+  }
+
   return (
     <div className="min-h-full flex grow">
       <div className="basis-1/2 min-w-0">
         <Editor
           schema={schema}
           title={
-            <div className="text-xs">
-              <span className="font-bold bg-white/20 py-1 px-2 mr-1 rounded-md">
-                POST
-              </span>{" "}
-              {import.meta.env.VITE_STITCHER_URL}/session
+            <div className="flex gap-2 text-xs">
+              <span className="font-bold">POST</span>
+              {import.meta.env.PUBLIC_STITCHER_ENDPOINT}/session
             </div>
           }
           onSave={onSave}

@@ -2,7 +2,7 @@ import { initContract } from "@ts-rest/core";
 import { streamSchema, inputSchema } from "@mixwave/shared/artisan";
 import * as z from "zod";
 import { extendZodWithOpenApi } from "@anatine/zod-openapi";
-import { jobDtoSchema } from "./types.js";
+import { jobDtoSchema, folderDtoSchema } from "./types.js";
 
 extendZodWithOpenApi(z);
 
@@ -15,7 +15,8 @@ export const postTranscodeBodySchema = z.object({
   streams: z.array(streamSchema).openapi({
     description: "Streams that need to be produced.",
   }),
-  segmentSize: z.number().default(4).openapi({
+  segmentSize: z.number().optional().openapi({
+    default: 4,
     description:
       "Inserts a keyframe at the start of each segment. When packaging, you can vary segmentSize as the same or a multiple of this.",
   }),
@@ -23,7 +24,8 @@ export const postTranscodeBodySchema = z.object({
     description:
       "Will override when specified but it is advised to leave this blank and have it auto generate a UUID.",
   }),
-  packageAfter: z.boolean().default(false).openapi({
+  packageAfter: z.boolean().optional().openapi({
+    default: false,
     description:
       "When transcode is finished, package it immediately with all default settings.",
   }),
@@ -34,9 +36,17 @@ export const postTranscodeBodySchema = z.object({
 
 export const postPackageBodySchema = z.object({
   assetId: z.string(),
-  segmentSize: z.number().default(4),
+  segmentSize: z.number().optional().openapi({
+    default: 4,
+    description:
+      "Segment size, must be equal or a multiple of the segmentSize defined in transcode.",
+  }),
   tag: z.string().optional().openapi({
     description: "An arbitrary tag, used to group jobs.",
+  }),
+  name: z.string().optional().openapi({
+    default: "hls",
+    description: "The name of the package, will be used in storage.",
   }),
 });
 
@@ -77,7 +87,19 @@ export const contract = c.router({
       200: jobDtoSchema,
     },
     query: z.object({
-      fromRoot: z.coerce.boolean().default(false),
+      fromRoot: z.coerce.boolean().optional(),
+    }),
+  },
+  getStorage: {
+    method: "GET",
+    path: "/storage",
+    responses: {
+      200: folderDtoSchema,
+    },
+    query: z.object({
+      path: z.string(),
+      skip: z.string().optional(),
+      take: z.coerce.number().optional(),
     }),
   },
   getJobLogs: {

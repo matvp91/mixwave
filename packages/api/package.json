@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@anatine/zod-openapi": "^2.2.6",
+    "@aws-sdk/client-s3": "^3.623.0",
     "@bull-board/api": "^5.21.3",
     "@bull-board/fastify": "^5.21.3",
     "@fastify/cors": "^9.0.1",

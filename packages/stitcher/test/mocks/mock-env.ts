@@ -1,7 +1,7 @@
 import { jest } from "@jest/globals";
 
 process.env = {
-  S3_PUBLIC_URL: "https://s3-public.com",
+  PUBLIC_S3_ENDPOINT: "https://s3-public.com",
 };
 
 jest.mock("find-config", () => ({

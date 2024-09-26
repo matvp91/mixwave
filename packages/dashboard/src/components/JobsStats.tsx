@@ -44,11 +44,10 @@ export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
 
   return (
     <TooltipProvider delayDuration={0}>
-      <div className="flex bg-white border border-border rounded-md overflow-hidden">
+      <div className="flex">
         <Tile
           value={completed}
           className="bg-emerald-400"
-          outerClassName="border-r border-border"
           onClick={() => filterJobState("completed")}
           active={filter.state === "completed"}
           tooltip="Completed"
@@ -56,7 +55,6 @@ export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
         <Tile
           value={failed}
           className="bg-red-400"
-          outerClassName="border-r border-border"
           onClick={() => filterJobState("failed")}
           active={filter.state === "failed"}
           tooltip="Failed"
@@ -64,7 +62,6 @@ export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
         <Tile
           value={running}
           className="bg-blue-400"
-          outerClassName="border-r border-border"
           onClick={() => filterJobState("running")}
           active={filter.state === "running"}
           tooltip="Running"
@@ -84,14 +81,12 @@ export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
 function Tile({
   value,
   className,
-  outerClassName,
   onClick,
   active,
   tooltip,
 }: {
   value: number;
   className: string;
-  outerClassName?: string;
   onClick: () => void;
   active: boolean;
   tooltip: string;
@@ -102,13 +97,12 @@ function Tile({
         <li
           onClick={onClick}
           className={cn(
-            "flex items-center justify-center px-2 h-10 text-xs font-medium",
-            outerClassName,
-            active && "bg-secondary",
+            "flex flex-col items-center justify-center text-xs w-10 h-10 rounded-lg",
+            active && "bg-muted text-primary",
           )}
         >
           {value}
-          <div className={cn("ml-1 w-2 h-2 rounded-full", className)} />
+          <div className={cn("w-2 h-2 rounded-full", className)} />
         </li>
       </TooltipTrigger>
       <TooltipContent>

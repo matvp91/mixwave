@@ -11,6 +11,7 @@ import { RootLayout } from "@/pages/RootLayout";
 import { Suspense } from "react";
 import { tsr } from "./tsr";
 import { PlayerPage } from "./pages/PlayerPage";
+import { StoragePage } from "./pages/StoragePage";
 
 const queryClient = new QueryClient();
 
@@ -21,7 +22,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="/api" />,
+        element: <Navigate to="/jobs" />,
       },
       {
         path: "/jobs",
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: "/player",
         element: <PlayerPage />,
+      },
+      {
+        path: "/storage",
+        element: <StoragePage />,
       },
     ],
   },

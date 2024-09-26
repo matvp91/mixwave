@@ -33,8 +33,8 @@ type AddTranscodeJobData = {
   assetId?: string;
   inputs: Input[];
   streams: Stream[];
-  segmentSize: number;
-  packageAfter: boolean;
+  segmentSize?: number;
+  packageAfter?: boolean;
   tag?: string;
 };
 
@@ -42,8 +42,8 @@ export async function addTranscodeJob({
   assetId = randomUUID(),
   inputs,
   streams,
-  segmentSize,
-  packageAfter,
+  segmentSize = 4,
+  packageAfter = false,
   tag,
 }: AddTranscodeJobData) {
   const jobId = `transcode_${assetId}`;
@@ -130,24 +130,31 @@ export async function addTranscodeJob({
 
 type AddPackageJobData = {
   assetId: string;
-  segmentSize: number;
+  segmentSize?: number;
+  name?: string;
   tag?: string;
 };
 
-export async function addPackageJob(data: AddPackageJobData) {
+export async function addPackageJob({
+  assetId,
+  segmentSize = 4,
+  name = "hls",
+  tag,
+}: AddPackageJobData) {
   return await packageQueue.add(
     "package",
     {
       params: {
-        assetId: data.assetId,
-        segmentSize: data.segmentSize,
+        assetId,
+        segmentSize,
+        name,
       },
       metadata: {
-        tag: data.tag,
+        tag,
       },
     } satisfies PackageData,
     {
-      jobId: `package_${data.assetId}`,
+      jobId: `package_${randomUUID()}`,
     },
   );
 }

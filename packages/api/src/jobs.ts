@@ -35,7 +35,7 @@ export async function getJobs(): Promise<JobDto[]> {
   return result;
 }
 
-export async function getJob(id: string, fromRoot: boolean) {
+export async function getJob(id: string, fromRoot?: boolean) {
   const node = await getJobNode(id, fromRoot);
   return await formatJobNode(node);
 }
@@ -48,7 +48,7 @@ export async function getJobLogs(id: string) {
   return logs;
 }
 
-async function getJobNode(id: string, fromRoot: boolean) {
+async function getJobNode(id: string, fromRoot?: boolean) {
   const [queue, jobId] = formatIdPair(id);
 
   let job = await Job.fromId(queue, jobId);

@@ -68,4 +68,6 @@ New contributors are welcome! See `CONTRIBUTING.md` for contributing to the proj
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=matvp91/mixwave&type=Date)](https://star-history.com/#matvp91/mixwave&Date)
+<div align="center">
+  <img width="620" src="https://api.star-history.com/svg?repos=matvp91/mixwave&type=Date)](https://star-history.com/#matvp91/mixwave" />
+</div>

@@ -1,5 +1,5 @@
 import { Scalar } from "@/components/Scalar";
 
 export function ApiPage() {
-  return <Scalar url={import.meta.env.VITE_API_URL} />;
+  return <Scalar url={import.meta.env.PUBLIC_API_ENDPOINT} />;
 }

@@ -4,5 +4,5 @@ import { contract } from "@mixwave/api/client";
 export type { JobDto } from "@mixwave/api/client";
 
 export const tsr = initTsrReactQuery(contract, {
-  baseUrl: import.meta.env.VITE_API_URL,
+  baseUrl: import.meta.env.PUBLIC_API_ENDPOINT,
 });

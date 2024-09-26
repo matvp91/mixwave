@@ -12,7 +12,7 @@ export function PlayerPage() {
   const [error, setError] = useState<object>();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_STITCHER_URL}/spec.json`)
+    fetch(`${import.meta.env.PUBLIC_STITCHER_ENDPOINT}/spec.json`)
       .then((response) => response.json())
       .then((data) => {
         setSchema(
@@ -27,7 +27,7 @@ export function PlayerPage() {
     setMasterUrl(undefined);
 
     const response = await fetch(
-      `${import.meta.env.VITE_STITCHER_URL}/session`,
+      `${import.meta.env.PUBLIC_STITCHER_ENDPOINT}/session`,
       {
         method: "post",
         headers: {
@@ -58,7 +58,7 @@ export function PlayerPage() {
           title={
             <div className="flex gap-2 text-xs">
               <span className="font-bold">POST</span>
-              {import.meta.env.VITE_STITCHER_URL}/session
+              {import.meta.env.PUBLIC_STITCHER_ENDPOINT}/session
             </div>
           }
           onSave={onSave}

@@ -3,3 +3,5 @@ import { App } from "./App.tsx";
 import "./globals.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(<App />);
+
+console.log(import.meta.env);

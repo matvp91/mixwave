@@ -2,10 +2,18 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
+import findConfig from "find-config";
+import { config } from "dotenv";
+
+const configPath = findConfig("config.env");
+if (configPath) {
+  config({ path: configPath });
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  envPrefix: "PUBLIC_",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

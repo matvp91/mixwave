@@ -12,6 +12,7 @@ const envSchema = z.object({
   HOST: z.string().default("0.0.0.0"),
   REDIS_HOST: z.string().default("redis"),
   REDIS_PORT: z.coerce.number().default(6379),
+  PUBLIC_API_ENDPOINT: z.string().default("http://localhost:52001"),
 });
 
 export const env = envSchema.parse(process.env);

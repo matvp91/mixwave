@@ -10,9 +10,9 @@ if (configPath) {
 const envSchema = z.object({
   PORT: z.coerce.number().default(52001),
   HOST: z.string().default("0.0.0.0"),
-  REDIS_HOST: z.string().default("redis"),
-  REDIS_PORT: z.coerce.number().default(6379),
-  PUBLIC_API_ENDPOINT: z.string().default("http://localhost:52001"),
+  REDIS_HOST: z.string(),
+  REDIS_PORT: z.coerce.number(),
+  PUBLIC_API_ENDPOINT: z.string(),
   S3_ENDPOINT: z.string(),
   S3_REGION: z.string(),
   S3_ACCESS_KEY: z.string(),

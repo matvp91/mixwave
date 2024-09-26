@@ -46,7 +46,7 @@ Video is quite fragmented, particularly in the way video content is delivered an
 
 There's a lot of video tooling out there, think of ffmpeg, bento4, shaka-packager, but not in a unified manner. Mixwave implements the excellent work done by others, and tries to make it approachable in the form of an API with a strong focus on scalability and ease of use. The latter is quiet challenging, you'd only have to look at how complex ffmpeg gets when you tip into the details.
 
-Video from source to consumer is a hard task to get right, [howvideo.works](https://howvideo.works/) is a great resource to get you started. Beware, you might get hooked on how interesting video is! ;-)
+Video from source to consumer is a hard task to get right, [howvideo.works](https://howvideo.works/) is a great resource to get you started.
 
 ## Getting Started
 

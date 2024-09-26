@@ -5324,7 +5324,7 @@ packages:
       vue: ^3.2.25
     dependencies:
       vite: 5.4.3
-      vue: 3.4.37(typescript@5.5.4)
+      vue: 3.4.37
     dev: true
 
   /@volar/language-core@2.4.1:
@@ -5462,7 +5462,7 @@ packages:
     dependencies:
       '@vue/compiler-ssr': 3.4.37
       '@vue/shared': 3.4.37
-      vue: 3.4.37(typescript@5.5.4)
+      vue: 3.4.37
     dev: true
 
   /@vue/shared@3.4.37:
@@ -9937,7 +9937,7 @@ packages:
       minisearch: 7.1.0
       shiki: 1.12.1
       vite: 5.4.3
-      vue: 3.4.37(typescript@5.5.4)
+      vue: 3.4.37
     transitivePeerDependencies:
       - '@algolia/client-search'
       - '@types/node'
@@ -9983,7 +9983,7 @@ packages:
       '@vue/composition-api':
         optional: true
     dependencies:
-      vue: 3.4.37(typescript@5.5.4)
+      vue: 3.4.37
     dev: true
 
   /vue-tsc@2.0.29(typescript@5.5.4):
@@ -9998,7 +9998,7 @@ packages:
       typescript: 5.5.4
     dev: true
 
-  /vue@3.4.37(typescript@5.5.4):
+  /vue@3.4.37:
     resolution: {integrity: sha512-3vXvNfkKTBsSJ7JP+LyR7GBuwQuckbWvuwAid3xbqK9ppsKt/DUvfqgZ48fgOLEfpy1IacL5f8QhUVl77RaI7A==}
     peerDependencies:
       typescript: '*'
@@ -10011,7 +10011,6 @@ packages:
       '@vue/runtime-dom': 3.4.37
       '@vue/server-renderer': 3.4.37(vue@3.4.37)
       '@vue/shared': 3.4.37
-      typescript: 5.5.4
     dev: true
 
   /walker@1.0.8:

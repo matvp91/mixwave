@@ -16,15 +16,13 @@ export function JobTreeItem({ job, activeId }: JobTreeItemProps) {
     <Link
       to={`/jobs/${job.id}`}
       className={cn(
-        "p-2 flex gap-2 items-center rounded-md",
-        activeId === job.id && "bg-muted",
+        "px-3 py-2 flex gap-3 items-center rounded-lg text-muted-foreground transition-all hover:text-primary text-sm",
+        activeId === job.id && "bg-muted text-primary",
       )}
     >
       <JobState state={job.state} />
       {job.name}
-      {durationStr ? (
-        <span className="font-medium text-xs">{durationStr}</span>
-      ) : null}
+      {durationStr ? <span className="text-xs">{durationStr}</span> : null}
     </Link>
   );
 }

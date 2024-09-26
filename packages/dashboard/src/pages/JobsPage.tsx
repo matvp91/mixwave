@@ -1,5 +1,4 @@
 import { JobsList } from "@/components/JobsList";
-import { Container } from "@/components/Container";
 import { tsr } from "@/tsr";
 import { JobsFilter } from "@/components/JobsFilter";
 import { useJobsFilter } from "@/hooks/useJobsFilter";
@@ -22,22 +21,28 @@ export function JobsPage() {
   const filteredJobs = filterJobs(data.body, filter);
 
   return (
-    <Container>
-      <div className="my-4 flex items-center">
-        <JobsStats jobs={data.body} filter={filter} onChange={setFilter} />
-        <div className="ml-auto">
-          <JobsFilter
-            allJobs={data.body}
-            filter={filter}
-            onChange={setFilter}
-          />
+    <>
+      <div className="h-14 border-b flex px-4">
+        <div className="container flex gap-2 h-14 items-center">
+          <JobsStats jobs={data.body} filter={filter} onChange={setFilter} />
+          <div className="ml-auto">
+            <JobsFilter
+              allJobs={data.body}
+              filter={filter}
+              onChange={setFilter}
+            />
+          </div>
         </div>
       </div>
-      {filteredJobs.length ? (
-        <JobsList jobs={filteredJobs} />
-      ) : (
-        <p className="text-center">No jobs found...</p>
-      )}
-    </Container>
+      <div className="p-4">
+        <div className="container">
+          {filteredJobs.length ? (
+            <JobsList jobs={filteredJobs} />
+          ) : (
+            <p className="text-center">No jobs found...</p>
+          )}
+        </div>
+      </div>
+    </>
   );
 }

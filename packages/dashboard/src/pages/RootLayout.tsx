@@ -4,12 +4,12 @@ import { Sidebar } from "@/components/Sidebar";
 
 export function RootLayout() {
   return (
-    <div className="flex h-screen overflow-hidden">
-      <aside className="w-40 border-r border-border">
+    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr]">
+      <aside className="border-r">
         <Sidebar />
       </aside>
       <div className="flex flex-col flex-1 overflow-y-auto">
-        <main className="grow">
+        <main className="flex flex-col grow">
           <Suspense>
             <Outlet />
           </Suspense>

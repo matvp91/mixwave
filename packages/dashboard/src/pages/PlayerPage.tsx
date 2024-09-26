@@ -51,10 +51,8 @@ export function PlayerPage() {
         <Editor
           schema={schema}
           title={
-            <div className="text-xs">
-              <span className="font-bold bg-white/20 py-1 px-2 mr-1 rounded-md">
-                POST
-              </span>{" "}
+            <div className="flex gap-2 text-xs">
+              <span className="font-bold">POST</span>
               {import.meta.env.VITE_STITCHER_URL}/session
             </div>
           }

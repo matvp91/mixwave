@@ -31,6 +31,7 @@ export const folderDtoSchema = z.object({
       z.object({
         type: z.literal("file"),
         path: z.string(),
+        size: z.number(),
       }),
       z.object({
         type: z.literal("folder"),

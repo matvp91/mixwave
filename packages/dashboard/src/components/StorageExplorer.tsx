@@ -7,7 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Fragment, UIEventHandler, useEffect, useRef } from "react";
+import { Fragment, UIEventHandler, useRef } from "react";
 import Folder from "lucide-react/icons/folder";
 import type { FolderDto } from "@/tsr";
 
@@ -35,19 +35,6 @@ export function StorageExplorer({
       onNext();
     }
   };
-
-  useEffect(() => {
-    if (!ref.current) {
-      return;
-    }
-    const isOverflown =
-      ref.current.scrollHeight > ref.current.clientHeight ||
-      ref.current.scrollWidth > ref.current.clientWidth;
-
-    if (!isOverflown) {
-      onNext();
-    }
-  }, [contents]);
 
   return (
     <div className="flex flex-col grow">
@@ -81,7 +68,7 @@ export function StorageExplorer({
               const name = chunks[chunks.length - 1];
               return (
                 <li key={content.path}>
-                  <div className="text-sm">{name}</div>
+                  <File content={content} name={name} />
                 </li>
               );
             }
@@ -131,4 +118,14 @@ function PathBreadcrumbs({ path }: { path: string }) {
       </BreadcrumbList>
     </Breadcrumb>
   );
+}
+
+function File({
+  content,
+  name,
+}: {
+  content: Extract<FolderDto["contents"][0], { type: "file" }>;
+  name: string;
+}) {
+  return <div className="text-sm">{name}</div>;
 }

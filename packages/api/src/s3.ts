@@ -49,6 +49,7 @@ export async function getStorage(
     folder.contents.push({
       type: "file",
       path: content.Key,
+      size: content.Size ?? 0,
     });
   });
 

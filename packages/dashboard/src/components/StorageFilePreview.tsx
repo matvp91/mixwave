@@ -14,7 +14,10 @@ type StoragePreviewProps = {
 export function StorageFilePreview({ file, onClose }: StoragePreviewProps) {
   return (
     <Sheet open={file !== null} onOpenChange={onClose}>
-      <SheetContent className="sm:max-w-none w-[640px]">
+      <SheetContent
+        className="sm:max-w-none w-[640px]"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <SheetHeader>
           <SheetTitle>Preview</SheetTitle>
           {file ? (

@@ -8,7 +8,7 @@ type EditorProps = {
 };
 
 export function Editor({ schema, title, onSave }: EditorProps) {
-  const defaultValue = ["{", '  "assetId": ""', "}"].join("\n");
+  const defaultValue = ["{", '  "uri": ""', "}"].join("\n");
 
   const beforeMount: BeforeMount = (monaco) => {
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({

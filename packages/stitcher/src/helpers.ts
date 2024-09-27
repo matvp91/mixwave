@@ -44,3 +44,23 @@ export function filterByString(items: hlsParser.types.Variant[], str: string) {
 
   throw new Error("Invalid filter");
 }
+
+export function resolveUri(uri: string) {
+  if (uri.startsWith("http://") || uri.startsWith("https://")) {
+    return uri;
+  }
+
+  if (uri.startsWith("mix://")) {
+    const assetId = uri.substring("mix://".length);
+    return `${env.PUBLIC_S3_ENDPOINT}/package/${assetId}/hls/master.m3u8`;
+  }
+
+  throw new Error("Failed to resolve uri");
+}
+
+export async function isUrlAvailable(url: string) {
+  const response = await fetch(url, {
+    method: "HEAD",
+  });
+  return response.ok;
+}

@@ -1,9 +1,8 @@
 import * as hlsParser from "../extern/hls-parser/index.js";
 import parseFilepath from "parse-filepath";
-import { env } from "./env.js";
 import { MasterPlaylist, MediaPlaylist } from "../extern/hls-parser/types.js";
 import createError from "@fastify/error";
-import { filterByString } from "./helpers.js";
+import { filterByString, resolveUri } from "./helpers.js";
 import type { Session, Interstitial, InterstitialType } from "./types.js";
 
 const PlaylistUnavailableError = createError<[string]>(
@@ -37,7 +36,7 @@ async function fetchPlaylist<T>(url: string) {
 }
 
 export async function formatMasterPlaylist(session: Session) {
-  const url = `${env.PUBLIC_S3_ENDPOINT}/package/${session.assetId}/hls/master.m3u8`;
+  const url = resolveUri(session.uri);
 
   const master = await fetchPlaylist<MasterPlaylist>(url);
 
@@ -83,7 +82,11 @@ export async function formatMasterPlaylist(session: Session) {
 }
 
 export async function formatMediaPlaylist(session: Session, path: string) {
-  const url = `${env.PUBLIC_S3_ENDPOINT}/package/${session.assetId}/hls/${path}/playlist.m3u8`;
+  const masterUrl = resolveUri(session.uri);
+  const masterFilePath = parseFilepath(masterUrl);
+
+  const url = `${masterFilePath.dir}/${path}`;
+  const urlFilePath = parseFilepath(url);
 
   const media = await fetchPlaylist<MediaPlaylist>(url);
 
@@ -95,7 +98,7 @@ export async function formatMediaPlaylist(session: Session, path: string) {
     new hlsParser.types.Define({
       type: "NAME",
       name: "mix-pbase",
-      value: `{$mix-base}/${path}`,
+      value: `{$mix-base}/${urlFilePath.dir}`,
     }),
   );
 
@@ -119,10 +122,10 @@ export async function formatAssetList(session: Session, timeOffset: number) {
 
   const assets = await Promise.all(
     interstitials.map(async (interstitial) => {
-      const uri = `${env.PUBLIC_S3_ENDPOINT}/package/${interstitial.assetId}/hls/master.m3u8`;
+      const url = resolveUri(interstitial.uri);
       return {
-        URI: uri,
-        DURATION: await getDuration(uri),
+        URI: url,
+        DURATION: await getDuration(url),
         "MIX-TYPE": interstitial.type,
       };
     }),

@@ -21,7 +21,7 @@ export async function extractInterstitialFromVmapAdbreak(adBreak: VmapAdBreak) {
     if (await isAssetAvailable(adMedia.assetId)) {
       interstitials.push({
         timeOffset: adBreak.timeOffset,
-        assetId: adMedia.assetId,
+        uri: `mix://${adMedia.assetId}`,
         type: "ad",
       });
     } else {

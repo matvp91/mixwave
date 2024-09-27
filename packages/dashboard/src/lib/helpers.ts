@@ -1,7 +1,8 @@
 import prettyMs from "pretty-ms";
+import prettyBytes from "pretty-bytes";
 import * as timeAgo from "timeago.js";
 
-export function getDurationStr(duration: number | null) {
+export function getDurationStr(duration?: number | null) {
   if (!duration) {
     return null;
   }
@@ -18,4 +19,11 @@ export function getTimeAgo(value: number | null) {
     return null;
   }
   return timeAgo.format(value);
+}
+
+export function getSizeStr(size: number | null) {
+  if (!size) {
+    return null;
+  }
+  return prettyBytes(size);
 }

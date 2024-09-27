@@ -2,14 +2,14 @@ import { Link } from "react-router-dom";
 import { TableCell, TableRow } from "@/components/ui/table";
 import Folder from "lucide-react/icons/folder";
 import { StorageRowFile } from "./StorageRowFile";
-import type { FolderDto, PreviewDto } from "@/tsr";
+import type { FolderContentDto, FileDto } from "@/tsr";
 
 type StorageRowProps = {
-  content: FolderDto["contents"][0];
-  setPreview(preview: PreviewDto): void;
+  content: FolderContentDto;
+  setFile(file: FileDto): void;
 };
 
-export function StorageRow({ content, setPreview }: StorageRowProps) {
+export function StorageRow({ content, setFile }: StorageRowProps) {
   const chunks = content.path.split("/");
 
   if (content.type === "folder") {
@@ -34,9 +34,7 @@ export function StorageRow({ content, setPreview }: StorageRowProps) {
 
   if (content.type === "file") {
     const name = chunks[chunks.length - 1];
-    return (
-      <StorageRowFile name={name} content={content} setPreview={setPreview} />
-    );
+    return <StorageRowFile name={name} content={content} setFile={setFile} />;
   }
   return null;
 }

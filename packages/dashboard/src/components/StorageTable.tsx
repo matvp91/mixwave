@@ -7,24 +7,22 @@ import {
 } from "@/components/ui/table";
 import { StoragePathBreadcrumbs } from "./StoragePathBreadcrumbs";
 import { StorageRow } from "./StorageRow";
-import { useState } from "react";
-import { StoragePreview } from "./StoragePreview";
 import type { UIEventHandler } from "react";
-import type { PreviewDto, FolderDto } from "@/tsr";
+import type { FileDto, FolderContentDto } from "@/tsr";
 
 type StorageExplorerProps = {
   path: string;
-  contents: FolderDto["contents"];
+  contents: FolderContentDto[];
   onNext(): void;
+  setFile(file: FileDto): void;
 };
 
-export function StorageExplorer({
+export function StorageTable({
   path,
   contents,
   onNext,
+  setFile,
 }: StorageExplorerProps) {
-  const [preview, setPreview] = useState<PreviewDto | null>(null);
-
   const onScroll: UIEventHandler<HTMLDivElement> = (event) => {
     const target = event.target as HTMLDivElement;
     const totalHeight = target.scrollHeight - target.offsetHeight;
@@ -35,7 +33,7 @@ export function StorageExplorer({
 
   return (
     <div className="flex flex-col grow">
-      <div className="p-4 h-14 border-b">
+      <div className="p-4 h-14 border-b flex items-center">
         <StoragePathBreadcrumbs path={path} />
       </div>
       <div className="grow basis-0 overflow-auto" onScroll={onScroll}>
@@ -53,14 +51,13 @@ export function StorageExplorer({
                 <StorageRow
                   key={content.path}
                   content={content}
-                  setPreview={setPreview}
+                  setFile={setFile}
                 />
               );
             })}
           </TableBody>
         </Table>
       </div>
-      <StoragePreview preview={preview} onClose={() => setPreview(null)} />
     </div>
   );
 }

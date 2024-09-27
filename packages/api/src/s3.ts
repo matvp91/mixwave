@@ -1,6 +1,6 @@
 import { S3, ListObjectsCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { env } from "./env.js";
-import type { FolderDto, PreviewDto } from "./types.js";
+import type { FolderContentDto, FileDto } from "./types.js";
 
 const client = new S3({
   endpoint: env.S3_ENDPOINT,
@@ -14,49 +14,61 @@ const client = new S3({
 export async function getStorage(
   path: string,
   take: number = 10,
-  skip?: string,
-): Promise<FolderDto> {
+  cursor?: string,
+): Promise<{
+  cursor?: string;
+  contents: FolderContentDto[];
+}> {
+  path = path.substring(1);
+
   const response = await client.send(
     new ListObjectsCommand({
       Bucket: env.S3_BUCKET,
       Delimiter: "/",
       Prefix: path,
       MaxKeys: take,
-      Marker: skip,
+      Marker: cursor,
     }),
   );
 
-  const folder: FolderDto = {
-    path,
-    contents: [],
-    skip: response.IsTruncated ? response.NextMarker : undefined,
-  };
+  const contents: FolderContentDto[] = [];
 
   response.CommonPrefixes?.forEach((prefix) => {
     if (!prefix.Prefix) {
       return;
     }
-    folder.contents.push({
+    contents.push({
       type: "folder",
-      path: prefix.Prefix,
+      path: `/${prefix.Prefix}`,
     });
   });
 
   response.Contents?.forEach((content) => {
-    if (!content.Key) {
+    if (!content.Key || content.Key === path) {
       return;
     }
-    folder.contents.push({
+
+    contents.push({
       type: "file",
-      path: content.Key,
+      path: `/${content.Key}`,
       size: content.Size ?? 0,
+      canPreview: canFilePreview(content.Key),
     });
   });
 
-  return folder;
+  return {
+    cursor: response.IsTruncated ? response.NextMarker : undefined,
+    contents,
+  };
 }
 
-export async function getStoragePreview(path: string): Promise<PreviewDto> {
+export async function getStorageFile(path: string): Promise<FileDto> {
+  path = path.substring(1);
+
+  if (!canFilePreview(path)) {
+    throw new Error("File cannot be previewed");
+  }
+
   const response = await client.send(
     new GetObjectCommand({
       Bucket: env.S3_BUCKET,
@@ -70,6 +82,13 @@ export async function getStoragePreview(path: string): Promise<PreviewDto> {
 
   return {
     path,
+    size: 0,
     data: await response.Body.transformToString("utf-8"),
   };
+}
+
+function canFilePreview(name: string) {
+  return (
+    name.endsWith(".vtt") || name.endsWith(".m3u8") || name.endsWith(".json")
+  );
 }

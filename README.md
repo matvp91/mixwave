@@ -31,6 +31,8 @@ Mixwave is a self hostable platform that aims to simplify the complexities of vi
 - Parses a `vmap`, transcodes and packages the ad media files and inserts interstitials, on the fly.
 - Ships with a `HLS.js` wrapper that simplifies working with interstitials and a React UI.
 
+If you'd like to chat about all things video, we're on [Discord](https://discord.gg/5PPgvkCW) now!
+
 ## Demo
 
 https://github.com/user-attachments/assets/035cd10e-53b4-4b0f-99cd-79c76c26e0b0

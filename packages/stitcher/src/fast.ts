@@ -5,6 +5,7 @@ import {
   MediaPlaylist,
   Variant,
   Segment,
+  Define,
 } from "../extern/hls-parser/types.js";
 import { withPath } from "./uri.js";
 
@@ -67,7 +68,7 @@ async function getMediaPlaylist(scheduleItem: ScheduleItem) {
 export async function getFastMediaPlaylist(path: string) {
   const now = Date.now();
 
-  const dvrLength = 1000 * 60;
+  const slidingSize = 1000 * 60;
 
   const segments: Segment[] = [];
 
@@ -92,20 +93,19 @@ export async function getFastMediaPlaylist(path: string) {
       const end = start + duration;
       prevDuration += duration;
 
-      if (start > now || end < now - dvrLength) {
+      if (start > now || end < now - slidingSize) {
         return;
       }
 
       if (!firstBase) {
         firstBase = id;
+        segment.programDateTime = new Date(start);
       }
 
       if (!index) {
         // If it's the last segment, it's a discontinuity.
         segment.discontinuity = true;
       }
-
-      segment.programDateTime = new Date(start);
 
       if (segment.map?.uri === "init.mp4") {
         segment.map.uri = withPath(format.base, segment.map.uri);
@@ -117,12 +117,18 @@ export async function getFastMediaPlaylist(path: string) {
     });
   }
 
-  // segments[0].programDateTime = new Date(pdt);
-
   const media = new MediaPlaylist({
     targetDuration,
     segments,
   });
+
+  media.defines.push(
+    new Define({
+      type: "NAME",
+      name: "mix-sliding-size",
+      value: slidingSize,
+    }),
+  );
 
   media.mediaSequenceBase = firstBase;
 

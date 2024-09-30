@@ -11,11 +11,7 @@ export function JobLogs({ id }: JobLogsProps) {
     refetchInterval: 2000,
   });
 
-  if (!data) {
-    return null;
-  }
-
-  const logs = data.body;
+  const logs = data?.body ?? [];
 
   return (
     <ul className="flex flex-col gap-2 text-xs">

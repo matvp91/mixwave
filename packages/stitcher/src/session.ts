@@ -3,7 +3,6 @@ import { randomUUID } from "crypto";
 import { extractInterstitialFromVmapAdbreak } from "./vast.js";
 import { getVmap } from "./vmap.js";
 import createError from "@fastify/error";
-import { isUrlAvailable, resolveUri } from "./helpers.js";
 import type { Session, Interstitial } from "./types.js";
 
 const NoSessionError = createError<[string]>(
@@ -32,12 +31,6 @@ export async function createSession(data: {
   interstitials?: Interstitial[];
   resolution?: string;
 }) {
-  const url = resolveUri(data.uri);
-
-  if (!(await isUrlAvailable(url))) {
-    throw new PlaylistUnavailableError(url);
-  }
-
   const sessionId = randomUUID();
 
   let interstitials: Interstitial[] | undefined;

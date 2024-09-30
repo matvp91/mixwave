@@ -32,32 +32,27 @@ export function StorageTable({
   };
 
   return (
-    <div className="flex flex-col grow">
-      <div className="p-4 h-14 border-b flex items-center">
-        <StoragePathBreadcrumbs path={path} />
-      </div>
-      <div className="grow basis-0 overflow-auto" onScroll={onScroll}>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[50px]"></TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead className="w-[200px]">Size</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {contents.map((content) => {
-              return (
-                <StorageRow
-                  key={content.path}
-                  content={content}
-                  setFile={setFile}
-                />
-              );
-            })}
-          </TableBody>
-        </Table>
-      </div>
+    <div className="grow basis-0 overflow-auto" onScroll={onScroll}>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[50px]"></TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead className="w-[200px]">Size</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {contents.map((content) => {
+            return (
+              <StorageRow
+                key={content.path}
+                content={content}
+                setFile={setFile}
+              />
+            );
+          })}
+        </TableBody>
+      </Table>
     </div>
   );
 }

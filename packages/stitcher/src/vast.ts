@@ -1,4 +1,3 @@
-import { isAssetAvailable } from "./helpers.js";
 import { addTranscodeJob } from "@mixwave/artisan/producer";
 import { VASTClient } from "../extern/vast-client/index.js";
 import { DOMParser } from "@xmldom/xmldom";
@@ -11,6 +10,7 @@ import type {
   VastCreativeLinear,
   VastAd,
 } from "../extern/vast-client/index.js";
+import { formatUri, isUrlAvailable, withPath } from "./uri.js";
 
 export async function extractInterstitialFromVmapAdbreak(adBreak: VmapAdBreak) {
   const interstitials: Interstitial[] = [];
@@ -18,10 +18,13 @@ export async function extractInterstitialFromVmapAdbreak(adBreak: VmapAdBreak) {
   const adMedias = await getAdMedias(adBreak);
 
   for (const adMedia of adMedias) {
-    if (await isAssetAvailable(adMedia.assetId)) {
+    const format = formatUri(`mix://${adMedia.assetId}`);
+    const url = withPath(format.base, format.file);
+
+    if (await isUrlAvailable(url)) {
       interstitials.push({
         timeOffset: adBreak.timeOffset,
-        uri: `mix://${adMedia.assetId}`,
+        uri: url,
         type: "ad",
       });
     } else {

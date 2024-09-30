@@ -35,7 +35,6 @@
     "fastify": "^4.28.1",
     "find-config": "^1.0.0",
     "hh-mm-ss": "^1.2.0",
-    "hi-base64": "^0.3.1",
     "parse-filepath": "^1.0.2",
     "redis": "^4.7.0",
     "uuid": "^10.0.0",

@@ -1,9 +1,9 @@
 import * as hlsParser from "../extern/hls-parser/index.js";
 import parseFilepath from "parse-filepath";
-import { env } from "./env.js";
 import { MasterPlaylist, MediaPlaylist } from "../extern/hls-parser/types.js";
 import createError from "@fastify/error";
 import { filterByString } from "./helpers.js";
+import { formatUri, withPath } from "./uri.js";
 import type { Session, Interstitial, InterstitialType } from "./types.js";
 
 const PlaylistUnavailableError = createError<[string]>(
@@ -37,22 +37,16 @@ async function fetchPlaylist<T>(url: string) {
 }
 
 export async function formatMasterPlaylist(session: Session) {
-  const url = `${env.PUBLIC_S3_ENDPOINT}/package/${session.assetId}/hls/master.m3u8`;
+  const format = formatUri(session.uri);
+  const url = withPath(format.base, format.file);
 
   const master = await fetchPlaylist<MasterPlaylist>(url);
-
-  const filePath = parseFilepath(url);
 
   master.defines.push(
     new hlsParser.types.Define({
       type: "NAME",
       name: "mix-session-id",
       value: session.id,
-    }),
-    new hlsParser.types.Define({
-      type: "NAME",
-      name: "mix-base",
-      value: filePath.dir,
     }),
   );
 
@@ -64,17 +58,6 @@ export async function formatMasterPlaylist(session: Session) {
     }
   }
 
-  // Direct audio and subtitle uris to their original base, they do not
-  // need to be rewritten by the media playlist proxy.
-  for (const v of master.variants) {
-    for (const audioRendition of v.audio) {
-      audioRendition.uri = `{$mix-base}/${audioRendition.uri}`;
-    }
-    for (const subtitleRendition of v.subtitles) {
-      subtitleRendition.uri = `{$mix-base}/${subtitleRendition.uri}`;
-    }
-  }
-
   if (!master.variants.length) {
     throw new NoVariantsError();
   }
@@ -83,23 +66,13 @@ export async function formatMasterPlaylist(session: Session) {
 }
 
 export async function formatMediaPlaylist(session: Session, path: string) {
-  const url = `${env.PUBLIC_S3_ENDPOINT}/package/${session.assetId}/hls/${path}/playlist.m3u8`;
+  const format = formatUri(session.uri);
+  const url = withPath(format.base, path);
 
   const media = await fetchPlaylist<MediaPlaylist>(url);
 
-  media.defines.push(
-    new hlsParser.types.Define({
-      type: "IMPORT",
-      value: "mix-base",
-    }),
-    new hlsParser.types.Define({
-      type: "NAME",
-      name: "mix-pbase",
-      value: `{$mix-base}/${path}`,
-    }),
-  );
-
-  rewriteSegmentUrls(media);
+  const mediaFormat = formatUri(url);
+  rewriteSegmentUrls(media, mediaFormat.base);
 
   if (session.interstitials) {
     addInterstitials(media, session.interstitials, session.id);
@@ -119,10 +92,12 @@ export async function formatAssetList(session: Session, timeOffset: number) {
 
   const assets = await Promise.all(
     interstitials.map(async (interstitial) => {
-      const uri = `${env.PUBLIC_S3_ENDPOINT}/package/${interstitial.assetId}/hls/master.m3u8`;
+      const format = formatUri(interstitial.uri);
+      const url = withPath(format.base, format.file);
+
       return {
-        URI: uri,
-        DURATION: await getDuration(uri),
+        URI: url,
+        DURATION: await getDuration(url),
         "MIX-TYPE": interstitial.type,
       };
     }),
@@ -201,12 +176,11 @@ function addInterstitials(
     });
 }
 
-function rewriteSegmentUrls(media: MediaPlaylist) {
+function rewriteSegmentUrls(media: MediaPlaylist, base: string) {
   for (const segment of media.segments) {
     if (segment.map?.uri === "init.mp4") {
-      segment.map.uri = `{$mix-pbase}/init.mp4`;
+      segment.map.uri = withPath(base, segment.map.uri);
     }
-
-    segment.uri = `{$mix-pbase}/${segment.uri}`;
+    segment.uri = withPath(base, segment.uri);
   }
 }

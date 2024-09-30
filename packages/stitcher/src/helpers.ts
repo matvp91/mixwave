@@ -1,15 +1,4 @@
-import { env } from "./env.js";
 import type * as hlsParser from "../extern/hls-parser/index.js";
-
-export async function isAssetAvailable(assetId: string) {
-  const response = await fetch(
-    `${env.PUBLIC_S3_ENDPOINT}/package/${assetId}/hls/master.m3u8`,
-    {
-      method: "HEAD",
-    },
-  );
-  return response.ok;
-}
 
 export function filterByString(items: hlsParser.types.Variant[], str: string) {
   const [operator, value] = str.split(" ");

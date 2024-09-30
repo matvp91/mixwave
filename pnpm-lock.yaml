@@ -247,6 +247,9 @@ importers:
       monaco-editor:
         specifier: ^0.51.0
         version: 0.51.0
+      pretty-bytes:
+        specifier: ^6.1.1
+        version: 6.1.1
       pretty-ms:
         specifier: ^9.1.0
         version: 9.1.0
@@ -334,15 +337,9 @@ importers:
       eventemitter3:
         specifier: ^5.0.1
         version: 5.0.1
-      immutability-helper:
-        specifier: ^3.1.1
-        version: 3.1.1
       react:
         specifier: ^18.3.1
         version: 18.3.1
-      react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
       screenfull:
         specifier: ^6.0.2
         version: 6.0.2
@@ -450,9 +447,6 @@ importers:
       hh-mm-ss:
         specifier: ^1.2.0
         version: 1.2.0
-      hi-base64:
-        specifier: ^0.3.1
-        version: 0.3.1
       parse-filepath:
         specifier: ^1.0.2
         version: 1.0.2
@@ -6965,10 +6959,6 @@ packages:
       zero-fill: 2.2.4
     dev: false
 
-  /hi-base64@0.3.1:
-    resolution: {integrity: sha512-1dcNjxp2VHFnQkDn/Jrvz4IITgpalWbH6HlaTrZGXuZ5jA1+oIjJtGXYjem6V5rD0tCDGCVNYpD+mJRaNi0Jcw==}
-    dev: false
-
   /highlight.js@10.7.3:
     resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
     dev: false
@@ -7014,10 +7004,6 @@ packages:
 
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
-    dev: false
-
-  /immutability-helper@3.1.1:
-    resolution: {integrity: sha512-Q0QaXjPjwIju/28TsugCHNEASwoCcJSyJV3uO1sOIQGI0jKgm9f41Lvz0DZj3n46cNCyAZTsEYoY4C2bVRUzyQ==}
     dev: false
 
   /immutable@4.3.7:
@@ -8446,6 +8432,11 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
     dev: true
+
+  /pretty-bytes@6.1.1:
+    resolution: {integrity: sha512-mQUvGU6aUFQ+rNvTIAcZuWGRT9a6f6Yrg9bHs4ImKF+HZCEK+plBvnAZYSIQztknZF2qnzNtr6F8s0+IuptdlQ==}
+    engines: {node: ^14.13.1 || >=16.0.0}
+    dev: false
 
   /pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}

@@ -1,5 +1,5 @@
 import MonacoEditor from "@monaco-editor/react";
-import type { BeforeMount, OnMount } from "@monaco-editor/react";
+import type { BeforeMount, OnChange, OnMount } from "@monaco-editor/react";
 
 type EditorProps = {
   schema: object;
@@ -7,9 +7,9 @@ type EditorProps = {
   onSave(value: string): void;
 };
 
-export function Editor({ schema, title, onSave }: EditorProps) {
-  const defaultValue = ["{", '  "assetId": ""', "}"].join("\n");
+let defaultValue = ["{", '  "uri": ""', "}"].join("\n");
 
+export function Editor({ schema, title, onSave }: EditorProps) {
   const beforeMount: BeforeMount = (monaco) => {
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,
@@ -30,6 +30,14 @@ export function Editor({ schema, title, onSave }: EditorProps) {
     });
   };
 
+  const onChange: OnChange = (value) => {
+    if (value) {
+      // When changed, store outside of component so we can switch pages and come back
+      // where we left off.
+      defaultValue = value;
+    }
+  };
+
   return (
     <div className="h-full flex flex-col bg-[#1e1e1e]">
       <div className="p-4 flex gap-2">
@@ -41,6 +49,7 @@ export function Editor({ schema, title, onSave }: EditorProps) {
         defaultValue={defaultValue}
         beforeMount={beforeMount}
         onMount={onMount}
+        onChange={onChange}
         defaultPath="custom"
         theme="vs-dark"
         options={{

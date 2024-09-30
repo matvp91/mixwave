@@ -20,9 +20,6 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "eventemitter3": "^5.0.1",
-    "immutability-helper": "^3.1.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "screenfull": "^6.0.2"
   },
   "devDependencies": {
@@ -32,6 +29,7 @@
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
     "globals": "^15.9.0",
+    "hls.js": "workspace:*",
     "postcss": "^8.4.41",
     "sass-embedded": "^1.78.0",
     "tailwindcss": "^3.4.7",
@@ -39,7 +37,6 @@
     "vite": "^5.4.1",
     "vite-plugin-dts": "^4.1.0",
     "vite-plugin-svgr": "^4.2.0",
-    "vite-tsconfig-paths": "^5.0.1",
-    "hls.js": "workspace:*"
+    "vite-tsconfig-paths": "^5.0.1"
   }
 }

@@ -15,7 +15,10 @@ export function Player({ url }: PlayerProps) {
       return;
     }
 
-    const hls = new Hls();
+    const hls = new Hls({
+      debug: true,
+    });
+
     hls.attachMedia(ref.current!);
 
     const facade = new HlsFacade(hls, ref.current!);

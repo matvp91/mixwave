@@ -6,6 +6,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import House from "lucide-react/icons/house";
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
 
@@ -19,21 +20,29 @@ export function StoragePathBreadcrumbs({ path }: StoragePathBreadcrumbsProps) {
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        {paths.map(({ path, name }) => {
+        {paths.map(({ path, name }, index) => {
           return (
             <Fragment key={path}>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to={`/storage?path=${path}`}>{name}</Link>
+                  <Link to={`/storage?path=${path}`}>
+                    {index ? name : <House className="w-4 h-4" />}
+                  </Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator />
+              <BreadcrumbSeparator>/</BreadcrumbSeparator>
             </Fragment>
           );
         })}
         {target ? (
           <BreadcrumbItem>
-            <BreadcrumbPage>{target.name}</BreadcrumbPage>
+            <BreadcrumbPage>
+              {target.path === "/" ? (
+                <House className="w-4 h-4" />
+              ) : (
+                target.name
+              )}
+            </BreadcrumbPage>
           </BreadcrumbItem>
         ) : null}
       </BreadcrumbList>

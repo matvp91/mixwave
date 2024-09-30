@@ -7,7 +7,7 @@ import { initServer } from "@ts-rest/fastify";
 import { addTranscodeJob, addPackageJob } from "@mixwave/artisan/producer";
 import { getJobs, getJob, getJobLogs } from "./jobs.js";
 import { openApiSpec } from "./openapi.js";
-import { getStorage, getStoragePreview } from "./s3.js";
+import { getStorage, getStorageFile } from "./s3.js";
 
 async function buildServer() {
   const app = Fastify();
@@ -52,13 +52,13 @@ async function buildServer() {
     getStorage: async ({ query }) => {
       return {
         status: 200,
-        body: await getStorage(query.path, query.take, query.skip),
+        body: await getStorage(query.path, query.take, query.cursor),
       };
     },
-    getStoragePreview: async ({ query }) => {
+    getStorageFile: async ({ query }) => {
       return {
         status: 200,
-        body: await getStoragePreview(query.path),
+        body: await getStorageFile(query.path),
       };
     },
     getSpec: async () => {

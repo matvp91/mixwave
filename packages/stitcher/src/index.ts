@@ -19,39 +19,15 @@ async function buildServer() {
   const s = initServer();
 
   const router = s.router(contract, {
-    postSession: async ({ request, body }) => {
+    postSession: async ({ body }) => {
       const session = await createSession(body);
-      const baseUrl =
-        env.PUBLIC_STITCHER_ENDPOINT ??
-        `${request.protocol}://${request.hostname}`;
-
       return {
         status: 200,
         body: {
-          url: `${baseUrl}/session/${session.id}/master.m3u8`,
+          url: `${env.PUBLIC_STITCHER_ENDPOINT}/session/${session.id}/master.m3u8`,
           session,
         },
       };
-    },
-    getDirectMasterPlaylist: async ({ request, params, query, reply }) => {
-      const body = {
-        assetId: params.assetId,
-        // Use params from base64 payload first.
-        ...query.params,
-        // Overwrite them with query params.
-        ...query,
-      };
-
-      const session = await createSession(body);
-
-      const baseUrl =
-        env.PUBLIC_STITCHER_ENDPOINT ??
-        `${request.protocol}://${request.hostname}`;
-
-      return reply.redirect(
-        `${baseUrl}/session/${session.id}/master.m3u8`,
-        302,
-      );
     },
     getMasterPlaylist: async ({ params, reply }) => {
       const session = await getSession(params.sessionId);
@@ -61,7 +37,7 @@ async function buildServer() {
     },
     getMediaPlaylist: async ({ params, reply }) => {
       const session = await getSession(params.sessionId);
-      const response = await formatMediaPlaylist(session, params.path);
+      const response = await formatMediaPlaylist(session, params["*"]);
 
       return reply.type("application/x-mpegURL").send(response);
     },

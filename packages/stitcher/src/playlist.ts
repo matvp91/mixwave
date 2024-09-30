@@ -26,7 +26,7 @@ const NoInterstitialsError = createError(
 
 const InvalidFilter = createError("INVALID_FILTER", "Invalid filter");
 
-async function fetchPlaylist<T>(url: string) {
+export async function fetchPlaylist<T>(url: string) {
   try {
     const response = await fetch(url);
     const text = await response.text();

@@ -47,6 +47,16 @@ export const contract = c.router({
     path: "/session/:sessionId/*",
     responses: {},
   },
+  unstable_getFastMasterPlaylist: {
+    method: "GET",
+    path: "/fast/:scheduleId/master.m3u8",
+    responses: {},
+  },
+  unstable_getFastMediaPlaylist: {
+    method: "GET",
+    path: "/fast/:scheduleId/*",
+    responses: {},
+  },
   getSpec: {
     method: "GET",
     path: "/spec.json",

@@ -42,14 +42,6 @@ export async function formatMasterPlaylist(session: Session) {
 
   const master = await fetchPlaylist<MasterPlaylist>(url);
 
-  master.defines.push(
-    new hlsParser.types.Define({
-      type: "NAME",
-      name: "mix-session-id",
-      value: session.id,
-    }),
-  );
-
   if (session.resolution) {
     try {
       master.variants = filterByString(master.variants, session.resolution);

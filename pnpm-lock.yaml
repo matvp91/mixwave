@@ -447,6 +447,9 @@ importers:
       hh-mm-ss:
         specifier: ^1.2.0
         version: 1.2.0
+      luxon:
+        specifier: ^3.5.0
+        version: 3.5.0
       parse-filepath:
         specifier: ^1.0.2
         version: 1.0.2
@@ -472,6 +475,9 @@ importers:
       '@types/hh-mm-ss':
         specifier: ^1.2.3
         version: 1.2.3
+      '@types/luxon':
+        specifier: ^3.4.2
+        version: 3.4.2
       '@types/node':
         specifier: ^22.1.0
         version: 22.1.0
@@ -5262,6 +5268,10 @@ packages:
 
   /@types/linkify-it@5.0.0:
     resolution: {integrity: sha512-sVDA58zAw4eWAffKOaQH5/5j3XeayukzDk+ewSsnv3p4yJEZHCCzMDiZM8e0OUrRvmpGZ85jf4yDHkHsgBNr9Q==}
+    dev: true
+
+  /@types/luxon@3.4.2:
+    resolution: {integrity: sha512-TifLZlFudklWlMBfhubvgqTXRzLDI5pCbGa4P8a3wPyUQSW+1xQ5eDsreP9DWHX3tjq1ke96uYG/nwundroWcA==}
     dev: true
 
   /@types/markdown-it@14.1.2:

@@ -87,4 +87,8 @@ Mixwave consists of the following packages:
     <td><a href="https://github.com/matvp91/mixwave/tree/main/packages/dashboard" target="_blank"><b>dashboard</b></a></td>
     <td>A front-end that uses the api and visualizes running jobs.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/matvp91/mixwave/tree/main/packages/player" target="_blank"><b>player</b></a></td>
+    <td>An easy to use HLS.js wrapper and UI built with React.</td>
+  </tr>
 </table>

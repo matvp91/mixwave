@@ -5,20 +5,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { StoragePathBreadcrumbs } from "./StoragePathBreadcrumbs";
 import { StorageRow } from "./StorageRow";
 import type { UIEventHandler } from "react";
 import type { FileDto, FolderContentDto } from "@/tsr";
 
 type StorageExplorerProps = {
-  path: string;
   contents: FolderContentDto[];
   onNext(): void;
   setFile(file: FileDto): void;
 };
 
 export function StorageTable({
-  path,
   contents,
   onNext,
   setFile,

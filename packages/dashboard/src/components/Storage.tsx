@@ -43,7 +43,6 @@ export function Storage({ path }: StorageProps) {
       </div>
       {contents ? (
         <StorageTable
-          path={path}
           contents={contents}
           onNext={fetchNextPage}
           setFile={setFile}

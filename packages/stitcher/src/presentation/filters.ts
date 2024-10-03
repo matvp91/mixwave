@@ -1,33 +1,23 @@
 import type { Variant } from "../parser/index.js";
 
+const FILTER_VARIANTS_OPERATOR = {
+  "<": (a: number, b: number) => a < b,
+  "<=": (a: number, b: number) => a <= b,
+  ">": (a: number, b: number) => a > b,
+  ">=": (a: number, b: number) => a >= b,
+} as const;
+
 export function filterVariants(variants: Variant[], resolution: string) {
   const [operator, value] = resolution.split(" ");
 
   const height = parseInt(value, 10);
 
-  if (operator === "<") {
-    return variants.filter(
-      (item) => item.resolution && item.resolution?.height < height,
-    );
+  const fn = FILTER_VARIANTS_OPERATOR[operator];
+  if (typeof fn !== "function") {
+    throw new Error(`Invalid filter: ${operator} ${value}`);
   }
 
-  if (operator === "<=") {
-    return variants.filter(
-      (item) => item.resolution && item.resolution?.height <= height,
-    );
-  }
-
-  if (operator === ">") {
-    return variants.filter(
-      (item) => item.resolution && item.resolution?.height > height,
-    );
-  }
-
-  if (operator === ">=") {
-    return variants.filter(
-      (item) => item.resolution && item.resolution?.height >= height,
-    );
-  }
-
-  throw new Error("Invalid filter");
+  return variants.filter(
+    (item) => item.resolution && fn(item.resolution.height, height),
+  );
 }

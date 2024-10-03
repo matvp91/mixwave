@@ -3,13 +3,19 @@ import { join } from "path";
 
 const uuidRegex = /^[a-z,0-9,-]{36,36}$/;
 
+export type Format = {
+  base: string;
+  file: string;
+  url: string;
+};
+
 /**
  * @example From https://test-streams.mux.dev/path/master.m3u8
  *          to https://test-streams.mux.dev/path (base) and master.m3u8 (file)
  * @param uri
  * @returns
  */
-export function formatUri(uri: string) {
+export function formatUri(uri: string): Format {
   if (uri.startsWith("http://") || uri.startsWith("https://")) {
     const file = uri.split("/").pop();
     if (!file) {
@@ -18,6 +24,7 @@ export function formatUri(uri: string) {
     return {
       base: uri.substring(0, uri.lastIndexOf("/")),
       file,
+      url: uri,
     };
   }
 
@@ -32,6 +39,7 @@ export function formatUri(uri: string) {
     return {
       base: `${env.PUBLIC_S3_ENDPOINT}/package/${assetId}/hls`,
       file: "master.m3u8",
+      url: `${env.PUBLIC_S3_ENDPOINT}/package/${assetId}/hls/master.m3u8`,
     };
   }
 

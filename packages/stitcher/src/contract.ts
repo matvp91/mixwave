@@ -19,7 +19,11 @@ const postSessionBodySchema = z.object({
       }),
     )
     .optional(),
-  resolution: z.string().optional(),
+  filter: z
+    .object({
+      resolution: z.string().optional(),
+    })
+    .optional(),
 });
 
 export const contract = c.router({

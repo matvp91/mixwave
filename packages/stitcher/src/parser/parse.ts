@@ -1,5 +1,6 @@
 import { assert } from "../assert.js";
 import { lexicalParse } from "./lexical-parse.js";
+import { pushRendition } from "./utils.js";
 import type {
   MediaPlaylist,
   MasterPlaylist,
@@ -19,7 +20,6 @@ function formatMediaPlaylist(tags: Tag[]): MediaPlaylist {
   let independentSegments = false;
   let mediaSequenceBase: number | undefined;
   let discontinuitySequenceBase: number | undefined;
-  let programDateTime: DateTime | undefined;
 
   let map: MediaInitializationSection | undefined;
 
@@ -131,11 +131,11 @@ function addRendition(variant: Variant, media: Media) {
   };
 
   if (media.type === "AUDIO") {
-    variant.audio.push(rendition);
+    pushRendition("audio", variant, rendition);
   }
 
   if (media.type === "SUBTITLES") {
-    variant.subtitles.push(rendition);
+    pushRendition("subtitles", variant, rendition);
   }
 }
 

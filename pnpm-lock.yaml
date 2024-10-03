@@ -456,6 +456,9 @@ importers:
       redis:
         specifier: ^4.7.0
         version: 4.7.0
+      ts-deepmerge:
+        specifier: ^7.0.1
+        version: 7.0.1
       uuid:
         specifier: ^10.0.0
         version: 10.0.0
@@ -9501,6 +9504,11 @@ packages:
 
   /ts-deepmerge@6.2.1:
     resolution: {integrity: sha512-8CYSLazCyj0DJDpPIxOFzJG46r93uh6EynYjuey+bxcLltBeqZL7DMfaE5ZPzZNFlav7wx+2TDa/mBl8gkTYzw==}
+    engines: {node: '>=14.13.1'}
+    dev: false
+
+  /ts-deepmerge@7.0.1:
+    resolution: {integrity: sha512-JBFCmNenZdUCc+TRNCtXVM6N8y/nDQHAcpj5BlwXG/gnogjam1NunulB9ia68mnqYI446giMfpqeBFFkOleh+g==}
     engines: {node: '>=14.13.1'}
     dev: false
 

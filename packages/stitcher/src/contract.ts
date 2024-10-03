@@ -19,7 +19,11 @@ const postSessionBodySchema = z.object({
       }),
     )
     .optional(),
-  resolution: z.string().optional(),
+  filter: z
+    .object({
+      resolution: z.string().optional(),
+    })
+    .optional(),
 });
 
 export const contract = c.router({
@@ -45,16 +49,6 @@ export const contract = c.router({
   getMediaPlaylist: {
     method: "GET",
     path: "/session/:sessionId/*",
-    responses: {},
-  },
-  unstable_getFastMasterPlaylist: {
-    method: "GET",
-    path: "/fast/:scheduleId/master.m3u8",
-    responses: {},
-  },
-  unstable_getFastMediaPlaylist: {
-    method: "GET",
-    path: "/fast/:scheduleId/*",
     responses: {},
   },
   getSpec: {

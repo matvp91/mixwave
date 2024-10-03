@@ -10,7 +10,6 @@ import {
   formatMediaPlaylist,
   formatAssetList,
 } from "./playlist.js";
-import { getMasterPlaylist, getMediaPlaylist } from "./fast/index.js";
 
 async function buildServer() {
   const app = Fastify();
@@ -52,18 +51,6 @@ async function buildServer() {
         body: await formatAssetList(session, query.timeOffset),
       };
     },
-    unstable_getFastMasterPlaylist: async () => {
-      return {
-        status: 200,
-        body: await getMasterPlaylist(),
-      };
-    },
-    unstable_getFastMediaPlaylist: async ({ params }) => {
-      return {
-        status: 200,
-        body: await getMediaPlaylist(params["*"]),
-      };
-    },
     getSpec: async () => {
       return {
         status: 200,
@@ -84,6 +71,3 @@ async function main() {
 }
 
 main();
-
-// TODO: Remove
-import "./parser/index.js";

@@ -2,14 +2,7 @@ import { client } from "./redis.js";
 import { randomUUID } from "crypto";
 import { extractInterstitialFromVmapAdbreak } from "./vast.js";
 import { getVmap } from "./vmap.js";
-import createError from "@fastify/error";
-import type { Session, Interstitial } from "./types.js";
-
-const NoSessionError = createError<[string]>(
-  "NO_SESSION",
-  "A session with id %s is not found.",
-  404,
-);
+import type { Session, Interstitial, Filter } from "./types.js";
 
 const REDIS_PREFIX = `stitcher:session`;
 
@@ -17,19 +10,13 @@ function getRedisKey(sessionId: string) {
   return `${REDIS_PREFIX}:${sessionId}`;
 }
 
-const PlaylistUnavailableError = createError<[string]>(
-  "PLAYLIST_UNAVAILABLE",
-  "%s is unavailable.",
-  404,
-);
-
 export async function createSession(data: {
   uri: string;
   vmap?: {
     url: string;
   };
   interstitials?: Interstitial[];
-  resolution?: string;
+  filter?: Filter;
 }) {
   const sessionId = randomUUID();
 
@@ -60,8 +47,8 @@ export async function createSession(data: {
   const session = {
     id: sessionId,
     uri: data.uri,
+    filter: data.filter,
     interstitials,
-    resolution: data.resolution,
   } satisfies Session;
 
   const redisKey = getRedisKey(sessionId);
@@ -79,7 +66,7 @@ export async function getSession(sessionId: string) {
 
   const data = await client.json.get(redisKey);
   if (!data) {
-    throw new NoSessionError(sessionId);
+    throw new Error(`No session for id "${sessionId}"`);
   }
 
   return data as Session;

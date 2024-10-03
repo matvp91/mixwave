@@ -6,7 +6,7 @@
     "moduleResolution": "node",
     "strict": true,
     "skipLibCheck": true,
-    "outDir": "./dist",
+    "outDir": "./dist/src",
     "noImplicitAny": false,
     "allowJs": true,
     "allowSyntheticDefaultImports": true

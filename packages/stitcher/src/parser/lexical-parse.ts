@@ -10,6 +10,8 @@ import type {
 // Based on the latest spec:
 // https://datatracker.ietf.org/doc/html/draft-pantos-hls-rfc8216bis
 
+type OneOf<T extends readonly string[]> = T[number];
+
 const EMPTY_TAGS = [
   "EXTM3U",
   "EXT-X-DISCONTINUITY",
@@ -26,8 +28,6 @@ const NUMBER_TAGS = [
 ] as const;
 
 const DATE_TAGS = ["EXT-X-PROGRAM-DATE-TIME"] as const;
-
-type OneOf<T extends readonly string[]> = T[number];
 
 export type Tag =
   | ["LITERAL", string]

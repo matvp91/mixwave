@@ -10,10 +10,7 @@ Stitcher is a playlist manipulator that can insert HLS interstitials on-the-fly.
 
 - Insert ads at given cue points.
 - Add a bumper manifest at the start of a playlist, like Netflix' intro.
-
-::: info
-Stitcher is in alpha, until we have proper documentation for this, refer to the source for more info and the API contract. Get in touch if you have questions!
-:::
+- Filter media playlists to fit your needs.
 
 ## Create a session
 
@@ -43,12 +40,20 @@ Behind the scenes, stitcher will create a session and return you a personalised 
 
 ## Playlist manipulation
 
-### Limit resolution
+### Filters
+
+Mixwave makes it a breeze to apply filters to both the `master` and the `media` playlists.
+
+#### Limit resolution
+
+When streaming over networks with limited bandwidth (e.g., mobile networks), removing higher-bitrate renditions can help prevent buffering issues or excessive data usage.
 
 ```json
 {
   "assetId": "f7e89553-0d3b-4982-ba7b-3ce5499ac689",
-  "resolution": "> 480"
+  "filter": {
+    "resolution": "> 480"
+  }
 }
 ```
 

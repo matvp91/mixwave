@@ -1,8 +1,10 @@
 import { stringify } from "./parser/index.js";
-import { addInterstitialsToMedia } from "./features/interstitials.js";
+import {
+  addInterstitialsToMedia,
+  fetchPlaylistDuration,
+  Presentation,
+} from "./presentation/index.js";
 import { formatUri } from "./uri.js";
-import { getPlaylistDuration } from "./features/playlist.js";
-import { Presentation } from "./presentation.js";
 import { assert } from "./assert.js";
 import type { Session } from "./types.js";
 
@@ -43,7 +45,7 @@ export async function formatAssetList(session: Session, timeOffset: number) {
 
       return {
         URI: format.url,
-        DURATION: await getPlaylistDuration(format.url),
+        DURATION: await fetchPlaylistDuration(format.url),
         "MIX-TYPE": interstitial.type,
       };
     }),

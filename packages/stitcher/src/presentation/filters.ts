@@ -1,7 +1,7 @@
 import type { Variant } from "../parser/index.js";
 
-export function filterVariantsByString(variants: Variant[], str: string) {
-  const [operator, value] = str.split(" ");
+export function filterVariants(variants: Variant[], resolution: string) {
+  const [operator, value] = resolution.split(" ");
 
   const height = parseInt(value, 10);
 

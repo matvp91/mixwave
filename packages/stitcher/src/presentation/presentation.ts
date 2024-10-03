@@ -1,15 +1,10 @@
-import { formatUri, withPath } from "./uri.js";
-import { parseMasterPlaylist, parseMediaPlaylist } from "./parser/index.js";
-import { rewriteSegmentToAbsolute } from "./features/playlist.js";
-import { filterVariantsByString } from "./features/filters.js";
-import type { Format } from "./uri.js";
-import type { Variant, MediaPlaylist } from "./parser/index.js";
-import type { Filter } from "./types.js";
-
-export type Stream = {
-  variant: Variant;
-  media: MediaPlaylist;
-};
+import { formatUri, withPath } from "../uri.js";
+import { parseMasterPlaylist, parseMediaPlaylist } from "../parser/index.js";
+import { rewriteSegmentToAbsolute } from "./utils.js";
+import { filterVariants } from "./filters.js";
+import type { Format } from "../uri.js";
+import type { Filter } from "../types.js";
+import type { Stream } from "./types.js";
 
 export type PresentationOptions = {
   filter?: Filter;
@@ -30,7 +25,7 @@ export class Presentation {
     const master = parseMasterPlaylist(text);
 
     if (this.options_.filter?.resolution) {
-      master.variants = filterVariantsByString(
+      master.variants = filterVariants(
         master.variants,
         this.options_.filter.resolution,
       );

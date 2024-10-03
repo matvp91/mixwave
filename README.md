@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/github/last-commit/matvp91/mixwave">
     <img src="https://img.shields.io/github/stars/matvp91/mixwave" alt="stars">
     <img src="https://img.shields.io/badge/PR's-welcome-0437F2" alt="pr">
-    <a href="https://discord.gg/5PPgvkCW">
+    <a href="https://discord.gg/4hXgz9EsF4">
       <img src="https://img.shields.io/discord/1290252589522223166?v=1" alt="discord">
     </a>
   </p>

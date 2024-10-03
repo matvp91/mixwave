@@ -83,4 +83,5 @@ async function main() {
 
 main();
 
-import "./lib/playlist.js";
+// TODO: Remove
+import "./parser/index.js";

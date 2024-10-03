@@ -1,16 +1,15 @@
-import * as hlsParser from "../../extern/hls-parser/index.js";
 import { getChannelBlock } from "./channel-block.js";
-import {
-  MasterPlaylist,
-  Variant,
-  Rendition,
-  Resolution,
-} from "../../extern/hls-parser/types.js";
 import { DateTime } from "luxon";
 import { getMediaPlaylist, mergeMediaPairs } from "./media.js";
 import { assert } from "../assert.js";
+import { stringify } from "../parser/index.js";
 import type { ChannelBlock } from "./channel-block.js";
-import type { AudioRendition } from "./types.js";
+import type {
+  MasterPlaylist,
+  Rendition,
+  Resolution,
+  Variant,
+} from "../parser/index.js";
 
 export type Schedule = {
   items: {
@@ -24,7 +23,6 @@ export type TrackTemplate =
   | {
       type: "video";
       resolution: Resolution;
-      codecs: string;
       bandwidth: number;
     }
   | {
@@ -64,12 +62,7 @@ export class Channel {
     const templates: TrackTemplate[] = [];
 
     block.master.variants.forEach((variant) => {
-      if (variant.isIFrameOnly) {
-        // We skip iframe only playlists for now.
-        return;
-      }
-
-      if (!variant.resolution || !variant.codecs) {
+      if (!variant.resolution) {
         // We need the resolution and codecs later on for proper matching,
         // and merging media playlists.
         return;
@@ -78,7 +71,6 @@ export class Channel {
       templates.push({
         type: "video",
         resolution: variant.resolution,
-        codecs: variant.codecs,
         bandwidth: variant.bandwidth,
       });
     });
@@ -102,14 +94,13 @@ export class Channel {
           return acc;
         }
 
-        acc.push(
-          new Variant({
-            uri: `${index}/video_${template.bandwidth}/playlist.m3u8`,
-            bandwidth: template.bandwidth,
-            resolution: template.resolution,
-            codecs: template.codecs,
-          }),
-        );
+        acc.push({
+          uri: `${index}/video_${template.bandwidth}/playlist.m3u8`,
+          bandwidth: template.bandwidth,
+          resolution: template.resolution,
+          audio: [],
+          subtitles: [],
+        });
 
         return acc;
       },
@@ -120,29 +111,25 @@ export class Channel {
       if (template.type !== "audio") {
         return;
       }
-
-      const rendition = new Rendition({
+      const rendition: Rendition = {
         type: "AUDIO",
-        groupId: `audio${index}`,
+        groupId: "audio",
         name: template.name,
-        isDefault: false,
-        autoselect: false,
-        forced: false,
         uri: `${index}/audio_${template.name.toLowerCase()}/playlist.m3u8`,
-      }) as AudioRendition;
+      };
 
       variants.forEach((variant) => {
         variant.audio.push(rendition);
       });
     });
 
-    const master = new MasterPlaylist({
-      version: 6,
+    const master: MasterPlaylist = {
       independentSegments: true,
+      isMasterPlaylist: true,
       variants,
-    });
+    };
 
-    return hlsParser.stringify(master);
+    return stringify(master);
   }
 
   async getMediaPlaylist(path: string) {
@@ -171,6 +158,6 @@ export class Channel {
 
     const media = mergeMediaPairs(now, this.slidingLength_, mediaPairs);
 
-    return hlsParser.stringify(media);
+    return stringify(media);
   }
 }

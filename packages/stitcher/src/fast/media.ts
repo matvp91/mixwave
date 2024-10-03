@@ -1,9 +1,9 @@
-import * as hlsParser from "../../extern/hls-parser/index.js";
 import { formatUri, withPath } from "../uri.js";
-import { MediaPlaylist, Segment } from "../../extern/hls-parser/types.js";
+import { parseMediaPlaylist } from "../parser/index.js";
 import type { ChannelBlock } from "./channel-block.js";
 import type { TrackTemplate } from "./channel.js";
 import type { DateTime } from "luxon";
+import type { MediaPlaylist, Segment } from "../parser/index.js";
 
 export async function getMediaPlaylist(
   block: ChannelBlock,
@@ -29,7 +29,7 @@ export async function getMediaPlaylist(
   const response = await fetch(url);
   const text = await response.text();
 
-  const media = hlsParser.parse(text) as MediaPlaylist;
+  const media = parseMediaPlaylist(text);
 
   media.segments.forEach((segment) => {
     if (segment.map?.uri === "init.mp4") {
@@ -48,7 +48,7 @@ export function mergeMediaPairs(
     block: ChannelBlock;
     media: MediaPlaylist;
   }[],
-) {
+): MediaPlaylist {
   let targetDuration = 0;
 
   const allSegments: Segment[] = [];
@@ -72,11 +72,11 @@ export function mergeMediaPairs(
         return;
       }
 
-      const partialSegment = new Segment({
+      const partialSegment: Segment = {
         uri: segment.uri,
         duration: segment.duration,
         map: segment.map,
-      });
+      };
 
       if (!index) {
         partialSegment.discontinuity = true;
@@ -88,9 +88,12 @@ export function mergeMediaPairs(
     });
   }
 
-  return new MediaPlaylist({
-    version: 6,
+  return {
+    isMasterPlaylist: false,
+    independentSegments: true,
+    endlist: false,
+    dateRanges: [],
     targetDuration,
     segments: allSegments,
-  });
+  };
 }

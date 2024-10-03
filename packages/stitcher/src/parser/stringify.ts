@@ -6,6 +6,7 @@ import type {
   Segment,
   MediaPlaylist,
   MediaInitializationSection,
+  DateRange,
 } from "./types.js";
 
 function buildRendition(lines: Lines, rendition: Rendition) {
@@ -43,6 +44,7 @@ function buildVariant(lines: Lines, variant: Variant) {
   }
 
   lines.push(`#EXT-X-STREAM-INF:${attrs.join(",")}`);
+  lines.push(variant.uri);
 }
 
 function stringifyMasterPlaylist(playlist: MasterPlaylist) {
@@ -67,8 +69,11 @@ function buildSegment(lines: Lines, segment: Segment) {
   }
 
   if (segment.map) {
-    const line = buildMap(segment.map);
-    lines.push(line);
+    buildMap(lines, segment.map);
+  }
+
+  if (segment.programDateTime) {
+    lines.push(`#EXT-X-PROGRAM-DATE-TIME:${segment.programDateTime.toISO()}`);
   }
 
   let duration = segment.duration.toFixed(3);
@@ -81,9 +86,31 @@ function buildSegment(lines: Lines, segment: Segment) {
   lines.push(segment.uri);
 }
 
-function buildMap(map: MediaInitializationSection) {
+function buildMap(lines: Lines, map: MediaInitializationSection) {
   const attrs = [`URI="${map.uri}"`];
-  return `#EXT-X-MAP:${attrs.join(",")}`;
+  lines.push(`#EXT-X-MAP:${attrs.join(",")}`);
+}
+
+function buildDateRange(lines: Lines, dateRange: DateRange) {
+  const attrs = [
+    `ID="${dateRange.id}"`,
+    `CLASS="${dateRange.classId}"`,
+    `START-DATE="${dateRange.startDate.toISO()}"`,
+  ];
+
+  if (dateRange.clientAttributes) {
+    const entries = Object.entries(dateRange.clientAttributes);
+    for (const [key, value] of entries) {
+      if (typeof value === "string") {
+        attrs.push(`X-${key}="${value}"`);
+      }
+      if (typeof value === "number") {
+        attrs.push(`X-${key}=${value}`);
+      }
+    }
+  }
+
+  lines.push(`#EXT-X-DATERANGE:${attrs.join(",")}`);
 }
 
 function stringifyMediaPlaylist(playlist: MediaPlaylist) {
@@ -120,6 +147,10 @@ function stringifyMediaPlaylist(playlist: MediaPlaylist) {
   if (playlist.endlist) {
     lines.push(`#EXT-X-ENDLIST`);
   }
+
+  playlist.dateRanges.forEach((dateRange) => {
+    buildDateRange(lines, dateRange);
+  });
 
   return lines.join("\n");
 }

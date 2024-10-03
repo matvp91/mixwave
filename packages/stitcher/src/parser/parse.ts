@@ -9,7 +9,8 @@ import type {
   Variant,
   Rendition,
 } from "./types.js";
-import type { Tag, StreamInf, Media, MediaType } from "./lexical-parse.js";
+import type { Tag, StreamInf, Media } from "./lexical-parse.js";
+import type { DateTime } from "luxon";
 
 function formatMediaPlaylist(tags: Tag[]): MediaPlaylist {
   let targetDuration: number | undefined;
@@ -18,6 +19,7 @@ function formatMediaPlaylist(tags: Tag[]): MediaPlaylist {
   let independentSegments = false;
   let mediaSequenceBase: number | undefined;
   let discontinuitySequenceBase: number | undefined;
+  let programDateTime: DateTime | undefined;
 
   let map: MediaInitializationSection | undefined;
 
@@ -82,6 +84,9 @@ function formatMediaPlaylist(tags: Tag[]): MediaPlaylist {
     independentSegments,
     mediaSequenceBase,
     discontinuitySequenceBase,
+    // TODO: We're not going to parse dateRanges for now, we're only going to
+    // allow to set them manually, such as interstitials.
+    dateRanges: [],
   };
 }
 
@@ -92,6 +97,7 @@ function parseSegment(
 ): Segment {
   let duration: number | undefined;
   let discontinuity: boolean | undefined;
+  let programDateTime: DateTime | undefined;
 
   tags.forEach(([name, value]) => {
     if (name === "EXTINF") {
@@ -99,6 +105,9 @@ function parseSegment(
     }
     if (name === "EXT-X-DISCONTINUITY") {
       discontinuity = true;
+    }
+    if (name === "EXT-X-PROGRAM-DATE-TIME") {
+      programDateTime = value;
     }
   });
 
@@ -109,6 +118,7 @@ function parseSegment(
     duration,
     discontinuity,
     map,
+    programDateTime,
   };
 }
 

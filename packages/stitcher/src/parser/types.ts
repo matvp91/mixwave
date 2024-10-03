@@ -1,3 +1,5 @@
+import type { DateTime } from "luxon";
+
 export type Resolution = {
   width: number;
   height: number;
@@ -35,6 +37,7 @@ export type Segment = {
   duration: number;
   discontinuity?: boolean;
   map?: MediaInitializationSection;
+  programDateTime?: DateTime;
 };
 
 export type PlaylistType = "EVENT" | "VOD";
@@ -48,4 +51,12 @@ export type MediaPlaylist = {
   segments: Segment[];
   mediaSequenceBase?: number;
   discontinuitySequenceBase?: number;
+  dateRanges: DateRange[];
+};
+
+export type DateRange = {
+  id: string;
+  classId: string;
+  startDate: DateTime;
+  clientAttributes?: Record<string, string | number>;
 };

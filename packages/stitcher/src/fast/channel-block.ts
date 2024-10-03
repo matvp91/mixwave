@@ -1,7 +1,7 @@
-import * as hlsParser from "../../extern/hls-parser/index.js";
 import { formatUri, withPath } from "../uri.js";
 import { DateTime } from "luxon";
-import { MasterPlaylist } from "../../extern/hls-parser/types.js";
+import { parseMasterPlaylist } from "../parser/index.js";
+import type { MasterPlaylist } from "../parser/index.js";
 
 export type ChannelBlock = {
   start: DateTime;
@@ -41,5 +41,5 @@ async function getMasterPlaylist(url: string) {
 
   const text = await promise;
 
-  return hlsParser.parse(text) as MasterPlaylist;
+  return parseMasterPlaylist(text);
 }

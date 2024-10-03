@@ -1,10 +1,16 @@
-import * as hlsParser from "../extern/hls-parser/index.js";
+import {
+  createDateRangeInterstitial,
+  parseMasterPlaylist,
+  parseMediaPlaylist,
+  stringify,
+} from "./parser/index.js";
 import parseFilepath from "parse-filepath";
-import { MasterPlaylist, MediaPlaylist } from "../extern/hls-parser/types.js";
 import createError from "@fastify/error";
-import { filterByString } from "./helpers.js";
+import { filterVariantsByString } from "./helpers.js";
 import { formatUri, withPath } from "./uri.js";
+import { DateTime } from "luxon";
 import type { Session, Interstitial, InterstitialType } from "./types.js";
+import type { MediaPlaylist } from "./parser/index.js";
 
 const PlaylistUnavailableError = createError<[string]>(
   "PLAYLIST_UNAVAILABLE",
@@ -26,12 +32,22 @@ const NoInterstitialsError = createError(
 
 const InvalidFilter = createError("INVALID_FILTER", "Invalid filter");
 
-export async function fetchPlaylist<T>(url: string) {
+export async function fetchMasterPlaylist(url: string) {
   try {
     const response = await fetch(url);
     const text = await response.text();
-    return hlsParser.parse(text) as T;
-  } catch (error) {
+    return parseMasterPlaylist(text);
+  } catch {
+    throw new PlaylistUnavailableError(url);
+  }
+}
+
+export async function fetchMediaPlaylist(url: string) {
+  try {
+    const response = await fetch(url);
+    const text = await response.text();
+    return parseMediaPlaylist(text);
+  } catch {
     throw new PlaylistUnavailableError(url);
   }
 }
@@ -40,11 +56,14 @@ export async function formatMasterPlaylist(session: Session) {
   const format = formatUri(session.uri);
   const url = withPath(format.base, format.file);
 
-  const master = await fetchPlaylist<MasterPlaylist>(url);
+  const master = await fetchMasterPlaylist(url);
 
   if (session.resolution) {
     try {
-      master.variants = filterByString(master.variants, session.resolution);
+      master.variants = filterVariantsByString(
+        master.variants,
+        session.resolution,
+      );
     } catch {
       throw new InvalidFilter();
     }
@@ -54,14 +73,14 @@ export async function formatMasterPlaylist(session: Session) {
     throw new NoVariantsError();
   }
 
-  return hlsParser.stringify(master);
+  return stringify(master);
 }
 
 export async function formatMediaPlaylist(session: Session, path: string) {
   const format = formatUri(session.uri);
   const url = withPath(format.base, path);
 
-  const media = await fetchPlaylist<MediaPlaylist>(url);
+  const media = await fetchMediaPlaylist(url);
 
   const mediaFormat = formatUri(url);
   rewriteSegmentUrls(media, mediaFormat.base);
@@ -70,7 +89,7 @@ export async function formatMediaPlaylist(session: Session, path: string) {
     addInterstitials(media, session.interstitials, session.id);
   }
 
-  return hlsParser.stringify(media);
+  return stringify(media);
 }
 
 export async function formatAssetList(session: Session, timeOffset: number) {
@@ -101,9 +120,9 @@ export async function formatAssetList(session: Session, timeOffset: number) {
 async function getDuration(url: string) {
   const filePath = parseFilepath(url);
 
-  const master = await fetchPlaylist<MasterPlaylist>(url);
+  const master = await fetchMasterPlaylist(url);
 
-  const media = await fetchPlaylist<MediaPlaylist>(
+  const media = await fetchMediaPlaylist(
     `${filePath.dir}/${master.variants[0].uri}`,
   );
 
@@ -124,17 +143,11 @@ function addInterstitials(
     return;
   }
 
-  const now = Date.now();
-
-  media.segments[0].programDateTime = new Date(now);
+  const now = DateTime.now();
+  media.segments[0].programDateTime = now;
 
   interstitials
-    .reduce<
-      {
-        timeOffset: number;
-        types: InterstitialType[];
-      }[]
-    >((acc, interstitial) => {
+    .reduce<TypedInterstitial[]>((acc, interstitial) => {
       let foundItem = acc.find(
         (item) => item.timeOffset === interstitial.timeOffset,
       );
@@ -153,16 +166,16 @@ function addInterstitials(
       return acc;
     }, [])
     .forEach((item) => {
-      const custom = {
+      const attrs = {
         "MIX-TYPES": item.types.join(","),
       };
 
-      media.interstitials.push(
-        new hlsParser.types.Interstitial({
-          id: `${item.timeOffset}`,
-          startDate: new Date(now + item.timeOffset * 1000),
+      media.dateRanges.push(
+        createDateRangeInterstitial({
+          base: now,
+          timeOffset: item.timeOffset,
           list: `/session/${sessionId}/asset-list.json?timeOffset=${item.timeOffset}`,
-          custom,
+          attrs,
         }),
       );
     });
@@ -176,3 +189,8 @@ function rewriteSegmentUrls(media: MediaPlaylist, base: string) {
     segment.uri = withPath(base, segment.uri);
   }
 }
+
+type TypedInterstitial = {
+  timeOffset: number;
+  types: InterstitialType[];
+};

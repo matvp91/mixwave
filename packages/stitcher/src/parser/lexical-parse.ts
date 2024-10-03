@@ -1,5 +1,6 @@
 import { assert } from "../assert.js";
 import { mapAttributes, partOf } from "./helpers.js";
+import { DateTime } from "luxon";
 import type {
   Resolution,
   MediaInitializationSection,
@@ -32,7 +33,7 @@ export type Tag =
   | ["LITERAL", string]
   | [OneOf<typeof EMPTY_TAGS>, null]
   | [OneOf<typeof NUMBER_TAGS>, number]
-  | [OneOf<typeof DATE_TAGS>, Date]
+  | [OneOf<typeof DATE_TAGS>, DateTime]
   | ["EXTINF", ExtInf]
   | ["EXT-X-PLAYLIST-TYPE", PlaylistType]
   | ["EXT-X-STREAM-INF", StreamInf]
@@ -73,7 +74,7 @@ function parseLine(line: string): Tag | null {
 
   if (partOf(DATE_TAGS, name)) {
     assert(param, "DATE_TAGS: no param");
-    return [name, new Date(param)];
+    return [name, DateTime.fromISO(param)];
   }
 
   switch (name) {

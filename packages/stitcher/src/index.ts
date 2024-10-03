@@ -34,13 +34,15 @@ async function buildServer() {
       const session = await getSession(params.sessionId);
       const response = await formatMasterPlaylist(session);
 
-      return reply.type("application/x-mpegURL").send(response);
+      // return reply.type("application/x-mpegURL").send(response);
+      return reply.send(response);
     },
     getMediaPlaylist: async ({ params, reply }) => {
       const session = await getSession(params.sessionId);
       const response = await formatMediaPlaylist(session, params["*"]);
 
-      return reply.type("application/x-mpegURL").send(response);
+      // return reply.type("application/x-mpegURL").send(response);
+      return reply.send(response);
     },
     getAssetList: async ({ query, params }) => {
       const session = await getSession(params.sessionId);

@@ -11,7 +11,7 @@
   "scripts": {
     "dev:example": "vite dev",
     "dev": "vite build --watch",
-    "build": "tsc -b && vite build"
+    "build": "tsc -b && vite build --emptyOutDir"
   },
   "peerDependencies": {
     "hls.js": "^1.5.15",

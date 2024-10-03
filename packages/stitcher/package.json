@@ -2,8 +2,8 @@
   "name": "@mixwave/stitcher",
   "type": "module",
   "scripts": {
-    "build": "tsc && cp -r ./extern/vast-client ./dist/extern",
-    "dev": "cp -r ./extern/vast-client ./dist/extern && tsc-watch --noClear --onSuccess \"node ./dist/src/index.js\"",
+    "build": "tsc",
+    "dev": "tsc-watch --noClear --onSuccess \"node ./dist/index.js\"",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "devDependencies": {
@@ -37,10 +37,9 @@
     "find-config": "^1.0.0",
     "hh-mm-ss": "^1.2.0",
     "luxon": "^3.5.0",
-    "parse-filepath": "^1.0.2",
     "redis": "^4.7.0",
-    "ts-deepmerge": "^7.0.1",
     "uuid": "^10.0.0",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "vast-client": "workspace:*"
   }
 }

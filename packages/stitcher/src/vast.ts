@@ -1,16 +1,12 @@
 import { addTranscodeJob } from "@mixwave/artisan/producer";
-import { VASTClient } from "../extern/vast-client/index.js";
+import { VASTClient } from "vast-client";
 import { DOMParser } from "@xmldom/xmldom";
 import * as uuid from "uuid";
 import { NAMESPACE_UUID_AD } from "./const.js";
+import { formatUri, isUrlAvailable, withPath } from "./uri.js";
 import type { VmapAdBreak } from "./vmap.js";
 import type { Interstitial } from "./types.js";
-import type {
-  VastResponse,
-  VastCreativeLinear,
-  VastAd,
-} from "../extern/vast-client/index.js";
-import { formatUri, isUrlAvailable, withPath } from "./uri.js";
+import type { VastResponse, VastCreativeLinear, VastAd } from "vast-client";
 
 export async function extractInterstitialFromVmapAdbreak(adBreak: VmapAdBreak) {
   const interstitials: Interstitial[] = [];

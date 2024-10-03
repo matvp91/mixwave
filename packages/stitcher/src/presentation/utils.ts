@@ -18,25 +18,15 @@ export function rewriteSegmentToAbsolute(media: MediaPlaylist, format: Format) {
 export async function fetchPlaylistDuration(url: string) {
   const format = formatUri(url);
 
-  const master = await fetchMasterPlaylist(url);
+  const master = await parseMasterPlaylist(await fetchText(url));
 
   const mediaUrl = withPath(format.base, master.variants[0].uri);
-  const media = await fetchMediaPlaylist(mediaUrl);
+  const media = await parseMediaPlaylist(await fetchText(url));
 
   return media.segments.reduce((acc, segment) => {
     acc += segment.duration;
     return acc;
   }, 0);
-}
-
-export async function fetchMasterPlaylist(url: string) {
-  const text = await fetchText(url);
-  return parseMasterPlaylist(text);
-}
-
-export async function fetchMediaPlaylist(url: string) {
-  const text = await fetchText(url);
-  return parseMediaPlaylist(text);
 }
 
 export function addInterstitialsToMedia(

@@ -21,6 +21,10 @@ importers:
         specifier: ^1.3.2
         version: 1.3.2(@algolia/client-search@4.24.0)(search-insights@2.16.2)
 
+  extern/hls.js: {}
+
+  extern/vast-client: {}
+
   packages/api:
     dependencies:
       '@anatine/zod-openapi':
@@ -240,7 +244,7 @@ importers:
         version: 3.6.0
       hls.js:
         specifier: workspace:*
-        version: link:../hls.js
+        version: link:../../extern/hls.js
       lucide-react:
         specifier: ^0.424.0
         version: 0.424.0(react@18.3.1)
@@ -327,8 +331,6 @@ importers:
         specifier: ^5.3.4
         version: 5.3.5(@types/node@22.1.0)
 
-  packages/hls.js: {}
-
   packages/player:
     dependencies:
       clsx:
@@ -364,7 +366,7 @@ importers:
         version: 15.9.0
       hls.js:
         specifier: workspace:*
-        version: link:../hls.js
+        version: link:../../extern/hls.js
       postcss:
         specifier: ^8.4.41
         version: 8.4.44
@@ -458,7 +460,7 @@ importers:
         version: 10.0.0
       vast-client:
         specifier: workspace:*
-        version: link:../vast-client
+        version: link:../../extern/vast-client
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -508,8 +510,6 @@ importers:
       typescript:
         specifier: ^5.5.4
         version: 5.5.4
-
-  packages/vast-client: {}
 
 packages:
 

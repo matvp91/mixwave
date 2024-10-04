@@ -1,4 +1,5 @@
-import type { Variant } from "../parser/index.js";
+import type { MasterPlaylist, Variant } from "./parser/index.js";
+import type { Filter } from "./types.js";
 
 const FILTER_VARIANTS_OPERATOR = {
   "<": (a: number, b: number) => a < b,
@@ -7,7 +8,7 @@ const FILTER_VARIANTS_OPERATOR = {
   ">=": (a: number, b: number) => a >= b,
 } as const;
 
-export function filterVariants(variants: Variant[], resolution: string) {
+function filterVariantsByResolution(variants: Variant[], resolution: string) {
   const [operator, value] = resolution.split(" ");
 
   const height = parseInt(value, 10);
@@ -20,4 +21,13 @@ export function filterVariants(variants: Variant[], resolution: string) {
   return variants.filter(
     (item) => item.resolution && fn(item.resolution.height, height),
   );
+}
+
+export function filterMaster(master: MasterPlaylist, filter: Filter) {
+  if (filter.resolution) {
+    master.variants = filterVariantsByResolution(
+      master.variants,
+      filter.resolution,
+    );
+  }
 }

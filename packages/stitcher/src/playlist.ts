@@ -6,22 +6,23 @@ import {
 } from "./presentation/index.js";
 import { formatUri } from "./uri.js";
 import { assert } from "./assert.js";
+import { filterMaster } from "./filters.js";
 import type { Session } from "./types.js";
 
 export async function formatMasterPlaylist(session: Session) {
-  const presentation = new Presentation(session.uri, {
-    filter: session.filter,
-  });
+  const presentation = new Presentation(session.uri);
 
   const master = await presentation.getMaster();
+
+  if (session.filter) {
+    filterMaster(master, session.filter);
+  }
 
   return stringify(master);
 }
 
 export async function formatMediaPlaylist(session: Session, path: string) {
-  const presentation = new Presentation(session.uri, {
-    filter: session.filter,
-  });
+  const presentation = new Presentation(session.uri);
 
   const media = await presentation.getMedia(path);
 

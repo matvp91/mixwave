@@ -1,30 +1,28 @@
 import type { DateTime } from "luxon";
 import type { DateRange, MediaPlaylist, Rendition, Variant } from "./types";
 
-type PushInterstitialParams = {
-  base: DateTime;
-  timeOffset: number;
-  list: string;
-  attrs?: Record<string, string>;
-};
-
-export function pushInterstitial(
+export function appendInterstitial(
   media: MediaPlaylist,
-  { base, timeOffset, list, attrs }: PushInterstitialParams,
+  params: {
+    base: DateTime;
+    timeOffset: number;
+    list: string;
+    attrs?: Record<string, string>;
+  },
 ) {
   const clientAttributes = Object.assign(
     {
       RESTRICT: "SKIP,JUMP",
       "RESUME-OFFSET": 0,
-      "ASSET-LIST": list,
+      "ASSET-LIST": params.list,
     },
-    attrs,
+    params.attrs,
   );
 
   const dateRange: DateRange = {
     classId: "com.apple.hls.interstitial",
-    id: `${timeOffset}`,
-    startDate: base.plus({ seconds: timeOffset }),
+    id: `${params.timeOffset}`,
+    startDate: params.base.plus({ seconds: params.timeOffset }),
     clientAttributes,
   };
 
@@ -35,7 +33,7 @@ export function pushInterstitial(
   media.dateRanges.push(dateRange);
 }
 
-export function pushRendition(
+export function appendRendition(
   type: "audio" | "subtitles",
   variant: Variant,
   rendition: Rendition,

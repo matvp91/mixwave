@@ -1,7 +1,7 @@
 import { formatUri, withPath } from "../uri.js";
 import { parseMasterPlaylist, parseMediaPlaylist } from "../parser/index.js";
 import { DateTime } from "luxon";
-import { pushInterstitial } from "../parser/index.js";
+import { appendInterstitial } from "../parser/index.js";
 import type { Interstitial, InterstitialType } from "../types.js";
 import type { MediaPlaylist } from "../parser/index.js";
 import type { Format } from "../uri.js";
@@ -46,7 +46,7 @@ export function addInterstitialsToMedia(
   const groups = groupInterstitials(interstitials);
 
   groups.forEach((item) => {
-    pushInterstitial(media, {
+    appendInterstitial(media, {
       base: now,
       timeOffset: item.timeOffset,
       list: `/session/${sessionId}/asset-list.json?timeOffset=${item.timeOffset}`,

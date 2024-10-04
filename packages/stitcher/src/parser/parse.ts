@@ -1,6 +1,6 @@
 import { assert } from "../assert.js";
 import { lexicalParse } from "./lexical-parse.js";
-import { pushRendition } from "./utils.js";
+import { appendRendition } from "./utils.js";
 import type {
   MediaPlaylist,
   MasterPlaylist,
@@ -9,6 +9,7 @@ import type {
   Segment,
   Variant,
   Rendition,
+  DateRange,
 } from "./types.js";
 import type { Tag, StreamInf, Media } from "./lexical-parse.js";
 import type { DateTime } from "luxon";
@@ -20,8 +21,8 @@ function formatMediaPlaylist(tags: Tag[]): MediaPlaylist {
   let independentSegments = false;
   let mediaSequenceBase: number | undefined;
   let discontinuitySequenceBase: number | undefined;
-
   let map: MediaInitializationSection | undefined;
+  let dateRanges: DateRange[] | undefined;
 
   tags.forEach(([name, value]) => {
     if (name === "EXT-X-TARGETDURATION") {
@@ -34,9 +35,7 @@ function formatMediaPlaylist(tags: Tag[]): MediaPlaylist {
       playlistType = value;
     }
     if (name === "EXT-X-MAP") {
-      map = {
-        uri: value.uri,
-      };
+      map = value;
     }
     if (name === "EXT-X-INDEPENDENT-SEGMENTS") {
       independentSegments = true;
@@ -47,9 +46,15 @@ function formatMediaPlaylist(tags: Tag[]): MediaPlaylist {
     if (name === "EXT-X-DISCONTINUITY-SEQUENCE") {
       discontinuitySequenceBase = value;
     }
+    if (name === "EXT-X-DATERANGE") {
+      if (!dateRanges) {
+        dateRanges = [];
+      }
+      dateRanges.push(value);
+    }
   });
 
-  const segments = tags.reduce<Segment[]>((acc, [name, value], index) => {
+  const segments = tags.reduce<Segment[]>((acc, [name], index) => {
     if (name !== "EXTINF") {
       return acc;
     }
@@ -84,9 +89,7 @@ function formatMediaPlaylist(tags: Tag[]): MediaPlaylist {
     independentSegments,
     mediaSequenceBase,
     discontinuitySequenceBase,
-    // TODO: We're not going to parse dateRanges for now, we're only going to
-    // allow to set them manually, such as interstitials.
-    dateRanges: [],
+    dateRanges,
   };
 }
 
@@ -131,11 +134,11 @@ function addRendition(variant: Variant, media: Media) {
   };
 
   if (media.type === "AUDIO") {
-    pushRendition("audio", variant, rendition);
+    appendRendition("audio", variant, rendition);
   }
 
   if (media.type === "SUBTITLES") {
-    pushRendition("subtitles", variant, rendition);
+    appendRendition("subtitles", variant, rendition);
   }
 }
 

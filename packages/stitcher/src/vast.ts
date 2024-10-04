@@ -3,7 +3,7 @@ import { VASTClient } from "vast-client";
 import { DOMParser } from "@xmldom/xmldom";
 import * as uuid from "uuid";
 import { NAMESPACE_UUID_AD } from "./const.js";
-import { formatUri, isUrlAvailable, withPath } from "./uri.js";
+import { formatUri, isUrlAvailable } from "./uri.js";
 import type { VmapAdBreak } from "./vmap.js";
 import type { Interstitial } from "./types.js";
 import type { VastResponse, VastCreativeLinear, VastAd } from "vast-client";
@@ -15,12 +15,11 @@ export async function extractInterstitialFromVmapAdbreak(adBreak: VmapAdBreak) {
 
   for (const adMedia of adMedias) {
     const format = formatUri(`mix://${adMedia.assetId}`);
-    const url = withPath(format.base, format.file);
 
-    if (await isUrlAvailable(url)) {
+    if (await isUrlAvailable(format.url)) {
       interstitials.push({
         timeOffset: adBreak.timeOffset,
-        uri: url,
+        uri: format.url,
         type: "ad",
       });
     } else {

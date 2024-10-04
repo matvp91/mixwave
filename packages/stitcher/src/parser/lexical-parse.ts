@@ -5,6 +5,7 @@ import type {
   Resolution,
   MediaInitializationSection,
   PlaylistType,
+  DateRange,
 } from "./types.js";
 
 // Based on the latest spec:
@@ -38,7 +39,8 @@ export type Tag =
   | ["EXT-X-PLAYLIST-TYPE", PlaylistType]
   | ["EXT-X-STREAM-INF", StreamInf]
   | ["EXT-X-MEDIA", Media]
-  | ["EXT-X-MAP", MediaInitializationSection];
+  | ["EXT-X-MAP", MediaInitializationSection]
+  | ["EXT-X-DATERANGE", DateRange];
 
 export type ExtInf = {
   duration: number;
@@ -196,6 +198,59 @@ function parseLine(line: string): Tag | null {
         name,
         {
           uri: attrs.uri,
+        },
+      ];
+    }
+
+    case "EXT-X-DATERANGE": {
+      assert(param, "EXT-X-DATERANGE: no param");
+
+      const attrs: Partial<DateRange> = {};
+
+      mapAttributes(param, (key, value) => {
+        switch (key) {
+          case "ID":
+            attrs.id = value;
+            break;
+          case "CLASS":
+            attrs.classId = value;
+            break;
+          case "START-DATE":
+            attrs.startDate = DateTime.fromISO(value);
+            break;
+          default:
+            if (!key.startsWith("X-")) {
+              break;
+            }
+
+            if (!attrs.clientAttributes) {
+              attrs.clientAttributes = {};
+            }
+
+            const clientAttrName = key.substring(2, key.length);
+
+            if (!Number.isNaN(+value)) {
+              // If the value represents a number, it is most likely a number.
+              attrs.clientAttributes[clientAttrName] = Number.parseFloat(value);
+            } else {
+              attrs.clientAttributes[clientAttrName] = value;
+            }
+
+            break;
+        }
+      });
+
+      assert(attrs.id, "EXT-X-DATERANGE: no id");
+      assert(attrs.classId, "EXT-X-DATERANGE: no classId");
+      assert(attrs.startDate, "EXT-X-DATERANGE: no startDate");
+
+      return [
+        name,
+        {
+          id: attrs.id,
+          classId: attrs.classId,
+          startDate: attrs.startDate,
+          clientAttributes: attrs.clientAttributes,
         },
       ];
     }

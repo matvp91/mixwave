@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/github/last-commit/matvp91/mixwave">
     <img src="https://img.shields.io/github/stars/matvp91/mixwave" alt="stars">
     <img src="https://img.shields.io/badge/PR's-welcome-0437F2" alt="pr">
-    <a href="https://discord.gg/5PPgvkCW">
+    <a href="https://discord.gg/4hXgz9EsF4">
       <img src="https://img.shields.io/discord/1290252589522223166?v=1" alt="discord">
     </a>
   </p>
@@ -31,7 +31,7 @@ Mixwave is a self hostable platform that aims to simplify the complexities of vi
 - Parses a `vmap`, transcodes and packages the ad media files and inserts interstitials, on the fly.
 - Ships with a `HLS.js` wrapper that simplifies working with interstitials and a React UI.
 
-If you'd like to chat about all things video, we're on [Discord](https://discord.gg/5PPgvkCW) now!
+If you'd like to chat about all things video, we're on [Discord](https://discord.gg/4hXgz9EsF4) now!
 
 ## Demo
 

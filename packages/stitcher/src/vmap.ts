@@ -1,11 +1,15 @@
 import { DOMParser, XMLSerializer } from "@xmldom/xmldom";
 import * as timeFormat from "hh-mm-ss";
+import type { Interstitial } from "./types.js";
 
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36";
 
-export async function getVmap(url: string): Promise<VmapResponse> {
-  const doc = await getXml(url);
+export async function getVmap(
+  url: string,
+  userAgent?: string,
+): Promise<VmapResponse> {
+  const doc = await getXml(url, userAgent);
   const rootElement = doc.documentElement;
 
   if (rootElement.localName !== "VMAP") {
@@ -68,10 +72,10 @@ function getVastData(element: Element) {
   return xmlSerializer.serializeToString(vastAdData.firstChild);
 }
 
-async function getXml(url: string) {
+async function getXml(url: string, userAgent: string = USER_AGENT) {
   const response = await fetch(url, {
     headers: {
-      "User-Agent": USER_AGENT,
+      "User-Agent": userAgent,
     },
   });
 

@@ -3,6 +3,7 @@ export type Session = {
   uri: string;
   interstitials?: Interstitial[];
   filter?: Filter;
+  vmap?: Vmap;
 };
 
 export type InterstitialType = "ad" | "bumper";
@@ -15,4 +16,9 @@ export type Interstitial = {
 
 export type Filter = {
   resolution?: string;
+};
+
+export type Vmap = {
+  url: string;
+  userAgent?: string;
 };

@@ -7,6 +7,7 @@ import {
 import { formatUri } from "./uri.js";
 import { assert } from "./assert.js";
 import { filterMaster } from "./filters.js";
+import { getVmap } from "./vmap.js";
 import type { Session } from "./types.js";
 
 export async function formatMasterPlaylist(session: Session) {
@@ -23,6 +24,12 @@ export async function formatMasterPlaylist(session: Session) {
 
 export async function formatMediaPlaylist(session: Session, path: string) {
   const presentation = new Presentation(session.uri);
+
+  if (session.vmap) {
+    const vmap = await getVmap(session.vmap.url, session.vmap.userAgent);
+    // TODO: Add vmap result.
+    // TODO: Cache vmap response.
+  }
 
   const media = await presentation.getMedia(path);
 

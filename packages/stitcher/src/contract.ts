@@ -5,11 +5,6 @@ const c = initContract();
 
 const postSessionBodySchema = z.object({
   uri: z.string(),
-  vmap: z
-    .object({
-      url: z.string(),
-    })
-    .optional(),
   interstitials: z
     .array(
       z.object({
@@ -22,6 +17,12 @@ const postSessionBodySchema = z.object({
   filter: z
     .object({
       resolution: z.string().optional(),
+    })
+    .optional(),
+  vmap: z
+    .object({
+      url: z.string(),
+      userAgent: z.string().optional(),
     })
     .optional(),
 });

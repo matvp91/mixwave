@@ -1,8 +1,6 @@
 import { client } from "./redis.js";
 import { randomUUID } from "crypto";
-import { extractInterstitialFromVmapAdbreak } from "./vast.js";
-import { getVmap } from "./vmap.js";
-import type { Session, Interstitial, Filter } from "./types.js";
+import type { Session, Interstitial, Filter, Vmap } from "./types.js";
 
 const REDIS_PREFIX = `stitcher:session`;
 
@@ -12,50 +10,23 @@ function getRedisKey(sessionId: string) {
 
 export async function createSession(data: {
   uri: string;
-  vmap?: {
-    url: string;
-  };
   interstitials?: Interstitial[];
   filter?: Filter;
+  vmap?: Vmap;
 }) {
   const sessionId = randomUUID();
 
-  let interstitials: Interstitial[] | undefined;
-
-  if (data.vmap) {
-    const vmap = await getVmap(data.vmap.url);
-
-    for (const adBreak of vmap.adBreaks) {
-      if (!interstitials) {
-        interstitials = [];
-      }
-
-      interstitials.push(
-        ...(await extractInterstitialFromVmapAdbreak(adBreak)),
-      );
-    }
-  }
-
-  if (data.interstitials?.length) {
-    if (!interstitials) {
-      interstitials = [];
-    }
-
-    interstitials.push(...data.interstitials);
-  }
-
-  const session = {
+  const session: Session = {
     id: sessionId,
     uri: data.uri,
     filter: data.filter,
-    interstitials,
-  } satisfies Session;
+    interstitials: data.interstitials,
+    vmap: data.vmap,
+  };
 
   const redisKey = getRedisKey(sessionId);
 
-  const rawSession = JSON.parse(JSON.stringify(session));
-
-  await client.json.set(redisKey, `$`, rawSession);
+  await client.json.set(redisKey, `$`, session);
   await client.expire(redisKey, 60 * 60 * 6);
 
   return session;

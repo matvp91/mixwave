@@ -1,23 +1,28 @@
-import { stringify } from "./parser/index.js";
+import { DateRange, stringify } from "./parser/index.js";
 import { fetchPlaylistDuration, Presentation } from "./presentation/index.js";
-import { formatUri } from "./uri.js";
 import { assert } from "./assert.js";
 import { filterMaster } from "./filters.js";
 import { fetchVmap } from "./vmap.js";
-import { adBreaksToDateRanges } from "./vmap.js";
+import { formatAdBreaksToDateRanges } from "./vmap.js";
 import { DateTime } from "luxon";
-import { getVast } from "./vast.js";
-import { updateSession } from "./session.js";
-import type { InterstitialType, Session } from "./types.js";
+import { getAdMediasFromVast } from "./vast.js";
+import { getSession, updateSession } from "./session.js";
+import { getMasterUrl } from "./url.js";
+import type { InterstitialAsset } from "./types.js";
 
-export async function formatMasterPlaylist(session: Session) {
+export async function formatMasterPlaylist(sessionId: string) {
+  const session = await getSession(sessionId);
+
   const presentation = new Presentation(session.uri);
 
   const master = await presentation.getMaster();
 
-  if (session.vmap) {
+  if (session.vmap || session.interstitials?.length) {
     session.programDateTime = DateTime.now().toISO();
-    session.vmapResponse = await fetchVmap(session.vmap.url);
+
+    if (session.vmap) {
+      session.vmapResponse = await fetchVmap(session.vmap.url);
+    }
 
     await updateSession(session);
   }
@@ -29,33 +34,52 @@ export async function formatMasterPlaylist(session: Session) {
   return stringify(master);
 }
 
-export async function formatMediaPlaylist(session: Session, path: string) {
+export async function formatMediaPlaylist(sessionId: string, path: string) {
+  const session = await getSession(sessionId);
+
   const presentation = new Presentation(session.uri);
 
   const media = await presentation.getMedia(path);
 
-  if (session.vmapResponse) {
+  const dateRanges: DateRange[] = [];
+
+  if (session.vmapResponse || session.interstitials?.length) {
     assert(session.programDateTime);
 
     const programDateTime = DateTime.fromISO(session.programDateTime);
     media.segments[0].programDateTime = programDateTime;
 
-    media.dateRanges = adBreaksToDateRanges(
-      programDateTime,
-      session.vmapResponse,
-      session.id,
-    );
+    // TODO: Let's not work with dateRanges here, they're a bit complex to properly merge.
+    // Define an |Interstitial| type that we can parse to a dateRange indicating an interstitial.
+    if (session.vmapResponse) {
+      dateRanges.push(
+        ...formatAdBreaksToDateRanges(
+          programDateTime,
+          session.vmapResponse,
+          session.id,
+        ),
+      );
+    }
+
+    // session.interstitials?.forEach((interstitial) => {
+    //   dateRanges.push({
+    //     classId: "com.apple.hls.interstitial",
+    //     id: `manual(${interstitial.timeOffset})`,
+    //     startDate: programDateTime.plus({ seconds: interstitial.timeOffset }),
+    //     clientAttributes: {},
+    //   });
+    // });
   }
+
+  media.dateRanges = dateRanges;
 
   return stringify(media);
 }
 
-export async function formatAssetList(session: Session, startDate: string) {
-  const assets: {
-    URI: string;
-    DURATION: number;
-    "MIX-TYPE": InterstitialType;
-  }[] = [];
+export async function formatAssetList(sessionId: string, startDate: string) {
+  const assets: InterstitialAsset[] = [];
+
+  const session = await getSession(sessionId);
 
   if (session.vmapResponse) {
     assert(session.programDateTime);
@@ -71,13 +95,13 @@ export async function formatAssetList(session: Session, startDate: string) {
     });
 
     if (adBreak) {
-      const adMedias = await getVast(adBreak);
+      const adMedias = await getAdMediasFromVast(adBreak);
 
       for (const adMedia of adMedias) {
-        const format = formatUri(adMedia.assetId);
+        const url = getMasterUrl(adMedia.assetId);
         assets.push({
-          URI: format.url,
-          DURATION: await fetchPlaylistDuration(format.url),
+          URI: url,
+          DURATION: await fetchPlaylistDuration(url),
           "MIX-TYPE": "ad",
         });
       }

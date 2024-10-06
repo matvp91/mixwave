@@ -1,18 +1,24 @@
 import { client } from "./redis.js";
 import { randomUUID } from "crypto";
-import type { Session, Interstitial, Filter, Vmap } from "./types.js";
+import { assert } from "./assert.js";
+import type {
+  Session,
+  SessionInterstitial,
+  SessionFilter,
+  SessionVmap,
+} from "./types.js";
 
 const REDIS_PREFIX = `stitcher:session`;
 
-function getRedisKey(sessionId: string) {
+function redisKey(sessionId: string) {
   return `${REDIS_PREFIX}:${sessionId}`;
 }
 
 export async function createSession(data: {
   uri: string;
-  interstitials?: Interstitial[];
-  filter?: Filter;
-  vmap?: Vmap;
+  interstitials?: SessionInterstitial[];
+  filter?: SessionFilter;
+  vmap?: SessionVmap;
 }) {
   const sessionId = randomUUID();
 
@@ -24,26 +30,31 @@ export async function createSession(data: {
     vmap: data.vmap,
   };
 
-  const redisKey = getRedisKey(sessionId);
+  const key = redisKey(sessionId);
 
-  await client.json.set(redisKey, `$`, session);
-  await client.expire(redisKey, 60 * 60 * 6);
+  await client.set(key, JSON.stringify(session), {
+    EX: 60 * 60 * 6,
+  });
 
   return session;
 }
 
 export async function getSession(sessionId: string) {
-  const redisKey = getRedisKey(sessionId);
+  const data = await client.get(redisKey(sessionId));
+  assert(data, `No session found for ${sessionId}`);
 
-  const data = await client.json.get(redisKey);
-  if (!data) {
-    throw new Error(`No session for id "${sessionId}"`);
+  if (typeof data !== "string") {
+    throw new SyntaxError(
+      "Redis did not return a string for session, cannot deserialize.",
+    );
   }
 
-  return data as Session;
+  return JSON.parse(data) as Session;
 }
 
 export async function updateSession(session: Session) {
-  const redisKey = getRedisKey(session.id);
-  await client.json.set(redisKey, `$`, session);
+  const key = redisKey(session.id);
+  await client.set(key, JSON.stringify(session), {
+    EX: await client.ttl(key),
+  });
 }

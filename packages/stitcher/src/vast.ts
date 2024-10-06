@@ -3,52 +3,33 @@ import { VASTClient } from "vast-client";
 import { DOMParser } from "@xmldom/xmldom";
 import * as uuid from "uuid";
 import { NAMESPACE_UUID_AD } from "./const.js";
-import { formatUri, isUrlAvailable } from "./uri.js";
+import { getMasterUrl, isUrlAvailable } from "./url.js";
 import type { VmapAdBreak } from "./vmap.js";
-import type { DateRange } from "./parser/index.js";
 import type { VastResponse, VastCreativeLinear, VastAd } from "vast-client";
 
-// export async function extractInterstitialFromVmapAdbreak(adBreak: VmapAdBreak) {
-//   const interstitials: Interstitial[] = [];
+export type AdMedia = {
+  assetId: string;
+  url: string;
+};
 
-//   const adMedias = await getAdMedias(adBreak);
-
-//   for (const adMedia of adMedias) {
-//     const format = formatUri(`mix://${adMedia.assetId}`);
-
-//     if (await isUrlAvailable(format.url)) {
-//       interstitials.push({
-//         timeOffset: adBreak.timeOffset,
-//         uri: format.url,
-//         type: "ad",
-//       });
-//     } else {
-//       scheduleForPackage(adMedia);
-//     }
-//   }
-
-//   return interstitials;
-// }
-
-export async function getVast(adBreak: VmapAdBreak) {
+export async function getAdMediasFromVast(adBreak: VmapAdBreak) {
   const adMedias = await getAdMedias(adBreak);
 
-  const availableAdMedias: AdMedia[] = [];
+  const result: AdMedia[] = [];
 
   for (const adMedia of adMedias) {
-    const format = formatUri(`mix://${adMedia.assetId}`);
+    const url = getMasterUrl(`mix://${adMedia.assetId}`);
 
-    const isAvailable = await isUrlAvailable(format.url);
-
+    const isAvailable = await isUrlAvailable(url);
     if (!isAvailable) {
       scheduleForPackage(adMedia);
       continue;
     }
 
-    availableAdMedias.push(adMedia);
+    result.push(adMedia);
   }
 
-  return availableAdMedias;
+  return result;
 }
 
 async function getAdMedias(adBreak: VmapAdBreak): Promise<AdMedia[]> {
@@ -162,8 +143,3 @@ function getAdId(creative: VastCreativeLinear) {
 
   throw new Error("Failed to generate adId");
 }
-
-type AdMedia = {
-  assetId: string;
-  url: string;
-};

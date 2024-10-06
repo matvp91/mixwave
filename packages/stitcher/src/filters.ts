@@ -1,5 +1,5 @@
 import type { MasterPlaylist, Variant } from "./parser/index.js";
-import type { Filter } from "./types.js";
+import type { SessionFilter } from "./types.js";
 
 const FILTER_VARIANTS_OPERATOR = {
   "<": (a: number, b: number) => a < b,
@@ -23,7 +23,7 @@ function filterVariantsByResolution(variants: Variant[], resolution: string) {
   );
 }
 
-export function filterMaster(master: MasterPlaylist, filter: Filter) {
+export function filterMaster(master: MasterPlaylist, filter: SessionFilter) {
   if (filter.resolution) {
     master.variants = filterVariantsByResolution(
       master.variants,

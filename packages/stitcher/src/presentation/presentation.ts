@@ -1,19 +1,41 @@
-import { formatUri, withPath } from "../uri.js";
 import { parseMasterPlaylist, parseMediaPlaylist } from "../parser/index.js";
 import { rewriteSegmentToAbsolute } from "./utils.js";
-import type { Format } from "../uri.js";
+import { getMasterUrl, joinPath, getDir } from "../url.js";
 import type { Stream } from "./types.js";
 
 export class Presentation {
-  private format_: Format;
+  private url_: string;
 
   constructor(uri: string) {
-    this.format_ = formatUri(uri);
+    this.url_ = getMasterUrl(uri);
   }
 
   async getMaster() {
-    const text = await fetchText(this.format_.url);
-    return parseMasterPlaylist(text);
+    const text = await fetchText(this.url_);
+    const master = parseMasterPlaylist(text);
+    const dir = getDir(this.url_);
+
+    // Direct audio and subtitle uris to their original base, they do not
+    // need to be rewritten by the media playlist proxy.
+    // TODO: We probably want each playlist to go through this.
+    for (const v of master.variants) {
+      if (v.audio) {
+        for (const audioRendition of v.audio) {
+          if (audioRendition.uri) {
+            audioRendition.uri = joinPath(dir, audioRendition.uri);
+          }
+        }
+      }
+      if (v.subtitles) {
+        for (const subtitleRendition of v.subtitles) {
+          if (subtitleRendition.uri) {
+            subtitleRendition.uri = joinPath(dir, subtitleRendition.uri);
+          }
+        }
+      }
+    }
+
+    return master;
   }
 
   async getStreams(): Promise<Stream[]> {
@@ -27,13 +49,13 @@ export class Presentation {
   }
 
   async getMedia(path: string) {
-    const url = withPath(this.format_.base, path);
-    const format = formatUri(url);
+    const dir = getDir(this.url_);
+    const url = joinPath(dir, path);
 
     const text = await fetchText(url);
     const media = parseMediaPlaylist(text);
 
-    rewriteSegmentToAbsolute(media, format);
+    rewriteSegmentToAbsolute(media, getDir(url));
 
     return media;
   }

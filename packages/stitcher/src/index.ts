@@ -4,7 +4,7 @@ import { env } from "./env.js";
 import { contract } from "./contract.js";
 import { initServer } from "@ts-rest/fastify";
 import { openApiSpec } from "./openapi.js";
-import { createSession, getSession } from "./session.js";
+import { createSession } from "./session.js";
 import {
   formatMasterPlaylist,
   formatMediaPlaylist,
@@ -30,25 +30,21 @@ async function buildServer() {
       };
     },
     getMasterPlaylist: async ({ params, reply }) => {
-      const session = await getSession(params.sessionId);
-      const response = await formatMasterPlaylist(session);
+      const response = await formatMasterPlaylist(params.sessionId);
 
       // return reply.type("application/x-mpegURL").send(response);
       return reply.send(response);
     },
     getMediaPlaylist: async ({ params, reply }) => {
-      const session = await getSession(params.sessionId);
-      const response = await formatMediaPlaylist(session, params["*"]);
+      const response = await formatMediaPlaylist(params.sessionId, params["*"]);
 
       // return reply.type("application/x-mpegURL").send(response);
       return reply.send(response);
     },
     getAssetList: async ({ query }) => {
-      const session = await getSession(query.sessionId);
-
       return {
         status: 200,
-        body: await formatAssetList(session, query.startDate),
+        body: await formatAssetList(query.sessionId, query.startDate),
       };
     },
     getSpec: async () => {

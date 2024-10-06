@@ -1,12 +1,22 @@
 import { DOMParser, XMLSerializer } from "@xmldom/xmldom";
 import * as timeFormat from "hh-mm-ss";
 import { env } from "./env.js";
-import type { DateRange } from "./parser/index.js";
 import { DateTime } from "luxon";
 import { assert } from "./assert.js";
+import type { DateRange } from "./parser/index.js";
 
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36";
+
+export type VmapAdBreak = {
+  timeOffset: number;
+  vastUrl?: string;
+  vastData?: string;
+};
+
+export type VmapResponse = {
+  adBreaks: VmapAdBreak[];
+};
 
 export async function fetchVmap(url: string): Promise<VmapResponse> {
   const doc = await getXml(url);
@@ -103,17 +113,7 @@ function toTimeOffset(value: string | null) {
   return timeFormat.toS(value);
 }
 
-export type VmapAdBreak = {
-  timeOffset: number;
-  vastUrl?: string;
-  vastData?: string;
-};
-
-export type VmapResponse = {
-  adBreaks: VmapAdBreak[];
-};
-
-export function adBreaksToDateRanges(
+export function formatAdBreaksToDateRanges(
   date: DateTime,
   vmapResponse: VmapResponse,
   sessionId: string,

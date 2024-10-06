@@ -23,7 +23,11 @@ importers:
 
   extern/hls.js: {}
 
-  extern/vast-client: {}
+  extern/vast-client:
+    dependencies:
+      '@xmldom/xmldom':
+        specifier: ^0.8.10
+        version: 0.8.10
 
   packages/api:
     dependencies:

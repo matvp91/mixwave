@@ -21,7 +21,7 @@ export async function fetchPlaylistDuration(url: string) {
   const master = await parseMasterPlaylist(await fetchText(url));
 
   const mediaUrl = withPath(format.base, master.variants[0].uri);
-  const media = await parseMediaPlaylist(await fetchText(url));
+  const media = await parseMediaPlaylist(await fetchText(mediaUrl));
 
   return media.segments.reduce((acc, segment) => {
     acc += segment.duration;

@@ -22,7 +22,6 @@ const postSessionBodySchema = z.object({
   vmap: z
     .object({
       url: z.string(),
-      userAgent: z.string().optional(),
     })
     .optional(),
 });
@@ -41,9 +40,10 @@ export const contract = c.router({
   },
   getAssetList: {
     method: "GET",
-    path: "/session/:sessionId/asset-list.json",
+    path: "/asset-list.json",
     query: z.object({
-      timeOffset: z.coerce.number(),
+      sessionId: z.string(),
+      startDate: z.string(),
     }),
     responses: {},
   },

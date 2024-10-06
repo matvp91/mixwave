@@ -5,29 +5,50 @@ import * as uuid from "uuid";
 import { NAMESPACE_UUID_AD } from "./const.js";
 import { formatUri, isUrlAvailable } from "./uri.js";
 import type { VmapAdBreak } from "./vmap.js";
-import type { Interstitial } from "./types.js";
+import type { DateRange } from "./parser/index.js";
 import type { VastResponse, VastCreativeLinear, VastAd } from "vast-client";
 
-export async function extractInterstitialFromVmapAdbreak(adBreak: VmapAdBreak) {
-  const interstitials: Interstitial[] = [];
+// export async function extractInterstitialFromVmapAdbreak(adBreak: VmapAdBreak) {
+//   const interstitials: Interstitial[] = [];
 
+//   const adMedias = await getAdMedias(adBreak);
+
+//   for (const adMedia of adMedias) {
+//     const format = formatUri(`mix://${adMedia.assetId}`);
+
+//     if (await isUrlAvailable(format.url)) {
+//       interstitials.push({
+//         timeOffset: adBreak.timeOffset,
+//         uri: format.url,
+//         type: "ad",
+//       });
+//     } else {
+//       scheduleForPackage(adMedia);
+//     }
+//   }
+
+//   return interstitials;
+// }
+
+export async function getVast(adBreak: VmapAdBreak) {
   const adMedias = await getAdMedias(adBreak);
+
+  const availableAdMedias: AdMedia[] = [];
 
   for (const adMedia of adMedias) {
     const format = formatUri(`mix://${adMedia.assetId}`);
 
-    if (await isUrlAvailable(format.url)) {
-      interstitials.push({
-        timeOffset: adBreak.timeOffset,
-        uri: format.url,
-        type: "ad",
-      });
-    } else {
+    const isAvailable = await isUrlAvailable(format.url);
+
+    if (!isAvailable) {
       scheduleForPackage(adMedia);
+      continue;
     }
+
+    availableAdMedias.push(adMedia);
   }
 
-  return interstitials;
+  return availableAdMedias;
 }
 
 async function getAdMedias(adBreak: VmapAdBreak): Promise<AdMedia[]> {

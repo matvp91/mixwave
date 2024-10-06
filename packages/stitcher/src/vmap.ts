@@ -1,15 +1,15 @@
 import { DOMParser, XMLSerializer } from "@xmldom/xmldom";
 import * as timeFormat from "hh-mm-ss";
-import type { Interstitial } from "./types.js";
+import { env } from "./env.js";
+import type { DateRange } from "./parser/index.js";
+import { DateTime } from "luxon";
+import { assert } from "./assert.js";
 
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36";
 
-export async function getVmap(
-  url: string,
-  userAgent?: string,
-): Promise<VmapResponse> {
-  const doc = await getXml(url, userAgent);
+export async function fetchVmap(url: string): Promise<VmapResponse> {
+  const doc = await getXml(url);
   const rootElement = doc.documentElement;
 
   if (rootElement.localName !== "VMAP") {
@@ -72,10 +72,10 @@ function getVastData(element: Element) {
   return xmlSerializer.serializeToString(vastAdData.firstChild);
 }
 
-async function getXml(url: string, userAgent: string = USER_AGENT) {
+async function getXml(url: string) {
   const response = await fetch(url, {
     headers: {
-      "User-Agent": userAgent,
+      "User-Agent": USER_AGENT,
     },
   });
 
@@ -112,3 +112,29 @@ export type VmapAdBreak = {
 export type VmapResponse = {
   adBreaks: VmapAdBreak[];
 };
+
+export function adBreaksToDateRanges(
+  date: DateTime,
+  vmapResponse: VmapResponse,
+  sessionId: string,
+) {
+  return vmapResponse.adBreaks.map<DateRange>((adBreak) => {
+    const startDate = date.plus({ seconds: adBreak.timeOffset });
+
+    const startDateISO = startDate.toISO();
+    assert(startDateISO);
+
+    const clientAttributes = {
+      RESTRICT: "SKIP,JUMP",
+      "RESUME-OFFSET": 0,
+      "ASSET-LIST": `${env.PUBLIC_STITCHER_ENDPOINT}/asset-list.json?sessionId=${sessionId}&startDate=${encodeURIComponent(startDateISO)}`,
+    };
+
+    return {
+      classId: "com.apple.hls.interstitial",
+      id: `adBreak(${adBreak.timeOffset})`,
+      startDate,
+      clientAttributes,
+    };
+  });
+}

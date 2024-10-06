@@ -42,3 +42,8 @@ export async function getSession(sessionId: string) {
 
   return data as Session;
 }
+
+export async function updateSession(session: Session) {
+  const redisKey = getRedisKey(session.id);
+  await client.json.set(redisKey, `$`, session);
+}

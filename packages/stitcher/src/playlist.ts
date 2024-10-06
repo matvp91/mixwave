@@ -51,6 +51,9 @@ export async function formatMediaPlaylist(sessionId: string, path: string) {
 
     // TODO: Let's not work with dateRanges here, they're a bit complex to properly merge.
     // Define an |Interstitial| type that we can parse to a dateRange indicating an interstitial.
+
+    // TODO: introduce :sessionId param back in asset-list.json instead of query param.
+
     if (session.vmapResponse) {
       dateRanges.push(
         ...formatAdBreaksToDateRanges(

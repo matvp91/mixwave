@@ -29,14 +29,14 @@ function buildVariant(lines: Lines, variant: Variant) {
       `RESOLUTION=${variant.resolution.width}x${variant.resolution.height}`,
     );
   }
-  if (variant.audio?.length) {
+  if (variant.audio.length) {
     attrs.push(`AUDIO="${variant.audio[0].groupId}"`);
     for (const rendition of variant.audio) {
       buildRendition(lines, rendition);
     }
   }
 
-  if (variant.subtitles?.length) {
+  if (variant.subtitles.length) {
     attrs.push(`SUBTITLES="${variant.subtitles[0].groupId}"`);
     for (const rendition of variant.subtitles) {
       buildRendition(lines, rendition);

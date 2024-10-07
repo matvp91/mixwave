@@ -19,18 +19,14 @@ export class Presentation {
     // need to be rewritten by the media playlist proxy.
     // TODO: We probably want each playlist to go through this.
     for (const v of master.variants) {
-      if (v.audio) {
-        for (const audioRendition of v.audio) {
-          if (audioRendition.uri) {
-            audioRendition.uri = joinPath(dir, audioRendition.uri);
-          }
+      for (const audioRendition of v.audio) {
+        if (audioRendition.uri) {
+          audioRendition.uri = joinPath(dir, audioRendition.uri);
         }
       }
-      if (v.subtitles) {
-        for (const subtitleRendition of v.subtitles) {
-          if (subtitleRendition.uri) {
-            subtitleRendition.uri = joinPath(dir, subtitleRendition.uri);
-          }
+      for (const subtitleRendition of v.subtitles) {
+        if (subtitleRendition.uri) {
+          subtitleRendition.uri = joinPath(dir, subtitleRendition.uri);
         }
       }
     }

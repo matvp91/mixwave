@@ -18,8 +18,8 @@ export type Variant = {
   uri: string;
   bandwidth: number;
   resolution?: Resolution;
-  audio?: Rendition[];
-  subtitles?: Rendition[];
+  audio: Rendition[];
+  subtitles: Rendition[];
 };
 
 export type MasterPlaylist = {

@@ -24,11 +24,16 @@ function buildRendition(lines: Lines, rendition: Rendition) {
 function buildVariant(lines: Lines, variant: Variant) {
   const attrs = [`BANDWIDTH=${variant.bandwidth}`];
 
+  if (variant.codecs) {
+    attrs.push(`CODECS="${variant.codecs}"`);
+  }
+
   if (variant.resolution) {
     attrs.push(
       `RESOLUTION=${variant.resolution.width}x${variant.resolution.height}`,
     );
   }
+
   if (variant.audio.length) {
     attrs.push(`AUDIO="${variant.audio[0].groupId}"`);
     for (const rendition of variant.audio) {

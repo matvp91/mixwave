@@ -48,6 +48,7 @@ export type ExtInf = {
 
 export type StreamInf = {
   bandwidth: number;
+  codecs?: string;
   resolution?: Resolution;
   audio?: string;
   subtitles?: string;
@@ -123,6 +124,10 @@ function parseLine(line: string): Tag | null {
           case "SUBTITLES":
             attrs.subtitles = value;
             break;
+
+          case "CODECS":
+            attrs.codecs = value;
+            break;
         }
       });
 
@@ -135,6 +140,7 @@ function parseLine(line: string): Tag | null {
           resolution: attrs.resolution,
           audio: attrs.audio,
           subtitles: attrs.subtitles,
+          codecs: attrs.codecs,
         },
       ];
     }

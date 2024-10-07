@@ -17,6 +17,7 @@ export type Rendition = {
 export type Variant = {
   uri: string;
   bandwidth: number;
+  codecs?: string;
   resolution?: Resolution;
   audio: Rendition[];
   subtitles: Rendition[];

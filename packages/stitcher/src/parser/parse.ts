@@ -143,6 +143,7 @@ function parseVariant(tags: Tag[], streamInf: StreamInf, uri: string) {
     uri,
     bandwidth: streamInf.bandwidth,
     resolution: streamInf.resolution,
+    codecs: streamInf.codecs,
     audio: [],
     subtitles: [],
   };

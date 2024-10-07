@@ -41,13 +41,18 @@ export function Controls({ facade, state, metadata }: ControlsProps) {
 
   const [time, setTargetTime] = useTime(state);
 
+  let isVisible = controlsVisible;
+  if (!state.isStarted) {
+    isVisible = false;
+  }
+
   return (
     <>
       <div
         ref={elementRef}
         className={cn(
           "absolute left-0 bottom-0 w-full opacity-0 transition-opacity z-40 before:absolute before:bg-gradient-to-t before:from-black/50 before:to-transparent before:w-full before:pointer-events-none before:h-[300%] before:-z-10 before:bottom-0",
-          controlsVisible && "opacity-100",
+          isVisible && "opacity-100",
         )}
       >
         <div

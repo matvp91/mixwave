@@ -180,6 +180,7 @@ export class HlsFacade extends EventEmitter<Events> {
     );
 
     this.state = {
+      isStarted: false,
       playheadState: "idle",
       time: 0,
       duration: 0,
@@ -260,7 +261,7 @@ export class HlsFacade extends EventEmitter<Events> {
       this.setState_({ playheadState: "pause" });
     } else {
       this.media_.play();
-      this.setState_({ playheadState: "play" });
+      this.setState_({ isStarted: true, playheadState: "play" });
     }
   }
 

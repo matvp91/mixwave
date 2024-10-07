@@ -44,9 +44,7 @@ export class HlsFacade extends EventEmitter<Events> {
       this.eventMgr_.hlsOff(Hls.Events.INTERSTITIALS_UPDATED, onInit);
 
       if (!hls.interstitialsManager || !hls.media) {
-        const message = "Missing hls.interstitialsManager or hls.media";
-        console.error(message);
-        throw new Error(message);
+        throw new Error("Missing hls.interstitialsManager or hls.media");
       }
 
       this.mgr_ = hls.interstitialsManager;

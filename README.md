@@ -61,19 +61,19 @@ There's more info in the [Getting Started](https://matvp91.github.io/mixwave/get
 
 Let's take the popular BigBuckBunny MP4 video and package it in two different resolutions: 480p and 720p. Once that's done, we'll use the `packageAfter` flag to immediately package the files. In the end, we'll have an HLS playlist ready and stored on our S3.
 
-https://github.com/user-attachments/assets/05d770d5-4249-42d1-8ecf-5543294d9672
+https://github.com/user-attachments/assets/5fb52e94-c729-4d5b-8f27-a93c161d07e2
 
 ### Prepend a bumper dynamically
 
 You know what's even more exciting than just playing videos? Manipulating them in real-time! We'll quickly transcode and package the iconic Netflix bumper, then prepend it to the beginning of our BigBuckBunny video.
 
-https://github.com/user-attachments/assets/ec97e778-df34-4009-90a3-e547a42eddd1
+https://github.com/user-attachments/assets/b799d7d4-9f53-40ae-bd9b-51589d31fef3
 
 ### Insert linear ads
 
 To wrap things up, we'll have the stitcher fetch a few Google IMA video ads and insert them into our playlist. If you need more control, feel free to customize the ad request however you'd like, as long as the final output is a [VMAP](https://www.iab.com/guidelines/vmap/). Each ad break defined in the VMAP will then be mapped to interstitials.
 
-https://github.com/user-attachments/assets/9238a1d4-ccdf-4a98-925d-40937e618268
+https://github.com/user-attachments/assets/10fa274d-1761-4d10-9c39-065f241f84aa
 
 ## 🤝 Contribute
 

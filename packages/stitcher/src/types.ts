@@ -1,13 +1,14 @@
+import type { DateTime } from "luxon";
 import type { VmapResponse } from "./vmap";
 
 export type Session = {
   id: string;
   uri: string;
+  startDate: DateTime;
   interstitials?: SessionInterstitial[];
   filter?: SessionFilter;
   vmap?: SessionVmap;
   vmapResponse?: VmapResponse;
-  programDateTime?: string;
 };
 
 export type SessionInterstitialType = "ad" | "bumper";

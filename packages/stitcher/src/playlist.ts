@@ -4,11 +4,7 @@ import { filterMaster } from "./filters.js";
 import { fetchVmap } from "./vmap.js";
 import { DateTime } from "luxon";
 import { getSession, updateSession } from "./session.js";
-import {
-  formatDateRanges,
-  getAssets,
-  needsProgramDateTime,
-} from "./interstitials.js";
+import { formatDateRanges, getAssets } from "./interstitials.js";
 
 export async function formatMasterPlaylist(sessionId: string) {
   const session = await getSession(sessionId);
@@ -17,13 +13,8 @@ export async function formatMasterPlaylist(sessionId: string) {
 
   const master = await presentation.getMaster();
 
-  if (needsProgramDateTime(session)) {
-    session.programDateTime = DateTime.now().toISO();
-
-    if (session.vmap) {
-      session.vmapResponse = await fetchVmap(session.vmap.url);
-    }
-
+  if (session.vmap) {
+    session.vmapResponse = await fetchVmap(session.vmap.url);
     updateSession(session);
   }
 
@@ -41,15 +32,11 @@ export async function formatMediaPlaylist(sessionId: string, path: string) {
 
   const media = await presentation.getMedia(path);
 
-  if (session.programDateTime) {
-    media.segments[0].programDateTime = DateTime.fromISO(
-      session.programDateTime,
-    );
-  }
-
-  const dateRanges = formatDateRanges(session);
-  if (dateRanges) {
-    media.dateRanges = dateRanges;
+  if (media.endlist) {
+    // Only when we have an endlist, we can add these type of dateRanges,
+    // when we're live, we can use the EXT-X-PROGRAM-DATE-TIME from the source.
+    media.segments[0].programDateTime = session.startDate;
+    media.dateRanges = formatDateRanges(session);
   }
 
   return stringify(media);
@@ -58,7 +45,8 @@ export async function formatMediaPlaylist(sessionId: string, path: string) {
 export async function formatAssetList(sessionId: string, startDate: string) {
   const session = await getSession(sessionId);
 
-  const assets = await getAssets(session, startDate);
+  const lookupDate = DateTime.fromISO(startDate);
+  const assets = await getAssets(session, lookupDate);
 
   return { ASSETS: assets };
 }

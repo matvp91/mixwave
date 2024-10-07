@@ -18,22 +18,18 @@ type InterstitialAsset = {
 };
 
 export function formatDateRanges(session: Session) {
-  if (!session.programDateTime) {
-    return null;
-  }
-
   const group: Record<string, SessionInterstitialType[]> = {};
 
   if (session.vmapResponse) {
     for (const adBreak of session.vmapResponse.adBreaks) {
-      groupTimeOffset(group, session.programDateTime, adBreak.timeOffset, "ad");
+      groupTimeOffset(group, session.startDate, adBreak.timeOffset, "ad");
     }
   }
   if (session.interstitials) {
     for (const interstitial of session.interstitials) {
       groupTimeOffset(
         group,
-        session.programDateTime,
+        session.startDate,
         interstitial.timeOffset,
         interstitial.type,
       );
@@ -41,10 +37,12 @@ export function formatDateRanges(session: Session) {
   }
 
   return Object.entries(group).map<DateRange>(([startDate, types], index) => {
+    const assetListUrl = `${env.PUBLIC_STITCHER_ENDPOINT}/session/${session.id}/asset-list.json?startDate=${encodeURIComponent(startDate)}`;
+
     const clientAttributes = {
       RESTRICT: "SKIP,JUMP",
       "RESUME-OFFSET": 0,
-      "ASSET-LIST": `${env.PUBLIC_STITCHER_ENDPOINT}/session/${session.id}/asset-list.json?startDate=${encodeURIComponent(startDate)}`,
+      "ASSET-LIST": assetListUrl,
     };
 
     if (types.length) {
@@ -62,47 +60,41 @@ export function formatDateRanges(session: Session) {
 
 function groupTimeOffset(
   group: Record<string, SessionInterstitialType[]>,
-  startDate: string,
+  startDate: DateTime,
   timeOffset: number,
   type?: SessionInterstitialType,
 ) {
-  const date = DateTime.fromISO(startDate)
-    .plus({ seconds: timeOffset })
-    .toISO();
-  if (!date) {
+  const key = startDate.plus({ seconds: timeOffset }).toISO();
+  if (!key) {
     return;
   }
-
-  if (!group[date]) {
-    group[date] = [];
+  if (!group[key]) {
+    group[key] = [];
   }
-
   if (type) {
-    group[date].push(type);
+    group[key].push(type);
   }
 }
 
-export async function getAssets(session: Session, startDate: string) {
+export async function getAssets(session: Session, lookupDate: DateTime) {
   const assets: InterstitialAsset[] = [];
 
-  if (session.programDateTime) {
-    if (session.vmapResponse) {
-      await formatAdBreaks(
-        assets,
-        session.vmapResponse,
-        session.programDateTime,
-        startDate,
-      );
-    }
+  if (session.vmapResponse) {
+    await formatAdBreaks(
+      assets,
+      session.vmapResponse,
+      session.startDate,
+      lookupDate,
+    );
+  }
 
-    if (session.interstitials) {
-      await formatInterstitials(
-        assets,
-        session.interstitials,
-        session.programDateTime,
-        startDate,
-      );
-    }
+  if (session.interstitials) {
+    await formatInterstitials(
+      assets,
+      session.interstitials,
+      session.startDate,
+      lookupDate,
+    );
   }
 
   return assets;
@@ -111,13 +103,11 @@ export async function getAssets(session: Session, startDate: string) {
 async function formatAdBreaks(
   assets: InterstitialAsset[],
   vmapResponse: VmapResponse,
-  baseDate: string,
-  lookupDate: string,
+  baseDate: DateTime,
+  lookupDate: DateTime,
 ) {
-  const date = DateTime.fromISO(baseDate);
-
   const adBreak = vmapResponse.adBreaks.find((adBreak) =>
-    isEqualTimeOffset(date, adBreak.timeOffset, lookupDate),
+    isEqualTimeOffset(baseDate, adBreak.timeOffset, lookupDate),
   );
 
   if (!adBreak) {
@@ -139,13 +129,11 @@ async function formatAdBreaks(
 async function formatInterstitials(
   assets: InterstitialAsset[],
   interstitials: SessionInterstitial[],
-  baseDate: string,
-  lookupDate: string,
+  baseDate: DateTime,
+  lookupDate: DateTime,
 ) {
-  const date = DateTime.fromISO(baseDate);
-
   const filteredInterstitials = interstitials.filter((interstitial) =>
-    isEqualTimeOffset(date, interstitial.timeOffset, lookupDate),
+    isEqualTimeOffset(baseDate, interstitial.timeOffset, lookupDate),
   );
 
   for (const interstitial of filteredInterstitials) {
@@ -161,17 +149,7 @@ async function formatInterstitials(
 function isEqualTimeOffset(
   baseDate: DateTime,
   timeOffset: number,
-  lookupDate: string,
+  lookupDate: DateTime,
 ) {
-  return baseDate.plus({ seconds: timeOffset }).toISO() === lookupDate;
-}
-
-export function needsProgramDateTime(session: Session) {
-  if (session.interstitials?.length) {
-    return true;
-  }
-  if (session.vmap) {
-    return true;
-  }
-  return false;
+  return baseDate.plus({ seconds: timeOffset }).toISO() === lookupDate.toISO();
 }

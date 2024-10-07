@@ -7,6 +7,7 @@ import type {
   SessionFilter,
   SessionVmap,
 } from "./types.js";
+import { DateTime } from "luxon";
 
 const REDIS_PREFIX = `stitcher:session`;
 
@@ -28,11 +29,12 @@ export async function createSession(data: {
     filter: data.filter,
     interstitials: data.interstitials,
     vmap: data.vmap,
+    startDate: DateTime.now(),
   };
 
   const key = redisKey(sessionId);
 
-  await client.set(key, JSON.stringify(session), {
+  await client.set(key, serializeToJson(session), {
     EX: 60 * 60 * 6,
   });
 
@@ -49,12 +51,27 @@ export async function getSession(sessionId: string) {
     );
   }
 
-  return JSON.parse(data) as Session;
+  return parseFromJson(data);
 }
 
 export async function updateSession(session: Session) {
   const key = redisKey(session.id);
-  await client.set(key, JSON.stringify(session), {
+  await client.set(key, serializeToJson(session), {
     EX: await client.ttl(key),
   });
+}
+
+function serializeToJson(session: Session) {
+  return JSON.stringify({
+    ...session,
+    startDate: session.startDate.toISO(),
+  });
+}
+
+function parseFromJson(text: string): Session {
+  const obj = JSON.parse(text);
+  return {
+    ...obj,
+    startDate: DateTime.fromISO(obj.startDate),
+  };
 }

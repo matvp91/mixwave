@@ -30,16 +30,19 @@ export async function formatMediaPlaylist(sessionId: string, path: string) {
 
   const presentation = new Presentation(session.uri);
 
-  const media = await presentation.getMedia(path);
+  const { type, playlist } = await presentation.getMedia(path);
 
-  if (media.endlist) {
+  if (playlist.endlist) {
     // Only when we have an endlist, we can add these type of dateRanges,
     // when we're live, we can use the EXT-X-PROGRAM-DATE-TIME from the source.
-    media.segments[0].programDateTime = session.startDate;
-    media.dateRanges = formatDateRanges(session);
+    playlist.segments[0].programDateTime = session.startDate;
+
+    if (type === "video") {
+      playlist.dateRanges = formatDateRanges(session);
+    }
   }
 
-  return stringify(media);
+  return stringify(playlist);
 }
 
 export async function formatAssetList(sessionId: string, startDate: string) {

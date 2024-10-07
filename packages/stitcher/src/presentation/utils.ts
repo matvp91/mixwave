@@ -24,7 +24,7 @@ export async function fetchPlaylistDuration(url: string) {
   }, 0);
 }
 
-async function fetchText(url: string) {
+export async function fetchText(url: string) {
   const response = await fetch(url);
   return await response.text();
 }

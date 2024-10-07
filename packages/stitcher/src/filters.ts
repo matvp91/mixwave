@@ -1,5 +1,5 @@
 import type { MasterPlaylist, Variant } from "./parser/index.js";
-import type { SessionFilter } from "./types.js";
+import type { SessionFilter } from "./session.js";
 
 const FILTER_VARIANTS_OPERATOR = {
   "<": (a: number, b: number) => a < b,

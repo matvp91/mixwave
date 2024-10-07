@@ -148,7 +148,7 @@ function stringifyMediaPlaylist(playlist: MediaPlaylist) {
     lines.push(`#EXT-X-ENDLIST`);
   }
 
-  playlist.dateRanges?.forEach((dateRange) => {
+  playlist.dateRanges.forEach((dateRange) => {
     buildDateRange(lines, dateRange);
   });
 

@@ -21,7 +21,7 @@ function formatMediaPlaylist(tags: Tag[]): MediaPlaylist {
   let mediaSequenceBase: number | undefined;
   let discontinuitySequenceBase: number | undefined;
   let map: MediaInitializationSection | undefined;
-  let dateRanges: DateRange[] | undefined;
+  let dateRanges: DateRange[] = [];
 
   tags.forEach(([name, value]) => {
     if (name === "EXT-X-TARGETDURATION") {
@@ -46,9 +46,6 @@ function formatMediaPlaylist(tags: Tag[]): MediaPlaylist {
       discontinuitySequenceBase = value;
     }
     if (name === "EXT-X-DATERANGE") {
-      if (!dateRanges) {
-        dateRanges = [];
-      }
       dateRanges.push(value);
     }
   });

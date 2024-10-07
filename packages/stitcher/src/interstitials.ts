@@ -9,7 +9,7 @@ import type {
   Session,
   SessionInterstitialType,
   SessionInterstitial,
-} from "./types.js";
+} from "./session.js";
 
 type InterstitialAsset = {
   URI: string;
@@ -17,19 +17,23 @@ type InterstitialAsset = {
   "MIX-TYPE": Required<SessionInterstitial["type"]>;
 };
 
-export function formatDateRanges(session: Session) {
+export function getStaticPDT(session: Session) {
+  return session.dt;
+}
+
+export function getStaticDateRanges(session: Session) {
   const group: Record<string, SessionInterstitialType[]> = {};
 
   if (session.vmapResponse) {
     for (const adBreak of session.vmapResponse.adBreaks) {
-      groupTimeOffset(group, session.startDate, adBreak.timeOffset, "ad");
+      groupTimeOffset(group, session.dt, adBreak.timeOffset, "ad");
     }
   }
   if (session.interstitials) {
     for (const interstitial of session.interstitials) {
       groupTimeOffset(
         group,
-        session.startDate,
+        session.dt,
         interstitial.timeOffset,
         interstitial.type,
       );
@@ -80,19 +84,14 @@ export async function getAssets(session: Session, lookupDate: DateTime) {
   const assets: InterstitialAsset[] = [];
 
   if (session.vmapResponse) {
-    await formatAdBreaks(
-      assets,
-      session.vmapResponse,
-      session.startDate,
-      lookupDate,
-    );
+    await formatAdBreaks(assets, session.vmapResponse, session.dt, lookupDate);
   }
 
   if (session.interstitials) {
     await formatInterstitials(
       assets,
       session.interstitials,
-      session.startDate,
+      session.dt,
       lookupDate,
     );
   }

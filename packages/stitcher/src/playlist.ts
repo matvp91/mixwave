@@ -4,7 +4,11 @@ import { filterMaster } from "./filters.js";
 import { fetchVmap } from "./vmap.js";
 import { DateTime } from "luxon";
 import { getSession, updateSession } from "./session.js";
-import { formatDateRanges, getAssets } from "./interstitials.js";
+import {
+  getStaticDateRanges,
+  getAssets,
+  getStaticPDT,
+} from "./interstitials.js";
 
 export async function formatMasterPlaylist(sessionId: string) {
   const session = await getSession(sessionId);
@@ -33,12 +37,12 @@ export async function formatMediaPlaylist(sessionId: string, path: string) {
   const { type, playlist } = await presentation.getMedia(path);
 
   if (playlist.endlist) {
-    // Only when we have an endlist, we can add these type of dateRanges,
-    // when we're live, we can use the EXT-X-PROGRAM-DATE-TIME from the source.
-    playlist.segments[0].programDateTime = session.startDate;
+    // When we have an endlist, the playlist is static. We can check whether we need
+    // to add dateRanges.
+    playlist.segments[0].programDateTime = getStaticPDT(session);
 
     if (type === "video") {
-      playlist.dateRanges = formatDateRanges(session);
+      playlist.dateRanges = getStaticDateRanges(session);
     }
   }
 

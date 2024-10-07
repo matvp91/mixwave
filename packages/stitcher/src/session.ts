@@ -1,13 +1,34 @@
 import { client } from "./redis.js";
 import { randomUUID } from "crypto";
 import { assert } from "./assert.js";
-import type {
-  Session,
-  SessionInterstitial,
-  SessionFilter,
-  SessionVmap,
-} from "./types.js";
 import { DateTime } from "luxon";
+import type { VmapResponse } from "./vmap.js";
+
+export type Session = {
+  id: string;
+  uri: string;
+  dt: DateTime;
+  interstitials?: SessionInterstitial[];
+  filter?: SessionFilter;
+  vmap?: SessionVmap;
+  vmapResponse?: VmapResponse;
+};
+
+export type SessionInterstitialType = "ad" | "bumper";
+
+export type SessionInterstitial = {
+  timeOffset: number;
+  uri: string;
+  type?: SessionInterstitialType;
+};
+
+export type SessionFilter = {
+  resolution?: string;
+};
+
+export type SessionVmap = {
+  url: string;
+};
 
 const REDIS_PREFIX = `stitcher:session`;
 
@@ -29,7 +50,7 @@ export async function createSession(data: {
     filter: data.filter,
     interstitials: data.interstitials,
     vmap: data.vmap,
-    startDate: DateTime.now(),
+    dt: DateTime.now(),
   };
 
   const key = redisKey(sessionId);
@@ -64,7 +85,7 @@ export async function updateSession(session: Session) {
 function serializeToJson(session: Session) {
   return JSON.stringify({
     ...session,
-    startDate: session.startDate.toISO(),
+    dt: session.dt.toISO(),
   });
 }
 
@@ -72,6 +93,6 @@ function parseFromJson(text: string): Session {
   const obj = JSON.parse(text);
   return {
     ...obj,
-    startDate: DateTime.fromISO(obj.startDate),
+    dt: DateTime.fromISO(obj.dt),
   };
 }

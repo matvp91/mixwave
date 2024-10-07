@@ -3,9 +3,10 @@ import {
   parseMasterPlaylist,
   parseMediaPlaylist,
 } from "../parser/index.js";
-import { rewriteSegmentToAbsolute } from "./utils.js";
+import { rewriteSegmentToAbsolute, fetchText } from "./utils.js";
 import { getMasterUrl, joinPath, getDir } from "../url.js";
-import type { Stream } from "./types.js";
+
+export type MediaType = "video" | "audio" | "text";
 
 export class Presentation {
   private url_: string;
@@ -21,7 +22,7 @@ export class Presentation {
   }
 
   async getMedia(path: string): Promise<{
-    type: "video" | "audio" | "subtitles";
+    type: MediaType;
     playlist: MediaPlaylist;
   }> {
     const dir = getDir(this.url_);
@@ -54,7 +55,7 @@ export class Presentation {
       for (const subtitles of variant.subtitles) {
         if (subtitles.uri === path) {
           return {
-            type: "subtitles",
+            type: "text",
             playlist: media,
           };
         }
@@ -63,9 +64,4 @@ export class Presentation {
 
     throw new Error(`Cannot find playlist for path "${path}"`);
   }
-}
-
-async function fetchText(url: string) {
-  const response = await fetch(url);
-  return await response.text();
 }

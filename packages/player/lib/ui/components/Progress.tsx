@@ -87,14 +87,14 @@ export function Progress({
   return (
     <div
       ref={ref}
-      className="relative grow flex items-center cursor-pointer after:absolute after:inset-0 after:h-[200%] after:-top-[100%]"
+      className="relative grow flex items-center cursor-pointer h-1 after:absolute after:inset-0 after:h-14 after:-top-10"
       onPointerDown={onPointerDown}
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
     >
       <div
         className={cn(
-          "absolute bg-black/95 text-white rounded-md -translate-x-1/2 bottom-12 h-8 px-2 flex items-center opacity-0 transition-opacity pointer-events-none text-sm",
+          "absolute bg-black/95 text-white rounded-md -translate-x-1/2 bottom-6 h-8 px-2 flex items-center opacity-0 transition-opacity pointer-events-none text-sm",
           active && "opacity-100",
         )}
         style={{

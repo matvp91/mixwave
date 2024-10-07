@@ -11,7 +11,7 @@ import FullscreenExitIcon from "../icons/fullscreen-exit.svg?react";
 import { useVisible } from "../hooks/useVisible";
 import { Settings } from "./Settings";
 import { SqButton } from "./SqButton";
-import { SettingsMode, useSettings } from "../hooks/useSettings";
+import { useSettings } from "../hooks/useSettings";
 import { TimeStat } from "./TimeStat";
 import { useTime } from "../hooks/useTime";
 import { useState } from "react";
@@ -52,34 +52,31 @@ export function Controls({ facade, state, metadata }: ControlsProps) {
       >
         <div
           className={cn(
-            "flex px-4 mb-2 transition-opacity",
-            !showSeekbar(state, settings?.mode) &&
-              "opacity-0 pointer-events-none",
+            "relative mb-2 transition-opacity",
+            !!settings && "opacity-0 pointer-events-none",
           )}
         >
-          <Progress
-            time={time}
-            state={state}
-            seeking={progressSeeking}
-            setSeeking={setProgressSeeking}
-            onSeeked={(time) => {
-              nudge();
-              setTargetTime(time);
-              facade.seekTo(time);
-            }}
-          />
-          <TimeStat time={time} state={state} />
+          {state.slot ? (
+            <div className="absolute left-0 right-0 bottom-0 px-4">
+              <SlotProgress slot={state.slot} />
+            </div>
+          ) : (
+            <div className="absolute left-0 right-0 bottom-0 flex items-center px-4">
+              <Progress
+                time={time}
+                state={state}
+                seeking={progressSeeking}
+                setSeeking={setProgressSeeking}
+                onSeeked={(time) => {
+                  nudge();
+                  setTargetTime(time);
+                  facade.seekTo(time);
+                }}
+              />
+              <TimeStat time={time} state={state} />
+            </div>
+          )}
         </div>
-        {state.slot ? (
-          <div
-            className={cn(
-              "flex px-4 mb-2 transition-opacity",
-              settings !== null && "opacity-0",
-            )}
-          >
-            <SlotProgress slot={state.slot} />
-          </div>
-        ) : null}
         <div className="flex gap-1 px-4 mb-2">
           <SqButton
             onClick={() => {
@@ -93,16 +90,15 @@ export function Controls({ facade, state, metadata }: ControlsProps) {
               <PlayIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
             )}
           </SqButton>
-          {showSeekbar(state) ? (
-            <SqButton
-              onClick={() => {
-                facade.seekTo(time + 10);
-                nudge();
-              }}
-            >
-              <ForwardIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
-            </SqButton>
-          ) : null}
+          <SqButton
+            disabled={state.slot !== null}
+            onClick={() => {
+              facade.seekTo(time + 10);
+              nudge();
+            }}
+          >
+            <ForwardIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
+          </SqButton>
           <VolumeButton
             volume={state.volume}
             setVolume={(volume) => facade.setVolume(volume)}
@@ -148,14 +144,4 @@ export function Controls({ facade, state, metadata }: ControlsProps) {
       <Center facade={facade} onFullscreenClick={fullscreen?.onClick} />
     </>
   );
-}
-
-function showSeekbar(state: State, settings?: SettingsMode) {
-  if (settings) {
-    return false;
-  }
-  if (state.slot) {
-    return false;
-  }
-  return true;
 }

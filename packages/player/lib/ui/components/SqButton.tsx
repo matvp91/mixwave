@@ -8,6 +8,7 @@ type SqButtonProps = {
   onIdle?: () => void;
   idleTime?: number;
   selected?: boolean;
+  disabled?: boolean;
 };
 
 export function SqButton({
@@ -16,6 +17,7 @@ export function SqButton({
   onIdle,
   idleTime,
   selected,
+  disabled,
   ...rest
 }: SqButtonProps) {
   const timerRef = useRef<number>();
@@ -43,6 +45,7 @@ export function SqButton({
       onMouseLeave={() => {
         clearTimeout(timerRef.current);
       }}
+      disabled={disabled}
       {...rest}
     >
       {children}

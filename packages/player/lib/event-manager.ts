@@ -1,94 +1,76 @@
-import type Hls from "hls.js";
-import type { HlsListeners } from "hls.js";
+export class EventManager<
+  On extends CallableFunction,
+  Off extends CallableFunction,
+> {
+  on: On;
 
-type HlsListener<E extends keyof HlsListeners = keyof HlsListeners> = [
-  event: E,
-  listener: HlsListeners[E],
-];
+  off: Off;
 
-type MediaListener<
-  K extends keyof HTMLMediaElementEventMap = keyof HTMLMediaElementEventMap,
-> = [
-  type: K,
-  listener: (this: HTMLMediaElement, ev: HTMLMediaElementEventMap[K]) => void,
-];
-
-export class EventManager {
-  private hlsListeners_: HlsListener[] = [];
-
-  private mediaListeners_: MediaListener[] = [];
+  private listeners_: Record<string, [Function, Function][]> = {};
 
   constructor(
-    private hls_: Hls,
-    private media_: HTMLMediaElement,
+    private params_: {
+      on: On;
+      off: Off;
+    },
   ) {
-    this.mediaOn = this.mediaOn.bind(this);
-    this.hlsOn = this.hlsOn.bind(this);
-    this.hlsOff = this.hlsOff.bind(this);
+    this.on = this.addListener_ as unknown as On;
+    this.off = this.removeListener_ as unknown as Off;
   }
 
-  mediaOn<K extends keyof HTMLMediaElementEventMap>(
-    type: K,
-    listener: (this: HTMLMediaElement, ev: HTMLMediaElementEventMap[K]) => void,
-  ) {
-    this.media_.addEventListener(type, listener);
-    // @ts-expect-error
-    this.mediaListeners_.push([type, listener]);
-  }
+  private addListener_ = (event: string, callback: () => void) => {
+    const listener = wrapInLog(callback);
 
-  hlsOn<E extends keyof HlsListeners>(event: E, listener: HlsListeners[E]) {
-    // hls.js swallows errors, let's explicitly log them by wrapping the listener
-    // in a logCall. We wouldn't want to miss any exception by accident.
-    const logListener = logCall(listener);
-    this.hls_.on(event, logListener);
-    this.hlsListeners_.push([event, logListener]);
-  }
-
-  hlsOff<E extends keyof HlsListeners>(event: E, listener: HlsListeners[E]) {
-    for (const lookup of this.hlsListeners_) {
-      // @ts-expect-error
-      if (lookup[1][logCallOrig] === listener) {
-        // @ts-expect-error
-        listener = lookup[1];
-        break;
-      }
+    if (!this.listeners_[event]) {
+      this.listeners_[event] = [];
     }
-    this.hls_.off(event, listener);
+    this.listeners_[event].push([listener, callback]);
 
-    const listenerIndex = this.hlsListeners_.findIndex(
-      ([, lookupListener]) => listener === lookupListener,
-    );
+    this.params_.on(event, listener);
+  };
 
-    if (listenerIndex > -1) {
-      this.hlsListeners_.splice(listenerIndex, 1);
+  private removeListener_ = (event: string, callback: () => void) => {
+    const lookupMap = this.listeners_[event];
+    if (!lookupMap) {
+      return;
     }
-  }
+
+    const listener = lookupMap.find((listener) => {
+      return listener[1] === callback;
+    });
+    if (!listener) {
+      return;
+    }
+
+    this.params_.off(event, listener[0]);
+
+    const index = this.listeners_[event].indexOf(listener);
+    if (index > -1) {
+      this.listeners_[event].splice(index, 1);
+    }
+
+    if (!this.listeners_[event].length) {
+      delete this.listeners_[event];
+    }
+  };
 
   releaseAll() {
-    this.mediaListeners_.forEach(([type, listener]) => {
-      this.media_.removeEventListener(type, listener);
+    Object.entries(this.listeners_).forEach(([event, listeners]) => {
+      listeners.forEach((listener) => {
+        this.params_.off(event, listener[0]);
+      });
     });
-    this.mediaListeners_ = [];
-
-    this.hlsListeners_.forEach(([event, listener]) => {
-      this.hls_.off(event, listener);
-    });
-    this.hlsListeners_ = [];
+    this.listeners_ = {};
   }
 }
 
-const logCallOrig = Symbol.for("mixwave.logCallOrig");
-
-function logCall<T extends (...args: any) => any>(callback: T) {
-  const fn = async (...args: any) => {
+function wrapInLog<T extends (...args: unknown[]) => void>(callback: T) {
+  const fn = async (...args: unknown[]) => {
     try {
       await callback(...args);
     } catch (error) {
       console.error(error);
     }
   };
-
-  fn[logCallOrig] = callback;
-
   return fn;
 }

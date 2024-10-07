@@ -21,6 +21,8 @@ import type {
 export class HlsFacade extends EventEmitter<Events> {
   state: State | null = null;
 
+  private media_: HTMLMediaElement;
+
   private mgr_?: InterstitialsManager;
 
   private timerId_?: number;
@@ -29,23 +31,34 @@ export class HlsFacade extends EventEmitter<Events> {
 
   private intervalId_?: number;
 
-  private eventMgr_: EventManager;
+  private hlsEvents_: EventManager<Hls["on"], Hls["off"]>;
 
-  constructor(
-    public hls: Hls,
-    private media_: HTMLMediaElement,
-  ) {
+  private mediaEvents_: EventManager<
+    HTMLMediaElement["addEventListener"],
+    HTMLMediaElement["removeEventListener"]
+  >;
+
+  constructor(public hls: Hls) {
     super();
 
-    this.eventMgr_ = new EventManager(hls, media_);
+    assert(hls.media, "Missing hls.media");
+    this.media_ = hls.media;
+
+    this.hlsEvents_ = new EventManager({
+      on: this.hls.on.bind(hls),
+      off: this.hls.off.bind(hls),
+    });
+
+    this.mediaEvents_ = new EventManager({
+      on: this.media_.addEventListener.bind(this.media_),
+      off: this.media_.removeEventListener.bind(this.media_),
+    });
 
     const onInit = () => {
-      this.eventMgr_.hlsOff(Hls.Events.INTERSTITIALS_PRIMARY_RESUMED, onInit);
-      this.eventMgr_.hlsOff(Hls.Events.INTERSTITIALS_UPDATED, onInit);
+      this.hlsEvents_.off(Hls.Events.INTERSTITIALS_PRIMARY_RESUMED, onInit);
+      this.hlsEvents_.off(Hls.Events.INTERSTITIALS_UPDATED, onInit);
 
-      if (!hls.interstitialsManager || !hls.media) {
-        throw new Error("Missing hls.interstitialsManager or hls.media");
-      }
+      assert(hls.interstitialsManager, "Missing hls.interstitialsManager");
 
       this.mgr_ = hls.interstitialsManager;
 
@@ -55,39 +68,35 @@ export class HlsFacade extends EventEmitter<Events> {
       this.initHlsListeners_();
     };
 
-    this.eventMgr_.hlsOn(Hls.Events.INTERSTITIALS_PRIMARY_RESUMED, onInit);
-    this.eventMgr_.hlsOn(Hls.Events.INTERSTITIALS_UPDATED, onInit);
+    this.hlsEvents_.on(Hls.Events.INTERSTITIALS_PRIMARY_RESUMED, onInit);
+    this.hlsEvents_.on(Hls.Events.INTERSTITIALS_UPDATED, onInit);
   }
 
   private initMediaListeners_() {
-    const mediaOn = this.eventMgr_.mediaOn;
-
-    mediaOn("play", () => {
+    this.mediaEvents_.on("play", () => {
       this.pollTime_();
     });
 
-    mediaOn("pause", () => {
+    this.mediaEvents_.on("pause", () => {
       this.pollTime_();
     });
 
-    mediaOn("seeked", () => {
+    this.mediaEvents_.on("seeked", () => {
       this.pollTime_();
     });
 
-    mediaOn("volumechange", () => {
+    this.mediaEvents_.on("volumechange", () => {
       this.setState_({ volume: this.media_.volume });
     });
   }
 
   private initHlsListeners_() {
-    const hlsOn = this.eventMgr_.hlsOn;
-
-    hlsOn(Hls.Events.MEDIA_ENDED, () => {
+    this.hlsEvents_.on(Hls.Events.MEDIA_ENDED, () => {
       clearTimeout(this.timerId_);
       this.setState_({ playheadState: "ended", time: this.state?.duration });
     });
 
-    hlsOn(Hls.Events.LEVEL_SWITCHING, () => {
+    this.hlsEvents_.on(Hls.Events.LEVEL_SWITCHING, () => {
       assert(this.state);
 
       updateActive_(
@@ -99,7 +108,7 @@ export class HlsFacade extends EventEmitter<Events> {
       );
     });
 
-    hlsOn(Hls.Events.AUDIO_TRACK_SWITCHING, () => {
+    this.hlsEvents_.on(Hls.Events.AUDIO_TRACK_SWITCHING, () => {
       assert(this.state);
 
       updateActive_(
@@ -111,7 +120,7 @@ export class HlsFacade extends EventEmitter<Events> {
       );
     });
 
-    hlsOn(Hls.Events.SUBTITLE_TRACK_SWITCH, () => {
+    this.hlsEvents_.on(Hls.Events.SUBTITLE_TRACK_SWITCH, () => {
       assert(this.state);
 
       updateActive_(
@@ -123,7 +132,7 @@ export class HlsFacade extends EventEmitter<Events> {
       );
     });
 
-    hlsOn(Hls.Events.INTERSTITIAL_ASSET_STARTED, (_, data) => {
+    this.hlsEvents_.on(Hls.Events.INTERSTITIAL_ASSET_STARTED, (_, data) => {
       const listItem = getAssetListItem(data);
       const slot: Slot = {
         type: listItem.type,
@@ -134,7 +143,7 @@ export class HlsFacade extends EventEmitter<Events> {
       this.pollTime_();
     });
 
-    hlsOn(Hls.Events.INTERSTITIAL_ASSET_ENDED, () => {
+    this.hlsEvents_.on(Hls.Events.INTERSTITIAL_ASSET_ENDED, () => {
       this.setState_({ slot: null });
     });
   }
@@ -241,7 +250,8 @@ export class HlsFacade extends EventEmitter<Events> {
     clearTimeout(this.timerId_);
     clearInterval(this.intervalId_);
 
-    this.eventMgr_.releaseAll();
+    this.hlsEvents_.releaseAll();
+    this.mediaEvents_.releaseAll();
 
     this.mgr_ = undefined;
     this.state = null;

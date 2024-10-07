@@ -40,9 +40,8 @@ export const contract = c.router({
   },
   getAssetList: {
     method: "GET",
-    path: "/asset-list.json",
+    path: "/session/:sessionId/asset-list.json",
     query: z.object({
-      sessionId: z.string(),
       startDate: z.string(),
     }),
     responses: {},

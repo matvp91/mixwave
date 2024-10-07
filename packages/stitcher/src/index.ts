@@ -41,10 +41,10 @@ async function buildServer() {
       // return reply.type("application/x-mpegURL").send(response);
       return reply.send(response);
     },
-    getAssetList: async ({ query }) => {
+    getAssetList: async ({ query, params }) => {
       return {
         status: 200,
-        body: await formatAssetList(query.sessionId, query.startDate),
+        body: await formatAssetList(params.sessionId, query.startDate),
       };
     },
     getSpec: async () => {

@@ -1,4 +1,4 @@
-import { VmapResponse } from "./vmap.js";
+import type { VmapResponse } from "./vmap";
 
 export type Session = {
   id: string;
@@ -10,10 +10,12 @@ export type Session = {
   programDateTime?: string;
 };
 
+export type SessionInterstitialType = "ad" | "bumper";
+
 export type SessionInterstitial = {
   timeOffset: number;
   uri: string;
-  type?: "ad" | "bumper";
+  type?: SessionInterstitialType;
 };
 
 export type SessionFilter = {

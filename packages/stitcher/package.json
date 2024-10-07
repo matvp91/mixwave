@@ -3,7 +3,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc-watch --noClear --onSuccess \"node ./dist/index.js\""
+    "dev": "tsc-watch --noClear --onSuccess \"node ./dist/index.js\"",
+    "test": "vitest run"
   },
   "devDependencies": {
     "@types/find-config": "^1.0.4",
@@ -13,7 +14,8 @@
     "@types/node": "^22.1.0",
     "@types/uuid": "^10.0.0",
     "tsc-watch": "^6.2.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vitest": "^2.1.2"
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",

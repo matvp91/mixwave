@@ -1,8 +1,10 @@
 import {
+  MasterPlaylist,
   MediaPlaylist,
   parseMasterPlaylist,
   parseMediaPlaylist,
 } from "../parser/index.js";
+import { assert } from "../assert.js";
 import { rewriteSegmentToAbsolute, fetchText } from "./utils.js";
 import { getMasterUrl, joinPath, getDir } from "../url.js";
 
@@ -17,51 +19,55 @@ export class Presentation {
 
   async getMaster() {
     const text = await fetchText(this.url_);
-    const master = parseMasterPlaylist(text);
-    return master;
+    return parseMasterPlaylist(text);
   }
 
-  async getMedia(path: string): Promise<{
-    type: MediaType;
-    playlist: MediaPlaylist;
-  }> {
-    const dir = getDir(this.url_);
-    const url = joinPath(dir, path);
-
-    const master = await this.getMaster();
-
+  private async getMedia_(path: string) {
+    const url = joinPath(getDir(this.url_), path);
     const text = await fetchText(url);
+
     const media = parseMediaPlaylist(text);
 
     rewriteSegmentToAbsolute(media, getDir(url));
 
+    return media;
+  }
+
+  private getMediaType_(
+    path: string,
+    master: MasterPlaylist,
+  ): MediaType | null {
     for (const variant of master.variants) {
       if (variant.uri === path) {
-        return {
-          type: "video",
-          playlist: media,
-        };
+        return "video";
       }
 
       for (const audio of variant.audio) {
         if (audio.uri === path) {
-          return {
-            type: "audio",
-            playlist: media,
-          };
+          return "audio";
         }
       }
 
       for (const subtitles of variant.subtitles) {
         if (subtitles.uri === path) {
-          return {
-            type: "text",
-            playlist: media,
-          };
+          return "text";
         }
       }
     }
 
-    throw new Error(`Cannot find playlist for path "${path}"`);
+    return null;
+  }
+
+  async getMedia(path: string) {
+    const master = await this.getMaster();
+    const media = await this.getMedia_(path);
+
+    const mediaType = this.getMediaType_(path, master);
+    assert(mediaType, `A mediaType for "${path}" could not be found.`);
+
+    return {
+      mediaType,
+      media,
+    };
   }
 }

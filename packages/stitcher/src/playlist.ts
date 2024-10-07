@@ -34,19 +34,16 @@ export async function formatMediaPlaylist(sessionId: string, path: string) {
 
   const presentation = new Presentation(session.uri);
 
-  const { type, playlist } = await presentation.getMedia(path);
+  const { mediaType, media } = await presentation.getMedia(path);
 
-  if (playlist.endlist) {
+  if (mediaType === "video" && media.endlist) {
     // When we have an endlist, the playlist is static. We can check whether we need
     // to add dateRanges.
-    playlist.segments[0].programDateTime = getStaticPDT(session);
-
-    if (type === "video") {
-      playlist.dateRanges = getStaticDateRanges(session);
-    }
+    media.segments[0].programDateTime = getStaticPDT(session);
+    media.dateRanges = getStaticDateRanges(session);
   }
 
-  return stringify(playlist);
+  return stringify(media);
 }
 
 export async function formatAssetList(sessionId: string, startDate: string) {

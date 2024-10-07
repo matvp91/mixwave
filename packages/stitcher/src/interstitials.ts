@@ -28,6 +28,7 @@ export function getStaticDateRanges(session: Session) {
       groupTimeOffset(group, session.dt, adBreak.timeOffset, "ad");
     }
   }
+
   if (session.interstitials) {
     for (const interstitial of session.interstitials) {
       groupTimeOffset(

@@ -11,6 +11,11 @@ export function getMasterUrl(uri: string) {
     return uri;
   }
 
+  const potentialUuid = uri.split("@", 2)[0];
+  if (uuidRegex.test(potentialUuid)) {
+    uri = `${ASSET_PROTOCOL}//${uri}`;
+  }
+
   if (uuidRegex.test(uri)) {
     // We prefer using the mix protocol for asset identification but we allow
     // just uuid's too and assume it's a valid assetId.
@@ -18,8 +23,10 @@ export function getMasterUrl(uri: string) {
   }
 
   if (uri.startsWith(`${ASSET_PROTOCOL}//`)) {
-    const assetId = uri.substring(`${ASSET_PROTOCOL}//`.length);
-    return `${env.PUBLIC_S3_ENDPOINT}/package/${assetId}/hls/master.m3u8`;
+    const [assetId, prefix = "hls"] = uri
+      .substring(`${ASSET_PROTOCOL}//`.length)
+      .split("@");
+    return `${env.PUBLIC_S3_ENDPOINT}/package/${assetId}/${prefix}/master.m3u8`;
   }
 
   throw new UriInvalidError(uri);

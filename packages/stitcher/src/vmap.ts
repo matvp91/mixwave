@@ -2,7 +2,7 @@ import { DOMParser, XMLSerializer } from "@xmldom/xmldom";
 import * as timeFormat from "hh-mm-ss";
 
 const USER_AGENT =
-  "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36";
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36";
 
 export type VmapAdBreak = {
   timeOffset: number;
@@ -86,7 +86,6 @@ async function getXml(url: string) {
   });
 
   const text = await response.text();
-
   const parser = new DOMParser();
 
   return parser.parseFromString(text, "text/xml");

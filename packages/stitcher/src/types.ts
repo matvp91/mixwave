@@ -25,9 +25,3 @@ export type SessionFilter = {
 export type SessionVmap = {
   url: string;
 };
-
-export type InterstitialAsset = {
-  URI: string;
-  DURATION: number;
-  "MIX-TYPE": Required<SessionInterstitial["type"]>;
-};

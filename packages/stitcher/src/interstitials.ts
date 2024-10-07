@@ -6,11 +6,16 @@ import { fetchPlaylistDuration } from "./presentation/utils.js";
 import { VmapResponse } from "./vmap.js";
 import type { DateRange } from "./parser/types.js";
 import type {
-  InterstitialAsset,
   Session,
   SessionInterstitialType,
   SessionInterstitial,
 } from "./types.js";
+
+type InterstitialAsset = {
+  URI: string;
+  DURATION: number;
+  "MIX-TYPE": Required<SessionInterstitial["type"]>;
+};
 
 export function formatDateRanges(session: Session) {
   if (!session.programDateTime) {

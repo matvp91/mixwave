@@ -3,6 +3,8 @@ import { env } from "./env.js";
 
 const uuidRegex = /^[a-z,0-9,-]{36,36}$/;
 
+const ASSET_PROTOCOL = "asset:";
+
 export function getMasterUrl(uri: string) {
   if (uri.startsWith("http://") || uri.startsWith("https://")) {
     return uri;
@@ -11,11 +13,11 @@ export function getMasterUrl(uri: string) {
   if (uuidRegex.test(uri)) {
     // We prefer using the mix protocol for asset identification but we allow
     // just uuid's too and assume it's a valid assetId.
-    uri = `mix://${uri}`;
+    uri = `${ASSET_PROTOCOL}//${uri}`;
   }
 
-  if (uri.startsWith("mix://")) {
-    const assetId = uri.substring("mix://".length);
+  if (uri.startsWith(`${ASSET_PROTOCOL}//`)) {
+    const assetId = uri.substring(`${ASSET_PROTOCOL}//`.length);
     return `${env.PUBLIC_S3_ENDPOINT}/package/${assetId}/hls/master.m3u8`;
   }
 

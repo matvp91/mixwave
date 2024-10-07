@@ -1,7 +1,7 @@
 import { client } from "./redis.js";
 import { randomUUID } from "crypto";
-import { assert } from "./assert.js";
 import { DateTime } from "luxon";
+import { SessionNotFoundError } from "./errors.js";
 import type { VmapResponse } from "./vmap.js";
 
 export type Session = {
@@ -64,7 +64,10 @@ export async function createSession(data: {
 
 export async function getSession(sessionId: string) {
   const data = await client.get(redisKey(sessionId));
-  assert(data, `No session found for ${sessionId}`);
+
+  if (!data) {
+    throw new SessionNotFoundError(sessionId);
+  }
 
   if (typeof data !== "string") {
     throw new SyntaxError(

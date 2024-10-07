@@ -1,5 +1,6 @@
 import * as path from "path";
 import { env } from "./env.js";
+import { UriInvalidError } from "./errors.js";
 
 const uuidRegex = /^[a-z,0-9,-]{36,36}$/;
 
@@ -21,7 +22,7 @@ export function getMasterUrl(uri: string) {
     return `${env.PUBLIC_S3_ENDPOINT}/package/${assetId}/hls/master.m3u8`;
   }
 
-  throw new Error(`Invalid uri: ${uri}`);
+  throw new UriInvalidError(uri);
 }
 
 export function joinPath(base: string, ...paths: string[]) {

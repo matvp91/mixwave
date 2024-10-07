@@ -10,6 +10,8 @@ import {
   formatMediaPlaylist,
   formatAssetList,
 } from "./playlist.js";
+import { validateFilter } from "./filters.js";
+import { getMasterUrl } from "./url.js";
 
 async function buildServer() {
   const app = Fastify();
@@ -20,7 +22,17 @@ async function buildServer() {
 
   const router = s.router(contract, {
     postSession: async ({ body }) => {
+      // This'll fail when uri is invalid.
+      getMasterUrl(body.uri);
+
+      if (body.filter) {
+        // When we have a filter, validate it here first. There is no need to wait until we approach
+        // the master playlist. We can bail out early.
+        validateFilter(body.filter);
+      }
+
       const session = await createSession(body);
+
       return {
         status: 200,
         body: {
@@ -31,15 +43,11 @@ async function buildServer() {
     },
     getMasterPlaylist: async ({ params, reply }) => {
       const response = await formatMasterPlaylist(params.sessionId);
-
-      // return reply.type("application/x-mpegURL").send(response);
-      return reply.send(response);
+      return reply.type("application/x-mpegURL").send(response);
     },
     getMediaPlaylist: async ({ params, reply }) => {
       const response = await formatMediaPlaylist(params.sessionId, params["*"]);
-
-      // return reply.type("application/x-mpegURL").send(response);
-      return reply.send(response);
+      return reply.type("application/x-mpegURL").send(response);
     },
     getAssetList: async ({ query, params }) => {
       return {

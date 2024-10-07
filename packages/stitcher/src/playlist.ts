@@ -9,6 +9,7 @@ import {
   getAssets,
   getStaticPDT,
 } from "./interstitials.js";
+import { PlaylistNoVariants } from "./errors.js";
 
 export async function formatMasterPlaylist(sessionId: string) {
   const session = await getSession(sessionId);
@@ -24,6 +25,10 @@ export async function formatMasterPlaylist(sessionId: string) {
 
   if (session.filter) {
     filterMaster(master, session.filter);
+  }
+
+  if (!master.variants.length) {
+    throw new PlaylistNoVariants();
   }
 
   return stringify(master);

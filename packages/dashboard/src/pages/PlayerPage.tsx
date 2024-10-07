@@ -72,7 +72,7 @@ export function PlayerPage() {
             <div className="relative">
               <TvMinimalPlay className="w-4 h-4 absolute left-3 top-3" />
               <Input
-                className="mt-2 pl-9"
+                className="mt-2 pl-9 text-gray-700"
                 value={masterUrl}
                 onClick={(event) => {
                   (event.target as HTMLInputElement).select();

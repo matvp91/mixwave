@@ -29,6 +29,7 @@ export type Quality = {
 };
 
 export type State = {
+  isStarted: boolean;
   playheadState: "idle" | "play" | "pause" | "ended";
   time: number;
   duration: number;

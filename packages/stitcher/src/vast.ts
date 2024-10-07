@@ -3,31 +3,33 @@ import { VASTClient } from "vast-client";
 import { DOMParser } from "@xmldom/xmldom";
 import * as uuid from "uuid";
 import { NAMESPACE_UUID_AD } from "./const.js";
-import { formatUri, isUrlAvailable } from "./uri.js";
+import { getMasterUrl, isUrlAvailable } from "./url.js";
 import type { VmapAdBreak } from "./vmap.js";
-import type { Interstitial } from "./types.js";
 import type { VastResponse, VastCreativeLinear, VastAd } from "vast-client";
 
-export async function extractInterstitialFromVmapAdbreak(adBreak: VmapAdBreak) {
-  const interstitials: Interstitial[] = [];
+export type AdMedia = {
+  assetId: string;
+  fileUrl: string;
+};
 
+export async function getAdMediasFromVast(adBreak: VmapAdBreak) {
   const adMedias = await getAdMedias(adBreak);
 
-  for (const adMedia of adMedias) {
-    const format = formatUri(`mix://${adMedia.assetId}`);
+  const result: AdMedia[] = [];
 
-    if (await isUrlAvailable(format.url)) {
-      interstitials.push({
-        timeOffset: adBreak.timeOffset,
-        uri: format.url,
-        type: "ad",
-      });
-    } else {
+  for (const adMedia of adMedias) {
+    const url = getMasterUrl(`asset://${adMedia.assetId}`);
+
+    const isAvailable = await isUrlAvailable(url);
+    if (!isAvailable) {
       scheduleForPackage(adMedia);
+      continue;
     }
+
+    result.push(adMedia);
   }
 
-  return interstitials;
+  return result;
 }
 
 async function getAdMedias(adBreak: VmapAdBreak): Promise<AdMedia[]> {
@@ -58,11 +60,11 @@ function scheduleForPackage(adMedia: AdMedia) {
     segmentSize: 4,
     inputs: [
       {
-        path: adMedia.url,
+        path: adMedia.fileUrl,
         type: "video",
       },
       {
-        path: adMedia.url,
+        path: adMedia.fileUrl,
         type: "audio",
         language: "eng",
       },
@@ -108,7 +110,7 @@ async function formatVastResponse(response: VastResponse) {
 
     acc.push({
       assetId: adId,
-      url: mediaFile.fileURL,
+      fileUrl: mediaFile.fileURL,
     });
 
     return acc;
@@ -141,8 +143,3 @@ function getAdId(creative: VastCreativeLinear) {
 
   throw new Error("Failed to generate adId");
 }
-
-type AdMedia = {
-  assetId: string;
-  url: string;
-};

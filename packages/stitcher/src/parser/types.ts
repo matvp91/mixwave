@@ -18,8 +18,8 @@ export type Variant = {
   uri: string;
   bandwidth: number;
   resolution?: Resolution;
-  audio?: Rendition[];
-  subtitles?: Rendition[];
+  audio: Rendition[];
+  subtitles: Rendition[];
 };
 
 export type MasterPlaylist = {
@@ -46,12 +46,12 @@ export type MediaPlaylist = {
   isMasterPlaylist: false;
   independentSegments?: boolean;
   targetDuration: number;
-  endlist?: boolean;
+  endlist: boolean;
   playlistType?: PlaylistType;
   segments: Segment[];
   mediaSequenceBase?: number;
   discontinuitySequenceBase?: number;
-  dateRanges?: DateRange[];
+  dateRanges: DateRange[];
 };
 
 export type DateRange = {

@@ -5,11 +5,6 @@ const c = initContract();
 
 const postSessionBodySchema = z.object({
   uri: z.string(),
-  vmap: z
-    .object({
-      url: z.string(),
-    })
-    .optional(),
   interstitials: z
     .array(
       z.object({
@@ -22,6 +17,11 @@ const postSessionBodySchema = z.object({
   filter: z
     .object({
       resolution: z.string().optional(),
+    })
+    .optional(),
+  vmap: z
+    .object({
+      url: z.string(),
     })
     .optional(),
 });
@@ -42,7 +42,7 @@ export const contract = c.router({
     method: "GET",
     path: "/session/:sessionId/asset-list.json",
     query: z.object({
-      timeOffset: z.coerce.number(),
+      startDate: z.string(),
     }),
     responses: {},
   },

@@ -1,73 +1,101 @@
 import { client } from "./redis.js";
 import { randomUUID } from "crypto";
-import { extractInterstitialFromVmapAdbreak } from "./vast.js";
-import { getVmap } from "./vmap.js";
-import type { Session, Interstitial, Filter } from "./types.js";
+import { DateTime } from "luxon";
+import { SessionNotFoundError } from "./errors.js";
+import type { VmapResponse } from "./vmap.js";
+
+export type Session = {
+  id: string;
+  uri: string;
+  dt: DateTime;
+  interstitials?: SessionInterstitial[];
+  filter?: SessionFilter;
+  vmap?: SessionVmap;
+  vmapResponse?: VmapResponse;
+};
+
+export type SessionInterstitialType = "ad" | "bumper";
+
+export type SessionInterstitial = {
+  timeOffset: number;
+  uri: string;
+  type?: SessionInterstitialType;
+};
+
+export type SessionFilter = {
+  resolution?: string;
+};
+
+export type SessionVmap = {
+  url: string;
+};
 
 const REDIS_PREFIX = `stitcher:session`;
 
-function getRedisKey(sessionId: string) {
+function redisKey(sessionId: string) {
   return `${REDIS_PREFIX}:${sessionId}`;
 }
 
 export async function createSession(data: {
   uri: string;
-  vmap?: {
-    url: string;
-  };
-  interstitials?: Interstitial[];
-  filter?: Filter;
+  interstitials?: SessionInterstitial[];
+  filter?: SessionFilter;
+  vmap?: SessionVmap;
 }) {
   const sessionId = randomUUID();
 
-  let interstitials: Interstitial[] | undefined;
-
-  if (data.vmap) {
-    const vmap = await getVmap(data.vmap.url);
-
-    for (const adBreak of vmap.adBreaks) {
-      if (!interstitials) {
-        interstitials = [];
-      }
-
-      interstitials.push(
-        ...(await extractInterstitialFromVmapAdbreak(adBreak)),
-      );
-    }
-  }
-
-  if (data.interstitials?.length) {
-    if (!interstitials) {
-      interstitials = [];
-    }
-
-    interstitials.push(...data.interstitials);
-  }
-
-  const session = {
+  const session: Session = {
     id: sessionId,
     uri: data.uri,
     filter: data.filter,
-    interstitials,
-  } satisfies Session;
+    interstitials: data.interstitials,
+    vmap: data.vmap,
+    dt: DateTime.now(),
+  };
 
-  const redisKey = getRedisKey(sessionId);
+  const key = redisKey(sessionId);
 
-  const rawSession = JSON.parse(JSON.stringify(session));
-
-  await client.json.set(redisKey, `$`, rawSession);
-  await client.expire(redisKey, 60 * 60 * 6);
+  await client.set(key, serializeToJson(session), {
+    EX: 60 * 60 * 6,
+  });
 
   return session;
 }
 
 export async function getSession(sessionId: string) {
-  const redisKey = getRedisKey(sessionId);
+  const data = await client.get(redisKey(sessionId));
 
-  const data = await client.json.get(redisKey);
   if (!data) {
-    throw new Error(`No session for id "${sessionId}"`);
+    throw new SessionNotFoundError(sessionId);
   }
 
-  return data as Session;
+  if (typeof data !== "string") {
+    throw new SyntaxError(
+      "Redis did not return a string for session, cannot deserialize.",
+    );
+  }
+
+  return parseFromJson(data);
+}
+
+export async function updateSession(session: Session) {
+  const key = redisKey(session.id);
+  await client.set(key, serializeToJson(session), {
+    EX: await client.ttl(key),
+  });
+}
+
+function serializeToJson(session: Session) {
+  return JSON.stringify({
+    ...session,
+    dt: session.dt.toISO(),
+  });
+}
+
+function parseFromJson(text: string): Session {
+  const obj = JSON.parse(text);
+  return {
+    ...obj,
+    dt: DateTime.fromISO(obj.dt),
+  };
 }

@@ -1,15 +1,31 @@
 import MonacoEditor from "@monaco-editor/react";
 import type { BeforeMount, OnChange, OnMount } from "@monaco-editor/react";
+import { useEffect, useState } from "react";
 
 type EditorProps = {
   schema: object;
   title: React.ReactNode;
   onSave(value: string): void;
+  localStorageKey?: string;
 };
 
-let defaultValue = ["{", '  "uri": ""', "}"].join("\n");
+export function Editor({
+  schema,
+  title,
+  onSave,
+  localStorageKey,
+}: EditorProps) {
+  const [defaultValue] = useState(() => {
+    const localStorageValue = localStorageKey
+      ? localStorage.getItem(localStorageKey)
+      : null;
+    return localStorageValue
+      ? JSON.parse(localStorageValue)
+      : ["{", '  "uri": ""', "}"].join("\n");
+  });
 
-export function Editor({ schema, title, onSave }: EditorProps) {
+  useEffect(() => {}, [localStorageKey]);
+
   const beforeMount: BeforeMount = (monaco) => {
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,
@@ -31,10 +47,8 @@ export function Editor({ schema, title, onSave }: EditorProps) {
   };
 
   const onChange: OnChange = (value) => {
-    if (value) {
-      // When changed, store outside of component so we can switch pages and come back
-      // where we left off.
-      defaultValue = value;
+    if (value && localStorageKey) {
+      localStorage.setItem(localStorageKey, JSON.stringify(value));
     }
   };
 

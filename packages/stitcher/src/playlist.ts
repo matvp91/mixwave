@@ -1,56 +1,61 @@
 import { stringify } from "./parser/index.js";
-import {
-  addInterstitialsToMedia,
-  fetchPlaylistDuration,
-  Presentation,
-} from "./presentation/index.js";
-import { formatUri } from "./uri.js";
-import { assert } from "./assert.js";
+import { Presentation } from "./presentation.js";
 import { filterMaster } from "./filters.js";
-import type { Session } from "./types.js";
+import { fetchVmap } from "./vmap.js";
+import { DateTime } from "luxon";
+import { getSession, updateSession } from "./session.js";
+import {
+  getStaticDateRanges,
+  getAssets,
+  getStaticPDT,
+} from "./interstitials.js";
+import { PlaylistNoVariants } from "./errors.js";
 
-export async function formatMasterPlaylist(session: Session) {
+export async function formatMasterPlaylist(sessionId: string) {
+  const session = await getSession(sessionId);
+
   const presentation = new Presentation(session.uri);
 
   const master = await presentation.getMaster();
+
+  if (session.vmap) {
+    session.vmapResponse = await fetchVmap(session.vmap.url);
+    updateSession(session);
+  }
 
   if (session.filter) {
     filterMaster(master, session.filter);
   }
 
+  if (!master.variants.length) {
+    throw new PlaylistNoVariants();
+  }
+
   return stringify(master);
 }
 
-export async function formatMediaPlaylist(session: Session, path: string) {
+export async function formatMediaPlaylist(sessionId: string, path: string) {
+  const session = await getSession(sessionId);
+
   const presentation = new Presentation(session.uri);
 
-  const media = await presentation.getMedia(path);
+  const { mediaType, media } = await presentation.getMedia(path);
 
-  if (session.interstitials) {
-    addInterstitialsToMedia(media, session.interstitials, session.id);
+  if (mediaType === "video" && media.endlist) {
+    // When we have an endlist, the playlist is static. We can check whether we need
+    // to add dateRanges.
+    media.segments[0].programDateTime = getStaticPDT(session);
+    media.dateRanges = getStaticDateRanges(session);
   }
 
   return stringify(media);
 }
 
-export async function formatAssetList(session: Session, timeOffset: number) {
-  assert(session.interstitials);
+export async function formatAssetList(sessionId: string, startDate: string) {
+  const session = await getSession(sessionId);
 
-  const interstitials = session.interstitials.filter(
-    (ad) => ad.timeOffset === timeOffset,
-  );
-
-  const assets = await Promise.all(
-    interstitials.map(async (interstitial) => {
-      const format = formatUri(interstitial.uri);
-
-      return {
-        URI: format.url,
-        DURATION: await fetchPlaylistDuration(format.url),
-        "MIX-TYPE": interstitial.type,
-      };
-    }),
-  );
+  const lookupDate = DateTime.fromISO(startDate);
+  const assets = await getAssets(session, lookupDate);
 
   return { ASSETS: assets };
 }

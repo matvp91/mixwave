@@ -4,6 +4,7 @@ import { Alert } from "@/components/ui/alert";
 import { Editor } from "@/components/Editor";
 import { Player } from "@/components/Player";
 import { Loader } from "@/components/Loader";
+import TvMinimalPlay from "lucide-react/icons/tv-minimal-play";
 
 export function PlayerPage() {
   const [schema, setSchema] = useState<object>();
@@ -53,6 +54,7 @@ export function PlayerPage() {
     <div className="min-h-full flex grow">
       <div className="basis-1/2 min-w-0">
         <Editor
+          localStorageKey="mixPlayerEditorValue"
           schema={schema}
           title={
             <div className="flex gap-2 text-xs">
@@ -67,14 +69,17 @@ export function PlayerPage() {
         {masterUrl ? (
           <>
             <Player url={masterUrl} />
-            <Input
-              className="mt-2"
-              value={masterUrl}
-              onClick={(event) => {
-                (event.target as HTMLInputElement).select();
-              }}
-              onChange={() => {}}
-            />
+            <div className="relative">
+              <TvMinimalPlay className="w-4 h-4 absolute left-3 top-3" />
+              <Input
+                className="mt-2 pl-9 text-gray-700"
+                value={masterUrl}
+                onClick={(event) => {
+                  (event.target as HTMLInputElement).select();
+                }}
+                onChange={() => {}}
+              />
+            </div>
           </>
         ) : null}
         {error ? (

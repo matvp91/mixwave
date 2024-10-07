@@ -1,6 +1,5 @@
 import { assert } from "../assert.js";
 import { lexicalParse } from "./lexical-parse.js";
-import { appendRendition } from "./utils.js";
 import type {
   MediaPlaylist,
   MasterPlaylist,
@@ -22,7 +21,7 @@ function formatMediaPlaylist(tags: Tag[]): MediaPlaylist {
   let mediaSequenceBase: number | undefined;
   let discontinuitySequenceBase: number | undefined;
   let map: MediaInitializationSection | undefined;
-  let dateRanges: DateRange[] | undefined;
+  let dateRanges: DateRange[] = [];
 
   tags.forEach(([name, value]) => {
     if (name === "EXT-X-TARGETDURATION") {
@@ -47,9 +46,6 @@ function formatMediaPlaylist(tags: Tag[]): MediaPlaylist {
       discontinuitySequenceBase = value;
     }
     if (name === "EXT-X-DATERANGE") {
-      if (!dateRanges) {
-        dateRanges = [];
-      }
       dateRanges.push(value);
     }
   });
@@ -134,11 +130,11 @@ function addRendition(variant: Variant, media: Media) {
   };
 
   if (media.type === "AUDIO") {
-    appendRendition("audio", variant, rendition);
+    variant.audio.push(rendition);
   }
 
   if (media.type === "SUBTITLES") {
-    appendRendition("subtitles", variant, rendition);
+    variant.subtitles.push(rendition);
   }
 }
 

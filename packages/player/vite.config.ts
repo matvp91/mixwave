@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { resolve } from "path";
-import tsconfigPaths from "vite-tsconfig-paths";
 import dts from "vite-plugin-dts";
 import svgr from "vite-plugin-svgr";
 
@@ -12,7 +11,6 @@ export default defineConfig({
       rollupTypes: true,
       tsconfigPath: "./tsconfig.app.json",
     }),
-    tsconfigPaths(),
     react(),
     svgr(),
   ],
@@ -28,7 +26,4 @@ export default defineConfig({
     },
   },
   clearScreen: false,
-  server: {
-    port: 52005,
-  },
 });

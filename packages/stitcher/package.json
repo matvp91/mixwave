@@ -11,6 +11,7 @@
     "@jest/globals": "^29.7.0",
     "@types/find-config": "^1.0.4",
     "@types/hh-mm-ss": "^1.2.3",
+    "@types/lru-cache": "^7.10.10",
     "@types/luxon": "^3.4.2",
     "@types/node": "^22.1.0",
     "@types/parse-filepath": "^1.0.2",
@@ -36,10 +37,11 @@
     "fastify": "^4.28.1",
     "find-config": "^1.0.0",
     "hh-mm-ss": "^1.2.0",
+    "lru-cache": "^11.0.1",
     "luxon": "^3.5.0",
     "redis": "^4.7.0",
     "uuid": "^10.0.0",
-    "zod": "^3.23.8",
-    "vast-client": "workspace:*"
+    "vast-client": "workspace:*",
+    "zod": "^3.23.8"
   }
 }

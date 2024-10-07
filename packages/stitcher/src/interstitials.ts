@@ -1,8 +1,7 @@
 import { DateTime } from "luxon";
 import { env } from "./env.js";
-import { getMasterUrl } from "./url.js";
 import { getAdMediasFromVast } from "./vast.js";
-import { fetchPlaylistDuration } from "./presentation/utils.js";
+import { Presentation } from "./presentation.js";
 import { VmapResponse } from "./vmap.js";
 import type { DateRange } from "./parser/types.js";
 import type {
@@ -116,10 +115,10 @@ async function formatAdBreaks(
   const adMedias = await getAdMediasFromVast(adBreak);
 
   for (const adMedia of adMedias) {
-    const url = getMasterUrl(adMedia.assetId);
+    const presentation = new Presentation(`asset://${adMedia.assetId}`);
     assets.push({
-      URI: url,
-      DURATION: await fetchPlaylistDuration(url),
+      URI: presentation.url,
+      DURATION: await presentation.getDuration(),
       "MIX-TYPE": "ad",
     });
   }
@@ -136,10 +135,10 @@ async function formatInterstitials(
   );
 
   for (const interstitial of filteredInterstitials) {
-    const url = getMasterUrl(interstitial.uri);
+    const presentation = new Presentation(interstitial.uri);
     assets.push({
-      URI: url,
-      DURATION: await fetchPlaylistDuration(url),
+      URI: presentation.url,
+      DURATION: await presentation.getDuration(),
       "MIX-TYPE": interstitial.type,
     });
   }

@@ -9,7 +9,7 @@ import type { VastResponse, VastCreativeLinear, VastAd } from "vast-client";
 
 export type AdMedia = {
   assetId: string;
-  url: string;
+  fileUrl: string;
 };
 
 export async function getAdMediasFromVast(adBreak: VmapAdBreak) {
@@ -18,7 +18,7 @@ export async function getAdMediasFromVast(adBreak: VmapAdBreak) {
   const result: AdMedia[] = [];
 
   for (const adMedia of adMedias) {
-    const url = getMasterUrl(`mix://${adMedia.assetId}`);
+    const url = getMasterUrl(`asset://${adMedia.assetId}`);
 
     const isAvailable = await isUrlAvailable(url);
     if (!isAvailable) {
@@ -60,11 +60,11 @@ function scheduleForPackage(adMedia: AdMedia) {
     segmentSize: 4,
     inputs: [
       {
-        path: adMedia.url,
+        path: adMedia.fileUrl,
         type: "video",
       },
       {
-        path: adMedia.url,
+        path: adMedia.fileUrl,
         type: "audio",
         language: "eng",
       },
@@ -110,7 +110,7 @@ async function formatVastResponse(response: VastResponse) {
 
     acc.push({
       assetId: adId,
-      url: mediaFile.fileURL,
+      fileUrl: mediaFile.fileURL,
     });
 
     return acc;

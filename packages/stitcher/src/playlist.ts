@@ -1,5 +1,5 @@
 import { stringify } from "./parser/index.js";
-import { Presentation } from "./presentation/index.js";
+import { Presentation } from "./presentation.js";
 import { filterMaster } from "./filters.js";
 import { fetchVmap } from "./vmap.js";
 import { DateTime } from "luxon";

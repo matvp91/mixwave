@@ -1,9 +1,5 @@
 import { DOMParser, XMLSerializer } from "@xmldom/xmldom";
 import * as timeFormat from "hh-mm-ss";
-import { env } from "./env.js";
-import { DateTime } from "luxon";
-import { assert } from "./assert.js";
-import type { DateRange } from "./parser/index.js";
 
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36";
@@ -111,30 +107,4 @@ function toTimeOffset(value: string | null) {
     return null;
   }
   return timeFormat.toS(value);
-}
-
-export function formatAdBreaksToDateRanges(
-  date: DateTime,
-  vmapResponse: VmapResponse,
-  sessionId: string,
-) {
-  return vmapResponse.adBreaks.map<DateRange>((adBreak) => {
-    const startDate = date.plus({ seconds: adBreak.timeOffset });
-
-    const startDateISO = startDate.toISO();
-    assert(startDateISO);
-
-    const clientAttributes = {
-      RESTRICT: "SKIP,JUMP",
-      "RESUME-OFFSET": 0,
-      "ASSET-LIST": `${env.PUBLIC_STITCHER_ENDPOINT}/asset-list.json?sessionId=${sessionId}&startDate=${encodeURIComponent(startDateISO)}`,
-    };
-
-    return {
-      classId: "com.apple.hls.interstitial",
-      id: `adBreak(${adBreak.timeOffset})`,
-      startDate,
-      clientAttributes,
-    };
-  });
 }

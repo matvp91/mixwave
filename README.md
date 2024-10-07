@@ -59,7 +59,7 @@ There's more info in the [Getting Started](https://matvp91.github.io/mixwave/get
 
 ### Transcode & Package
 
-Let's take the popular BigBuckBunny MP4 video and package it in two different resolutions: 480p and 720p. Once that's done, we'll use the packageAfter flag to immediately package the files. In the end, we'll have an HLS playlist ready and stored on our S3.
+Let's take the popular BigBuckBunny MP4 video and package it in two different resolutions: 480p and 720p. Once that's done, we'll use the `packageAfter` flag to immediately package the files. In the end, we'll have an HLS playlist ready and stored on our S3.
 
 https://github.com/user-attachments/assets/05d770d5-4249-42d1-8ecf-5543294d9672
 

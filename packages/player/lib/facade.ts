@@ -40,11 +40,8 @@ export class HlsFacade extends EventEmitter<Events> {
     this.eventMgr_ = new EventManager(hls, media_);
 
     const onInit = () => {
-      this.eventMgr_.hlsOff(Hls.Events.BUFFER_CREATED, onInit);
-      this.eventMgr_.hlsOff(
-        Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED,
-        onInit,
-      );
+      this.eventMgr_.hlsOff(Hls.Events.INTERSTITIALS_PRIMARY_RESUMED, onInit);
+      this.eventMgr_.hlsOff(Hls.Events.INTERSTITIALS_UPDATED, onInit);
 
       if (!hls.interstitialsManager || !hls.media) {
         const message = "Missing hls.interstitialsManager or hls.media";
@@ -60,8 +57,8 @@ export class HlsFacade extends EventEmitter<Events> {
       this.initHlsListeners_();
     };
 
-    this.eventMgr_.hlsOn(Hls.Events.BUFFER_CREATED, onInit);
-    this.eventMgr_.hlsOn(Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED, onInit);
+    this.eventMgr_.hlsOn(Hls.Events.INTERSTITIALS_PRIMARY_RESUMED, onInit);
+    this.eventMgr_.hlsOn(Hls.Events.INTERSTITIALS_UPDATED, onInit);
   }
 
   private initMediaListeners_() {

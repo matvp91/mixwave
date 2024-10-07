@@ -26,30 +26,18 @@ Mixwave is a self hostable platform that aims to simplify the complexities of vi
 
 - Transcode your video file into separate quality tracks (eg; 1080p, 720p, 480p).
 - Write `HLS CMAF` playlists directly to S3, ready to be played by [HLS.js](https://github.com/video-dev/hls.js).
-- Scale `ffmpeg` jobs horizontally, at up to 80% cost reduction on [EC2 Spot Instances](https://aws.amazon.com/ec2/spot/).
-- Dynamically stitch HLS playlists together<sup>experimental</sup>, like a Netflix bumper, with [HLS interstitials](https://developer.apple.com/streaming/GettingStartedWithHLSInterstitials.pdf).
-- Parses a `vmap`, transcodes and packages the ad media files and inserts interstitials, on the fly.
+- Scales `ffmpeg` jobs horizontally.
+- Dynamically insert [HLS interstitials](https://developer.apple.com/streaming/GettingStartedWithHLSInterstitials.pdf), like the Netflix bumper.
+- Parses a `VMAP`, transcodes and packages the ad media files and inserts them as interstitials, on the fly.
 - Ships with a `HLS.js` wrapper that simplifies working with interstitials and a React UI.
 
-If you'd like to chat about all things video, we're on [Discord](https://discord.gg/4hXgz9EsF4) now!
+We're on [Discord](https://discord.gg/4hXgz9EsF4) if you'd like to chat or need support.
 
-## Demo
-
-https://github.com/user-attachments/assets/035cd10e-53b4-4b0f-99cd-79c76c26e0b0
-
-This video contains recordings from the dashboard, a simple, unified, way to interact with the API, view transcode and package jobs with their statuses, or toy around with the player devtools.
-
-Very briefly, the video demonstrates the following:
-
-- Transcodes and packages a BigBuckBunny mp4 source into HLS, in multiple qualities (1080p, 720p, 480p).
-- Creates a playback session that uses a previously transcoded and packaged bumper mp4 source, and adds it at an interstitial at position `0`.
-- Uses a Google [IMA sample](https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags) to serve two ads, one preroll and a midroll at position `15`.
-
-## Why?
+## Motivation
 
 Video is quite fragmented, particularly in the way video content is delivered and protected across different platforms and devices. Think [MPEG-DASH vs. HLS](https://www.gumlet.com/learn/hls-vs-dash/), CTR vs. CBCS, [SSAI vs. CSAI](https://clearcode.cc/blog/client-side-server-side-ad-insertion/). Besides, there's also a lot of cool things happening behind closed doors, like SGAI with [AWS EMT](https://docs.aws.amazon.com/mediatailor/latest/ug/server-guided.html) or [Disney+](https://medium.com/disney-streaming/using-sgai-to-deliver-and-play-ads-with-flexibility-and-scale-b5c18aeb7bca). We aim to avoid fragmentation by picking the right tools for the job. If you don't have to do the same thing multiple times, aiming for perfection is a lot easier. We believe `HLS CMAF` is the right way forward, and when playlist manipulation is required, we tend to lean towards `HLS Interstitials`. There's obviously going to be roadblocks ahead, think of devices not supporting multiple video elements or partially serving encrypted fragments opposed to plain ads. We'll tackle these once we get there.
 
-There's a lot of video tooling out there, think of ffmpeg, bento4, shaka-packager, but not in a unified manner. Mixwave implements the excellent work done by others, and tries to make it approachable in the form of an API with a strong focus on scalability and ease of use. The latter is quiet challenging, you'd only have to look at how complex ffmpeg gets when you tip into the details.
+There's a lot of video tooling out there, think of ffmpeg, bento4, shaka-packager, but not in a unified manner. Mixwave implements the excellent work done by others, and tries to make it approachable in the form of an API with a strong focus on scalability and ease of use. The latter is quiet challenging, you'd only have to look at how complex ffmpeg gets when you get into the details.
 
 Video from source to consumer is a hard task to get right, [howvideo.works](https://howvideo.works/) is a great resource to get you started.
 
@@ -67,12 +55,26 @@ docker compose up -d
 
 There's more info in the [Getting Started](https://matvp91.github.io/mixwave/getting-started.html) section in the docs.
 
+## Demos
+
+### Transcode & Package
+
+Let's take the popular BigBuckBunny MP4 video and package it in two different resolutions: 480p and 720p. Once that's done, we'll use the `packageAfter` flag to immediately package the files. In the end, we'll have an HLS playlist ready and stored on our S3.
+
+https://github.com/user-attachments/assets/5fb52e94-c729-4d5b-8f27-a93c161d07e2
+
+### Prepend a bumper dynamically
+
+You know what's even more exciting than just playing videos? Manipulating them in real-time! We'll quickly transcode and package the iconic Netflix bumper, then prepend it to the beginning of our BigBuckBunny video.
+
+https://github.com/user-attachments/assets/b799d7d4-9f53-40ae-bd9b-51589d31fef3
+
+### Insert linear ads
+
+To wrap things up, we'll have the stitcher fetch a few Google IMA video ads and insert them into our playlist. If you need more control, feel free to customize the ad request however you'd like, as long as the final output is a [VMAP](https://www.iab.com/guidelines/vmap/). Each ad break defined in the VMAP will then be mapped to interstitials.
+
+https://github.com/user-attachments/assets/10fa274d-1761-4d10-9c39-065f241f84aa
+
 ## 🤝 Contribute
 
 New contributors are welcome! See `CONTRIBUTING.md` for contributing to the project.
-
-## Star History
-
-<div align="center">
-  <img width="620" src="https://api.star-history.com/svg?repos=matvp91/mixwave&type=Date)](https://star-history.com/#matvp91/mixwave" />
-</div>

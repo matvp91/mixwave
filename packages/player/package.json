@@ -1,7 +1,14 @@
 {
   "name": "@mixwave/player",
-  "private": true,
   "version": "1.0.0",
+  "description": "Video player controls (React, Tailwind) and an HLS.js facade",
+  "author": "Mixwave",
+  "homepage": "https://github.com/matvp91/mixwave/tree/main/packages/player",
+  "maintainers": [
+    {
+      "name": "Matthias Van Parijs"
+    }
+  ],
   "type": "module",
   "files": [
     "dist"
@@ -30,5 +37,13 @@
     "vite": "^5.4.1",
     "vite-plugin-dts": "^4.1.0",
     "vite-plugin-svgr": "^4.2.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matvp91/mixwave.git"
+  },
+  "bugs": {
+    "url": "https://github.com/matvp91/mixwave/issues"
+  },
+  "license": "MPL-2.0"
 }

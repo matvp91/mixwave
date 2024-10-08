@@ -1,7 +1,8 @@
 {
   "name": "mixwave",
   "scripts": {
-    "build": "turbo build"
+    "dev": "./scripts/dev.sh",
+    "build": "./scripts/build.sh"
   },
   "packageManager": "pnpm@8.15.1",
   "devDependencies": {

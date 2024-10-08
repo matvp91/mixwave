@@ -59,9 +59,9 @@ There's more info in the [Getting Started](https://matvp91.github.io/mixwave/get
 
 We built a `facade` that simplifies working with [HLS.js](https://github.com/video-dev/hls.js) and React player components. 
 
-**Demo**: We created a sample on [StackBlitz - Mixwave Player Demo](https://stackblitz.com/edit/mixwave-player-demo) if you're interested in the implementation details.
+* **Demo**: We created a sample on [StackBlitz - Mixwave Player Demo](https://stackblitz.com/edit/mixwave-player-demo) if you're interested in the implementation details.
+* **Documentation**: There's a separate [README](https://github.com/matvp91/mixwave/tree/main/packages/player) dedicated to the player module.
 
-**Docs**: check the README at [packages/player](https://github.com/matvp91/mixwave/tree/main/packages/player).
 ```sh
 # make sure hls.js is atleast v1.6.0, with interstitials support.
 npm i hls.js

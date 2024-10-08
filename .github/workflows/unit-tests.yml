@@ -1,13 +1,13 @@
-name: Lint
+name: Unit Tests
 
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 jobs:
-  lint:
+  unit_tests:
     runs-on: ubuntu-latest
-    name: Linter
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,9 +21,5 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install
-      - name: Lint api
-        run: pnpm lint api
-        continue-on-error: true
-      - name: Lint stitcher
-        run: pnpm lint stitcher
-        continue-on-error: true
+      - name: Unit tests
+        run: pnpm test

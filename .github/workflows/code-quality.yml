@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  api:
+  eslint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,11 +20,9 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install
-      - name: Eslint
-        run: pnpm code:eslint api
-      - name: Prettier
-        run: pnpm code:prettier api
-  artisan:
+      - name: Run eslint
+        run: pnpm code:eslint
+  prettier:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,7 +37,5 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install
-      - name: Eslint
-        run: pnpm code:eslint artisan
-      - name: Prettier
-        run: pnpm code:prettier artisan
+      - name: Run prettier
+        run: pnpm code:prettier

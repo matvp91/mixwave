@@ -1,12 +1,12 @@
-export class EventManager<
-  On extends CallableFunction,
-  Off extends CallableFunction,
-> {
+type Fn = CallableFunction;
+type FnTuple = [Fn, Fn];
+
+export class EventManager<On extends Fn, Off extends Fn> {
   on: On;
 
   off: Off;
 
-  private listeners_: Record<string, [Function, Function][]> = {};
+  private listeners_: Record<string, FnTuple[]> = {};
 
   constructor(
     private params_: {

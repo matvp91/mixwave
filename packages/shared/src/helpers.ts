@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import * as z from "zod";
 import { by639_2T } from "iso-language-codes";
 

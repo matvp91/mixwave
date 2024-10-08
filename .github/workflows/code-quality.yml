@@ -24,7 +24,7 @@ jobs:
         run: pnpm code-quality:eslint api
       - name: Prettier
         run: pnpm code-quality:prettier-check api
-  stitcher:
+  artisan:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -40,6 +40,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Eslint
-        run: pnpm code-quality:eslint stitcher
+        run: pnpm code-quality:eslint artisan
       - name: Prettier
-        run: pnpm code-quality:prettier-check stitcher
+        run: pnpm code-quality:prettier-check artisan

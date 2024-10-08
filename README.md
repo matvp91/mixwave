@@ -29,7 +29,7 @@ Mixwave is a self hostable platform that aims to simplify the complexities of vi
 - Scales `ffmpeg` jobs horizontally.
 - Dynamically insert [HLS interstitials](https://developer.apple.com/streaming/GettingStartedWithHLSInterstitials.pdf), like the Netflix bumper.
 - Parses a `VMAP`, transcodes and packages the ad media files and inserts them as interstitials, on the fly.
-- Ships with a `HLS.js` wrapper that simplifies working with interstitials and a React UI.
+- Player included, with a UI written in React.
 
 We're on [Discord](https://discord.gg/4hXgz9EsF4) if you'd like to chat or need support.
 

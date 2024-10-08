@@ -71,7 +71,7 @@ Hls facade
 
 #### Extends
 
-- `EventEmitter`\<[`Events`](README.md#events)\>
+- `EventEmitter`\<[`Events`](#events)\>
 
 #### Constructors
 
@@ -89,7 +89,7 @@ new HlsFacade(hls): HlsFacade
 
 ###### Returns
 
-[`HlsFacade`](README.md#hlsfacade)
+[`HlsFacade`](#hlsfacade)
 
 ###### Overrides
 
@@ -97,10 +97,10 @@ new HlsFacade(hls): HlsFacade
 
 #### Properties
 
-| Property | Type                                 |
-| -------- | ------------------------------------ |
-| `hls`    | `Hls`                                |
-| `state`  | `null` \| [`State`](README.md#state) |
+| Property | Type                        |
+| -------- | --------------------------- |
+| `hls`    | `Hls`                       |
+| `state`  | `null` \| [`State`](#state) |
 
 #### Methods
 
@@ -307,11 +307,11 @@ they map 1 to 1 on interstitials in the HLS playlist.
 
 #### Type declaration
 
-| Name       | Type                           |
-| ---------- | ------------------------------ |
-| `duration` | `number`                       |
-| `time`     | `number`                       |
-| `type`?    | [`MixType`](README.md#mixtype) |
+| Name       | Type                  |
+| ---------- | --------------------- |
+| `duration` | `number`              |
+| `time`     | `number`              |
+| `type`?    | [`MixType`](#mixtype) |
 
 ---
 
@@ -329,15 +329,15 @@ reactive libraries such as React.
 
 | Name             | Type                                           | Description                                      |
 | ---------------- | ---------------------------------------------- | ------------------------------------------------ |
-| `audioTracks`    | [`AudioTrack`](README.md#audiotrack)[]         | -                                                |
+| `audioTracks`    | [`AudioTrack`](#audiotrack)[]                  | -                                                |
 | `autoQuality`    | `boolean`                                      | -                                                |
 | `cuePoints`      | `number`[]                                     | -                                                |
 | `duration`       | `number`                                       | -                                                |
 | `isStarted`      | `boolean`                                      | -                                                |
 | `playheadState`  | `"idle"` \| `"play"` \| `"pause"` \| `"ended"` | -                                                |
-| `qualities`      | [`Quality`](README.md#quality)[]               | -                                                |
-| `slot`           | [`Slot`](README.md#slot) \| `null`             | When null, the player plays the primary content. |
-| `subtitleTracks` | [`SubtitleTrack`](README.md#subtitletrack)[]   | -                                                |
+| `qualities`      | [`Quality`](#quality)[]                        | -                                                |
+| `slot`           | [`Slot`](#slot) \| `null`                      | When null, the player plays the primary content. |
+| `subtitleTracks` | [`SubtitleTrack`](#subtitletrack)[]            | -                                                |
 | `time`           | `number`                                       | -                                                |
 | `volume`         | `number`                                       | -                                                |
 

@@ -2,6 +2,8 @@
 
 Player is a collection of React components and a `facade` for [HLS.js](https://github.com/video-dev/hls.js), providing a unified API. It streamlines working with HLS.js by handling state management with a strong emphasis on reactivity and it provides a set of methods that make more sense for those building their own player UI.
 
+https://github.com/user-attachments/assets/553b0f35-0481-492e-a20f-e1fca721eb89
+
 ```sh
 npm i hls.js
 npm i @mixwave/player

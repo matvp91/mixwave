@@ -89,7 +89,7 @@ function parseLine(line: string): Tag | null {
       }
       throw new Error("EXT-X-PLAYLIST-TYPE: param must be EVENT or VOD");
 
-    case "EXTINF":
+    case "EXTINF": {
       assert(param, "EXTINF: no param");
       const chunks = param.split(",");
       return [
@@ -98,6 +98,7 @@ function parseLine(line: string): Tag | null {
           duration: parseFloat(chunks[0]),
         },
       ];
+    }
 
     case "EXT-X-STREAM-INF": {
       assert(param, "EXT-X-STREAM-INF: no param");
@@ -110,13 +111,14 @@ function parseLine(line: string): Tag | null {
             attrs.bandwidth = Number.parseFloat(value);
             break;
 
-          case "RESOLUTION":
+          case "RESOLUTION": {
             const chunks = value.split("x");
             attrs.resolution = {
               width: parseFloat(chunks[0]),
               height: parseFloat(chunks[1]),
             };
             break;
+          }
 
           case "AUDIO":
             attrs.audio = value;
@@ -159,6 +161,7 @@ function parseLine(line: string): Tag | null {
             } else {
               throw new Error("EXT-X-MEDIA: invalid type param");
             }
+            break;
           case "GROUP-ID":
             attrs.groupId = value;
             break;
@@ -229,7 +232,7 @@ function parseLine(line: string): Tag | null {
           case "START-DATE":
             attrs.startDate = DateTime.fromISO(value);
             break;
-          default:
+          default: {
             if (!key.startsWith("X-")) {
               break;
             }
@@ -248,6 +251,7 @@ function parseLine(line: string): Tag | null {
             }
 
             break;
+          }
         }
       });
 

@@ -21,7 +21,7 @@ function formatMediaPlaylist(tags: Tag[]): MediaPlaylist {
   let mediaSequenceBase: number | undefined;
   let discontinuitySequenceBase: number | undefined;
   let map: MediaInitializationSection | undefined;
-  let dateRanges: DateRange[] = [];
+  const dateRanges: DateRange[] = [];
 
   tags.forEach(([name, value]) => {
     if (name === "EXT-X-TARGETDURATION") {
@@ -56,7 +56,7 @@ function formatMediaPlaylist(tags: Tag[]): MediaPlaylist {
     }
 
     let segmentStart = index;
-    let segmentEnd = index + 1;
+    const segmentEnd = index + 1;
     for (let i = index; i > 0; i--) {
       if (tags[i][0] === "LITERAL") {
         segmentStart = i + 1;

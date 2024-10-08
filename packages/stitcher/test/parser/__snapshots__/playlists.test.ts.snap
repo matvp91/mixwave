@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`playlist(master-fmp4.m3u8) 1`] = `
+exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
 {
   "independentSegments": true,
   "isMasterPlaylist": true,
@@ -609,7 +609,7 @@ exports[`playlist(master-fmp4.m3u8) 1`] = `
 }
 `;
 
-exports[`playlist(master-multipleAudioGroups.m3u8) 1`] = `
+exports[`playlists > playlist(master-multipleAudioGroups.m3u8) 1`] = `
 {
   "independentSegments": false,
   "isMasterPlaylist": true,
@@ -726,7 +726,7 @@ exports[`playlist(master-multipleAudioGroups.m3u8) 1`] = `
 }
 `;
 
-exports[`playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
+exports[`playlists > playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
 {
   "independentSegments": false,
   "isMasterPlaylist": true,
@@ -843,7 +843,7 @@ exports[`playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
 }
 `;
 
-exports[`playlist(master-simple.m3u8) 1`] = `
+exports[`playlists > playlist(master-simple.m3u8) 1`] = `
 {
   "independentSegments": false,
   "isMasterPlaylist": true,
@@ -893,7 +893,7 @@ exports[`playlist(master-simple.m3u8) 1`] = `
 }
 `;
 
-exports[`playlist(media-dateTime.m3u8) 1`] = `
+exports[`playlists > playlist(media-dateTime.m3u8) 1`] = `
 {
   "dateRanges": [],
   "discontinuitySequenceBase": undefined,
@@ -922,7 +922,7 @@ exports[`playlist(media-dateTime.m3u8) 1`] = `
 }
 `;
 
-exports[`playlist(media-fmp4.m3u8) 1`] = `
+exports[`playlists > playlist(media-fmp4.m3u8) 1`] = `
 {
   "dateRanges": [],
   "discontinuitySequenceBase": undefined,
@@ -955,7 +955,7 @@ exports[`playlist(media-fmp4.m3u8) 1`] = `
 }
 `;
 
-exports[`playlist(media-interstitials.m3u8) 1`] = `
+exports[`playlists > playlist(media-interstitials.m3u8) 1`] = `
 {
   "dateRanges": [
     {
@@ -1054,7 +1054,7 @@ exports[`playlist(media-interstitials.m3u8) 1`] = `
 }
 `;
 
-exports[`playlist(media-mediaSequence.m3u8) 1`] = `
+exports[`playlists > playlist(media-mediaSequence.m3u8) 1`] = `
 {
   "dateRanges": [],
   "discontinuitySequenceBase": undefined,
@@ -1097,7 +1097,7 @@ exports[`playlist(media-mediaSequence.m3u8) 1`] = `
 }
 `;
 
-exports[`playlist(media-simple.m3u8) 1`] = `
+exports[`playlists > playlist(media-simple.m3u8) 1`] = `
 {
   "dateRanges": [],
   "discontinuitySequenceBase": undefined,

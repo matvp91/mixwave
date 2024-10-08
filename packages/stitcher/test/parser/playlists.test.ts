@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { expect, test, vi, describe, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs";
 import {
   parseMasterPlaylist,
@@ -14,11 +14,24 @@ function readPlaylistFixtures() {
   ]);
 }
 
-test.each(readPlaylistFixtures())("playlist(%s)", (name, text) => {
-  if (name.startsWith("master-")) {
-    expect(parseMasterPlaylist(text)).toMatchSnapshot();
-  }
-  if (name.startsWith("media-")) {
-    expect(parseMediaPlaylist(text)).toMatchSnapshot();
-  }
+describe("playlists", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+
+    // The day my son was born!
+    vi.setSystemTime(new Date(2021, 4, 2, 10, 12, 5, 250));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  test.each(readPlaylistFixtures())("playlist(%s)", (name, text) => {
+    if (name.startsWith("master-")) {
+      expect(parseMasterPlaylist(text)).toMatchSnapshot();
+    }
+    if (name.startsWith("media-")) {
+      expect(parseMediaPlaylist(text)).toMatchSnapshot();
+    }
+  });
 });

@@ -2,7 +2,8 @@
   "name": "mixwave",
   "scripts": {
     "dev": "./scripts/dev.sh",
-    "code-quality": "./scripts/code-quality.sh",
+    "code-quality:prettier-check": "./scripts/code-quality-prettier-check.sh",
+    "code-quality:eslint": "./scripts/code-quality-eslint.sh",
     "build": "turbo build"
   },
   "packageManager": "pnpm@8.15.1",

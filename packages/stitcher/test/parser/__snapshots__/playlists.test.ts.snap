@@ -1,5 +1,45 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`playlists > playlist(master-audioChannels.m3u8) 1`] = `
+{
+  "independentSegments": false,
+  "isMasterPlaylist": true,
+  "variants": [
+    {
+      "audio": [
+        {
+          "channels": "6",
+          "groupId": "audio-hi",
+          "name": "Espanol Surround",
+          "type": "AUDIO",
+          "uri": "sp/prog_index1.m3u8",
+        },
+        {
+          "channels": "2",
+          "groupId": "audio-hi",
+          "name": "Espanol Stereo",
+          "type": "AUDIO",
+          "uri": "sp/prog_index2.m3u8",
+        },
+      ],
+      "bandwidth": 195023,
+      "codecs": "mp4a.40.5",
+      "resolution": undefined,
+      "subtitles": [],
+      "uri": "lo/prog_index.m3u8",
+    },
+    {
+      "audio": [],
+      "bandwidth": 195023,
+      "codecs": "mp4a.40.5",
+      "resolution": undefined,
+      "subtitles": [],
+      "uri": "lo/prog_index.m3u8",
+    },
+  ],
+}
+`;
+
 exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
 {
   "independentSegments": true,
@@ -8,6 +48,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud1",
           "name": "English",
           "type": "AUDIO",
@@ -22,6 +63,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -33,6 +75,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud1",
           "name": "English",
           "type": "AUDIO",
@@ -47,6 +90,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -58,6 +102,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud1",
           "name": "English",
           "type": "AUDIO",
@@ -72,6 +117,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -83,6 +129,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud1",
           "name": "English",
           "type": "AUDIO",
@@ -97,6 +144,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -108,6 +156,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud1",
           "name": "English",
           "type": "AUDIO",
@@ -122,6 +171,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -133,6 +183,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud1",
           "name": "English",
           "type": "AUDIO",
@@ -147,6 +198,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -158,6 +210,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud1",
           "name": "English",
           "type": "AUDIO",
@@ -172,6 +225,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -183,6 +237,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud1",
           "name": "English",
           "type": "AUDIO",
@@ -197,6 +252,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -208,6 +264,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud2",
           "name": "English",
           "type": "AUDIO",
@@ -222,6 +279,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -233,6 +291,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud2",
           "name": "English",
           "type": "AUDIO",
@@ -247,6 +306,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -258,6 +318,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud2",
           "name": "English",
           "type": "AUDIO",
@@ -272,6 +333,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -283,6 +345,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud2",
           "name": "English",
           "type": "AUDIO",
@@ -297,6 +360,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -308,6 +372,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud2",
           "name": "English",
           "type": "AUDIO",
@@ -322,6 +387,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -333,6 +399,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud2",
           "name": "English",
           "type": "AUDIO",
@@ -347,6 +414,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -358,6 +426,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud2",
           "name": "English",
           "type": "AUDIO",
@@ -372,6 +441,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -383,6 +453,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud2",
           "name": "English",
           "type": "AUDIO",
@@ -397,6 +468,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -408,6 +480,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud3",
           "name": "English",
           "type": "AUDIO",
@@ -422,6 +495,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -433,6 +507,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud3",
           "name": "English",
           "type": "AUDIO",
@@ -447,6 +522,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -458,6 +534,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud3",
           "name": "English",
           "type": "AUDIO",
@@ -472,6 +549,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -483,6 +561,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud3",
           "name": "English",
           "type": "AUDIO",
@@ -497,6 +576,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -508,6 +588,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud3",
           "name": "English",
           "type": "AUDIO",
@@ -522,6 +603,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -533,6 +615,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud3",
           "name": "English",
           "type": "AUDIO",
@@ -547,6 +630,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -558,6 +642,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud3",
           "name": "English",
           "type": "AUDIO",
@@ -572,6 +657,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -583,6 +669,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "aud3",
           "name": "English",
           "type": "AUDIO",
@@ -597,6 +684,7 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
       },
       "subtitles": [
         {
+          "channels": undefined,
           "groupId": "sub1",
           "name": "English",
           "type": "SUBTITLES",
@@ -617,18 +705,21 @@ exports[`playlists > playlist(master-multipleAudioGroups.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "audio-lo",
           "name": "English",
           "type": "AUDIO",
           "uri": "englo/prog_index.m3u8",
         },
         {
+          "channels": undefined,
           "groupId": "audio-lo",
           "name": "Français",
           "type": "AUDIO",
           "uri": "frelo/prog_index.m3u8",
         },
         {
+          "channels": undefined,
           "groupId": "audio-lo",
           "name": "Espanol",
           "type": "AUDIO",
@@ -644,18 +735,21 @@ exports[`playlists > playlist(master-multipleAudioGroups.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "audio-lo",
           "name": "English",
           "type": "AUDIO",
           "uri": "englo/prog_index.m3u8",
         },
         {
+          "channels": undefined,
           "groupId": "audio-lo",
           "name": "Français",
           "type": "AUDIO",
           "uri": "frelo/prog_index.m3u8",
         },
         {
+          "channels": undefined,
           "groupId": "audio-lo",
           "name": "Espanol",
           "type": "AUDIO",
@@ -671,18 +765,21 @@ exports[`playlists > playlist(master-multipleAudioGroups.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "audio-hi",
           "name": "English",
           "type": "AUDIO",
           "uri": "eng/prog_index.m3u8",
         },
         {
+          "channels": undefined,
           "groupId": "audio-hi",
           "name": "Français",
           "type": "AUDIO",
           "uri": "fre/prog_index.m3u8",
         },
         {
+          "channels": undefined,
           "groupId": "audio-hi",
           "name": "Espanol",
           "type": "AUDIO",
@@ -698,18 +795,21 @@ exports[`playlists > playlist(master-multipleAudioGroups.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "audio-hi",
           "name": "English",
           "type": "AUDIO",
           "uri": "eng/prog_index.m3u8",
         },
         {
+          "channels": undefined,
           "groupId": "audio-hi",
           "name": "Français",
           "type": "AUDIO",
           "uri": "fre/prog_index.m3u8",
         },
         {
+          "channels": undefined,
           "groupId": "audio-hi",
           "name": "Espanol",
           "type": "AUDIO",
@@ -734,18 +834,21 @@ exports[`playlists > playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "audio-lo",
           "name": "English",
           "type": "AUDIO",
           "uri": undefined,
         },
         {
+          "channels": undefined,
           "groupId": "audio-lo",
           "name": "Français",
           "type": "AUDIO",
           "uri": "frelo/prog_index.m3u8",
         },
         {
+          "channels": undefined,
           "groupId": "audio-lo",
           "name": "Espanol",
           "type": "AUDIO",
@@ -761,18 +864,21 @@ exports[`playlists > playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "audio-lo",
           "name": "English",
           "type": "AUDIO",
           "uri": undefined,
         },
         {
+          "channels": undefined,
           "groupId": "audio-lo",
           "name": "Français",
           "type": "AUDIO",
           "uri": "frelo/prog_index.m3u8",
         },
         {
+          "channels": undefined,
           "groupId": "audio-lo",
           "name": "Espanol",
           "type": "AUDIO",
@@ -788,18 +894,21 @@ exports[`playlists > playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "audio-hi",
           "name": "English",
           "type": "AUDIO",
           "uri": "eng/prog_index.m3u8",
         },
         {
+          "channels": undefined,
           "groupId": "audio-hi",
           "name": "Français",
           "type": "AUDIO",
           "uri": "fre/prog_index.m3u8",
         },
         {
+          "channels": undefined,
           "groupId": "audio-hi",
           "name": "Espanol",
           "type": "AUDIO",
@@ -815,18 +924,21 @@ exports[`playlists > playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
     {
       "audio": [
         {
+          "channels": undefined,
           "groupId": "audio-hi",
           "name": "English",
           "type": "AUDIO",
           "uri": "eng/prog_index.m3u8",
         },
         {
+          "channels": undefined,
           "groupId": "audio-hi",
           "name": "Français",
           "type": "AUDIO",
           "uri": "fre/prog_index.m3u8",
         },
         {
+          "channels": undefined,
           "groupId": "audio-hi",
           "name": "Espanol",
           "type": "AUDIO",

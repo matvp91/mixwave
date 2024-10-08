@@ -12,6 +12,7 @@ export type Rendition = {
   groupId: string;
   name: string;
   uri?: string;
+  channels?: string;
 };
 
 export type Variant = {

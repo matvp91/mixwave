@@ -127,6 +127,7 @@ function addRendition(variant: Variant, media: Media) {
     groupId: media.groupId,
     name: media.name,
     uri: media.uri,
+    channels: media.channels,
   };
 
   if (media.type === "AUDIO") {

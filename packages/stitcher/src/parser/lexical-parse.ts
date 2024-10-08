@@ -61,6 +61,7 @@ export type Media = {
   groupId: string;
   name: string;
   uri?: string;
+  channels?: string;
 };
 
 function parseLine(line: string): Tag | null {
@@ -167,6 +168,9 @@ function parseLine(line: string): Tag | null {
           case "URI":
             attrs.uri = value;
             break;
+          case "CHANNELS":
+            attrs.channels = value;
+            break;
         }
       });
 
@@ -181,6 +185,7 @@ function parseLine(line: string): Tag | null {
           groupId: attrs.groupId,
           name: attrs.name,
           uri: attrs.uri,
+          channels: attrs.channels,
         },
       ];
     }

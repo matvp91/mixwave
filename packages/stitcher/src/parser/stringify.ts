@@ -18,6 +18,9 @@ function buildRendition(lines: Lines, rendition: Rendition) {
   if (rendition.uri) {
     attrs.push(`URI="${rendition.uri}"`);
   }
+  if (rendition.channels) {
+    attrs.push(`CHANNELS="${rendition.channels}"`);
+  }
   lines.push(`#EXT-X-MEDIA:${attrs.join(",")}`);
 }
 

@@ -3,8 +3,8 @@
   "scripts": {
     "dev": "./scripts/dev.sh",
     "build": "turbo build",
-    "code:prettier": "./scripts/code-quality-prettier-check.sh",
-    "code:eslint": "./scripts/code-quality-eslint.sh"
+    "code:prettier": "./scripts/code-prettier.sh",
+    "code:eslint": "./scripts/code-eslint.sh"
   },
   "packageManager": "pnpm@8.15.1",
   "devDependencies": {

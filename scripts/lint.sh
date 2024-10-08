@@ -1,7 +1,7 @@
-# api
-eslint "packages/api/src/**/*.ts"
-prettier --check "packages/api/src/**/*.ts"
+echo "🎯 Running lint for packages/$1"
 
-# artisan
-eslint "packages/artisan/src/**/*.ts"
-prettier --check "packages/artisan/src/**/*.ts"
+eslint "packages/$1/src/**/*.ts"
+echo "✅ eslint"
+
+prettier --check "packages/$1/src/**/*.ts"
+echo "✅ prettier"

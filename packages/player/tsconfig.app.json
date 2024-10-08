@@ -17,5 +17,5 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": "."
   },
-  "include": ["example", "lib"]
+  "include": ["src"]
 }

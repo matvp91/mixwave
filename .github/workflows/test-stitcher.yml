@@ -1,4 +1,4 @@
-name: Stitcher unit tests
+name: Stitcher Unit Tests
 
 on:
   push:

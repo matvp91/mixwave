@@ -13,7 +13,7 @@ const client = new S3({
 
 export async function getStorage(
   path: string,
-  take: number = 10,
+  take = 10,
   cursor?: string,
 ): Promise<{
   cursor?: string;
@@ -87,7 +87,7 @@ export async function getStorageFile(path: string): Promise<FileDto> {
   };
 }
 
-function canFilePreview(name: string) {
+function canFilePreview(name: string): boolean {
   return (
     name.endsWith(".vtt") || name.endsWith(".m3u8") || name.endsWith(".json")
   );

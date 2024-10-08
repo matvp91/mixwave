@@ -1,9 +1,10 @@
 import { allQueus, flowProducer } from "@mixwave/artisan/producer";
-import { JobNode, Job, JobState } from "bullmq";
+import { Job } from "bullmq";
 import extract from "object-property-extractor";
 import type { JobDto } from "./types.js";
+import type { JobNode, JobState, Queue } from "bullmq";
 
-function findQueueByName(name: string) {
+function findQueueByName(name: string): Queue {
   const queue = allQueus.find((queue) => queue.name === name);
   if (!queue) {
     throw new Error("No queue found.");
@@ -11,9 +12,9 @@ function findQueueByName(name: string) {
   return queue;
 }
 
-function formatIdPair(id: string) {
+function formatIdPair(id: string): [Queue, string] {
   const queueName = id.split("_", 1)[0];
-  return [findQueueByName(queueName), id] as const;
+  return [findQueueByName(queueName), id];
 }
 
 export async function getJobs(): Promise<JobDto[]> {
@@ -35,12 +36,12 @@ export async function getJobs(): Promise<JobDto[]> {
   return result;
 }
 
-export async function getJob(id: string, fromRoot?: boolean) {
+export async function getJob(id: string, fromRoot?: boolean): Promise<JobDto> {
   const node = await getJobNode(id, fromRoot);
   return await formatJobNode(node);
 }
 
-export async function getJobLogs(id: string) {
+export async function getJobLogs(id: string): Promise<string[]> {
   const [queue, jobId] = formatIdPair(id);
 
   const { logs } = await queue.getJobLogs(jobId);
@@ -48,7 +49,7 @@ export async function getJobLogs(id: string) {
   return logs;
 }
 
-async function getJobNode(id: string, fromRoot?: boolean) {
+async function getJobNode(id: string, fromRoot?: boolean): Promise<JobNode> {
   const [queue, jobId] = formatIdPair(id);
 
   let job = await Job.fromId(queue, jobId);
@@ -67,7 +68,7 @@ async function getJobNode(id: string, fromRoot?: boolean) {
   });
 }
 
-async function findRootJob(job?: Job) {
+async function findRootJob(job?: Job): Promise<Job | undefined> {
   if (!job) {
     return;
   }
@@ -99,8 +100,8 @@ async function formatJobNode(node: JobNode): Promise<JobDto> {
 
   const failedReason = state === "failed" ? job.failedReason : null;
 
-  const findParentSortKey = (obj: unknown) =>
-    extract(obj, "data.metadata.parentSortKey", 0);
+  const findParentSortKey = (obj: Job): number =>
+    extract(obj, "data.metadata.parentSortKey", 0) as number;
   (children ?? []).sort(
     (a, b) => findParentSortKey(a.job) - findParentSortKey(b.job),
   );
@@ -121,6 +122,8 @@ async function formatJobNode(node: JobNode): Promise<JobDto> {
       ? job.finishedOn - processedOn
       : null;
 
+  const tag = extract(job.data, "metadata.tag", null) as string | null;
+
   return {
     id: job.id,
     name: job.name,
@@ -133,7 +136,7 @@ async function formatJobNode(node: JobNode): Promise<JobDto> {
     inputData: JSON.stringify(job.data),
     outputData: job.returnvalue ? JSON.stringify(job.returnvalue) : null,
     failedReason,
-    tag: extract(job.data, "metadata.tag", null),
+    tag,
     children: jobChildren,
   };
 }

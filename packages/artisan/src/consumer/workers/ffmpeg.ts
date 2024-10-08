@@ -188,6 +188,8 @@ function getAudioOutputOptions(
   return args;
 }
 
+// We don't use stream as param, for now. But provide it for consistency.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getTextOutputOptions(stream: Extract<Stream, { type: "text" }>) {
   const args: string[] = ["-f webvtt"];
 

@@ -8,8 +8,9 @@ import { addTranscodeJob, addPackageJob } from "@mixwave/artisan/producer";
 import { getJobs, getJob, getJobLogs } from "./jobs.js";
 import { openApiSpec } from "./openapi.js";
 import { getStorage, getStorageFile } from "./s3.js";
+import type { FastifyInstance } from "fastify";
 
-async function buildServer() {
+async function buildServer(): Promise<FastifyInstance> {
   const app = Fastify();
 
   app.register(cors);
@@ -73,12 +74,12 @@ async function buildServer() {
 
   app.register(bullBoardPlugin);
 
-  return app;
+  return await app;
 }
 
-async function main() {
+async function main(): Promise<void> {
   const app = await buildServer();
   await app.listen({ host: env.HOST, port: env.PORT });
 }
 
-main();
+void main();

@@ -130,6 +130,8 @@ export const contract = c.router({
     method: "GET",
     path: "/spec.json",
     responses: {
+      // We can disable this, it's the spec, we don't need to know the inner types.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       200: c.type<Record<string, any>>(),
     },
   },

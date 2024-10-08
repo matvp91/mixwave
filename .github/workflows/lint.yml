@@ -1,15 +1,13 @@
-name: Stitcher Unit Tests
+name: Lint
 
 on:
   push:
   pull_request:
-  workflow_dispatch:
 
 jobs:
-  # Run job
-  run:
+  all:
     runs-on: ubuntu-latest
-    name: Run
+    name: All
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,6 +20,6 @@ jobs:
           node-version: 20
           cache: pnpm
       - name: Install dependencies
-        run: pnpm --filter "stitcher" install
+        run: pnpm install
       - name: Run unit tests
-        run: pnpm --filter "stitcher" test
+        run: pnpm lint

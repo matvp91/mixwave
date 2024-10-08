@@ -28,7 +28,7 @@ const { sync } = new S3SyncClient({ client });
 
 type UploadFolderOptions = {
   del?: boolean;
-  commandInput?: (event: { Key: string }) => Partial<{}>;
+  commandInput?: (event: { Key: string }) => Partial<object>;
 };
 
 export async function uploadFolder(

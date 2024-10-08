@@ -2,6 +2,7 @@
   "name": "mixwave",
   "scripts": {
     "dev": "./scripts/dev.sh",
+    "code-quality": "./scripts/code-quality.sh",
     "build": "turbo build"
   },
   "packageManager": "pnpm@8.15.1",

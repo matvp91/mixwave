@@ -2,9 +2,9 @@
   "name": "mixwave",
   "scripts": {
     "dev": "./scripts/dev.sh",
-    "code-quality:prettier-check": "./scripts/code-quality-prettier-check.sh",
-    "code-quality:eslint": "./scripts/code-quality-eslint.sh",
-    "build": "turbo build"
+    "build": "turbo build",
+    "code:prettier": "./scripts/code-quality-prettier-check.sh",
+    "code:eslint": "./scripts/code-quality-eslint.sh"
   },
   "packageManager": "pnpm@8.15.1",
   "devDependencies": {

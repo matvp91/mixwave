@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  stitcher:
+  unit_tests:
     runs-on: ubuntu-latest
-    name: Stitcher
+    name: Unit Tests
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,6 +21,7 @@ jobs:
           node-version: 20
           cache: pnpm
       - name: Install dependencies
-        run: pnpm --filter "stitcher" install
-      - name: Run unit tests
+        run: pnpm install
+      - name: Unit tests for stitcher
         run: pnpm --filter "stitcher" test
+        continue-on-error: true

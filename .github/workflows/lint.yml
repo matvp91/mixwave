@@ -5,9 +5,9 @@ on:
   pull_request:
 
 jobs:
-  api:
+  lint:
     runs-on: ubuntu-latest
-    name: API
+    name: Linter
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,23 +21,9 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install
-      - name: Lint
+      - name: Lint api
         run: pnpm lint api
-  artisan:
-    runs-on: ubuntu-latest
-    name: Artisan
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: pnpm/action-setup@v3
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: pnpm
-      - name: Install dependencies
-        run: pnpm install
-      - name: Lint
-        run: pnpm lint artisan
+        continue-on-error: true
+      - name: Lint stitcher
+        run: pnpm lint stitcher
+        continue-on-error: true

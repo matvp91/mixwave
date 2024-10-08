@@ -355,6 +355,9 @@ importers:
       eventemitter3:
         specifier: ^5.0.1
         version: 5.0.1
+      hls.js:
+        specifier: ^1.5.15
+        version: 1.5.15
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -371,9 +374,6 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.3.1
         version: 4.3.1(vite@5.4.1)
-      hls.js:
-        specifier: workspace:*
-        version: link:../../extern/hls.js
       typedoc:
         specifier: ^0.26.8
         version: 0.26.8(typescript@5.5.4)
@@ -6406,6 +6406,10 @@ packages:
 
   /highlight.js@10.7.3:
     resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
+    dev: false
+
+  /hls.js@1.5.15:
+    resolution: {integrity: sha512-6cD7xN6bycBHaXz2WyPIaHn/iXFizE5au2yvY5q9aC4wfihxAr16C9fUy4nxh2a3wOw0fEgLRa9dN6wsYjlpNg==}
     dev: false
 
   /hookable@5.5.3:

@@ -1,33 +1,61 @@
 import type { MediaPlaylist, Level } from "hls.js";
 
-export type Anything = any;
-
+/**
+ * A custom type for each `ASSET`.
+ */
 export type MixType = "ad" | "bumper";
 
+/**
+ * Anything that is not the primary content is a slot,
+ * they map 1 to 1 on interstitials in the HLS playlist.
+ */
 export type Slot = {
-  type?: "ad" | "bumper";
+  type?: MixType;
   time: number;
   duration: number;
 };
 
+/**
+ * Defines an in-band subtitle track.
+ */
 export type SubtitleTrack = {
   id: number;
   active: boolean;
+  /**
+   * The playlist defined in HLS.js
+   */
   playlist: MediaPlaylist;
 };
 
+/**
+ * Defines an audio track.
+ */
 export type AudioTrack = {
   id: number;
   active: boolean;
+  /**
+   * The playlist defined in HLS.js
+   */
   playlist: MediaPlaylist;
 };
 
+/**
+ * Defines a quality level.
+ */
 export type Quality = {
   id: number;
   active: boolean;
+  /**
+   * The level defined in HLS.js
+   */
   level: Level;
 };
 
+/**
+ * Player session state.
+ * This is immutable, each state update is a new reference. Can be easily consumed by
+ * reactive libraries such as React.
+ */
 export type State = {
   isStarted: boolean;
   playheadState: "idle" | "play" | "pause" | "ended";
@@ -38,6 +66,9 @@ export type State = {
   qualities: Quality[];
   audioTracks: AudioTrack[];
   subtitleTracks: SubtitleTrack[];
+  /**
+   * When null, the player plays the primary content.
+   */
   slot: Slot | null;
   volume: number;
 };

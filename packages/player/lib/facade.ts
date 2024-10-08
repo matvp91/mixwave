@@ -8,7 +8,6 @@ import type {
   InterstitialAssetStartedData,
 } from "hls.js";
 import type {
-  Anything,
   MixType,
   Quality,
   AudioTrack,
@@ -18,6 +17,9 @@ import type {
   State,
 } from "./types";
 
+/**
+ * Hls facade
+ */
 export class HlsFacade extends EventEmitter<Events> {
   state: State | null = null;
 
@@ -246,6 +248,10 @@ export class HlsFacade extends EventEmitter<Events> {
     }
   };
 
+  /**
+   * When called, the facade can no longer be used and is ready for garbage
+   * collection. Make sure to dispose the facade before `hls.destroy()`.
+   */
   dispose() {
     clearTimeout(this.timerId_);
     clearInterval(this.intervalId_);
@@ -257,6 +263,9 @@ export class HlsFacade extends EventEmitter<Events> {
     this.state = null;
   }
 
+  /**
+   * Toggles play or pause.
+   */
   playOrPause() {
     assert(this.state);
     assert(this.media_);
@@ -270,6 +279,10 @@ export class HlsFacade extends EventEmitter<Events> {
     }
   }
 
+  /**
+   * Seek to a time in primary content.
+   * @param targetTime
+   */
   seekTo(targetTime: number) {
     assert(this.mgr_);
     const SAFE_OFFSET = 0.1;
@@ -279,19 +292,35 @@ export class HlsFacade extends EventEmitter<Events> {
     this.mgr_.integrated.seekTo(targetTime);
   }
 
+  /**
+   * Sets volume.
+   * @param volume
+   */
   setVolume(volume: number) {
     this.media_.volume = volume;
   }
 
+  /**
+   * Sets quality by id. All quality levels are defined in `State`.
+   * @param id
+   */
   setQuality(id: number | null) {
     this.setState_({ autoQuality: id === null });
     this.hls.nextLevel = id ? id - 1 : -1;
   }
 
+  /**
+   * Sets subtitle by id. All subtitle tracks are defined in `State`.
+   * @param id
+   */
   setSubtitleTrack(id: number | null) {
     this.hls.subtitleTrack = id ? id - 1 : -1;
   }
 
+  /**
+   * Sets audio by id. All audio tracks are defined in `State`.
+   * @param id
+   */
   setAudioTrack(id: number | null) {
     this.hls.audioTrack = id ? id - 1 : -1;
   }
@@ -340,10 +369,15 @@ function updateActive_<T extends { active: boolean }>(
 function getAssetListItem(data: InterstitialAssetStartedData): {
   type?: MixType;
 } {
-  const assetListItem =
-    data.event.assetListResponse?.ASSETS[data.assetListIndex];
+  const assetListItem = data.event.assetListResponse?.ASSETS[
+    data.assetListIndex
+  ] as
+    | {
+        "MIX-TYPE"?: MixType;
+      }
+    | undefined;
 
   return {
-    type: (assetListItem as Anything)?.["MIX-TYPE"],
+    type: assetListItem?.["MIX-TYPE"],
   };
 }

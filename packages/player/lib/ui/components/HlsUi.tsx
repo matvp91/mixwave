@@ -4,12 +4,14 @@ import { useHlsState } from "../hooks/useHlsState";
 import type { HlsFacade } from "../..";
 import type { Metadata } from "../types";
 
-type UiProps = {
+/** @hidden */
+export type HlsUiProps = {
   facade: HlsFacade;
   metadata?: Metadata;
 };
 
-export function Ui({ facade, metadata }: UiProps) {
+/** @hidden */
+export function HlsUi({ facade, metadata }: HlsUiProps) {
   const state = useHlsState(facade);
 
   if (!state?.duration) {

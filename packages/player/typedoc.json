@@ -1,0 +1,21 @@
+{
+  "$schema": "https://typedoc-plugin-markdown.org/schema.json",
+  "entryPoints": ["./dist/index.d.ts"],
+  "name": "Mixwave Player",
+  "plugin": ["typedoc-plugin-markdown"],
+  "mergeReadme": true,
+  "readme": "none",
+  "enumMembersFormat": "table",
+  "parametersFormat": "table",
+  "propertiesFormat": "table",
+  "typeDeclarationFormat": "table",
+  "indexFormat": "table",
+  "outputFileStrategy": "modules",
+  "expandObjects": false,
+  "hidePageHeader": true,
+  "hideBreadcrumbs": true,
+  "hidePageTitle": true,
+  "useCodeBlocks": true,
+  "excludeExternals": true,
+  "disableSources": true
+}

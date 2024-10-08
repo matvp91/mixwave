@@ -62,3 +62,299 @@ hls.loadSource("https://mixwave.stream/playlist/master.m3u8");
 ```
 
 The `facade` greatly simplifies working with `HLS.js`, you can definitely use it to build your own UI instead.
+
+## Classes
+
+### HlsFacade
+
+Hls facade
+
+#### Extends
+
+- `EventEmitter`\<[`Events`](README.md#events)\>
+
+#### Constructors
+
+##### new HlsFacade()
+
+```ts
+new HlsFacade(hls): HlsFacade
+```
+
+###### Parameters
+
+| Parameter | Type  |
+| --------- | ----- |
+| `hls`     | `Hls` |
+
+###### Returns
+
+[`HlsFacade`](README.md#hlsfacade)
+
+###### Overrides
+
+`default_2<Events>.constructor`
+
+#### Properties
+
+| Property | Type                                 |
+| -------- | ------------------------------------ |
+| `hls`    | `Hls`                                |
+| `state`  | `null` \| [`State`](README.md#state) |
+
+#### Methods
+
+##### dispose()
+
+```ts
+dispose(): void
+```
+
+When called, the facade can no longer be used and is ready for garbage
+collection. Make sure to dispose the facade before `hls.destroy()`.
+
+###### Returns
+
+`void`
+
+##### playOrPause()
+
+```ts
+playOrPause(): void
+```
+
+Toggles play or pause.
+
+###### Returns
+
+`void`
+
+##### seekTo()
+
+```ts
+seekTo(targetTime): void
+```
+
+Seek to a time in primary content.
+
+###### Parameters
+
+| Parameter    | Type     | Description |
+| ------------ | -------- | ----------- |
+| `targetTime` | `number` |             |
+
+###### Returns
+
+`void`
+
+##### setAudioTrack()
+
+```ts
+setAudioTrack(id): void
+```
+
+Sets audio by id. All audio tracks are defined in `State`.
+
+###### Parameters
+
+| Parameter | Type               | Description |
+| --------- | ------------------ | ----------- |
+| `id`      | `null` \| `number` |             |
+
+###### Returns
+
+`void`
+
+##### setQuality()
+
+```ts
+setQuality(id): void
+```
+
+Sets quality by id. All quality levels are defined in `State`.
+
+###### Parameters
+
+| Parameter | Type               | Description |
+| --------- | ------------------ | ----------- |
+| `id`      | `null` \| `number` |             |
+
+###### Returns
+
+`void`
+
+##### setSubtitleTrack()
+
+```ts
+setSubtitleTrack(id): void
+```
+
+Sets subtitle by id. All subtitle tracks are defined in `State`.
+
+###### Parameters
+
+| Parameter | Type               | Description |
+| --------- | ------------------ | ----------- |
+| `id`      | `null` \| `number` |             |
+
+###### Returns
+
+`void`
+
+##### setVolume()
+
+```ts
+setVolume(volume): void
+```
+
+Sets volume.
+
+###### Parameters
+
+| Parameter | Type     | Description |
+| --------- | -------- | ----------- |
+| `volume`  | `number` |             |
+
+###### Returns
+
+`void`
+
+## Type Aliases
+
+### AudioTrack
+
+```ts
+type AudioTrack: object;
+```
+
+Defines an audio track.
+
+#### Type declaration
+
+| Name       | Type            | Description                    |
+| ---------- | --------------- | ------------------------------ |
+| `active`   | `boolean`       | -                              |
+| `id`       | `number`        | -                              |
+| `playlist` | `MediaPlaylist` | The playlist defined in HLS.js |
+
+---
+
+### Events
+
+```ts
+type Events: object;
+```
+
+#### Type declaration
+
+| Name | Type         |
+| ---- | ------------ |
+| `*`  | () => `void` |
+
+---
+
+### Metadata
+
+```ts
+type Metadata: object;
+```
+
+#### Type declaration
+
+| Name        | Type     |
+| ----------- | -------- |
+| `subtitle`? | `string` |
+| `title`?    | `string` |
+
+---
+
+### MixType
+
+```ts
+type MixType: "ad" | "bumper";
+```
+
+A custom type for each `ASSET`.
+
+---
+
+### Quality
+
+```ts
+type Quality: object;
+```
+
+Defines a quality level.
+
+#### Type declaration
+
+| Name     | Type      | Description                 |
+| -------- | --------- | --------------------------- |
+| `active` | `boolean` | -                           |
+| `id`     | `number`  | -                           |
+| `level`  | `Level`   | The level defined in HLS.js |
+
+---
+
+### Slot
+
+```ts
+type Slot: object;
+```
+
+Anything that is not the primary content is a slot,
+they map 1 to 1 on interstitials in the HLS playlist.
+
+#### Type declaration
+
+| Name       | Type                           |
+| ---------- | ------------------------------ |
+| `duration` | `number`                       |
+| `time`     | `number`                       |
+| `type`?    | [`MixType`](README.md#mixtype) |
+
+---
+
+### State
+
+```ts
+type State: object;
+```
+
+Player session state.
+This is immutable, each state update is a new reference. Can be easily consumed by
+reactive libraries such as React.
+
+#### Type declaration
+
+| Name             | Type                                           | Description                                      |
+| ---------------- | ---------------------------------------------- | ------------------------------------------------ |
+| `audioTracks`    | [`AudioTrack`](README.md#audiotrack)[]         | -                                                |
+| `autoQuality`    | `boolean`                                      | -                                                |
+| `cuePoints`      | `number`[]                                     | -                                                |
+| `duration`       | `number`                                       | -                                                |
+| `isStarted`      | `boolean`                                      | -                                                |
+| `playheadState`  | `"idle"` \| `"play"` \| `"pause"` \| `"ended"` | -                                                |
+| `qualities`      | [`Quality`](README.md#quality)[]               | -                                                |
+| `slot`           | [`Slot`](README.md#slot) \| `null`             | When null, the player plays the primary content. |
+| `subtitleTracks` | [`SubtitleTrack`](README.md#subtitletrack)[]   | -                                                |
+| `time`           | `number`                                       | -                                                |
+| `volume`         | `number`                                       | -                                                |
+
+---
+
+### SubtitleTrack
+
+```ts
+type SubtitleTrack: object;
+```
+
+Defines an in-band subtitle track.
+
+#### Type declaration
+
+| Name       | Type            | Description                    |
+| ---------- | --------------- | ------------------------------ |
+| `active`   | `boolean`       | -                              |
+| `id`       | `number`        | -                              |
+| `playlist` | `MediaPlaylist` | The playlist defined in HLS.js |

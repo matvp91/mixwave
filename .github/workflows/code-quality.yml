@@ -21,9 +21,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Lint
-        run: ./scripts/lint.sh api
+        run: eslint "packages/api/src/**/*.ts"
       - name: Check Prettier
-        run: ./scripts/prettier-check.sh api
+        run: prettier --check "packages/api/src/**/*.ts"
   stitcher:
     runs-on: ubuntu-latest
     steps:
@@ -40,6 +40,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Lint
-        run: ./scripts/lint.sh stitcher
+        run: eslint "packages/stitcher/src/**/*.ts"
       - name: Check Prettier
-        run: ./scripts/prettier-check.sh stitcher
+        run: prettier --check "packages/stitcher/src/**/*.ts"

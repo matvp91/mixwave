@@ -40,7 +40,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/matvp91/mixwave.git"
+    "url": "git+https://github.com/matvp91/mixwave.git"
   },
   "bugs": {
     "url": "https://github.com/matvp91/mixwave/issues"

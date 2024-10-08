@@ -6,10 +6,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Build job
-  build:
+  # Run job
+  run:
     runs-on: ubuntu-latest
-    name: Build
+    name: Run
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,12 +23,5 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm --filter "stitcher" install
-
-  # Test job
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    name: Test
-    steps:
       - name: Run unit tests
         run: pnpm --filter "stitcher" test

@@ -38,7 +38,8 @@
     "typescript": "^5.5.3",
     "vite": "^5.4.1",
     "vite-plugin-dts": "^4.1.0",
-    "vite-plugin-svgr": "^4.2.0"
+    "vite-plugin-svgr": "^4.2.0",
+    "hls.js": "workspace:*"
   },
   "repository": {
     "type": "git",

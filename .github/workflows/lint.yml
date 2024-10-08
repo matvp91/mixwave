@@ -23,7 +23,7 @@ jobs:
         run: pnpm install
       - name: Lint
         run: pnpm lint api
-  api:
+  artisan:
     runs-on: ubuntu-latest
     name: Artisan
     steps:

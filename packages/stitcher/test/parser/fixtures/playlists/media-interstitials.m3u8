@@ -19,5 +19,5 @@
 #EXTINF:3.792
 7.m4s
 #EXT-X-ENDLIST
-#EXT-X-DATERANGE:ID="i0",CLASS="com.apple.hls.interstitial",START-DATE="2024-10-07T19:17:00.207+02:00",X-RESTRICT="SKIP,JUMP",X-RESUME-OFFSET=0,X-ASSET-LIST="http://localhost:52002/session/b41fa084-fad0-47f7-af9e-7f03c2e81edb/asset-list.json?startDate=2024-10-07T19%3A17%3A00.207"
-#EXT-X-DATERANGE:ID="i1",CLASS="com.apple.hls.interstitial",START-DATE="2024-10-07T19:17:10.207+02:00",X-RESTRICT="SKIP,JUMP",X-RESUME-OFFSET=0,X-ASSET-LIST="http://localhost:52002/session/b41fa084-fad0-47f7-af9e-7f03c2e81edb/asset-list.json?startDate=2024-10-07T19%3A17%3A10.207"
+#EXT-X-DATERANGE:ID="i0",CLASS="com.apple.hls.interstitial",START-DATE="2024-10-07T19:17:00.207+02:00",X-RESTRICT="SKIP,JUMP",X-RESUME-OFFSET=0,X-ASSET-LIST="http://localhost:52002/session/b41fa084-fad0-47f7-af9e-7f03c2e81edb/asset-list.json?startDate=2024-10-07T19%3A17%3A00.207%2B02%3A00"
+#EXT-X-DATERANGE:ID="i1",CLASS="com.apple.hls.interstitial",START-DATE="2024-10-07T19:17:10.207+02:00",X-RESTRICT="SKIP,JUMP",X-RESUME-OFFSET=0,X-ASSET-LIST="http://localhost:52002/session/b41fa084-fad0-47f7-af9e-7f03c2e81edb/asset-list.json?startDate=2024-10-07T19%3A17%3A10.207%2B02%3A00"

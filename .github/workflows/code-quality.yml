@@ -20,10 +20,10 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install
-      - name: Lint
-        run: eslint "packages/api/src/**/*.ts"
+      - name: Eslint
+        run: ./scripts/code-quality.sh eslint api
       - name: Check Prettier
-        run: prettier --check "packages/api/src/**/*.ts"
+        run: ./scripts/code-quality.sh prettier-check api
   stitcher:
     runs-on: ubuntu-latest
     steps:
@@ -39,7 +39,7 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install
-      - name: Lint
-        run: eslint "packages/stitcher/src/**/*.ts"
+      - name: Eslint
+        run: ./scripts/code-quality.sh eslint stitcher
       - name: Check Prettier
-        run: prettier --check "packages/stitcher/src/**/*.ts"
+        run: ./scripts/code-quality.sh prettier-check stitcher

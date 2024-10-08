@@ -22,4 +22,4 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Build
-        run: turbo build
+        run: pnpm build

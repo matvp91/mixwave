@@ -1,5 +1,4 @@
-set -e 
-set -o pipefail
+set -e
 
 echo "$1 on packages/$2"
 

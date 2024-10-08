@@ -27,8 +27,8 @@ Mixwave is a self hostable platform that aims to simplify the complexities of vi
 - Transcode your video file into separate quality tracks (eg; 1080p, 720p, 480p).
 - Write `HLS CMAF` playlists directly to S3, ready to be played by [HLS.js](https://github.com/video-dev/hls.js).
 - Scales `ffmpeg` jobs horizontally.
-- Dynamically insert [HLS interstitials](https://developer.apple.com/streaming/GettingStartedWithHLSInterstitials.pdf), like the Netflix bumper.
-- Parses a `VMAP`, transcodes and packages the ad media files and inserts them as interstitials, on the fly.
+- Manually insert [HLS interstitials](https://developer.apple.com/streaming/GettingStartedWithHLSInterstitials.pdf), like the Netflix bumper.
+- Parses an [Ad Playlist](https://www.iab.com/guidelines/vmap/) (VMAP), transcodes and packages the ad media files and inserts them as interstitials, on the fly.
 - Player included, with a UI written in React.
 
 We're on [Discord](https://discord.gg/4hXgz9EsF4) if you'd like to chat or need support.

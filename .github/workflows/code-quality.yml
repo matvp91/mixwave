@@ -22,7 +22,7 @@ jobs:
         run: pnpm install
       - name: Eslint
         run: pnpm code-quality:eslint api
-      - name: Check Prettier
+      - name: Prettier
         run: pnpm code-quality:prettier-check api
   stitcher:
     runs-on: ubuntu-latest
@@ -41,5 +41,5 @@ jobs:
         run: pnpm install
       - name: Eslint
         run: pnpm code-quality:eslint stitcher
-      - name: Check Prettier
+      - name: Prettier
         run: pnpm code-quality:prettier-check stitcher

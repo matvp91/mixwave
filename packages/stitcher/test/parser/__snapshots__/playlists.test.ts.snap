@@ -3,7 +3,6 @@
 exports[`playlists > playlist(master-audioChannels.m3u8) 1`] = `
 {
   "independentSegments": false,
-  "isMasterPlaylist": true,
   "variants": [
     {
       "audio": [
@@ -43,7 +42,6 @@ exports[`playlists > playlist(master-audioChannels.m3u8) 1`] = `
 exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
 {
   "independentSegments": true,
-  "isMasterPlaylist": true,
   "variants": [
     {
       "audio": [
@@ -700,7 +698,6 @@ exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
 exports[`playlists > playlist(master-multipleAudioGroups.m3u8) 1`] = `
 {
   "independentSegments": false,
-  "isMasterPlaylist": true,
   "variants": [
     {
       "audio": [
@@ -829,7 +826,6 @@ exports[`playlists > playlist(master-multipleAudioGroups.m3u8) 1`] = `
 exports[`playlists > playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
 {
   "independentSegments": false,
-  "isMasterPlaylist": true,
   "variants": [
     {
       "audio": [
@@ -958,7 +954,6 @@ exports[`playlists > playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
 exports[`playlists > playlist(master-simple.m3u8) 1`] = `
 {
   "independentSegments": false,
-  "isMasterPlaylist": true,
   "variants": [
     {
       "audio": [],
@@ -1011,7 +1006,6 @@ exports[`playlists > playlist(media-dateTime.m3u8) 1`] = `
   "discontinuitySequenceBase": undefined,
   "endlist": true,
   "independentSegments": false,
-  "isMasterPlaylist": false,
   "mediaSequenceBase": 0,
   "playlistType": "VOD",
   "segments": [
@@ -1040,7 +1034,6 @@ exports[`playlists > playlist(media-fmp4.m3u8) 1`] = `
   "discontinuitySequenceBase": undefined,
   "endlist": true,
   "independentSegments": true,
-  "isMasterPlaylist": false,
   "mediaSequenceBase": 1,
   "playlistType": "VOD",
   "segments": [
@@ -1094,7 +1087,6 @@ exports[`playlists > playlist(media-interstitials.m3u8) 1`] = `
   "discontinuitySequenceBase": undefined,
   "endlist": true,
   "independentSegments": false,
-  "isMasterPlaylist": false,
   "mediaSequenceBase": undefined,
   "playlistType": "VOD",
   "segments": [
@@ -1172,7 +1164,6 @@ exports[`playlists > playlist(media-mediaSequence.m3u8) 1`] = `
   "discontinuitySequenceBase": undefined,
   "endlist": true,
   "independentSegments": false,
-  "isMasterPlaylist": false,
   "mediaSequenceBase": 0,
   "playlistType": "VOD",
   "segments": [
@@ -1215,7 +1206,6 @@ exports[`playlists > playlist(media-simple.m3u8) 1`] = `
   "discontinuitySequenceBase": undefined,
   "endlist": true,
   "independentSegments": false,
-  "isMasterPlaylist": false,
   "mediaSequenceBase": undefined,
   "playlistType": "VOD",
   "segments": [

@@ -2,10 +2,11 @@ import { addTranscodeJob } from "@mixwave/artisan/producer";
 import { VASTClient } from "vast-client";
 import { DOMParser } from "@xmldom/xmldom";
 import * as uuid from "uuid";
-import { NAMESPACE_UUID_AD } from "./const";
 import { getMasterUrl, isUrlAvailable } from "./url";
 import type { VastResponse, VastCreativeLinear, VastAd } from "vast-client";
 import type { VmapAdBreak } from "./vmap";
+
+const NAMESPACE_UUID_AD = "5b212a7e-d6a2-43bf-bd30-13b1ca1f9b13";
 
 export type AdMedia = {
   assetId: string;

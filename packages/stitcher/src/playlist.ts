@@ -5,7 +5,6 @@ import { filterMaster } from "./filters";
 import { fetchVmap } from "./vmap";
 import { getSession, updateSession } from "./session";
 import { getStaticDateRanges, getAssets, getStaticPDT } from "./interstitials";
-import { PlaylistNoVariants } from "./errors";
 
 export async function formatMasterPlaylist(sessionId: string) {
   const session = await getSession(sessionId);
@@ -24,7 +23,7 @@ export async function formatMasterPlaylist(sessionId: string) {
   }
 
   if (!master.variants.length) {
-    throw new PlaylistNoVariants();
+    throw new Error("Playlist has no variants.");
   }
 
   return stringifyMasterPlaylist(master);

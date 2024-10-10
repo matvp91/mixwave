@@ -1,24 +1,15 @@
 import cn from "clsx";
 import { Progress } from "./Progress";
 import { SlotProgress } from "./SlotProgress";
-import PlayIcon from "../icons/play.svg?react";
-import PauseIcon from "../icons/pause.svg?react";
-import SettingsIcon from "../icons/settings.svg?react";
-import SubtitlesIcon from "../icons/subtitles.svg?react";
-import ForwardIcon from "../icons/forward.svg?react";
-import FullscreenIcon from "../icons/fullscreen.svg?react";
-import FullscreenExitIcon from "../icons/fullscreen-exit.svg?react";
 import { useVisible } from "../hooks/useVisible";
 import { Settings } from "./Settings";
-import { SqButton } from "./SqButton";
 import { useSettings } from "../hooks/useSettings";
 import { TimeStat } from "./TimeStat";
 import { useTime } from "../hooks/useTime";
 import { useState } from "react";
 import { Center } from "./Center";
-import { Label } from "./Label";
 import { useFullscreen } from "../hooks/useFullscreen";
-import { VolumeButton } from "./VolumeButton";
+import { BottomControls } from "./BottomControls";
 import type { State, HlsFacade } from "../..";
 import type { Metadata } from "../types";
 
@@ -82,63 +73,17 @@ export function Controls({ facade, state, metadata }: ControlsProps) {
             </div>
           )}
         </div>
-        <div className="flex gap-1 px-4 mb-2">
-          <SqButton
-            onClick={() => {
-              facade.playOrPause();
-              nudge();
-            }}
-          >
-            {state.playheadState === "play" ? (
-              <PauseIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
-            ) : (
-              <PlayIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
-            )}
-          </SqButton>
-          <SqButton
-            disabled={state.slot !== null}
-            onClick={() => {
-              facade.seekTo(time + 10);
-              nudge();
-            }}
-          >
-            <ForwardIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
-          </SqButton>
-          <VolumeButton
-            volume={state.volume}
-            setVolume={(volume) => facade.setVolume(volume)}
+        <div className="px-4 mb-2">
+          <BottomControls
+            metadata={metadata}
+            facade={facade}
+            state={state}
+            setSettings={setSettings}
+            time={time}
+            fullscreen={fullscreen}
+            nudge={nudge}
+            settings={settings}
           />
-          <Label slot={state.slot} metadata={metadata} />
-          <div className="grow" />
-          <SqButton
-            onClick={() => setSettings("text-audio")}
-            onIdle={() => setSettings("text-audio", true)}
-            selected={
-              settings?.mode === "text-audio" && settings.entry === "explicit"
-            }
-            data-mix-settings-action
-          >
-            <SubtitlesIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
-          </SqButton>
-          <SqButton
-            onClick={() => setSettings("quality")}
-            onIdle={() => setSettings("quality", true)}
-            selected={
-              settings?.mode === "quality" && settings.entry === "explicit"
-            }
-            data-mix-settings-action
-          >
-            <SettingsIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
-          </SqButton>
-          {fullscreen ? (
-            <SqButton onClick={fullscreen.onClick}>
-              {fullscreen.active ? (
-                <FullscreenExitIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
-              ) : (
-                <FullscreenIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
-              )}
-            </SqButton>
-          ) : null}
         </div>
       </div>
       <Settings

@@ -1,4 +1,4 @@
-import type { MediaPlaylist, Level } from "@mixwave/hls.js";
+import type { MediaPlaylist, Level, HlsAssetPlayer } from "@mixwave/hls.js";
 
 /**
  * A custom type for each `ASSET`.
@@ -13,6 +13,7 @@ export type Slot = {
   type?: MixType;
   time: number;
   duration: number;
+  player: HlsAssetPlayer;
 };
 
 /**

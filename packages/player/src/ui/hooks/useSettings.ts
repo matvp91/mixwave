@@ -2,16 +2,24 @@ import { useEffect, useState, useRef } from "react";
 
 export type SettingsMode = "text-audio" | "quality";
 
-type Value = {
+export type SetSettings = (
+  mode: SettingsMode | null,
+  hoverEntry?: boolean,
+) => void;
+
+export type SettingsValue = {
   entry: "hover" | "explicit";
   mode: SettingsMode;
 };
 
 export function useSettings() {
   const timerRef = useRef<number>();
-  const [value, setValue] = useState<Value | null>(null);
+  const [value, setValue] = useState<SettingsValue | null>(null);
 
-  const updateValue = (mode: SettingsMode | null, hoverEntry?: boolean) => {
+  const updateValue: SetSettings = (
+    mode: SettingsMode | null,
+    hoverEntry?: boolean,
+  ) => {
     if (mode === value?.mode && hoverEntry && value?.entry === "explicit") {
       return;
     }

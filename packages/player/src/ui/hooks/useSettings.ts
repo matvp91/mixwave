@@ -2,24 +2,21 @@ import { useEffect, useState, useRef } from "react";
 
 export type SettingsMode = "text-audio" | "quality";
 
-export type SetSettings = (
-  mode: SettingsMode | null,
-  hoverEntry?: boolean,
-) => void;
-
 export type SettingsValue = {
   entry: "hover" | "explicit";
   mode: SettingsMode;
 };
 
-export function useSettings() {
+export type UseSettings = {
+  set: (mode: SettingsMode | null, hoverEntry?: boolean) => void;
+  value: SettingsValue | null;
+};
+
+export function useSettings(): UseSettings {
   const timerRef = useRef<number>();
   const [value, setValue] = useState<SettingsValue | null>(null);
 
-  const updateValue: SetSettings = (
-    mode: SettingsMode | null,
-    hoverEntry?: boolean,
-  ) => {
+  const updateValue = (mode: SettingsMode | null, hoverEntry?: boolean) => {
     if (mode === value?.mode && hoverEntry && value?.entry === "explicit") {
       return;
     }
@@ -82,7 +79,10 @@ export function useSettings() {
     }
   }, [value]);
 
-  return [value, updateValue] as const;
+  return {
+    set: updateValue,
+    value,
+  };
 }
 
 function matchElement(target: EventTarget | null, attr: string) {

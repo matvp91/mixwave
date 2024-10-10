@@ -1,14 +1,11 @@
 import { CheckList } from "./CheckList";
 import { Pane } from "./Pane";
-import type { HlsFacade, State } from "../..";
+import { useUiContext } from "./UiContext";
 import type { CheckListItem } from "./CheckList";
 
-type QualitiesPaneProps = {
-  state: State;
-  facade: HlsFacade;
-};
+export function TextAudioPane() {
+  const { facade, state } = useUiContext();
 
-export function TextAudioPane({ facade, state }: QualitiesPaneProps) {
   const subtitleItems = state.subtitleTracks.map<CheckListItem>((it) => ({
     id: it.id,
     label: toLang(it.playlist.name),

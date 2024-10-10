@@ -1,14 +1,11 @@
 import { CheckList } from "./CheckList";
 import { Pane } from "./Pane";
-import type { HlsFacade, State } from "../..";
+import { useUiContext } from "./UiContext";
 import type { CheckListItem } from "./CheckList";
 
-type QualitiesPaneProps = {
-  state: State;
-  facade: HlsFacade;
-};
+export function QualitiesPane() {
+  const { facade, state } = useUiContext();
 
-export function QualitiesPane({ facade, state }: QualitiesPaneProps) {
   const activeQuality = state.qualities.find((it) => it.active);
 
   const qualityItems = state.qualities.map<CheckListItem>((it) => ({

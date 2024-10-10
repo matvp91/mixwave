@@ -16,7 +16,6 @@ export function BottomControls() {
     facade,
     state,
     settings,
-    setSettings,
     metadata,
     time,
     fullscreen,
@@ -52,19 +51,23 @@ export function BottomControls() {
       <Label slot={state.slot} metadata={metadata} />
       <div className="grow" />
       <SqButton
-        onClick={() => setSettings("text-audio")}
-        onIdle={() => setSettings("text-audio", true)}
+        onClick={() => settings.set("text-audio")}
+        onIdle={() => settings.set("text-audio", true)}
         selected={
-          settings?.mode === "text-audio" && settings.entry === "explicit"
+          settings.value?.mode === "text-audio" &&
+          settings.value.entry === "explicit"
         }
         data-mix-settings-action
       >
         <SubtitlesIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
       </SqButton>
       <SqButton
-        onClick={() => setSettings("quality")}
-        onIdle={() => setSettings("quality", true)}
-        selected={settings?.mode === "quality" && settings.entry === "explicit"}
+        onClick={() => settings.set("quality")}
+        onIdle={() => settings.set("quality", true)}
+        selected={
+          settings.value?.mode === "quality" &&
+          settings.value.entry === "explicit"
+        }
         data-mix-settings-action
       >
         <SettingsIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />

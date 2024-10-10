@@ -5,13 +5,14 @@ import { useTime } from "../hooks/useTime";
 import { useSettings } from "../hooks/useSettings";
 import type { ReactNode } from "react";
 import type { UseVisible } from "../hooks/useVisible";
+import type { UseSettings } from "../hooks/useSettings";
 import type { UseFullscreen } from "../hooks/useFullscreen";
 import type { HlsFacade, State } from "../..";
 import type { Metadata } from "../types";
-import type { SetSettings, SettingsValue } from "../hooks/useSettings";
 
 type UiContextValue = {
   visible: UseVisible;
+  settings: UseSettings;
   fullscreen: UseFullscreen | null;
   facade: HlsFacade;
   state: State;
@@ -19,12 +20,8 @@ type UiContextValue = {
   seekTo(time: number): void;
   time: number;
   visibleControls: boolean;
-
-  // TODO: refactor these below.
-  setSettings: SetSettings;
-  settings: SettingsValue | null;
-  progressSeeking: boolean;
-  setProgressSeeking(value: boolean): void;
+  seeking: boolean;
+  setSeeking(value: boolean): void;
 };
 
 export const UiContext = createContext<UiContextValue>({} as UiContextValue);
@@ -48,10 +45,11 @@ export function UiProvider({
 }: UiProviderProps) {
   const visible = useVisible();
   const fullscreen = useFullscreen();
+  const settings = useSettings();
+
   const [time, setTargetTime] = useTime(state);
 
-  const [settings, setSettings] = useSettings();
-  const [progressSeeking, setProgressSeeking] = useState(false);
+  const [seeking, setSeeking] = useState(false);
 
   if (!metadata) {
     metadata = {};
@@ -64,7 +62,7 @@ export function UiProvider({
   };
 
   let visibleControls = false;
-  if (state.isStarted && (visible.visible || settings || progressSeeking)) {
+  if (state.isStarted && (visible.visible || settings.value || seeking)) {
     visibleControls = true;
   }
 
@@ -72,6 +70,7 @@ export function UiProvider({
     <UiContext.Provider
       value={{
         visible,
+        settings,
         fullscreen,
 
         facade,
@@ -83,11 +82,8 @@ export function UiProvider({
         time,
         visibleControls,
 
-        // TODO: Refactor these.
-        settings,
-        setSettings,
-        progressSeeking,
-        setProgressSeeking,
+        seeking,
+        setSeeking,
       }}
     >
       {children}

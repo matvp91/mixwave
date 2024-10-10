@@ -8,7 +8,7 @@ import { BottomControls } from "./BottomControls";
 import { useUiContext } from "./UiContext";
 
 export function Controls() {
-  const { state, seekTo, visible, visibleControls, settings, fullscreen } =
+  const { state, visible, visibleControls, settings, fullscreen } =
     useUiContext();
 
   return (
@@ -23,16 +23,16 @@ export function Controls() {
         <div
           className={cn(
             "relative mb-2 transition-opacity",
-            !!settings && "opacity-0 pointer-events-none",
+            !!settings.value && "opacity-0 pointer-events-none",
           )}
         >
           {state.slot ? (
             <div className="absolute left-0 right-0 bottom-0 px-4">
-              <SlotProgress slot={state.slot} />
+              <SlotProgress />
             </div>
           ) : (
             <div className="absolute left-0 right-0 bottom-0 flex items-center px-4">
-              <Progress onSeeked={seekTo} />
+              <Progress />
               <TimeStat />
             </div>
           )}

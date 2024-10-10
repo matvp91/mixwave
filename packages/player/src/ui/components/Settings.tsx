@@ -8,9 +8,9 @@ import usePrevious from "../hooks/usePrevious";
 import { useUiContext } from "./UiContext";
 
 export function Settings() {
-  const { facade, state, settings } = useUiContext();
+  const { settings } = useUiContext();
 
-  const mode = settings?.mode ?? null;
+  const mode = settings.value?.mode ?? null;
 
   const ref = useRef<HTMLDivElement>(null);
   const lastModeRef = useRef<SettingsMode>();
@@ -75,10 +75,10 @@ export function Settings() {
       data-mix-settings
     >
       <SettingsPane active={lastMode === "quality"}>
-        <QualitiesPane facade={facade} state={state} />
+        <QualitiesPane />
       </SettingsPane>
       <SettingsPane active={lastMode === "text-audio"}>
-        <TextAudioPane facade={facade} state={state} />
+        <TextAudioPane />
       </SettingsPane>
     </div>
   );

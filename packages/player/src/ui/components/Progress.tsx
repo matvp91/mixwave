@@ -4,16 +4,8 @@ import cn from "clsx";
 import { useUiContext } from "./UiContext";
 import type { PointerEventHandler } from "react";
 
-type ProgressProps = {
-  onSeeked(value: number): void;
-};
-
-export function Progress({ onSeeked }: ProgressProps) {
-  const { time, state, progressSeeking, setProgressSeeking } = useUiContext();
-
-  // TODO: Refactor these.
-  const setSeeking = setProgressSeeking;
-  const seeking = progressSeeking;
+export function Progress() {
+  const { time, state, seeking, setSeeking, seekTo } = useUiContext();
 
   const ref = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState(false);
@@ -66,7 +58,7 @@ export function Progress({ onSeeked }: ProgressProps) {
 
     const onPointerUp = (event: PointerEvent) => {
       const time = updateValue(event);
-      onSeeked(time);
+      seekTo(time);
       setSeeking(false);
     };
 

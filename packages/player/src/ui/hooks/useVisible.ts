@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import type { RefObject } from "react";
 
 export type UseVisible = {
@@ -50,7 +50,5 @@ export function useVisible(): UseVisible {
     onPointerMove();
   }, [onPointerMove]);
 
-  return useMemo(() => {
-    return { visible, elementRef, nudge };
-  }, [visible, elementRef, nudge]);
+  return { visible, elementRef, nudge };
 }

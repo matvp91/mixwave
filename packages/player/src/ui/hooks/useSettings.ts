@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 export type SettingsMode = "text-audio" | "quality";
 
@@ -82,9 +82,7 @@ export function useSettings(): UseSettings {
     [value],
   );
 
-  return useMemo(() => {
-    return { set, value };
-  }, [set, value]);
+  return { set, value };
 }
 
 function matchElement(target: EventTarget | null, attr: string) {

@@ -1,5 +1,5 @@
 import screenfull from "screenfull";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import type { MouseEventHandler } from "react";
 
 export type UseFullscreen = {
@@ -27,13 +27,9 @@ export function useFullscreen(): UseFullscreen | null {
     [screenfull],
   );
 
-  const ret = useMemo(() => {
-    return { active, onClick };
-  }, [active, setActive]);
-
   if (!screenfull.isEnabled) {
     return null;
   }
 
-  return ret;
+  return { active, onClick };
 }

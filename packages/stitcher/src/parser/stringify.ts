@@ -1,4 +1,4 @@
-import { Lines } from "./lines.js";
+import { Lines } from "./lines";
 import type {
   Rendition,
   Variant,
@@ -7,7 +7,7 @@ import type {
   MediaPlaylist,
   MediaInitializationSection,
   DateRange,
-} from "./types.js";
+} from "./types";
 
 function buildRendition(lines: Lines, rendition: Rendition) {
   const attrs = [

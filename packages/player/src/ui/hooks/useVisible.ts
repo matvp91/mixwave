@@ -1,20 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import type { RefObject } from "react";
 
-export function useVisible() {
-  const ref = useRef<number>();
+export type UseVisible = {
+  visible: boolean;
+  elementRef: RefObject<HTMLDivElement>;
+  nudge(): void;
+};
+
+export function useVisible(): UseVisible {
+  const timerRef = useRef<number>();
   const elementRef = useRef<HTMLDivElement>(null);
 
   const [visible, setVisible] = useState(false);
-
-  const onPointerMove = () => {
-    clearTimeout(ref.current);
-
-    setVisible(true);
-
-    ref.current = setTimeout(() => {
-      setVisible(false);
-    }, 3000);
-  };
 
   useEffect(() => {
     const container = elementRef.current?.closest("[data-mix-container]") as
@@ -26,7 +23,7 @@ export function useVisible() {
     }
 
     const onPointerLeave = () => {
-      clearTimeout(ref.current);
+      clearTimeout(timerRef.current);
       setVisible(false);
     };
 
@@ -39,13 +36,19 @@ export function useVisible() {
     };
   }, []);
 
-  const nudge = () => {
-    onPointerMove();
-  };
+  const onPointerMove = useCallback(() => {
+    clearTimeout(timerRef.current);
 
-  return {
-    visible,
-    elementRef,
-    nudge,
-  };
+    setVisible(true);
+
+    timerRef.current = setTimeout(() => {
+      setVisible(false);
+    }, 3000);
+  }, [setVisible]);
+
+  const nudge = useCallback(() => {
+    onPointerMove();
+  }, [onPointerMove]);
+
+  return { visible, elementRef, nudge };
 }

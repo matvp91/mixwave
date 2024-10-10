@@ -1,4 +1,4 @@
-export * from "./components/HlsUi";
+export * from "./HlsUi";
 
 export * from "./types";
 

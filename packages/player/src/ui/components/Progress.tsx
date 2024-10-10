@@ -1,24 +1,12 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { toHMS } from "../utils";
 import cn from "clsx";
-import type { State } from "../..";
-import type { Dispatch, PointerEventHandler } from "react";
+import { useUiContext } from "../context/UiContext";
+import type { PointerEventHandler } from "react";
 
-type ProgressProps = {
-  time: number;
-  state: State;
-  seeking: boolean;
-  setSeeking: Dispatch<boolean>;
-  onSeeked(value: number): void;
-};
+export function Progress() {
+  const { time, state, seeking, setSeeking, seekTo } = useUiContext();
 
-export function Progress({
-  time,
-  state,
-  seeking,
-  setSeeking,
-  onSeeked,
-}: ProgressProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState(false);
   const [value, setValue] = useState(0);
@@ -70,7 +58,7 @@ export function Progress({
 
     const onPointerUp = (event: PointerEvent) => {
       const time = updateValue(event);
-      onSeeked(time);
+      seekTo(time);
       setSeeking(false);
     };
 

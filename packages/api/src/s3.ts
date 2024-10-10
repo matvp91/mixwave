@@ -89,9 +89,6 @@ export async function getStorageFile(path: string): Promise<FileDto> {
 
 function canFilePreview(name: string): boolean {
   return (
-    name.endsWith(".vtt") ||
-    name.endsWith(".m3u8") ||
-    name.endsWith(".json") ||
-    name.endsWith(".msd")
+    name.endsWith(".vtt") || name.endsWith(".m3u8") || name.endsWith(".json")
   );
 }

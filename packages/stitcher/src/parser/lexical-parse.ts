@@ -1,12 +1,12 @@
-import { assert } from "../assert.js";
-import { mapAttributes, partOf } from "./helpers.js";
 import { DateTime } from "luxon";
+import { assert } from "../assert";
+import { mapAttributes, partOf } from "./helpers";
 import type {
   Resolution,
   MediaInitializationSection,
   PlaylistType,
   DateRange,
-} from "./types.js";
+} from "./types";
 
 // Based on the latest spec:
 // https://datatracker.ietf.org/doc/html/draft-pantos-hls-rfc8216bis

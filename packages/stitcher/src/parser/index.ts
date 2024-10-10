@@ -1,7 +1,4 @@
-export { parseMasterPlaylist, parseMediaPlaylist } from "./parse.js";
-export {
-  stringifyMasterPlaylist,
-  stringifyMediaPlaylist,
-} from "./stringify.js";
+export { parseMasterPlaylist, parseMediaPlaylist } from "./parse";
+export { stringifyMasterPlaylist, stringifyMediaPlaylist } from "./stringify";
 
-export * from "./types.js";
+export * from "./types";

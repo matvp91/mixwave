@@ -1,5 +1,5 @@
-import { assert } from "../assert.js";
-import { lexicalParse } from "./lexical-parse.js";
+import { assert } from "../assert";
+import { lexicalParse } from "./lexical-parse";
 import type {
   MediaPlaylist,
   MasterPlaylist,
@@ -9,8 +9,8 @@ import type {
   Variant,
   Rendition,
   DateRange,
-} from "./types.js";
-import type { Tag, StreamInf, Media } from "./lexical-parse.js";
+} from "./types";
+import type { Tag, StreamInf, Media } from "./lexical-parse";
 import type { DateTime } from "luxon";
 
 function formatMediaPlaylist(tags: Tag[]): MediaPlaylist {

@@ -12,7 +12,7 @@ export function PlayerPage() {
   const [error, setError] = useState<object>();
 
   useEffect(() => {
-    fetch(`${import.meta.env.PUBLIC_STITCHER_ENDPOINT}/spec.json`)
+    fetch(`${import.meta.env.PUBLIC_STITCHER_ENDPOINT}/swagger/json`)
       .then((response) => response.json())
       .then((data) => {
         setSchema(

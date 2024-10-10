@@ -1,14 +1,14 @@
 import { DateTime } from "luxon";
-import { env } from "./env.js";
-import { getAdMediasFromVast } from "./vast.js";
-import { Presentation } from "./presentation.js";
-import { VmapResponse } from "./vmap.js";
-import type { DateRange } from "./parser/types.js";
+import { env } from "./env";
+import { getAdMediasFromVast } from "./vast";
+import { Presentation } from "./presentation";
+import { VmapResponse } from "./vmap";
+import type { DateRange } from "./parser";
 import type {
   Session,
   SessionInterstitialType,
   SessionInterstitial,
-} from "./session.js";
+} from "./session";
 
 type InterstitialAsset = {
   URI: string;

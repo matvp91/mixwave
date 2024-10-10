@@ -137,7 +137,7 @@ type AddPackageJobData = {
 
 export async function addPackageJob({
   assetId,
-  segmentSize = 4,
+  segmentSize,
   name = "hls",
   tag,
 }: AddPackageJobData) {

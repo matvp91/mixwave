@@ -1,5 +1,5 @@
 import { createClient } from "redis";
-import { env } from "./env.js";
+import { env } from "./env";
 
 export const client = createClient({
   socket: {

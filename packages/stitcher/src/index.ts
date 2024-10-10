@@ -1,17 +1,17 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
-import { env } from "./env.js";
-import { contract } from "./contract.js";
 import { initServer } from "@ts-rest/fastify";
-import { openApiSpec } from "./openapi.js";
-import { createSession } from "./session.js";
+import { env } from "./env";
+import { contract } from "./contract";
+import { openApiSpec } from "./openapi";
+import { createSession } from "./session";
+import { validateFilter } from "./filters";
+import { getMasterUrl } from "./url";
 import {
   formatMasterPlaylist,
   formatMediaPlaylist,
   formatAssetList,
-} from "./playlist.js";
-import { validateFilter } from "./filters.js";
-import { getMasterUrl } from "./url.js";
+} from "./playlist";
 
 async function buildServer() {
   const app = Fastify();

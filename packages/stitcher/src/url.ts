@@ -1,6 +1,6 @@
 import * as path from "path";
-import { env } from "./env.js";
-import { UriInvalidError } from "./errors.js";
+import { env } from "./env";
+import { UriInvalidError } from "./errors";
 
 const uuidRegex = /^[a-z,0-9,-]{36,36}$/;
 

@@ -1,8 +1,8 @@
-import { client } from "./redis.js";
 import { randomUUID } from "crypto";
 import { DateTime } from "luxon";
-import { SessionNotFoundError } from "./errors.js";
-import type { VmapResponse } from "./vmap.js";
+import { client } from "./redis";
+import { SessionNotFoundError } from "./errors";
+import type { VmapResponse } from "./vmap";
 
 export type Session = {
   id: string;

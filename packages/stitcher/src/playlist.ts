@@ -1,18 +1,11 @@
-import {
-  stringifyMasterPlaylist,
-  stringifyMediaPlaylist,
-} from "./parser/index.js";
-import { Presentation } from "./presentation.js";
-import { filterMaster } from "./filters.js";
-import { fetchVmap } from "./vmap.js";
 import { DateTime } from "luxon";
-import { getSession, updateSession } from "./session.js";
-import {
-  getStaticDateRanges,
-  getAssets,
-  getStaticPDT,
-} from "./interstitials.js";
-import { PlaylistNoVariants } from "./errors.js";
+import { stringifyMasterPlaylist, stringifyMediaPlaylist } from "./parser";
+import { Presentation } from "./presentation";
+import { filterMaster } from "./filters";
+import { fetchVmap } from "./vmap";
+import { getSession, updateSession } from "./session";
+import { getStaticDateRanges, getAssets, getStaticPDT } from "./interstitials";
+import { PlaylistNoVariants } from "./errors";
 
 export async function formatMasterPlaylist(sessionId: string) {
   const session = await getSession(sessionId);

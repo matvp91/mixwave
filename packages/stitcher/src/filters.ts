@@ -1,6 +1,6 @@
-import { FilterResolutionInvalidError } from "./errors.js";
-import type { MasterPlaylist, Variant } from "./parser/index.js";
-import type { SessionFilter } from "./session.js";
+import { FilterResolutionInvalidError } from "./errors";
+import type { MasterPlaylist, Variant } from "./parser";
+import type { SessionFilter } from "./session";
 
 const FILTER_VARIANTS_OPERATOR = {
   "<": (a: number, b: number) => a < b,

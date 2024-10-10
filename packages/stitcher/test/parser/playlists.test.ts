@@ -1,32 +1,26 @@
-import { expect, test, vi, describe, beforeEach, afterEach } from "vitest";
+import "bun";
+import { test, expect, describe, beforeEach, setSystemTime } from "bun:test";
 import * as fs from "node:fs";
-import {
-  parseMasterPlaylist,
-  parseMediaPlaylist,
-} from "../../src/parser/index.js";
+import { parseMasterPlaylist, parseMediaPlaylist } from "../../src/parser";
 
-function readPlaylistFixtures() {
+async function readPlaylistFixtures() {
   const path = `${__dirname}/fixtures/playlists`;
   const files = fs.readdirSync(path);
-  return files.map<[string, string]>((file) => [
-    file,
-    fs.readFileSync(`${path}/${file}`, "utf-8"),
-  ]);
+
+  return Promise.all(
+    files.map(async (file) => {
+      return [file, await Bun.file(`${path}/${file}`).text()];
+    }),
+  );
 }
 
-describe("playlists", () => {
+describe("playlists", async () => {
   beforeEach(() => {
-    vi.useFakeTimers();
-
     // The day my son was born!
-    vi.setSystemTime(new Date(2021, 4, 2, 10, 12, 5, 250));
+    setSystemTime(new Date(2021, 4, 2, 10, 12, 5, 250));
   });
 
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
-  test.each(readPlaylistFixtures())("playlist(%s)", (name, text) => {
+  test.each(await readPlaylistFixtures())("playlist(%s)", (name, text) => {
     if (name.startsWith("master-")) {
       expect(parseMasterPlaylist(text)).toMatchSnapshot();
     }

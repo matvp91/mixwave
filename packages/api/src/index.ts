@@ -2,7 +2,6 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { env } from "./env.js";
 import { contract } from "./contract.js";
-import { bullBoardPlugin } from "./plugins/bull-board.js";
 import { initServer } from "@ts-rest/fastify";
 import { addTranscodeJob, addPackageJob } from "@mixwave/artisan/producer";
 import { getJobs, getJob, getJobLogs } from "./jobs.js";
@@ -71,8 +70,6 @@ async function buildServer(): Promise<FastifyInstance> {
   });
 
   app.register(s.plugin(router));
-
-  app.register(bullBoardPlugin);
 
   return await app;
 }

@@ -1,13 +1,8 @@
+import { parseEnv } from "@mixwave/shared/env";
 import { z } from "zod";
-import findConfig from "find-config";
-import { config } from "dotenv";
 
-const configPath = findConfig("config.env");
-if (configPath) {
-  config({ path: configPath });
-}
-
-const envSchema = z.object({
+export const env = parseEnv({
+  // config.env
   S3_ENDPOINT: z.string(),
   S3_REGION: z.string(),
   S3_ACCESS_KEY: z.string(),
@@ -16,5 +11,3 @@ const envSchema = z.object({
   REDIS_HOST: z.string(),
   REDIS_PORT: z.coerce.number(),
 });
-
-export const env = envSchema.parse(process.env);

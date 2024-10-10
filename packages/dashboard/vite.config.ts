@@ -2,13 +2,10 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
-import findConfig from "find-config";
-import { config } from "dotenv";
 
-const configPath = findConfig("config.env");
-if (configPath) {
-  config({ path: configPath });
-}
+// Use shared env, but below we set the envPrefix to ensure no
+// secrets are being leaked to the client.
+import "@mixwave/shared/env";
 
 // https://vitejs.dev/config/
 export default defineConfig({

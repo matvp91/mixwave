@@ -2,12 +2,12 @@
   "name": "@mixwave/artisan",
   "type": "module",
   "exports": {
-    "./producer": "./dist/producer/index.js"
+    "./producer": "./dist/producer.js"
   },
   "typesVersions": {
     "*": {
       "producer": [
-        "src/producer/index.ts"
+        "src/producer.ts"
       ]
     }
   },
@@ -16,7 +16,6 @@
     "dev": "tsc-watch --noClear --onSuccess \"node ./dist/consumer/index.js\""
   },
   "devDependencies": {
-    "@types/find-config": "^1.0.4",
     "@types/mime-types": "^2.1.4",
     "@types/node": "^22.1.0",
     "@types/parse-filepath": "^1.0.2",
@@ -27,10 +26,8 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.623.0",
     "bullmq": "^5.12.0",
-    "dotenv": "^16.4.5",
     "ffmpeg-static": "^5.2.0",
     "ffmpeggy": "^3.0.1",
-    "find-config": "^1.0.0",
     "glob": "^11.0.0",
     "iso-language-codes": "^2.0.0",
     "mime-types": "^2.1.35",

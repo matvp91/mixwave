@@ -5,15 +5,13 @@ import { SettingsPane } from "./SettingsPane";
 import { QualitiesPane } from "./QualitiesPane";
 import { TextAudioPane } from "./TextAudioPane";
 import usePrevious from "../hooks/usePrevious";
-import type { HlsFacade, State } from "../..";
+import { useUiContext } from "./UiContext";
 
-type SettingsProps = {
-  facade: HlsFacade;
-  state: State;
-  mode: SettingsMode | null;
-};
+export function Settings() {
+  const { facade, state, settings } = useUiContext();
 
-export function Settings({ facade, state, mode }: SettingsProps) {
+  const mode = settings?.mode ?? null;
+
   const ref = useRef<HTMLDivElement>(null);
   const lastModeRef = useRef<SettingsMode>();
   const modePrev = usePrevious(mode);

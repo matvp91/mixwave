@@ -3,6 +3,7 @@ import { Start } from "./Start";
 import { useHlsState } from "../hooks/useHlsState";
 import type { HlsFacade } from "../..";
 import type { Metadata } from "../types";
+import { UiProvider } from "./UiContext";
 
 /** @hidden */
 export type HlsUiProps = {
@@ -19,9 +20,9 @@ export function HlsUi({ facade, metadata }: HlsUiProps) {
   }
 
   return (
-    <>
-      <Start facade={facade} state={state} />;
-      <Controls facade={facade} state={state} metadata={metadata} />
-    </>
+    <UiProvider facade={facade} metadata={metadata} state={state}>
+      <Start />;
+      <Controls />
+    </UiProvider>
   );
 }

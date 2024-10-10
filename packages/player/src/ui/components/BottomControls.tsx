@@ -8,38 +8,27 @@ import FullscreenExitIcon from "../icons/fullscreen-exit.svg?react";
 import { SqButton } from "./SqButton";
 import { VolumeButton } from "./VolumeButton";
 import { Label } from "./Label";
-import type { Fullscreen } from "../hooks/useFullscreen";
-import type { SetSettings, SettingsValue } from "../hooks/useSettings";
-import type { HlsFacade, State } from "../..";
-import type { Metadata } from "../types";
+import { useUiContext } from "./UiContext";
 
-type BottomControlsProps = {
-  metadata?: Metadata;
-  nudge(): void;
-  facade: HlsFacade;
-  state: State;
-  settings: SettingsValue | null;
-  setSettings: SetSettings;
-  fullscreen: Fullscreen | null;
-  time: number;
-};
+export function BottomControls() {
+  const {
+    visible,
+    facade,
+    state,
+    settings,
+    setSettings,
+    metadata,
+    time,
+    fullscreen,
+    seekTo,
+  } = useUiContext();
 
-export function BottomControls({
-  metadata,
-  nudge,
-  facade,
-  state,
-  settings,
-  setSettings,
-  fullscreen,
-  time,
-}: BottomControlsProps) {
   return (
     <div className="flex gap-1">
       <SqButton
         onClick={() => {
           facade.playOrPause();
-          nudge();
+          visible.nudge();
         }}
       >
         {state.playheadState === "play" ? (
@@ -51,8 +40,7 @@ export function BottomControls({
       <SqButton
         disabled={state.slot !== null}
         onClick={() => {
-          facade.seekTo(time + 10);
-          nudge();
+          seekTo(time + 10);
         }}
       >
         <ForwardIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />

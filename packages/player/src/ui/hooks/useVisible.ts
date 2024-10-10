@@ -1,17 +1,24 @@
 import { useEffect, useRef, useState } from "react";
+import type { RefObject } from "react";
 
-export function useVisible() {
-  const ref = useRef<number>();
+export type UseVisible = {
+  visible: boolean;
+  elementRef: RefObject<HTMLDivElement>;
+  nudge(): void;
+};
+
+export function useVisible(): UseVisible {
+  const timerRef = useRef<number>();
   const elementRef = useRef<HTMLDivElement>(null);
 
   const [visible, setVisible] = useState(false);
 
   const onPointerMove = () => {
-    clearTimeout(ref.current);
+    clearTimeout(timerRef.current);
 
     setVisible(true);
 
-    ref.current = setTimeout(() => {
+    timerRef.current = setTimeout(() => {
       setVisible(false);
     }, 3000);
   };
@@ -26,7 +33,7 @@ export function useVisible() {
     }
 
     const onPointerLeave = () => {
-      clearTimeout(ref.current);
+      clearTimeout(timerRef.current);
       setVisible(false);
     };
 

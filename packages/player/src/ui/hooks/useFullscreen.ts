@@ -2,12 +2,12 @@ import screenfull from "screenfull";
 import { useEffect, useState } from "react";
 import type { MouseEventHandler } from "react";
 
-export type Fullscreen = {
+export type UseFullscreen = {
   active: boolean;
   onClick: MouseEventHandler<HTMLElement>;
 };
 
-export function useFullscreen(): Fullscreen | null {
+export function useFullscreen(): UseFullscreen | null {
   const [active, setActive] = useState(false);
 
   useEffect(() => {

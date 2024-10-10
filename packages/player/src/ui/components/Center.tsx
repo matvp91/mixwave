@@ -1,12 +1,13 @@
+import { useUiContext } from "./UiContext";
 import type { MouseEventHandler } from "react";
-import type { HlsFacade } from "../..";
 
 type CenterProps = {
-  facade: HlsFacade;
   onFullscreenClick?: MouseEventHandler<HTMLElement>;
 };
 
-export function Center({ facade, onFullscreenClick }: CenterProps) {
+export function Center({ onFullscreenClick }: CenterProps) {
+  const { facade } = useUiContext();
+
   return (
     <div
       className="absolute inset-0"

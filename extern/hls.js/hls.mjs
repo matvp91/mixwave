@@ -1391,12 +1391,12 @@ function createMediaKeySystemConfigurations(initDataTypes, audioCodecs, videoCod
     distinctiveIdentifier: drmSystemOptions.distinctiveIdentifier || 'optional',
     sessionTypes: drmSystemOptions.sessionTypes || [drmSystemOptions.sessionType || 'temporary'],
     audioCapabilities: audioCodecs.map(codec => ({
-      contentType: `audio/mp4; codecs="${codec}"`,
+      contentType: `audio/mp4; codecs=${codec}`,
       robustness: drmSystemOptions.audioRobustness || '',
       encryptionScheme: drmSystemOptions.audioEncryptionScheme || null
     })),
     videoCapabilities: videoCodecs.map(codec => ({
-      contentType: `video/mp4; codecs="${codec}"`,
+      contentType: `video/mp4; codecs=${codec}`,
       robustness: drmSystemOptions.videoRobustness || '',
       encryptionScheme: drmSystemOptions.videoEncryptionScheme || null
     }))
@@ -2926,7 +2926,7 @@ function isCodecMediaSourceSupported(codec, type, preferManagedMediaSource = tru
   return (_MediaSource$isTypeSu = MediaSource == null ? void 0 : MediaSource.isTypeSupported(mimeTypeForCodec(codec, type))) != null ? _MediaSource$isTypeSu : false;
 }
 function mimeTypeForCodec(codec, type) {
-  return `${type}/mp4;codecs="${codec}"`;
+  return `${type}/mp4;codecs=${codec}`;
 }
 function videoCodecPreferenceValue(videoCodec) {
   if (videoCodec) {
@@ -2977,15 +2977,28 @@ function getCodecCompatibleName(codec, preferManagedMediaSource = true) {
 function pickMostCompleteCodecName(parsedCodec, levelCodec) {
   // Parsing of mp4a codecs strings in mp4-tools from media is incomplete as of d8c6c7a
   // so use level codec is parsed codec is unavailable or incomplete
-  if (parsedCodec && parsedCodec !== 'mp4a') {
+  if (parsedCodec && (parsedCodec.length > 4 || ['ac-3', 'ec-3', 'alac', 'fLaC', 'Opus'].indexOf(parsedCodec) !== -1)) {
     return parsedCodec;
   }
-  return levelCodec ? levelCodec.split(',')[0] : levelCodec;
+  if (levelCodec) {
+    const levelCodecs = levelCodec.split(',');
+    if (levelCodecs.length > 1) {
+      if (parsedCodec) {
+        for (let i = levelCodecs.length; i--;) {
+          if (levelCodecs[i].substring(0, 4) === parsedCodec.substring(0, 4)) {
+            return levelCodecs[i];
+          }
+        }
+      }
+      return levelCodecs[0];
+    }
+  }
+  return levelCodec || parsedCodec;
 }
-function convertAVC1ToAVCOTI(codec) {
+function convertAVC1ToAVCOTI(videoCodecs) {
   // Convert avc1 codec string from RFC-4281 to RFC-6381 for MediaSource.isTypeSupported
   // Examples: avc1.66.30 to avc1.42001e and avc1.77.30,avc1.66.30 to avc1.4d001e,avc1.42001e.
-  const codecs = codec.split(',');
+  const codecs = videoCodecs.split(',');
   for (let i = 0; i < codecs.length; i++) {
     const avcdata = codecs[i].split('.');
     if (avcdata.length > 2) {
@@ -2996,6 +3009,18 @@ function convertAVC1ToAVCOTI(codec) {
     }
   }
   return codecs.join(',');
+}
+function fillInMissingAV01Params(videoCodec) {
+  // Used to fill in incomplete AV1 playlist CODECS strings for mediaCapabilities.decodingInfo queries
+  if (videoCodec.startsWith('av01.')) {
+    const av1params = videoCodec.split('.');
+    const placeholders = ['0', '111', '01', '01', '01', '0'];
+    for (let i = av1params.length; i > 4 && i < 10; i++) {
+      av1params[i] = placeholders[i - 4];
+    }
+    return av1params.join('.');
+  }
+  return videoCodec;
 }
 function getM2TSSupportedAudioTypes(preferManagedMediaSource) {
   const MediaSource = getMediaSource(preferManagedMediaSource) || {
@@ -5902,13 +5927,24 @@ function mapFragmentIntersection(oldDetails, newDetails, intersectionFn) {
     }
   }
 }
-function adjustSliding(oldDetails, newDetails) {
+function adjustSliding(oldDetails, newDetails, matchingStableVariantOrRendition = true) {
   const delta = newDetails.startSN + newDetails.skippedSegments - oldDetails.startSN;
   const oldFragments = oldDetails.fragments;
-  if (delta < 0 || delta >= oldFragments.length) {
+  const advancedOrStable = delta >= 0;
+  let sliding = 0;
+  if (advancedOrStable && delta < oldFragments.length) {
+    sliding = oldFragments[delta].start;
+  } else if (advancedOrStable && matchingStableVariantOrRendition) {
+    // align new start with old end (updated playlist start sequence is past end sequence of last update)
+    sliding = oldDetails.edge;
+  } else if (!newDetails.skippedSegments && newDetails.fragments[0].start === 0) {
+    // align new start with old (playlist switch has a sequence with no overlap and should not be used for alignment)
+    sliding = oldDetails.fragments[0].start;
+  } else {
+    // new details already has a sliding offset or has skipped segments
     return;
   }
-  addSliding(newDetails, oldFragments[delta].start);
+  addSliding(newDetails, sliding);
 }
 function addSliding(details, start) {
   if (start) {
@@ -6954,10 +6990,27 @@ class LevelController extends BasePlaylistController {
         height,
         unknownCodecs
       } = levelParsed;
+      let unknownUnsupportedCodecCount = unknownCodecs ? unknownCodecs.length : 0;
+      if (unknownCodecs) {
+        // Treat unknown codec as audio or video codec based on passing `isTypeSupported` check
+        // (allows for playback of any supported codec even if not indexed in utils/codecs)
+        for (let i = unknownUnsupportedCodecCount; i--;) {
+          const unknownCodec = unknownCodecs[i];
+          if (this.isAudioSupported(unknownCodec)) {
+            levelParsed.audioCodec = audioCodec = audioCodec ? `${audioCodec},${unknownCodec}` : unknownCodec;
+            unknownUnsupportedCodecCount--;
+            sampleEntryCodesISO.audio[audioCodec.substring(0, 4)] = 2;
+          } else if (this.isVideoSupported(unknownCodec)) {
+            levelParsed.videoCodec = videoCodec = videoCodec ? `${videoCodec},${unknownCodec}` : unknownCodec;
+            unknownUnsupportedCodecCount--;
+            sampleEntryCodesISO.video[videoCodec.substring(0, 4)] = 2;
+          }
+        }
+      }
       resolutionFound || (resolutionFound = !!(width && height));
       videoCodecFound || (videoCodecFound = !!videoCodec);
       audioCodecFound || (audioCodecFound = !!audioCodec);
-      if (unknownCodecs != null && unknownCodecs.length || audioCodec && !areCodecsMediaSourceSupported(audioCodec, 'audio', preferManagedMediaSource) || videoCodec && !areCodecsMediaSourceSupported(videoCodec, 'video', preferManagedMediaSource)) {
+      if (unknownUnsupportedCodecCount || audioCodec && !this.isAudioSupported(audioCodec) || videoCodec && !this.isVideoSupported(videoCodec)) {
         return;
       }
       const {
@@ -6989,6 +7042,12 @@ class LevelController extends BasePlaylistController {
       }
     });
     this.filterAndSortMediaOptions(levels, data, resolutionFound, videoCodecFound, audioCodecFound);
+  }
+  isAudioSupported(codec) {
+    return areCodecsMediaSourceSupported(codec, 'audio', this.hls.config.preferManagedMediaSource);
+  }
+  isVideoSupported(codec) {
+    return areCodecsMediaSourceSupported(codec, 'video', this.hls.config.preferManagedMediaSource);
   }
   filterAndSortMediaOptions(filteredLevels, data, resolutionFound, videoCodecFound, audioCodecFound) {
     let audioTracks = [];
@@ -7025,10 +7084,7 @@ class LevelController extends BasePlaylistController {
       return;
     }
     if (data.audioTracks) {
-      const {
-        preferManagedMediaSource
-      } = this.hls.config;
-      audioTracks = data.audioTracks.filter(track => !track.audioCodec || areCodecsMediaSourceSupported(track.audioCodec, 'audio', preferManagedMediaSource));
+      audioTracks = data.audioTracks.filter(track => !track.audioCodec || this.isAudioSupported(track.audioCodec));
       // Assign ids after filtering as array indices by group-id
       assignTrackIdsByGroup(audioTracks);
     }
@@ -7922,7 +7978,7 @@ class FragmentLoader {
       };
       // Assign frag stats to the loader's stats reference
       frag.stats = loader.stats;
-      loader.load(loaderContext, loaderConfig, {
+      const callbacks = {
         onSuccess: (response, stats, context, networkDetails) => {
           this.resetLoader(frag, loader);
           let payload = response.data;
@@ -7976,18 +8032,17 @@ class FragmentLoader {
             networkDetails,
             stats
           }));
-        },
-        onProgress: (stats, context, data, networkDetails) => {
-          if (onProgress) {
-            onProgress({
-              frag,
-              part: null,
-              payload: data,
-              networkDetails
-            });
-          }
         }
-      });
+      };
+      if (onProgress) {
+        callbacks.onProgress = (stats, context, data, networkDetails) => onProgress({
+          frag,
+          part: null,
+          payload: data,
+          networkDetails
+        });
+      }
+      loader.load(loaderContext, loaderConfig, callbacks);
     });
   }
   loadPart(frag, part, onProgress) {
@@ -8761,7 +8816,7 @@ function alignStream(lastFrag, switchDetails, details) {
     // Try to align on sn so that we pick a better start fragment.
     // Do not perform this on playlists with delta updates as this is only to align levels on switch
     // and adjustSliding only adjusts fragments after skippedSegments.
-    adjustSliding(switchDetails, details);
+    adjustSliding(switchDetails, details, false);
   }
 }
 
@@ -9422,11 +9477,7 @@ class BaseStreamController extends TaskLoop {
       // reset startPosition and lastCurrentTime to restart playback @ stream beginning
       this.log(`setting startPosition to 0 because media ended`);
       this.startPosition = this.lastCurrentTime = 0;
-      if (this.playlistType === PlaylistLevelType.MAIN) {
-        this.hls.trigger(Events.MEDIA_ENDED, {
-          stalled: false
-        });
-      }
+      this.triggerEnded();
     };
     this.playlistType = playlistType;
     this.hls = hls;
@@ -9533,6 +9584,8 @@ class BaseStreamController extends TaskLoop {
   }
   onMediaAttached(event, data) {
     const media = this.media = this.mediaBuffer = data.media;
+    media.removeEventListener('seeking', this.onMediaSeeking);
+    media.removeEventListener('ended', this.onMediaEnded);
     media.addEventListener('seeking', this.onMediaSeeking);
     media.addEventListener('ended', this.onMediaEnded);
     const config = this.config;
@@ -9574,6 +9627,9 @@ class BaseStreamController extends TaskLoop {
     this.startFragRequested = false;
   }
   onError(event, data) {}
+  triggerEnded() {
+    /* overridden in stream-controller */
+  }
   onManifestLoaded(event, data) {
     this.startTimeOffset = data.startTimeOffset;
   }
@@ -12510,7 +12566,7 @@ class HevcVideoParser extends BaseVideoParser {
                 track.params[prop] = config[prop];
               }
             }
-            if (this.initVPS !== null || track.pps.length === 0) {
+            if (track.vps !== undefined && track.vps[0] === this.initVPS) {
               track.pps.push(unit.data);
             }
           }
@@ -12560,6 +12616,12 @@ class HevcVideoParser extends BaseVideoParser {
       dstIdx++;
     }
     return new Uint8Array(dst.buffer, 0, dstIdx);
+  }
+  pushAccessUnit(VideoSample, videoTrack) {
+    super.pushAccessUnit(VideoSample, videoTrack);
+    if (this.initVPS) {
+      this.initVPS = null; // null initVPS to prevent possible track's sps/pps growth until next VPS
+    }
   }
   readVPS(vps) {
     const eg = new ExpGolomb(vps);
@@ -15599,7 +15661,7 @@ class PassThroughRemuxer {
     }
     const initData = this.initData = parseInitSegment(initSegment);
 
-    // Get codec from initSegment or fallback to default
+    // Get codec from initSegment
     if (initData.audio) {
       audioCodec = getParsedTrackCodec(initData.audio, ElementaryStreamTypes.AUDIO);
     }
@@ -15754,20 +15816,13 @@ function getParsedTrackCodec(track, type) {
       const preferManagedMediaSource = false;
       return getCodecCompatibleName(parsedCodec, preferManagedMediaSource);
     }
-    const result = 'mp4a.40.5';
-    this.logger.info(`Parsed audio codec "${parsedCodec}" or audio object type not handled. Using "${result}"`);
-    return result;
+    logger.warn(`Unhandled audio codec "${parsedCodec}" in mp4 MAP`);
+    return parsedCodec || 'mp4a';
   }
   // Provide defaults based on codec type
   // This allows for some playback of some fmp4 playlists without CODECS defined in manifest
-  this.logger.warn(`Unhandled video codec "${parsedCodec}"`);
-  if (parsedCodec === 'hvc1' || parsedCodec === 'hev1') {
-    return 'hvc1.1.6.L120.90';
-  }
-  if (parsedCodec === 'av01') {
-    return 'av01.0.04M.08';
-  }
-  return 'avc1.42e01e';
+  logger.warn(`Unhandled video codec "${parsedCodec}" in mp4 MAP`);
+  return parsedCodec || 'avc1';
 }
 
 let now;
@@ -16873,7 +16928,9 @@ class GapController extends Logger {
 
     // The playhead is moving, no-op
     if (currentTime !== lastCurrentTime) {
-      this.ended = 0;
+      if (lastCurrentTime) {
+        this.ended = 0;
+      }
       this.moved = true;
       if (!seeking) {
         this.nudgeRetry = 0;
@@ -16898,6 +16955,13 @@ class GapController extends Logger {
 
     // The playhead should not be moving
     if (media.paused && !seeking || media.ended || media.playbackRate === 0 || !BufferHelper.getBuffered(media).length) {
+      // Fire MEDIA_ENDED to workaround event not being dispatched by browser
+      if (!this.ended && media.ended) {
+        this.ended = currentTime || 1;
+        this.hls.trigger(Events.MEDIA_ENDED, {
+          stalled: false
+        });
+      }
       this.nudgeRetry = 0;
       return;
     }
@@ -16953,7 +17017,7 @@ class GapController extends Logger {
         if (stalledDuration < 1000 || this.ended) {
           return;
         }
-        this.ended = currentTime;
+        this.ended = currentTime || 1;
         this.hls.trigger(Events.MEDIA_ENDED, {
           stalled: true
         });
@@ -17176,6 +17240,10 @@ class StreamController extends BaseStreamController {
     this.videoBuffer = null;
     this.onMediaPlaying = () => {
       // tick to speed up FRAG_CHANGED triggering
+      const gapController = this.gapController;
+      if (gapController) {
+        gapController.ended = 0;
+      }
       this.tick();
     };
     this.onMediaSeeked = () => {
@@ -17558,6 +17626,8 @@ class StreamController extends BaseStreamController {
   onMediaAttached(event, data) {
     super.onMediaAttached(event, data);
     const media = data.media;
+    media.removeEventListener('playing', this.onMediaPlaying);
+    media.removeEventListener('seeked', this.onMediaSeeked);
     media.addEventListener('playing', this.onMediaPlaying);
     media.addEventListener('seeked', this.onMediaSeeked);
     this.gapController = new GapController(this.config, media, this.fragmentTracker, this.hls);
@@ -17582,6 +17652,19 @@ class StreamController extends BaseStreamController {
       return;
     }
     this._hasEnoughToStart = false;
+  }
+  triggerEnded() {
+    const gapController = this.gapController;
+    if (gapController) {
+      var _this$media2;
+      if (gapController.ended) {
+        return;
+      }
+      gapController.ended = ((_this$media2 = this.media) == null ? void 0 : _this$media2.currentTime) || 1;
+    }
+    this.hls.trigger(Events.MEDIA_ENDED, {
+      stalled: false
+    });
   }
   onManifestLoading() {
     super.onManifestLoading();
@@ -17723,6 +17806,10 @@ class StreamController extends BaseStreamController {
       return;
     }
     const currentLevel = levels[frag.level];
+    if (!currentLevel) {
+      this.warn(`Level ${frag.level} not found on progress`);
+      return;
+    }
     const details = currentLevel.details;
     if (!details) {
       this.warn(`Dropping fragment ${frag.sn} of level ${frag.level} after level details were reset`);
@@ -18205,7 +18292,13 @@ class StreamController extends BaseStreamController {
       audiovideo
     } = tracks;
     if (audio) {
-      let audioCodec = currentLevel.audioCodec;
+      let audioCodec = pickMostCompleteCodecName(audio.codec, currentLevel.audioCodec);
+      // Add level and profile to make up for passthrough-remuxer not being able to parse full codec
+      // (logger warning "Unhandled audio codec...")
+      if (audioCodec === 'mp4a') {
+        audioCodec = 'mp4a.40.5';
+      }
+      // Handle `audioCodecSwitch`
       const ua = navigator.userAgent.toLowerCase();
       if (this.audioCodecSwitch) {
         if (audioCodec) {
@@ -18240,7 +18333,24 @@ class StreamController extends BaseStreamController {
     if (video) {
       video.levelCodec = currentLevel.videoCodec;
       video.id = 'main';
-      this.log(`Init video buffer, container:${video.container}, codecs[level/parsed]=[${currentLevel.videoCodec || ''}/${video.codec}]`);
+      const parsedVideoCodec = video.codec;
+      if ((parsedVideoCodec == null ? void 0 : parsedVideoCodec.length) === 4) {
+        // Make up for passthrough-remuxer not being able to parse full codec
+        // (logger warning "Unhandled video codec...")
+        switch (parsedVideoCodec) {
+          case 'hvc1':
+          case 'hev1':
+            video.codec = 'hvc1.1.6.L120.90';
+            break;
+          case 'av01':
+            video.codec = 'av01.0.04M.08';
+            break;
+          case 'avc1':
+            video.codec = 'avc1.42e01e';
+            break;
+        }
+      }
+      this.log(`Init video buffer, container:${video.container}, codecs[level/parsed]=[${currentLevel.videoCodec || ''}/${parsedVideoCodec}${video.codec !== parsedVideoCodec ? ' parsed-corrected=' + video.codec : ''}}]`);
       delete tracks.audiovideo;
     }
     if (audiovideo) {
@@ -18347,19 +18457,19 @@ class StreamController extends BaseStreamController {
     return -1;
   }
   get currentFrag() {
-    var _this$media2;
+    var _this$media3;
     if (this.fragPlaying) {
       return this.fragPlaying;
     }
-    const currentTime = ((_this$media2 = this.media) == null ? void 0 : _this$media2.currentTime) || this.lastCurrentTime;
+    const currentTime = ((_this$media3 = this.media) == null ? void 0 : _this$media3.currentTime) || this.lastCurrentTime;
     if (isFiniteNumber(currentTime)) {
       return this.getAppendedFrag(currentTime);
     }
     return null;
   }
   get currentProgramDateTime() {
-    var _this$media3;
-    const currentTime = ((_this$media3 = this.media) == null ? void 0 : _this$media3.currentTime) || this.lastCurrentTime;
+    var _this$media4;
+    const currentTime = ((_this$media4 = this.media) == null ? void 0 : _this$media4.currentTime) || this.lastCurrentTime;
     if (isFiniteNumber(currentTime)) {
       const details = this.getLevelDetails();
       const frag = this.currentFrag || (details ? findFragmentByPTS(null, details.fragments, currentTime) : null);
@@ -18562,26 +18672,29 @@ function requiresMediaCapabilitiesDecodingInfo(level, audioTracksByGroup, curren
 function getMediaDecodingInfoPromise(level, audioTracksByGroup, mediaCapabilities) {
   const videoCodecs = level.videoCodec;
   const audioCodecs = level.audioCodec;
-  if (!videoCodecs || !audioCodecs || !mediaCapabilities) {
+  if (!videoCodecs && !audioCodecs || !mediaCapabilities) {
     return Promise.resolve(SUPPORTED_INFO_DEFAULT);
   }
-  const baseVideoConfiguration = {
-    width: level.width,
-    height: level.height,
-    bitrate: Math.ceil(Math.max(level.bitrate * 0.9, level.averageBitrate)),
-    // Assume a framerate of 30fps since MediaCapabilities will not accept Level default of 0.
-    framerate: level.frameRate || 30
-  };
-  const videoRange = level.videoRange;
-  if (videoRange !== 'SDR') {
-    baseVideoConfiguration.transferFunction = videoRange.toLowerCase();
+  const configurations = [];
+  if (videoCodecs) {
+    const baseVideoConfiguration = {
+      width: level.width,
+      height: level.height,
+      bitrate: Math.ceil(Math.max(level.bitrate * 0.9, level.averageBitrate)),
+      // Assume a framerate of 30fps since MediaCapabilities will not accept Level default of 0.
+      framerate: level.frameRate || 30
+    };
+    const videoRange = level.videoRange;
+    if (videoRange !== 'SDR') {
+      baseVideoConfiguration.transferFunction = videoRange.toLowerCase();
+    }
+    configurations.push.apply(configurations, videoCodecs.split(',').map(videoCodec => ({
+      type: 'media-source',
+      video: _objectSpread2(_objectSpread2({}, baseVideoConfiguration), {}, {
+        contentType: mimeTypeForCodec(fillInMissingAV01Params(videoCodec), 'video')
+      })
+    })));
   }
-  const configurations = videoCodecs.split(',').map(videoCodec => ({
-    type: 'media-source',
-    video: _objectSpread2(_objectSpread2({}, baseVideoConfiguration), {}, {
-      contentType: mimeTypeForCodec(videoCodec, 'video')
-    })
-  }));
   if (audioCodecs && level.audioGroups) {
     level.audioGroups.forEach(audioGroupId => {
       var _audioTracksByGroup$g;
@@ -21496,9 +21609,6 @@ class SubtitleTrackController extends BasePlaylistController {
 
   /** get/set index of the selected subtitle track (based on index in subtitle track lists) **/
   get subtitleTrack() {
-    if (this.queuedDefaultTrack !== -1) {
-      return this.queuedDefaultTrack;
-    }
     return this.trackId;
   }
   set subtitleTrack(newId) {
@@ -21612,12 +21722,6 @@ class SubtitleTrackController extends BasePlaylistController {
     // and we'll set subtitleTrack when onMediaAttached is triggered
     if (!this.media) {
       this.queuedDefaultTrack = newId;
-      // we'll handle setting the queued track when media is attached but
-      // emit a switch event anyways as we expose queuedDefaultTrack in the
-      // subtitleTrack getter
-      this.hls.trigger(Events.SUBTITLE_TRACK_SWITCH, {
-        id: newId
-      });
       return;
     }
 
@@ -21854,7 +21958,11 @@ class BufferController extends Logger {
     // Array of SourceBuffer type and SourceBuffer (or null). One entry per TrackSet in this.tracks.
     this.sourceBuffers = [[null, null], [null, null]];
     this._onEndStreaming = event => {
+      var _this$mediaSource;
       if (!this.hls) {
+        return;
+      }
+      if (((_this$mediaSource = this.mediaSource) == null ? void 0 : _this$mediaSource.readyState) !== 'open') {
         return;
       }
       this.hls.pauseBuffering();
@@ -22098,8 +22206,8 @@ class BufferController extends Logger {
     const trackCount = trackNames ? trackNames.length : 0;
     const mediaSourceOpenCallback = () => {
       if (this.media) {
-        var _this$mediaSource;
-        const readyState = (_this$mediaSource = this.mediaSource) == null ? void 0 : _this$mediaSource.readyState;
+        var _this$mediaSource2;
+        const readyState = (_this$mediaSource2 = this.mediaSource) == null ? void 0 : _this$mediaSource2.readyState;
         if (readyState === 'open' || readyState === 'ended') {
           this._onMediaSourceOpen();
         }
@@ -22255,8 +22363,8 @@ transfer tracks: ${JSON.stringify(transferredTracks, (key, value) => key === 'in
     this.removeBuffer(type);
     if (sb) {
       try {
-        var _this$mediaSource2;
-        if ((_this$mediaSource2 = this.mediaSource) != null && _this$mediaSource2.sourceBuffers.length) {
+        var _this$mediaSource3;
+        if ((_this$mediaSource3 = this.mediaSource) != null && _this$mediaSource3.sourceBuffers.length) {
           this.mediaSource.removeSourceBuffer(sb);
         }
       } catch (err) {
@@ -22328,7 +22436,7 @@ transfer tracks: ${JSON.stringify(transferredTracks, (key, value) => key === 'in
         if (trackName.slice(0, 5) === 'audio') {
           trackCodec = getCodecCompatibleName(trackCodec, this.appendSource);
         }
-        this.log(`switching codec ${sbCodec} to ${codec}`);
+        this.log(`switching codec ${sbCodec} to ${trackCodec}`);
         if (trackCodec !== (track.pendingCodec || track.codec)) {
           track.pendingCodec = trackCodec;
         }
@@ -22547,7 +22655,7 @@ transfer tracks: ${JSON.stringify(transferredTracks, (key, value) => key === 'in
         });
       },
       onError: error => {
-        var _this$mediaSource3, _this$media;
+        var _this$mediaSource4, _this$media;
         // in case any error occured while appending, put back segment in segments table
         const event = {
           type: ErrorTypes.MEDIA_ERROR,
@@ -22565,7 +22673,7 @@ transfer tracks: ${JSON.stringify(transferredTracks, (key, value) => key === 'in
           // QuotaExceededError: http://www.w3.org/TR/html5/infrastructure.html#quotaexceedederror
           // let's stop appending any segments, and report BUFFER_FULL_ERROR error
           event.details = ErrorDetails.BUFFER_FULL_ERROR;
-        } else if (error.code === DOMException.INVALID_STATE_ERR && ((_this$mediaSource3 = this.mediaSource) == null ? void 0 : _this$mediaSource3.readyState) === 'open' && !((_this$media = this.media) != null && _this$media.error)) {
+        } else if (error.code === DOMException.INVALID_STATE_ERR && ((_this$mediaSource4 = this.mediaSource) == null ? void 0 : _this$mediaSource4.readyState) === 'open' && !((_this$media = this.media) != null && _this$media.error)) {
           // Allow retry for "Failed to execute 'appendBuffer' on 'SourceBuffer': This SourceBuffer is still processing" errors
           event.errorAction = createDoNothingErrorAction(true);
         } else if (error.name === TRACK_REMOVED_ERROR_NAME) {
@@ -23011,7 +23119,7 @@ transfer tracks: ${JSON.stringify(transferredTracks, (key, value) => key === 'in
     }
   }
   getTrackCodec(track, trackName) {
-    const codec = track.codec || track.levelCodec;
+    const codec = pickMostCompleteCodecName(track.codec, track.levelCodec);
     if (codec) {
       if (trackName.slice(0, 5) === 'audio') {
         return getCodecCompatibleName(codec, this.appendSource);
@@ -23064,8 +23172,8 @@ transfer tracks: ${JSON.stringify(transferredTracks, (key, value) => key === 'in
     operation.onStart();
   }
   onSBUpdateEnd(type) {
-    var _this$mediaSource4;
-    if (((_this$mediaSource4 = this.mediaSource) == null ? void 0 : _this$mediaSource4.readyState) === 'closed') {
+    var _this$mediaSource5;
+    if (((_this$mediaSource5 = this.mediaSource) == null ? void 0 : _this$mediaSource5.readyState) === 'closed') {
       this.resetBuffer(type);
       return;
     }
@@ -23077,8 +23185,8 @@ transfer tracks: ${JSON.stringify(transferredTracks, (key, value) => key === 'in
     this.shiftAndExecuteNext(type);
   }
   onSBUpdateError(type, event) {
-    var _this$mediaSource5;
-    const error = new Error(`${type} SourceBuffer error. MediaSource readyState: ${(_this$mediaSource5 = this.mediaSource) == null ? void 0 : _this$mediaSource5.readyState}`);
+    var _this$mediaSource6;
+    const error = new Error(`${type} SourceBuffer error. MediaSource readyState: ${(_this$mediaSource6 = this.mediaSource) == null ? void 0 : _this$mediaSource6.readyState}`);
     this.error(`${error}`, event);
     // according to http://www.w3.org/TR/media-source/#sourcebuffer-append-error
     // SourceBuffer errors are not necessarily fatal; if so, the HTMLMediaElement will fire an error event
@@ -26650,6 +26758,7 @@ class EMEController extends Logger {
           keySessionContextPromise = keyIdToKeySessionPromise[keyIdHex] = keySessionContextPromise.then(() => {
             return this.generateRequestWithPreferredKeySession(keyContext, initDataType, initData, 'encrypted-event-key-match');
           });
+          keySessionContextPromise.catch(error => this.handleError(error));
           break;
         }
       }
@@ -26674,8 +26783,8 @@ class EMEController extends Logger {
             return this.generateRequestWithPreferredKeySession(keySessionContext, initDataType, initData, 'encrypted-event-no-match');
           });
         });
+        keySessionContextPromise.catch(error => this.handleError(error));
       }
-      keySessionContextPromise.catch(error => this.handleError(error));
     };
     this.onWaitingForKey = event => {
       this.log(`"${event.type}" event`);
@@ -27024,8 +27133,11 @@ class EMEController extends Logger {
       this.log(`"${messageType}" message event for session "${keySession.sessionId}" message size: ${message.byteLength}`);
       if (messageType === 'license-request' || messageType === 'license-renewal') {
         this.renewLicense(context, message).catch(error => {
-          this.handleError(error);
-          licenseStatus.emit('error', error);
+          if (licenseStatus.eventNames().length) {
+            licenseStatus.emit('error', error);
+          } else {
+            this.handleError(error);
+          }
         });
       } else if (messageType === 'license-release') {
         if (context.keySystem === KeySystems.FAIRPLAY) {
@@ -27329,6 +27441,8 @@ class EMEController extends Logger {
 
     // keep reference of media
     this.media = media;
+    media.removeEventListener('encrypted', this.onMediaEncrypted);
+    media.removeEventListener('waitingforkey', this.onWaitingForKey);
     media.addEventListener('encrypted', this.onMediaEncrypted);
     media.addEventListener('waitingforkey', this.onWaitingForKey);
   }
@@ -28815,9 +28929,8 @@ class ContentSteeringController extends Logger {
     }
     if (pathwayLevels.length !== levels.length) {
       this.log(`Found ${pathwayLevels.length}/${levels.length} levels in Pathway "${this.pathwayId}"`);
-      return pathwayLevels;
     }
-    return levels;
+    return pathwayLevels;
   }
   getLevelsForPathway(pathwayId) {
     if (this.levels === null) {
@@ -29515,7 +29628,7 @@ class InterstitialsSchedule {
     let playoutDuration = 0;
 
     // Filter events that have errored from the schedule (Primary fallback)
-    interstitialEvents = interstitialEvents.filter(event => !event.error);
+    interstitialEvents = interstitialEvents.filter(event => !event.error && !(event.cue.once && event.hasPlayed));
     if (interstitialEvents.length) {
       // Update Schedule
       this.resolveOffsets(interstitialEvents, mediaSelection);
@@ -29621,6 +29734,7 @@ class InterstitialsSchedule {
         }
       });
       if (primaryPosition < primaryDuration) {
+        var _schedule;
         // last primary segment
         const timelineStart = primaryPosition;
         const integratedStart = integratedTime;
@@ -29629,7 +29743,7 @@ class InterstitialsSchedule {
         const playoutStart = playoutDuration;
         playoutDuration += segmentDuration;
         schedule.push({
-          previousEvent: schedule[schedule.length - 1].event || null,
+          previousEvent: ((_schedule = schedule[schedule.length - 1]) == null ? void 0 : _schedule.event) || null,
           nextEvent: null,
           start: primaryPosition,
           end: timelineStart + segmentDuration,
@@ -29929,7 +30043,7 @@ class HlsAssetPlayer {
     if (!media) {
       return 0;
     }
-    const bufferInfo = BufferHelper.bufferInfo(media, media.currentTime, 0);
+    const bufferInfo = BufferHelper.bufferInfo(media, media.currentTime, 0.001);
     return this.getAssetTime(bufferInfo.end);
   }
   get currentTime() {
@@ -30118,6 +30232,9 @@ class InterstitialsController extends Logger {
       // Only allow timeupdate to advance primary position, seeking is used for jumping back
       // this prevents primaryPos from being reset to 0 after re-attach
       if (currentTime > this.timelinePos) {
+        if (currentTime > this.bufferedPos) {
+          this.checkBuffer();
+        }
         this.timelinePos = currentTime;
       } else {
         return;
@@ -30156,7 +30273,7 @@ class InterstitialsController extends Logger {
         if (this.hls.config.interstitialAppendInPlace === false) {
           interstitialEvents.forEach(event => event.appendInPlace = false);
         }
-        this.log(`Interstitial events (${interstitialEvents.length}): ${interstitialEvents}
+        this.log(`INTERSTITIALS_UPDATED (${interstitialEvents.length}): ${interstitialEvents}
 Schedule: ${scheduleItems.map(seg => segmentToString(seg))}`);
       }
       if (removedIds.length) {
@@ -30379,7 +30496,8 @@ Schedule: ${scheduleItems.map(seg => segmentToString(seg))}`);
               }
             }
           } else {
-            time += c[controllerField] - item.start;
+            const value = controllerField === 'bufferedPos' ? getBufferedEnd() : c[controllerField];
+            time += value - item.start;
           }
           return time;
         }
@@ -30396,6 +30514,13 @@ Schedule: ${scheduleItems.map(seg => segmentToString(seg))}`);
           }
         }
         return primaryTime;
+      };
+      const getBufferedEnd = () => {
+        const value = c.bufferedPos;
+        if (value === Number.MAX_VALUE) {
+          return getMappedDuration('primary');
+        }
+        return value;
       };
       const getMappedDuration = timelineType => {
         var _c$primaryDetails;
@@ -30426,7 +30551,7 @@ Schedule: ${scheduleItems.map(seg => segmentToString(seg))}`);
             const currentTime = timelineType === 'primary' ? media.currentTime : getMappedTime(playingItem, timelineType, c.playingAsset, 'timelinePos', 'currentTime');
             const diff = time - currentTime;
             const seekToTime = media.currentTime + diff;
-            if (!assetPlayer || appendInPlace || seekToTime <= assetPlayer.duration) {
+            if (seekToTime >= 0 && (!assetPlayer || appendInPlace || seekToTime <= assetPlayer.duration)) {
               media.currentTime = seekToTime;
               return;
             }
@@ -30466,7 +30591,7 @@ Schedule: ${scheduleItems.map(seg => segmentToString(seg))}`);
                 const eventTime = time - (targetItem[timelineType] || targetItem).start;
                 for (let i = assetList.length; i--;) {
                   const asset = assetList[i];
-                  if (asset.duration && asset.startOffset >= eventTime && asset.startOffset + asset.duration < eventTime) {
+                  if (asset.duration && eventTime >= asset.startOffset && eventTime < asset.startOffset + asset.duration) {
                     assetIndex = i;
                     break;
                   }
@@ -30517,8 +30642,7 @@ Schedule: ${scheduleItems.map(seg => segmentToString(seg))}`);
         },
         primary: {
           get bufferedEnd() {
-            const bufferedPos = c.bufferedPos;
-            return bufferedPos > 0 ? bufferedPos : 0;
+            return getBufferedEnd();
           },
           get currentTime() {
             const timelinePos = c.timelinePos;
@@ -30802,6 +30926,7 @@ MediaSource ${JSON.stringify(attachMediaSourceData)} from ${logFromSource}`);
       if (!this.eventItemsMatch(currentItem, scheduledItem)) {
         this.playingItem = null;
         this.log(`INTERSTITIAL_ENDED ${interstitial} ${segmentToString(currentItem)}`);
+        interstitial.hasPlayed = true;
         this.hls.trigger(Events.INTERSTITIAL_ENDED, {
           event: interstitial,
           schedule: scheduleItems.slice(0),
@@ -30809,6 +30934,14 @@ MediaSource ${JSON.stringify(attachMediaSourceData)} from ${logFromSource}`);
         });
         // Exiting an Interstitial
         this.clearInterstitial(interstitial, scheduledItem);
+        if (interstitial.cue.once) {
+          this.updateSchedule();
+          if (scheduledItem) {
+            const updatedIndex = this.schedule.findItemIndex(scheduledItem);
+            this.setSchedulePosition(updatedIndex, assetListIndex);
+          }
+          return;
+        }
       }
     }
     // Cleanup out of range Interstitials
@@ -30847,7 +30980,7 @@ MediaSource ${JSON.stringify(attachMediaSourceData)} from ${logFromSource}`);
         });
       }
       const assetListLength = interstitial.assetList.length;
-      if (assetListLength === 0) {
+      if (assetListLength === 0 && !interstitial.assetListResponse) {
         // Waiting at end of primary content segment
         // Expect setSchedulePosition to be called again once ASSET-LIST is loaded
         this.log(`Waiting for ASSET-LIST to complete loading ${interstitial}`);
@@ -30864,20 +30997,20 @@ MediaSource ${JSON.stringify(attachMediaSourceData)} from ${logFromSource}`);
       // Update schedule and asset list position now that it can start
       this.waitingItem = null;
       this.playingItem = scheduledItem;
-      interstitial.hasPlayed = true;
-      // Start Interstitial Playback
+
+      // If asset-list is empty or missing asset index, advance to next item
       const assetItem = interstitial.assetList[assetListIndex];
       if (!assetItem) {
-        const error = new Error(`ASSET-LIST index ${assetListIndex} out of bounds [0-${assetListLength - 1}] ${interstitial}`);
-        const errorData = {
-          fatal: true,
-          type: ErrorTypes.OTHER_ERROR,
-          details: ErrorDetails.INTERSTITIAL_ASSET_ITEM_ERROR,
-          error
-        };
-        this.handleAssetItemError(errorData, interstitial, index, assetListIndex, error.message);
+        const nextItem = scheduleItems[index + 1];
+        const _media2 = this.media;
+        if (nextItem && _media2 && !this.isInterstitial(nextItem) && _media2.currentTime < nextItem.start) {
+          _media2.currentTime = this.timelinePos = nextItem.start;
+        }
+        this.advanceAfterAssetEnded(interstitial, index, assetListIndex || 0);
         return;
       }
+
+      // Start Interstitial Playback
       if (!player) {
         player = this.getAssetPlayer(assetItem.identifier);
       }
@@ -31424,9 +31557,9 @@ MediaSource ${JSON.stringify(attachMediaSourceData)} from ${logFromSource}`);
       if (currentAssetDuration === null || duration > currentAssetDuration) {
         this.log(`Interstitial asset "${assetId}" duration change ${currentAssetDuration} > ${duration}`);
         assetItem.duration = duration;
+        // Update schedule with new event and asset duration
+        this.updateSchedule();
       }
-      // Update schedule with new event and asset duration
-      this.updateSchedule();
     };
     player.on(Events.LEVEL_UPDATED, (event, {
       details
@@ -32002,7 +32135,7 @@ function fetchSupported() {
 }
 const BYTERANGE = /(\d+)-(\d+)\/(\d+)/;
 class FetchLoader {
-  constructor(config /* HlsConfig */) {
+  constructor(config) {
     this.fetchSetup = void 0;
     this.requestTimeout = void 0;
     this.request = null;
@@ -32061,7 +32194,8 @@ class FetchLoader {
       this.abortInternal();
       callbacks.onTimeout(stats, context, this.response);
     }, config.timeout);
-    self.fetch(this.request).then(response => {
+    const fetchPromise = isPromise(this.request) ? this.request.then(self.fetch) : self.fetch(this.request);
+    fetchPromise.then(response => {
       this.response = this.loader = response;
       const first = Math.max(self.performance.now(), stats.loading.start);
       self.clearTimeout(this.requestTimeout);
@@ -33641,8 +33775,15 @@ class Hls {
     var _this$interstitialsCo;
     return ((_this$interstitialsCo = this.interstitialsController) == null ? void 0 : _this$interstitialsCo.interstitialsManager) || null;
   }
+
+  /**
+   * returns mediaCapabilities.decodingInfo for a variant/rendition
+   */
+  getMediaDecodingInfo(level, audioTracks = this.allAudioTracks) {
+    const audioTracksByGroup = getAudioTracksByGroup(audioTracks);
+    return getMediaDecodingInfoPromise(level, audioTracksByGroup, navigator.mediaCapabilities);
+  }
 }
 Hls.defaultConfig = void 0;
 
-export { AbrController, AttrList, AudioStreamController, AudioTrackController, BasePlaylistController, BaseSegment, BaseStreamController, BufferController, CMCDController, CapLevelController, ChunkMetadata, ContentSteeringController, DateRange, EMEController, ErrorActionFlags, ErrorController, ErrorDetails, ErrorTypes, Events, FPSController, Fragment, Hls, HlsSkip, HlsUrlParameters, KeySystemFormats, KeySystems, LevelDetails, LevelKey, LoadStats, MetadataSchema, NetworkErrorAction, Part, PlaylistLevelType, SubtitleStreamController, SubtitleTrackController, TimelineController, Hls as default, getMediaSource, isMSESupported, isSupported };
-//# sourceMappingURL=hls.mjs.map
+export { AbrController, AttrList, AudioStreamController, AudioTrackController, BasePlaylistController, BaseSegment, BaseStreamController, BufferController, CMCDController, CapLevelController, ChunkMetadata, ContentSteeringController, Cues, DateRange, EMEController, ErrorActionFlags, ErrorController, ErrorDetails, ErrorTypes, Events, FPSController, FetchLoader, Fragment, Hls, HlsSkip, HlsUrlParameters, KeySystemFormats, KeySystems, Level, LevelDetails, LevelKey, LoadStats, MetadataSchema, NetworkErrorAction, Part, PlaylistLevelType, SubtitleStreamController, SubtitleTrackController, TimelineController, XhrLoader, Hls as default, fetchSupported, getMediaSource, isMSESupported, isSupported, requestMediaKeySystemAccess };

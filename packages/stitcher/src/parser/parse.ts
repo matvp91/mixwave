@@ -77,7 +77,6 @@ function formatMediaPlaylist(tags: Tag[]): MediaPlaylist {
   assert(targetDuration);
 
   return {
-    isMasterPlaylist: false,
     targetDuration,
     endlist,
     playlistType,
@@ -179,7 +178,6 @@ function formatMasterPlaylist(tags: Tag[]): MasterPlaylist {
   });
 
   return {
-    isMasterPlaylist: true,
     independentSegments,
     variants,
   };

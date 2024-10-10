@@ -22,7 +22,7 @@ export default defineConfig({
       formats: ["es"],
     },
     rollupOptions: {
-      external: ["react", "hls.js"],
+      external: ["react", "@mixwave/hls.js"],
     },
   },
   clearScreen: false,

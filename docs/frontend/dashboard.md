@@ -8,8 +8,4 @@ The dashboard is a client application that visualizes running jobs, its statuses
 
 Typically, you'd want to build the dashboard once and upload it to `S3` to serve it as a static site. The dashboard is an SPA and requires no separate server / backend to function.
 
-<video class="video-frame" src="/dashboard-jobs.mp4" controls></video>
-
-You can use the API docs to interact with the API, as seen here:
-
-<video class="video-frame" src="/dashboard-transcode.mp4" controls></video>
+Verify you've set the correct variables in `config.env`, each env key prefixed with `PUBLIC_` will be available in the dashboard and will be included in the final JS bundle.

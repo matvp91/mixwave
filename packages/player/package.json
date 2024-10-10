@@ -21,7 +21,7 @@
     "typedoc": "pnpm run build && typedoc --tsconfig tsconfig.typedoc.json"
   },
   "peerDependencies": {
-    "hls.js": "^1.5.15",
+    "@mixwave/hls.js": "^1.6.0",
     "react": "^18.3.1"
   },
   "dependencies": {
@@ -38,8 +38,7 @@
     "typescript": "^5.5.3",
     "vite": "^5.4.1",
     "vite-plugin-dts": "^4.1.0",
-    "vite-plugin-svgr": "^4.2.0",
-    "hls.js": "workspace:*"
+    "vite-plugin-svgr": "^4.2.0"
   },
   "repository": {
     "type": "git",

@@ -14,11 +14,11 @@ Video transcoding is the process of converting video from one format to another.
 
 This dynamic delivery ensures smooth playback across various network conditions and devices, making the video experience better for everyone.
 
+<video class="video-frame" src="/video/TranscodeAndPackage.mp4" controls></video>
+
 ## Dashboard
 
 You can use the dashboard to either view pending, processing, finished or failed transcode jobs, or you can use it to interact with the API. In the video below, we'll demonstrate how to transcode an mp4 file to a variety of streams.
-
-<video class="video-frame" src="/dashboard-transcode.mp4" controls></video>
 
 ## API
 
@@ -110,26 +110,3 @@ Know that the result of a transcode job is merely an intermediary format. Typica
 :::
 
 Mixwave' transcode API works slightly different than what others do. We emphasize the idea to define what you have (input) and what you need (streams), and the system shall figure out how to craft the streams. There's no need to directly link an input with a given output.
-
-## Example
-
-In the example below, we'll transcode 2 mp4 files (content.mp4 and bumper.mp4) to 2 video tracks and an English audio track. The result are 2 asset id's, one for each.
-
-```
-input   = content.mp4
-
-streams = - video 1080p
-          - video 720p
-          - audio eng
-
-output  = 67b070fd-5db6-4022-a568-652abdbfac9c
-```
-
-```
-input   = bumper.mp4
-
-streams = - video 720p
-          - audio eng
-
-output  = 13b1d432-ec8e-4516-9904-df1aa90db803
-```

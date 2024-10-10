@@ -3,7 +3,9 @@ import { defineConfig } from "vitepress";
 export default defineConfig({
   base: "/mixwave/",
   title: "Mixwave",
-  description: "A friendly API to simplify the complexities of video delivery.",
+  description:
+    "All-in-one toolkit handles everything from video source to player.",
+  lang: "en-US",
   head: [
     [
       "script",
@@ -56,8 +58,9 @@ export default defineConfig({
       {
         text: "Miscellaneous",
         items: [
-          { text: "Tips", link: "tips" },
-          { text: "Toolset", link: "toolset" },
+          { text: "Contribute", link: "misc/contribute" },
+          { text: "Tips", link: "misc/tips" },
+          { text: "Credits", link: "misc/credits" },
         ],
       },
     ],

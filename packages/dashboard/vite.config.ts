@@ -30,7 +30,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          if (id.includes("hls.js")) {
+          if (id.includes("@mixwave/hls.js")) {
             return "hlsjs";
           }
           if (id.includes("@scalar")) {

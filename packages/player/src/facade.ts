@@ -3,9 +3,10 @@ import EventEmitter from "eventemitter3";
 import { assert } from "./assert";
 import { EventManager } from "./event-manager";
 import type {
-  InterstitialsManager,
   InterstitialScheduleItem,
   InterstitialAssetStartedData,
+  Level,
+  MediaPlaylist,
 } from "@mixwave/hls.js";
 import type {
   MixType,
@@ -23,10 +24,6 @@ import type {
 export class HlsFacade extends EventEmitter<Events> {
   state: State | null = null;
 
-  private media_: HTMLMediaElement;
-
-  private mgr_?: InterstitialsManager;
-
   private timerId_?: number;
 
   private batchTimerId_?: number;
@@ -43,9 +40,6 @@ export class HlsFacade extends EventEmitter<Events> {
   constructor(public hls: Hls) {
     super();
 
-    assert(hls.media, "Missing hls.media");
-    this.media_ = hls.media;
-
     this.hlsEvents_ = new EventManager({
       on: this.hls.on.bind(hls),
       off: this.hls.off.bind(hls),
@@ -56,13 +50,8 @@ export class HlsFacade extends EventEmitter<Events> {
       off: this.media_.removeEventListener.bind(this.media_),
     });
 
-    const onInit = () => {
-      this.hlsEvents_.off(Hls.Events.INTERSTITIALS_PRIMARY_RESUMED, onInit);
-      this.hlsEvents_.off(Hls.Events.INTERSTITIALS_UPDATED, onInit);
-
-      assert(hls.interstitialsManager, "Missing hls.interstitialsManager");
-
-      this.mgr_ = hls.interstitialsManager;
+    const onManifestLoaded = () => {
+      this.hlsEvents_.off(Hls.Events.MANIFEST_LOADED);
 
       this.initState_();
 
@@ -70,8 +59,7 @@ export class HlsFacade extends EventEmitter<Events> {
       this.initHlsListeners_();
     };
 
-    this.hlsEvents_.on(Hls.Events.INTERSTITIALS_PRIMARY_RESUMED, onInit);
-    this.hlsEvents_.on(Hls.Events.INTERSTITIALS_UPDATED, onInit);
+    this.hlsEvents_.on(Hls.Events.MANIFEST_LOADED, onManifestLoaded);
   }
 
   private initMediaListeners_() {
@@ -93,6 +81,10 @@ export class HlsFacade extends EventEmitter<Events> {
   }
 
   private initHlsListeners_() {
+    this.hlsEvents_.on(Hls.Events.INTERSTITIALS_UPDATED, (_, data) => {
+      this.setState_({ cuePoints: mapCuepoints(data.schedule) });
+    });
+
     this.hlsEvents_.on(Hls.Events.MEDIA_ENDED, () => {
       clearTimeout(this.timerId_);
       this.setState_({ playheadState: "ended", time: this.state?.duration });
@@ -138,8 +130,9 @@ export class HlsFacade extends EventEmitter<Events> {
       const listItem = getAssetListItem(data);
       const slot: Slot = {
         type: listItem.type,
-        time: data.player.currentTime,
-        duration: data.player.duration,
+        time: preciseFloat(data.player.currentTime),
+        duration: preciseFloat(data.player.duration),
+        player: data.player,
       };
       this.setState_({ slot });
       this.pollTime_();
@@ -148,105 +141,123 @@ export class HlsFacade extends EventEmitter<Events> {
     this.hlsEvents_.on(Hls.Events.INTERSTITIAL_ASSET_ENDED, () => {
       this.setState_({ slot: null });
     });
+
+    this.hlsEvents_.on(Hls.Events.LEVELS_UPDATED, (_, data) => {
+      this.setState_({ qualities: this.mapQualities(data.levels) });
+    });
+
+    this.hlsEvents_.on(Hls.Events.AUDIO_TRACKS_UPDATED, (_, data) => {
+      this.setState_({ audioTracks: this.mapAudioTracks(data.audioTracks) });
+    });
+
+    this.hlsEvents_.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, (_, data) => {
+      this.setState_({
+        subtitleTracks: this.mapSubtitleTracks(data.subtitleTracks),
+      });
+    });
   }
 
   private initState_() {
-    assert(this.mgr_);
-
-    const cuePoints = this.mgr_.schedule.reduce<number[]>((acc, item) => {
-      const types = getTypes(item);
-      if (types?.ad && !acc.includes(item.start)) {
-        acc.push(item.start);
-      }
-      return acc;
-    }, []);
-
-    const qualities = this.hls.levels
-      .map<Quality>((level, index) => ({
-        id: index + 1,
-        active: index === this.hls.nextLoadLevel,
-        level,
-      }))
-      .sort((a, b) => b.level.height - a.level.height);
-
-    const audioTracks = this.hls.audioTracks.map<AudioTrack>(
-      (audioTrack, index) => ({
-        id: index + 1,
-        active: index === this.hls.audioTrack,
-        playlist: audioTrack,
-      }),
-    );
-
-    const subtitleTracks = this.hls.subtitleTracks.map<SubtitleTrack>(
-      (subtitleTrack, index) => ({
-        id: index + 1,
-        active: index === this.hls.subtitleTrack,
-        playlist: subtitleTrack,
-      }),
-    );
-
+    const timings = this.getTimings_();
     this.state = {
       isStarted: false,
       playheadState: "idle",
-      time: 0,
-      duration: 0,
-      cuePoints,
-      qualities,
+      time: timings.time,
+      duration: timings.duration,
+      cuePoints: [],
+      qualities: this.mapQualities(this.hls.levels),
       autoQuality: this.hls.autoLevelEnabled,
-      audioTracks,
-      subtitleTracks,
+      audioTracks: this.mapAudioTracks(this.hls.audioTracks),
+      subtitleTracks: this.mapSubtitleTracks(this.hls.subtitleTracks),
       slot: null,
       volume: this.media_.volume,
     };
 
+    this.emit("*");
+
     this.pollTime_();
+  }
+
+  private getTimings_() {
+    const tuple = [this.media_.currentTime, this.media_.duration];
+
+    if (this.hls.interstitialsManager) {
+      const { primary } = this.hls.interstitialsManager;
+      tuple[0] = primary.currentTime;
+      tuple[1] = primary.duration;
+    }
+
+    return {
+      time: preciseFloat(tuple[0]),
+      duration: preciseFloat(tuple[1]),
+    };
   }
 
   private setState_(state: Partial<State>) {
     assert(this.state);
     this.state = { ...this.state, ...state };
 
-    // Basic batch mechanism if we call setState_ in the same time tick.
+    // Basic batch mechanism if we call setState_ close to the last time tick.
     clearTimeout(this.batchTimerId_);
     this.batchTimerId_ = setTimeout(() => {
       this.emit("*");
-    }, 0);
+    }, 10);
+  }
+
+  private getSlotTimings_() {
+    assert(this.state);
+
+    if (!this.state.slot) {
+      return null;
+    }
+
+    const { player } = this.state.slot;
+    return {
+      time: preciseFloat(player.currentTime),
+      duration: preciseFloat(player.duration),
+    };
   }
 
   private pollTime_ = () => {
-    assert(this.mgr_);
     assert(this.state);
 
     clearTimeout(this.timerId_);
     this.timerId_ = setTimeout(this.pollTime_, 250);
 
-    const { primary } = this.mgr_;
+    const timings = this.getTimings_();
+
     if (
-      primary.currentTime !== this.state.time ||
-      primary.duration !== this.state.duration
+      this.state.time !== timings.time ||
+      this.state.duration !== timings.duration
     ) {
       this.setState_({
-        time: preciseFloat(primary.currentTime),
-        duration: preciseFloat(primary.duration),
+        time: timings.time,
+        duration: timings.duration,
       });
     }
 
-    const { bufferingPlayer } = this.mgr_;
-    if (
-      bufferingPlayer &&
-      this.state.slot &&
-      (bufferingPlayer.currentTime !== this.state.slot.time ||
-        bufferingPlayer.duration !== this.state.slot.duration)
-    ) {
-      this.setState_({
-        slot: {
-          ...this.state.slot,
-          time: bufferingPlayer.currentTime,
-          duration: bufferingPlayer.duration,
-        },
-      });
+    const slotTimings = this.getSlotTimings_();
+    if (slotTimings) {
+      assert(this.state.slot, "slotTimings is set but no state.slot");
+      if (
+        this.state.slot.time !== slotTimings.time ||
+        this.state.slot.duration !== slotTimings.duration
+      ) {
+        this.setState_({
+          slot: {
+            ...this.state.slot,
+            time: slotTimings.time,
+            duration: slotTimings.duration,
+          },
+        });
+      }
     }
   };
+
+  private get media_() {
+    assert(this.hls.media, "Missing media element");
+    return this.hls.media;
+  }
 
   /**
    * When called, the facade can no longer be used and is ready for garbage
@@ -259,7 +270,6 @@ export class HlsFacade extends EventEmitter<Events> {
     this.hlsEvents_.releaseAll();
     this.mediaEvents_.releaseAll();
 
-    this.mgr_ = undefined;
     this.state = null;
   }
 
@@ -268,7 +278,6 @@ export class HlsFacade extends EventEmitter<Events> {
    */
   playOrPause() {
     assert(this.state);
-    assert(this.media_);
 
     if (this.state.playheadState === "play") {
       this.media_.pause();
@@ -284,12 +293,11 @@ export class HlsFacade extends EventEmitter<Events> {
    * @param targetTime
    */
   seekTo(targetTime: number) {
-    assert(this.mgr_);
-    const SAFE_OFFSET = 0.1;
-    if (targetTime > this.mgr_.integrated.duration - SAFE_OFFSET) {
-      targetTime = this.mgr_.integrated.duration - SAFE_OFFSET;
+    if (this.hls.interstitialsManager) {
+      this.hls.interstitialsManager.integrated.seekTo(targetTime);
+    } else {
+      this.media_.currentTime = targetTime;
     }
-    this.mgr_.integrated.seekTo(targetTime);
   }
 
   /**
@@ -323,6 +331,32 @@ export class HlsFacade extends EventEmitter<Events> {
    */
   setAudioTrack(id: number | null) {
     this.hls.audioTrack = id ? id - 1 : -1;
+  }
+
+  private mapQualities(levels: Level[]) {
+    return levels
+      .map<Quality>((level, index) => ({
+        id: index + 1,
+        active: index === this.hls.nextLoadLevel,
+        level,
+      }))
+      .sort((a, b) => b.level.height - a.level.height);
+  }
+
+  private mapAudioTracks(audioTracks: MediaPlaylist[]) {
+    return audioTracks.map<AudioTrack>((audioTrack, index) => ({
+      id: index + 1,
+      active: index === this.hls.audioTrack,
+      playlist: audioTrack,
+    }));
+  }
+
+  private mapSubtitleTracks(subtitleTracks: MediaPlaylist[]) {
+    return subtitleTracks.map<SubtitleTrack>((subtitleTrack, index) => ({
+      id: index + 1,
+      active: index === this.hls.subtitleTrack,
+      playlist: subtitleTrack,
+    }));
   }
 }
 
@@ -380,4 +414,14 @@ function getAssetListItem(data: InterstitialAssetStartedData): {
   return {
     type: assetListItem?.["MIX-TYPE"],
   };
+}
+
+function mapCuepoints(schedule: InterstitialScheduleItem[]) {
+  return schedule.reduce<number[]>((acc, item) => {
+    const types = getTypes(item);
+    if (types?.ad && !acc.includes(item.start)) {
+      acc.push(item.start);
+    }
+    return acc;
+  }, []);
 }

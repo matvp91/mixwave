@@ -1,13 +1,10 @@
 import cn from "clsx";
 import PlayIcon from "../icons/play.svg?react";
-import type { State, HlsFacade } from "../..";
+import { useUiContext } from "../context/UiContext";
 
-type StartProps = {
-  facade: HlsFacade;
-  state: State;
-};
+export function Start() {
+  const { facade, state } = useUiContext();
 
-export function Start({ facade, state }: StartProps) {
   return (
     <button
       className={cn(

@@ -1,4 +1,4 @@
-import type { MediaPlaylist, Level } from "hls.js";
+import type { MediaPlaylist, Level } from "@mixwave/hls.js";
 
 /**
  * A custom type for each `ASSET`.

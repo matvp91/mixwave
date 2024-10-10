@@ -55,7 +55,7 @@ function buildVariant(lines: Lines, variant: Variant) {
   lines.push(variant.uri);
 }
 
-function stringifyMasterPlaylist(playlist: MasterPlaylist) {
+export function stringifyMasterPlaylist(playlist: MasterPlaylist) {
   const lines = new Lines();
 
   lines.push("#EXTM3U", "#EXT-X-VERSION:8");
@@ -121,7 +121,7 @@ function buildDateRange(lines: Lines, dateRange: DateRange) {
   lines.push(`#EXT-X-DATERANGE:${attrs.join(",")}`);
 }
 
-function stringifyMediaPlaylist(playlist: MediaPlaylist) {
+export function stringifyMediaPlaylist(playlist: MediaPlaylist) {
   const lines = new Lines();
 
   lines.push(
@@ -161,12 +161,4 @@ function stringifyMediaPlaylist(playlist: MediaPlaylist) {
   });
 
   return lines.join("\n");
-}
-
-export function stringify(playlist: MasterPlaylist | MediaPlaylist) {
-  if (playlist.isMasterPlaylist) {
-    return stringifyMasterPlaylist(playlist);
-  } else {
-    return stringifyMediaPlaylist(playlist);
-  }
 }

@@ -25,7 +25,6 @@ export type Variant = {
 };
 
 export type MasterPlaylist = {
-  isMasterPlaylist: true;
   independentSegments?: boolean;
   variants: Variant[];
 };
@@ -45,7 +44,6 @@ export type Segment = {
 export type PlaylistType = "EVENT" | "VOD";
 
 export type MediaPlaylist = {
-  isMasterPlaylist: false;
   independentSegments?: boolean;
   targetDuration: number;
   endlist: boolean;

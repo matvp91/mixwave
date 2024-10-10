@@ -12,6 +12,11 @@ Stitcher is a playlist manipulator that can insert HLS interstitials on-the-fly.
 - Add a bumper manifest at the start of a playlist, like Netflix' intro.
 - Filter media playlists to fit your needs.
 
+Providing input for the stitcher happens in the form of a `uri`. The support uri schemas are:
+
+- `asset://{uuid}` - Aslong as you stay within the Mixwave ecosystem, each asset can be referenced with this schema. Stitcher will know what to do.
+- `http(s)://example.com/video/master.m3u8` - Provide a master playlist from elsewhere.
+
 ## Create a session
 
 Each playout to a viewer can be considered a session.
@@ -26,11 +31,15 @@ A minimal body payload may look like this:
 
 ```json
 {
-  "assetId": "f7e89553-0d3b-4982-ba7b-3ce5499ac689"
+  "uri": "asset://f7e89553-0d3b-4982-ba7b-3ce5499ac689",
+  // or
+  "uri": "https://example.com/video/master.m3u8"
 }
 ```
 
-Behind the scenes, stitcher will create a session and return you a personalised playlist url. Each session is identifiable by a randomly generated uuid. In the example below, we got back a new session with id `44220f14-ffdd-4cfa-a67f-62ef421b4460`. As all we did was create a session with an `assetId`, the resulting master playlist will only cover that asset. Scroll further down if you'd like to extend the session with ads or a bumper.
+Behind the scenes, stitcher will create a session and return you a personalised playlist url. Each session is identifiable by a randomly generated uuid. In the example below, we got back a new session with id `44220f14-ffdd-4cfa-a67f-62ef421b4460`. As all we did was create a session with an `uri`, the resulting master playlist will only cover that asset. Scroll further down if you'd like to extend the session with ads or a bumper.
+
+Stitcher responds with the following:
 
 ```json
 {
@@ -50,7 +59,7 @@ When streaming over networks with limited bandwidth (e.g., mobile networks), rem
 
 ```json
 {
-  "assetId": "f7e89553-0d3b-4982-ba7b-3ce5499ac689",
+  "uri": "asset://f7e89553-0d3b-4982-ba7b-3ce5499ac689",
   "filter": {
     "resolution": "> 480"
   }
@@ -63,25 +72,25 @@ Let's say you transcoded and packaged a new asset with the id `abbda878-8e08-40f
 
 ```json
 {
-  "assetId": "f7e89553-0d3b-4982-ba7b-3ce5499ac689",
+  "uri": "asset://f7e89553-0d3b-4982-ba7b-3ce5499ac689",
   "interstitials": [
     {
       "timeOffset": 10,
-      "assetId": "abbda878-8e08-40f6-ac8b-3507f263450a"
+      "uri": "asset://abbda878-8e08-40f6-ac8b-3507f263450a"
     }
   ]
 }
 ```
 
-<video class="video-frame" src="/dashboard-player-bumper.mp4#t=19" controls></video>
+<video class="video-frame" src="/video/InterstitialBumper.mp4" controls></video>
 
 ### VMAP
 
-Instruct stitcher to add interstitials based on VMAP definitions. Each VMAP contains one or more `AdBreak` elements with a position of where the interstitial should be.
+Instruct stitcher to add interstitials based on [VMAP](https://www.iab.com/guidelines/vmap/) definitions. Each VMAP contains one or more `AdBreak` elements with a position of where the interstitial should be.
 
 ```json
 {
-  "assetId": "f7e89553-0d3b-4982-ba7b-3ce5499ac689",
+  "uri": "asset://f7e89553-0d3b-4982-ba7b-3ce5499ac689",
   "vmap": {
     "url": "https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/vmap_ad_samples&sz=640x480&cust_params=sample_ar%3Dpremidpost&ciu_szs=300x250&gdfp_req=1&ad_rule=1&output=vmap&unviewed_position_start=1&env=vp&impl=s&cmsid=496&vid=short_onecue&correlator="
   }
@@ -97,20 +106,4 @@ Instruct stitcher to add interstitials based on VMAP definitions. Each VMAP cont
 Ad impressions are not tracked yet, we'd eventually like to provide a client wrapper that tracks ads in a certified manner.
 :::
 
-<video class="video-frame" src="/dashboard-player-vmap.mp4#t=4" controls></video>
-
-## Example
-
-In the [package](/features/package#example) and [transcode](/features/transcode#example) example we created 2 HLS master playlists, we can create a new master playlist on the fly which mimics the content asset id (originally from content.mp4), and add a bumper interstitial at time 0.
-
-```
-input   = - assetId: 67b070fd-5db6-4022-a568-652abdbfac9c
-          - interstitials: [
-              {
-                timeOffset: 0,
-                assetId: 13b1d432-ec8e-4516-9904-df1aa90db803
-              }
-            ]
-
-output  = http://my.stitcher/session/7b2a354a-69e3-4c16-accb-aa521c8b9d5b/master.m3u8
-```
+<video class="video-frame" src="/video/AdInsertion.mp4" controls></video>

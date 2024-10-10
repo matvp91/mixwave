@@ -195,6 +195,9 @@ importers:
       '@mixwave/api':
         specifier: workspace:*
         version: link:../api
+      '@mixwave/hls.js':
+        specifier: ^1.6.0
+        version: link:../../extern/hls.js
       '@mixwave/player':
         specifier: workspace:*
         version: link:../player
@@ -258,9 +261,6 @@ importers:
       date-fns:
         specifier: ^3.6.0
         version: 3.6.0
-      hls.js:
-        specifier: workspace:*
-        version: link:../../extern/hls.js
       lucide-react:
         specifier: ^0.424.0
         version: 0.424.0(react@18.3.1)
@@ -349,6 +349,9 @@ importers:
 
   packages/player:
     dependencies:
+      '@mixwave/hls.js':
+        specifier: ^1.6.0
+        version: link:../../extern/hls.js
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -371,9 +374,6 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.3.1
         version: 4.3.1(vite@5.4.1)
-      hls.js:
-        specifier: workspace:*
-        version: link:../../extern/hls.js
       typedoc:
         specifier: ^0.26.8
         version: 0.26.8(typescript@5.5.4)

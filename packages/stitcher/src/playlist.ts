@@ -1,4 +1,7 @@
-import { stringify } from "./parser/index.js";
+import {
+  stringifyMasterPlaylist,
+  stringifyMediaPlaylist,
+} from "./parser/index.js";
 import { Presentation } from "./presentation.js";
 import { filterMaster } from "./filters.js";
 import { fetchVmap } from "./vmap.js";
@@ -31,7 +34,7 @@ export async function formatMasterPlaylist(sessionId: string) {
     throw new PlaylistNoVariants();
   }
 
-  return stringify(master);
+  return stringifyMasterPlaylist(master);
 }
 
 export async function formatMediaPlaylist(sessionId: string, path: string) {
@@ -48,7 +51,7 @@ export async function formatMediaPlaylist(sessionId: string, path: string) {
     media.dateRanges = getStaticDateRanges(session);
   }
 
-  return stringify(media);
+  return stringifyMediaPlaylist(media);
 }
 
 export async function formatAssetList(sessionId: string, startDate: string) {

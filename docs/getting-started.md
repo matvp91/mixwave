@@ -21,7 +21,7 @@ $ cd mixwave
 
 :::
 
-Create a `config.env` file at the <Badge type="info" text="root" /> of the project.
+Create a `config.env` file at the root of the project. Make sure you use the same keys defined in `config.env.example`.
 
 ::: code-group
 
@@ -31,12 +31,16 @@ S3_REGION=us-east-1
 S3_ACCESS_KEY=
 S3_SECRET_KEY=
 S3_BUCKET=mixwave
-S3_PUBLIC_URL=https://s3.us-east-1.amazonaws.com/mixwave
+REDIS_HOST=redis
+REDIS_PORT=6379
+PUBLIC_API_ENDPOINT=http://localhost:52001
+PUBLIC_STITCHER_ENDPOINT=http://localhost:52002
+PUBLIC_S3_ENDPOINT=https://s3.us-east-1.amazonaws.com/mixwave
 ```
 
 :::
 
-Bootstrap the necessary services with [Docker Compose](https://docs.docker.com/compose/).
+Build and start the necessary services with [Docker Compose](https://docs.docker.com/compose/).
 
 ::: code-group
 
@@ -46,13 +50,13 @@ $ docker compose up -d --build
 
 :::
 
-Next, go to `http://127.0.0.1:52000` in your browser and you'll be greeted with the dashboard.
+We host the dashboard on port `52000` by default. Open `http://127.0.0.1:52000` in your browser and you're good to go.
 
 ::: info
 In a scalable architecture, you probably do not want to run the ffmpeg and transcode workers on the same machine as your api or the stitcher. The Docker setup is meant to get you started quickly, locally.
 :::
 
-## Manual
+## Local build
 
 ### Prerequisites
 
@@ -79,8 +83,8 @@ REDIS_PORT=6379
 
 There's two packages that provide you with an API:
 
-- `api`: The main api endpoint where you can start a transcode or package job.
-- `stitcher`: A manifest manipulator proxy where you can customize the HLS playlist on the fly.
+- `api`: The main api endpoint where you can start a transcode or package job. Runs on port `52001` by default.
+- `stitcher`: A playlist manipulator proxy where you can customize the HLS playlist on the fly. Runs on port `52002` by default.
 
 Then there's `artisan`, the actual job runner.
 

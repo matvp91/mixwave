@@ -11,14 +11,12 @@ export function Player({ url }: PlayerProps) {
   const [facade, setFacade] = useState<HlsFacade | null>(null);
 
   useEffect(() => {
-    if (!url) {
+    if (!url || !ref.current) {
       return;
     }
 
     const hls = new Hls();
-
-    hls.attachMedia(ref.current!);
-
+    hls.attachMedia(ref.current);
     const facade = new HlsFacade(hls);
 
     hls.loadSource(url);

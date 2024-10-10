@@ -24,8 +24,6 @@ import type {
 export class HlsFacade extends EventEmitter<Events> {
   state: State | null = null;
 
-  private media_: HTMLMediaElement;
-
   private timerId_?: number;
 
   private batchTimerId_?: number;
@@ -41,9 +39,6 @@ export class HlsFacade extends EventEmitter<Events> {
 
   constructor(public hls: Hls) {
     super();
-
-    assert(hls.media, "Missing hls.media");
-    this.media_ = hls.media;
 
     this.hlsEvents_ = new EventManager({
       on: this.hls.on.bind(hls),
@@ -259,6 +254,11 @@ export class HlsFacade extends EventEmitter<Events> {
     }
   };
 
+  private get media_() {
+    assert(this.hls.media, "Missing media element");
+    return this.hls.media;
+  }
+
   /**
    * When called, the facade can no longer be used and is ready for garbage
    * collection. Make sure to dispose the facade before `hls.destroy()`.
@@ -278,7 +278,6 @@ export class HlsFacade extends EventEmitter<Events> {
    */
   playOrPause() {
     assert(this.state);
-    assert(this.media_);
 
     if (this.state.playheadState === "play") {
       this.media_.pause();

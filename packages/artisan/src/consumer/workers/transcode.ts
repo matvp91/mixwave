@@ -27,29 +27,26 @@ export default async function (job: Job<TranscodeData, TranscodeResult>) {
 
   const childrenValues = await fakeJob.getChildrenValues();
 
-  const streams = Object.entries(childrenValues).reduce<Record<string, Stream>>(
-    (acc, [key, value]) => {
-      if (key.startsWith("bull:ffmpeg")) {
-        const ffmpegResult: FfmpegResult = value;
-        acc[ffmpegResult.name] = ffmpegResult.stream;
-      }
-      return acc;
-    },
-    {},
-  );
-
-  // Media Source Definition
-  const mediaSourceDefinition = {
+  const meta = {
     version: 1,
-    streams,
+    streams: Object.entries(childrenValues).reduce<Record<string, Stream>>(
+      (acc, [key, value]) => {
+        if (key.startsWith("bull:ffmpeg")) {
+          const ffmpegResult: FfmpegResult = value;
+          acc[ffmpegResult.name] = ffmpegResult.stream;
+        }
+        return acc;
+      },
+      {},
+    ),
     segmentSize: params.segmentSize,
   };
 
-  await job.log(`Writing file.msd (${JSON.stringify(mediaSourceDefinition)})`);
+  await job.log(`Writing meta.json (${JSON.stringify(meta)})`);
 
   await uploadJsonFile(
-    `transcode/${params.assetId}/file.msd`,
-    JSON.stringify(mediaSourceDefinition, null, 2),
+    `transcode/${params.assetId}/meta.json`,
+    JSON.stringify(meta, null, 2),
   );
 
   if (params.packageAfter) {

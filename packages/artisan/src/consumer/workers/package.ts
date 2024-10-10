@@ -12,7 +12,7 @@ import { streamSchema } from "@mixwave/shared/artisan";
 import type { Job } from "bullmq";
 import type { Code } from "iso-language-codes";
 
-const mediaSourceDefinitionSchema = z.object({
+const metaSchema = z.object({
   version: z.number(),
   streams: z.record(z.string(), streamSchema),
   segmentSize: z.number(),
@@ -43,20 +43,19 @@ export default async function (job: Job<PackageData, PackageResult>) {
   const dir = dirSync();
   await downloadFolder(dir.name, `transcode/${params.assetId}`);
 
-  const mediaSourceDefinition = await mediaSourceDefinitionSchema.parseAsync(
-    JSON.parse(await readFile(`${dir.name}/file.msd`, "utf8")),
+  const meta = await metaSchema.parseAsync(
+    JSON.parse(await readFile(`${dir.name}/meta.json`, "utf8")),
   );
 
-  // Check if we have segmentSize explicitly defined, if not, we'll use the segmentSize
-  // in the mediaSourceDefinition, which is from the original transcode.
-  const segmentSize = params.segmentSize ?? mediaSourceDefinition.segmentSize;
+  // If we do not specify the segmentSize, grab it from the meta file.
+  const segmentSize = params.segmentSize ?? meta.segmentSize;
 
   const outDir = dirSync();
 
   const packagerParams: string[][] = [];
 
-  for (const key of Object.keys(mediaSourceDefinition.streams)) {
-    const stream = mediaSourceDefinition.streams[key];
+  for (const key of Object.keys(meta.streams)) {
+    const stream = meta.streams[key];
     const file = parseFilePath(key);
 
     if (stream.type === "video") {

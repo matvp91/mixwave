@@ -1,5 +1,5 @@
 import { initContract } from "@ts-rest/core";
-import { streamSchema, inputSchema } from "@mixwave/shared/artisan";
+import { streamSchema, inputSchema } from "@mixwave/shared/schema";
 import * as z from "zod";
 import { extendZodWithOpenApi } from "@anatine/zod-openapi";
 import {

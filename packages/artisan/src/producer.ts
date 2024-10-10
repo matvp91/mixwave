@@ -1,6 +1,6 @@
 import { Queue, FlowProducer, Job } from "bullmq";
 import { randomUUID } from "crypto";
-import type { Input, Stream } from "@mixwave/shared/artisan";
+import type { Input, Stream } from "@mixwave/shared/schema";
 import type { TranscodeData } from "./consumer/workers/transcode.js";
 import type { PackageData } from "./consumer/workers/package.js";
 import type { FfmpegData } from "./consumer/workers/ffmpeg.js";

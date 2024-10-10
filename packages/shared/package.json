@@ -2,13 +2,13 @@
   "name": "@mixwave/shared",
   "type": "module",
   "exports": {
-    "./artisan": "./dist/artisan.js",
+    "./schema": "./dist/schema.js",
     "./env": "./dist/env.js"
   },
   "typesVersions": {
     "*": {
-      "artisan": [
-        "./src/artisan.ts"
+      "schema": [
+        "./src/schema.ts"
       ],
       "env": [
         "./src/env.ts"

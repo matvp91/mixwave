@@ -4,7 +4,7 @@ import parseFilePath from "parse-filepath";
 import { FFmpeggy } from "ffmpeggy";
 import ffmpegBin from "ffmpeg-static";
 import type { Job } from "bullmq";
-import type { Stream, Input } from "@mixwave/shared/artisan";
+import type { Stream, Input } from "@mixwave/shared/schema";
 
 if (!ffmpegBin) {
   throw new Error("Cannot find ffmpeg bin");

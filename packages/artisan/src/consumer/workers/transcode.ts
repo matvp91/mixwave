@@ -1,7 +1,7 @@
 import { getFakeJob } from "../job-helpers.js";
 import { uploadJsonFile } from "../s3.js";
 import { addPackageJob } from "../../producer.js";
-import type { Stream } from "@mixwave/shared/artisan";
+import type { Stream } from "@mixwave/shared/schema";
 import type { FfmpegResult } from "./ffmpeg.js";
 import type { Job } from "bullmq";
 

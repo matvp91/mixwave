@@ -27,16 +27,20 @@ export default async function (job: Job<TranscodeData, TranscodeResult>) {
 
   const childrenValues = await fakeJob.getChildrenValues();
 
-  const meta = Object.entries(childrenValues).reduce<Record<string, Stream>>(
-    (acc, [key, value]) => {
-      if (key.startsWith("bull:ffmpeg")) {
-        const ffmpegResult: FfmpegResult = value;
-        acc[ffmpegResult.name] = ffmpegResult.stream;
-      }
-      return acc;
-    },
-    {},
-  );
+  const meta = {
+    version: 1,
+    streams: Object.entries(childrenValues).reduce<Record<string, Stream>>(
+      (acc, [key, value]) => {
+        if (key.startsWith("bull:ffmpeg")) {
+          const ffmpegResult: FfmpegResult = value;
+          acc[ffmpegResult.name] = ffmpegResult.stream;
+        }
+        return acc;
+      },
+      {},
+    ),
+    segmentSize: params.segmentSize,
+  };
 
   await job.log(`Writing meta.json (${JSON.stringify(meta)})`);
 

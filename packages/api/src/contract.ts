@@ -40,11 +40,14 @@ export const postTranscodeBodySchema = z.object({
 
 export const postPackageBodySchema = z.object({
   assetId: z.string(),
-  segmentSize: z.number().optional().openapi({
-    default: 4,
-    description:
-      "Segment size, must be equal or a multiple of the segmentSize defined in transcode.",
-  }),
+  segmentSize: z
+    .number()
+    .optional()
+    .openapi({
+      description:
+        "Segment size. When defined, must be equal or a multiple of the segmentSize defined in transcode. " +
+        "When not defined, will take the original segmentSize from transcode.",
+    }),
   tag: z.string().optional().openapi({
     description: "An arbitrary tag, used to group jobs.",
   }),

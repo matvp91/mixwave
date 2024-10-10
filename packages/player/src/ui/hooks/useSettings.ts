@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 
 export type SettingsMode = "text-audio" | "quality";
 
@@ -15,26 +15,6 @@ export type UseSettings = {
 export function useSettings(): UseSettings {
   const timerRef = useRef<number>();
   const [value, setValue] = useState<SettingsValue | null>(null);
-
-  const updateValue = (mode: SettingsMode | null, hoverEntry?: boolean) => {
-    if (mode === value?.mode && hoverEntry && value?.entry === "explicit") {
-      return;
-    }
-
-    if (value?.entry === "explicit" && value.mode === mode) {
-      setValue(null);
-      return;
-    }
-
-    if (mode === null) {
-      setValue(null);
-    } else {
-      setValue({
-        mode,
-        entry: hoverEntry ? "hover" : "explicit",
-      });
-    }
-  };
 
   useEffect(() => {
     if (value?.entry === "hover") {
@@ -79,10 +59,32 @@ export function useSettings(): UseSettings {
     }
   }, [value]);
 
-  return {
-    set: updateValue,
-    value,
-  };
+  const set = useCallback(
+    (mode: SettingsMode | null, hoverEntry?: boolean) => {
+      if (mode === value?.mode && hoverEntry && value?.entry === "explicit") {
+        return;
+      }
+
+      if (value?.entry === "explicit" && value.mode === mode) {
+        setValue(null);
+        return;
+      }
+
+      if (mode === null) {
+        setValue(null);
+      } else {
+        setValue({
+          mode,
+          entry: hoverEntry ? "hover" : "explicit",
+        });
+      }
+    },
+    [value],
+  );
+
+  return useMemo(() => {
+    return { set, value };
+  }, [set, value]);
 }
 
 function matchElement(target: EventTarget | null, attr: string) {

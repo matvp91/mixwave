@@ -1,5 +1,5 @@
 import { toHMS } from "../utils";
-import { useUiContext } from "./UiContext";
+import { useUiContext } from "../context/UiContext";
 
 export function TimeStat() {
   const { time, state } = useUiContext();

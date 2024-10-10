@@ -1,4 +1,4 @@
-import { useUiContext } from "./UiContext";
+import { useUiContext } from "../context/UiContext";
 
 export function SlotProgress() {
   const { state } = useUiContext();

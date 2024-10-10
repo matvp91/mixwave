@@ -8,7 +8,7 @@ import FullscreenExitIcon from "../icons/fullscreen-exit.svg?react";
 import { SqButton } from "./SqButton";
 import { VolumeButton } from "./VolumeButton";
 import { Label } from "./Label";
-import { useUiContext } from "./UiContext";
+import { useUiContext } from "../context/UiContext";
 
 export function BottomControls() {
   const {

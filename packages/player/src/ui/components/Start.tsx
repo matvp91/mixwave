@@ -1,6 +1,6 @@
 import cn from "clsx";
 import PlayIcon from "../icons/play.svg?react";
-import { useUiContext } from "./UiContext";
+import { useUiContext } from "../context/UiContext";
 
 export function Start() {
   const { facade, state } = useUiContext();

@@ -1,5 +1,5 @@
 import screenfull from "screenfull";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import type { MouseEventHandler } from "react";
 
 export type UseFullscreen = {
@@ -16,17 +16,24 @@ export function useFullscreen(): UseFullscreen | null {
     });
   }, [screenfull]);
 
+  const onClick: MouseEventHandler<HTMLElement> = useCallback(
+    (event) => {
+      const element = event.target as HTMLElement;
+      const container = element.closest("[data-mix-container]");
+      if (container) {
+        screenfull.toggle(container);
+      }
+    },
+    [screenfull],
+  );
+
+  const ret = useMemo(() => {
+    return { active, onClick };
+  }, [active, setActive]);
+
   if (!screenfull.isEnabled) {
     return null;
   }
 
-  const onClick: MouseEventHandler<HTMLElement> = (event) => {
-    const element = event.target as HTMLElement;
-    const container = element.closest("[data-mix-container]");
-    if (container) {
-      screenfull.toggle(container);
-    }
-  };
-
-  return { active, onClick };
+  return ret;
 }

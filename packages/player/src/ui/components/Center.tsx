@@ -1,4 +1,4 @@
-import { useUiContext } from "./UiContext";
+import { useUiContext } from "../context/UiContext";
 import type { MouseEventHandler } from "react";
 
 type CenterProps = {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import type { RefObject } from "react";
 
 export type UseVisible = {
@@ -12,16 +12,6 @@ export function useVisible(): UseVisible {
   const elementRef = useRef<HTMLDivElement>(null);
 
   const [visible, setVisible] = useState(false);
-
-  const onPointerMove = () => {
-    clearTimeout(timerRef.current);
-
-    setVisible(true);
-
-    timerRef.current = setTimeout(() => {
-      setVisible(false);
-    }, 3000);
-  };
 
   useEffect(() => {
     const container = elementRef.current?.closest("[data-mix-container]") as
@@ -46,13 +36,21 @@ export function useVisible(): UseVisible {
     };
   }, []);
 
-  const nudge = () => {
-    onPointerMove();
-  };
+  const onPointerMove = useCallback(() => {
+    clearTimeout(timerRef.current);
 
-  return {
-    visible,
-    elementRef,
-    nudge,
-  };
+    setVisible(true);
+
+    timerRef.current = setTimeout(() => {
+      setVisible(false);
+    }, 3000);
+  }, [setVisible]);
+
+  const nudge = useCallback(() => {
+    onPointerMove();
+  }, [onPointerMove]);
+
+  return useMemo(() => {
+    return { visible, elementRef, nudge };
+  }, [visible, elementRef, nudge]);
 }

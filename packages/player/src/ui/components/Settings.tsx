@@ -5,7 +5,7 @@ import { SettingsPane } from "./SettingsPane";
 import { QualitiesPane } from "./QualitiesPane";
 import { TextAudioPane } from "./TextAudioPane";
 import usePrevious from "../hooks/usePrevious";
-import { useUiContext } from "./UiContext";
+import { useUiContext } from "../context/UiContext";
 
 export function Settings() {
   const { settings } = useUiContext();

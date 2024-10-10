@@ -1,9 +1,9 @@
-import { Controls } from "./Controls";
-import { Start } from "./Start";
-import { useHlsState } from "../hooks/useHlsState";
-import type { HlsFacade } from "../..";
-import type { Metadata } from "../types";
-import { UiProvider } from "./UiContext";
+import { Controls } from "./components/Controls";
+import { Start } from "./components/Start";
+import { useHlsState } from "./hooks/useHlsState";
+import { UiProvider } from "./context/UiContext";
+import type { HlsFacade } from "..";
+import type { Metadata } from "./types";
 
 /** @hidden */
 export type HlsUiProps = {

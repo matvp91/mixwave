@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { toHMS } from "../utils";
 import cn from "clsx";
-import { useUiContext } from "./UiContext";
+import { useUiContext } from "../context/UiContext";
 import type { PointerEventHandler } from "react";
 
 export function Progress() {

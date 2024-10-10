@@ -5,7 +5,7 @@ import { Settings } from "./Settings";
 import { TimeStat } from "./TimeStat";
 import { Center } from "./Center";
 import { BottomControls } from "./BottomControls";
-import { useUiContext } from "./UiContext";
+import { useUiContext } from "../context/UiContext";
 
 export function Controls() {
   const { state, visible, visibleControls, settings, fullscreen } =

@@ -1,6 +1,6 @@
 import { CheckList } from "./CheckList";
 import { Pane } from "./Pane";
-import { useUiContext } from "./UiContext";
+import { useUiContext } from "../context/UiContext";
 import type { CheckListItem } from "./CheckList";
 
 export function TextAudioPane() {

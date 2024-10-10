@@ -1,5 +1,10 @@
 import { Job, Queue } from "bullmq";
-import { connection } from "../connection.js";
+import { env } from "./env.js";
+
+const connection = {
+  host: env.REDIS_HOST,
+  port: env.REDIS_PORT,
+};
 
 export async function getFakeJob<T>(job: Job) {
   if (!job.id) {

@@ -2,12 +2,16 @@
   "name": "@mixwave/shared",
   "type": "module",
   "exports": {
-    "./artisan": "./dist/artisan.js"
+    "./artisan": "./dist/artisan.js",
+    "./env": "./dist/env.js"
   },
   "typesVersions": {
     "*": {
       "artisan": [
         "./src/artisan.ts"
+      ],
+      "env": [
+        "./src/env.ts"
       ]
     }
   },
@@ -17,10 +21,13 @@
   },
   "dependencies": {
     "@anatine/zod-openapi": "^2.2.6",
+    "dotenv": "^16.4.5",
+    "find-config": "^1.0.0",
     "iso-language-codes": "^2.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/find-config": "^1.0.4",
     "tsc-watch": "^6.2.0",
     "typescript": "^5.6.2"
   }

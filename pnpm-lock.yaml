@@ -85,18 +85,12 @@ importers:
       bullmq:
         specifier: ^5.12.0
         version: 5.12.0
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.4.5
       fastify:
         specifier: ^4.28.1
         version: 4.28.1
       fastify-plugin:
         specifier: ^4.5.1
         version: 4.5.1
-      find-config:
-        specifier: ^1.0.0
-        version: 1.0.0
       object-property-extractor:
         specifier: ^1.0.11
         version: 1.0.11
@@ -104,9 +98,6 @@ importers:
         specifier: ^3.23.8
         version: 3.23.8
     devDependencies:
-      '@types/find-config':
-        specifier: ^1.0.4
-        version: 1.0.4
       '@types/node':
         specifier: ^22.1.0
         version: 22.1.0
@@ -128,18 +119,12 @@ importers:
       bullmq:
         specifier: ^5.12.0
         version: 5.12.0
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.4.5
       ffmpeg-static:
         specifier: ^5.2.0
         version: 5.2.0
       ffmpeggy:
         specifier: ^3.0.1
         version: 3.0.1
-      find-config:
-        specifier: ^1.0.0
-        version: 1.0.0
       glob:
         specifier: ^11.0.0
         version: 11.0.0
@@ -165,9 +150,6 @@ importers:
         specifier: ^3.23.8
         version: 3.23.8
     devDependencies:
-      '@types/find-config':
-        specifier: ^1.0.4
-        version: 1.0.4
       '@types/mime-types':
         specifier: ^2.1.4
         version: 2.1.4
@@ -258,9 +240,6 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
-      date-fns:
-        specifier: ^3.6.0
-        version: 3.6.0
       lucide-react:
         specifier: ^0.424.0
         version: 0.424.0(react@18.3.1)
@@ -276,9 +255,6 @@ importers:
       react:
         specifier: ^18.3.1
         version: 18.3.1
-      react-day-picker:
-        specifier: 8.10.1
-        version: 8.10.1(date-fns@3.6.0)(react@18.3.1)
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
@@ -307,9 +283,9 @@ importers:
         specifier: ^3.23.8
         version: 3.23.8
     devDependencies:
-      '@types/find-config':
-        specifier: ^1.0.4
-        version: 1.0.4
+      '@mixwave/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@types/node':
         specifier: ^22.1.0
         version: 22.1.0
@@ -328,12 +304,6 @@ importers:
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.41)
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.4.5
-      find-config:
-        specifier: ^1.0.0
-        version: 1.0.0
       postcss:
         specifier: ^8.4.41
         version: 8.4.41
@@ -398,6 +368,12 @@ importers:
       '@anatine/zod-openapi':
         specifier: ^2.2.6
         version: 2.2.6(openapi3-ts@4.4.0)(zod@3.23.8)
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
+      find-config:
+        specifier: ^1.0.0
+        version: 1.0.0
       iso-language-codes:
         specifier: ^2.0.0
         version: 2.0.0
@@ -405,6 +381,9 @@ importers:
         specifier: ^3.23.8
         version: 3.23.8
     devDependencies:
+      '@types/find-config':
+        specifier: ^1.0.4
+        version: 1.0.4
       tsc-watch:
         specifier: ^6.2.0
         version: 6.2.0(typescript@5.6.2)
@@ -423,6 +402,9 @@ importers:
       '@mixwave/artisan':
         specifier: workspace:*
         version: link:../artisan
+      '@mixwave/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@ts-rest/core':
         specifier: ^3.49.3
         version: 3.49.3(zod@3.23.8)
@@ -438,15 +420,9 @@ importers:
       dom-parser:
         specifier: ^1.1.5
         version: 1.1.5
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.4.5
       fastify:
         specifier: ^4.28.1
         version: 4.28.1
-      find-config:
-        specifier: ^1.0.0
-        version: 1.0.0
       hh-mm-ss:
         specifier: ^1.2.0
         version: 1.2.0
@@ -469,9 +445,6 @@ importers:
         specifier: ^3.23.8
         version: 3.23.8
     devDependencies:
-      '@types/find-config':
-        specifier: ^1.0.4
-        version: 1.0.4
       '@types/hh-mm-ss':
         specifier: ^1.2.3
         version: 1.2.3
@@ -5353,10 +5326,6 @@ packages:
       is-data-view: 1.0.1
     dev: true
 
-  /date-fns@3.6.0:
-    resolution: {integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==}
-    dev: false
-
   /de-indent@1.0.2:
     resolution: {integrity: sha512-e/1zu3xH5MQryN2zdVaF0OrdNLUbvWxzMbi+iNA6Bky7l1RoP8a2fIbRocyHclXt/arDrrR6lL3TqFD9pMQTsg==}
     dev: true
@@ -5476,6 +5445,7 @@ packages:
   /dotenv@16.4.5:
     resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
     engines: {node: '>=12'}
+    dev: false
 
   /duplexer@0.1.2:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
@@ -6075,6 +6045,7 @@ packages:
     engines: {node: '>= 0.12'}
     dependencies:
       user-home: 2.0.0
+    dev: false
 
   /find-my-way@8.2.0:
     resolution: {integrity: sha512-HdWXgFYc6b1BJcOBDBwjqWuHJj1WYiqrxSh25qtU4DabpMFdj/gSunNBQb83t+8Zt67D7CXEzJWTkxaShMTMOA==}
@@ -7357,6 +7328,7 @@ packages:
   /os-homedir@1.0.2:
     resolution: {integrity: sha512-B5JU3cabzk8c67mRRd3ECmROafjYMXbuzlwtqdM8IbS8ktlTix8aFGb2bAGKrSRIlnfKwovGUUr72JUPyOb6kQ==}
     engines: {node: '>=0.10.0'}
+    dev: false
 
   /p-limit@3.1.0:
     resolution: {integrity: sha512-TYOanM3wGwNGsZN2cVTYPArw454xnXj5qmWF1bEoAc4+cU/ol7GVh7odevjp1FNHduHc3KZMcFduxU5Xc6uJRQ==}
@@ -7710,16 +7682,6 @@ packages:
 
   /quick-format-unescaped@4.0.4:
     resolution: {integrity: sha512-tYC1Q1hgyRuHgloV/YXs2w15unPVh8qfu/qCTfhTYamaw7fyhumKa2yGpdSo87vY32rIclj+4fWYQXUMs9EHvg==}
-    dev: false
-
-  /react-day-picker@8.10.1(date-fns@3.6.0)(react@18.3.1):
-    resolution: {integrity: sha512-TMx7fNbhLk15eqcMt+7Z7S2KF7mfTId/XJDjKE8f+IUcFn0l08/kI4FiYTL/0yuOLmEcbR4Fwe3GJf/NiiMnPA==}
-    peerDependencies:
-      date-fns: ^2.28.0 || ^3.0.0
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    dependencies:
-      date-fns: 3.6.0
-      react: 18.3.1
     dev: false
 
   /react-dom@18.3.1(react@18.3.1):
@@ -8875,6 +8837,7 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       os-homedir: 1.0.2
+    dev: false
 
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}

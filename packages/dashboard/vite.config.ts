@@ -2,12 +2,9 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
-import { parseEnv } from "@mixwave/shared";
+import { loadConfigEnv } from "@mixwave/shared";
 
-parseEnv((t) => ({
-  PUBLIC_API_ENDPOINT: t.String(),
-  PUBLIC_STITCHER_ENDPOINT: t.String(),
-}));
+loadConfigEnv();
 
 // https://vitejs.dev/config/
 export default defineConfig({

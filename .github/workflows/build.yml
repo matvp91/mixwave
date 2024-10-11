@@ -1,4 +1,4 @@
-name: Test Build
+name: Build
 
 on:
   push:
@@ -21,6 +21,3 @@ jobs:
         run: pnpm install
       - name: Build
         run: pnpm build
-        env:
-          PUBLIC_API_ENDPOINT: gh-actions://api
-          PUBLIC_STITCHER_ENDPOINT: gh-actions://stitcher

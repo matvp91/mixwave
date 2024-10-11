@@ -1,13 +1,13 @@
 import {
   GetObjectCommand,
-  PutObjectCommand,
   S3,
   CopyObjectCommand,
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
+import { Upload } from "@aws-sdk/lib-storage";
 import { S3SyncClient } from "s3-sync-client";
 import { basename } from "path";
-import { writeFile, exists } from "node:fs/promises";
+import { writeFile } from "node:fs/promises";
 import { createReadStream } from "node:fs";
 import { env } from "./env";
 import type { Readable } from "node:stream";
@@ -43,11 +43,6 @@ export async function downloadFolder(path: string, key: string) {
 }
 
 export async function downloadFile(path: string, key: string) {
-  if (await exists(`${path}/${basename(key)}`)) {
-    // We already have the file locally, there is nothing left to do.
-    return;
-  }
-
   const response = await client.send(
     new GetObjectCommand({
       Bucket: env.S3_BUCKET,
@@ -55,32 +50,32 @@ export async function downloadFile(path: string, key: string) {
     }),
   );
 
-  if (!response.Body) {
-    return;
-  }
-
   await writeFile(`${path}/${basename(key)}`, response.Body as Readable);
 }
 
 export async function uploadFile(key: string, path: string) {
-  await client.send(
-    new PutObjectCommand({
+  const upload = new Upload({
+    client,
+    params: {
       Bucket: env.S3_BUCKET,
       Key: key,
       Body: createReadStream(path),
-    }),
-  );
+    },
+  });
+  await upload.done();
 }
 
 export async function uploadJsonFile(key: string, content: string) {
-  await client.send(
-    new PutObjectCommand({
+  const upload = new Upload({
+    client,
+    params: {
       Bucket: env.S3_BUCKET,
       Key: key,
       Body: content,
       ContentType: "application/json",
-    }),
-  );
+    },
+  });
+  await upload.done();
 }
 
 export async function copyFile(

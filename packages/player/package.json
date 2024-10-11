@@ -18,7 +18,8 @@
   "scripts": {
     "dev": "vite build --watch",
     "build": "tsc -b && vite build --emptyOutDir",
-    "typedoc": "pnpm run build && typedoc --tsconfig tsconfig.typedoc.json"
+    "typedoc": "pnpm run build && typedoc --tsconfig tsconfig.typedoc.json",
+    "lint": "eslint \"./src/**/*.ts\" \"./src/**/*.tsx\""
   },
   "peerDependencies": {
     "@mixwave/hls.js": "^1.6.0",
@@ -35,7 +36,6 @@
     "@vitejs/plugin-react": "^4.3.1",
     "typedoc": "^0.26.8",
     "typedoc-plugin-markdown": "^4.2.9",
-    "typescript": "^5.5.3",
     "vite": "^5.4.1",
     "vite-plugin-dts": "^4.1.0",
     "vite-plugin-svgr": "^4.2.0"

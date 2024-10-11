@@ -15,53 +15,50 @@ const app = new Elysia()
   .post(
     "/transcode",
     async ({ body }) => {
-      return body;
-      // const job = await addTranscodeJob(body);
-      // return { jobId: job.id };
+      const job = await addTranscodeJob(body);
+      return { jobId: job.id };
     },
     {
       body: t.Object({
-        inputs: t.Object({
-          video: t.Array(
+        inputs: t.Array(
+          t.Union([
             t.Object({
+              type: t.Literal("video"),
               path: t.String(),
             }),
-          ),
-          audio: t.Array(
             t.Object({
-              path: t.String(),
-              language: LangCodeEnum,
-            }),
-          ),
-          text: t.Array(
-            t.Object({
+              type: t.Literal("audio"),
               path: t.String(),
               language: LangCodeEnum,
             }),
-          ),
-        }),
-        streams: t.Object({
-          video: t.Array(
             t.Object({
+              type: t.Literal("text"),
+              path: t.String(),
+              language: LangCodeEnum,
+            }),
+          ]),
+        ),
+        streams: t.Array(
+          t.Union([
+            t.Object({
+              type: t.Literal("video"),
               codec: VideoCodecEnum,
               height: t.Number(),
               bitrate: t.Number(),
               framerate: t.Number(),
             }),
-          ),
-          audio: t.Array(
             t.Object({
+              type: t.Literal("audio"),
               codec: AudioCodecEnum,
               bitrate: t.Number(),
               language: LangCodeEnum,
             }),
-          ),
-          text: t.Array(
             t.Object({
+              type: t.Literal("text"),
               language: LangCodeEnum,
             }),
-          ),
-        }),
+          ]),
+        ),
         segmentSize: t.Optional(t.Number()),
         assetId: t.Optional(t.String()),
         packageAfter: t.Optional(t.Boolean()),

@@ -2,12 +2,14 @@
   "name": "@mixwave/artisan",
   "type": "module",
   "scripts": {
-    "dev": "bun --watch ./src/index.ts"
+    "dev": "bun --watch ./src/index.ts",
+    "lint": "eslint \"./src/**/*.ts\""
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.623.0",
-    "@mixwave/shared": "workspace:*",
+    "@aws-sdk/lib-storage": "^3.669.0",
     "@mixwave/artisan-producer": "workspace:*",
+    "@mixwave/shared": "workspace:*",
     "@sinclair/typebox": "^0.33.16",
     "bullmq": "^5.12.0",
     "ffmpeg-static": "^5.2.0",
@@ -23,7 +25,6 @@
     "@types/bun": "latest",
     "@types/mime-types": "^2.1.4",
     "@types/parse-filepath": "^1.0.2",
-    "@types/tmp": "^0.2.6",
-    "typescript": "^5.5.4"
+    "@types/tmp": "^0.2.6"
   }
 }

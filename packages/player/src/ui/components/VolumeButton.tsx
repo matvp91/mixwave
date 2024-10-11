@@ -32,7 +32,7 @@ export function VolumeButton({ volume, setVolume }: VolumeButtonProps) {
   };
 
   let Icon;
-  let iconStyle: CSSProperties = {};
+  const iconStyle: CSSProperties = {};
   if (volume > 0.8) {
     Icon = Volume2Icon;
     iconStyle.width = iconStyle.height = "1.6rem";

@@ -3,8 +3,7 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
-    "code:prettier": "./scripts/code-prettier.sh",
-    "code:eslint": "./scripts/code-eslint.sh"
+    "lint": "turbo lint"
   },
   "packageManager": "pnpm@8.15.1",
   "devDependencies": {
@@ -12,6 +11,7 @@
     "eslint": "^9",
     "prettier": "^3.3.3",
     "turbo": "^2.0.11",
-    "typescript-eslint": "^8.8.1"
+    "typescript-eslint": "^8.8.1",
+    "typescript": "^5.5.4"
   }
 }

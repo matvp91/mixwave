@@ -2,6 +2,9 @@
   "name": "@mixwave/shared",
   "type": "module",
   "main": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint \"./src/**/*.ts\""
+  },
   "dependencies": {
     "@sinclair/typebox": "^0.33.16",
     "dotenv": "^16.4.5",

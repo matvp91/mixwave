@@ -1,14 +1,12 @@
 {
   "name": "@mixwave/artisan-producer",
   "type": "module",
-  "exports": {
-    ".": "./src/index.ts",
-    "./types": "./src/types.ts"
+  "main": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint \"./src/**/*.ts\""
   },
   "dependencies": {
-    "bullmq": "^5.12.0"
-  },
-  "devDependencies": {
+    "bullmq": "^5.12.0",
     "@mixwave/shared": "workspace:*"
   }
 }

@@ -5,11 +5,11 @@
     "./client": "./src/client.ts"
   },
   "scripts": {
-    "dev": "bun --watch ./src/index.ts"
+    "dev": "bun --watch ./src/index.ts",
+    "lint": "eslint \"./src/**/*.ts\""
   },
   "devDependencies": {
-    "@types/bun": "latest",
-    "typescript": "^5.5.4"
+    "@types/bun": "latest"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.623.0",

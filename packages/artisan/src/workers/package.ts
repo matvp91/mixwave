@@ -21,7 +21,11 @@ export default async function (job: Job<PackageData, PackageResult>) {
   const dir = dirSync();
   await downloadFolder(dir.name, `transcode/${params.assetId}`);
 
+  job.log(`Synced folder in ${dir.name}`);
+
   const meta = await getMetaJson(dir.name);
+
+  job.log(`Got meta file: "${JSON.stringify(meta)}"`);
 
   // If we do not specify the segmentSize, grab it from the meta file.
   const segmentSize = params.segmentSize ?? meta.segmentSize;

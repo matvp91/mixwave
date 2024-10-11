@@ -11,7 +11,16 @@ export type App = typeof app;
 
 const app = new Elysia()
   .use(cors())
-  .use(swagger())
+  .use(
+    swagger({
+      documentation: {
+        info: {
+          title: "Mixwave API",
+          version: "1.0.0",
+        },
+      },
+    }),
+  )
   .post(
     "/transcode",
     async ({ body }) => {
@@ -37,6 +46,11 @@ const app = new Elysia()
               language: LangCodeEnum,
             }),
           ]),
+          {
+            description:
+              "Source input types. Can refer to the same file, eg: when an mp4 contains " +
+              "both audio and video, the same source can be added for both video and audio as type.",
+          },
         ),
         streams: t.Array(
           t.Union([
@@ -44,13 +58,13 @@ const app = new Elysia()
               type: t.Literal("video"),
               codec: VideoCodecEnum,
               height: t.Number(),
-              bitrate: t.Number(),
-              framerate: t.Number(),
+              bitrate: t.Number({ description: "Bitrate in bps" }),
+              framerate: t.Number({ description: "Frames per second" }),
             }),
             t.Object({
               type: t.Literal("audio"),
               codec: AudioCodecEnum,
-              bitrate: t.Number(),
+              bitrate: t.Number({ description: "Bitrate in bps" }),
               language: LangCodeEnum,
             }),
             t.Object({
@@ -58,6 +72,10 @@ const app = new Elysia()
               language: LangCodeEnum,
             }),
           ]),
+          {
+            description:
+              "Output types, the transcoder will match any given input and figure out if a particular output can be generated.",
+          },
         ),
         segmentSize: t.Optional(t.Number()),
         assetId: t.Optional(t.String()),

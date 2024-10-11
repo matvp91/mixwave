@@ -17,6 +17,8 @@ export const LangCodeEnum = StringLiteralUnion(
   Object.keys(by639_2T) as (keyof typeof by639_2T)[],
 );
 
+LangCodeEnum.description = "ISO 639 (T2), 3 characters, language code.";
+
 export type LangCode = Static<typeof LangCodeEnum>;
 
 export const VideoCodecEnum = StringLiteralUnion(["h264", "vp9", "hevc"]);

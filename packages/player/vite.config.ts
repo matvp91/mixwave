@@ -15,7 +15,6 @@ export default defineConfig({
     svgr(),
   ],
   build: {
-    emptyOutDir: false,
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
       fileName: "index",

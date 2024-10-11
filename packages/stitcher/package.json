@@ -16,7 +16,7 @@
   "dependencies": {
     "@elysiajs/cors": "^1.1.1",
     "@elysiajs/swagger": "^1.1.5",
-    "@mixwave/artisan": "workspace:*",
+    "@mixwave/artisan-producer": "workspace:*",
     "@mixwave/shared": "workspace:*",
     "@xmldom/xmldom": "^0.8.10",
     "dom-parser": "^1.1.5",
@@ -26,7 +26,6 @@
     "luxon": "^3.5.0",
     "redis": "^4.7.0",
     "uuid": "^10.0.0",
-    "vast-client": "workspace:*",
-    "zod": "^3.23.8"
+    "vast-client": "workspace:*"
   }
 }

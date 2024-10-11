@@ -6,12 +6,11 @@ import {
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { S3SyncClient } from "s3-sync-client";
-import { env } from "./env.js";
 import { basename } from "path";
-import { writeFile } from "fs/promises";
-import { existsSync } from "fs";
-import { createReadStream } from "fs";
-import type { Readable } from "stream";
+import { writeFile, exists } from "node:fs/promises";
+import { createReadStream } from "node:fs";
+import { env } from "./env";
+import type { Readable } from "node:stream";
 import type { SyncOptions } from "s3-sync-client/dist/commands/SyncCommand";
 import type { ObjectCannedACL } from "@aws-sdk/client-s3";
 
@@ -44,7 +43,7 @@ export async function downloadFolder(path: string, key: string) {
 }
 
 export async function downloadFile(path: string, key: string) {
-  if (existsSync(`${path}/${basename(key)}`)) {
+  if (await exists(`${path}/${basename(key)}`)) {
     // We already have the file locally, there is nothing left to do.
     return;
   }
@@ -55,6 +54,10 @@ export async function downloadFile(path: string, key: string) {
       Key: key,
     }),
   );
+
+  if (!response.Body) {
+    return;
+  }
 
   await writeFile(`${path}/${basename(key)}`, response.Body as Readable);
 }

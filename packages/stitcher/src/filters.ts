@@ -8,13 +8,16 @@ const FILTER_VARIANTS_OPERATOR = {
   ">=": (a: number, b: number) => a >= b,
 } as const;
 
-function getResolutionFilter(resolution: string) {
+function getResolutionFilter(
+  resolution: string,
+): [number, (a: number, b: number) => boolean] {
   const [operator, value] = resolution.split(" ");
   const height = parseInt(value, 10);
 
-  const fn = FILTER_VARIANTS_OPERATOR[operator];
+  const fn =
+    FILTER_VARIANTS_OPERATOR[operator as keyof typeof FILTER_VARIANTS_OPERATOR];
 
-  if (Number.isNaN(height) || typeof fn !== "function") {
+  if (Number.isNaN(height) || !fn) {
     throw new Error(`Resolution filter with value "${resolution}" is invalid.`);
   }
 

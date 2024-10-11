@@ -9,7 +9,6 @@ import { JobPage } from "@/pages/JobPage";
 import { ApiPage } from "@/pages/ApiPage";
 import { RootLayout } from "@/pages/RootLayout";
 import { Suspense } from "react";
-import { tsr } from "./tsr";
 import { PlayerPage } from "./pages/PlayerPage";
 import { StoragePage } from "./pages/StoragePage";
 
@@ -52,9 +51,7 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Suspense>
-        <tsr.ReactQueryProvider>
-          <RouterProvider router={router} />
-        </tsr.ReactQueryProvider>
+        <RouterProvider router={router} />
       </Suspense>
     </QueryClientProvider>
   );

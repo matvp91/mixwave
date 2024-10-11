@@ -1,7 +1,7 @@
 {
   "name": "mixwave",
   "scripts": {
-    "dev": "./scripts/dev.sh",
+    "dev": "turbo dev",
     "build": "turbo build",
     "code:prettier": "./scripts/code-prettier.sh",
     "code:eslint": "./scripts/code-eslint.sh"

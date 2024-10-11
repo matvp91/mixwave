@@ -1,10 +1,15 @@
 import { dirSync } from "tmp";
-import { downloadFile, uploadFile } from "../s3.js";
 import parseFilePath from "parse-filepath";
 import { FFmpeggy } from "ffmpeggy";
 import ffmpegBin from "ffmpeg-static";
+import { downloadFile, uploadFile } from "../s3";
 import type { Job } from "bullmq";
-import type { Stream, Input } from "@mixwave/shared/schema";
+import type {
+  Stream,
+  Input,
+  FfmpegData,
+  FfmpegResult,
+} from "@mixwave/artisan-producer/types";
 
 if (!ffmpegBin) {
   throw new Error("Cannot find ffmpeg bin");
@@ -17,23 +22,6 @@ FFmpeggy.DefaultConfig = {
 
 // The guys at shaka-streamer did a great job implementing an ffmpeg pipeline, we can always learn from it:
 // https://github.com/shaka-project/shaka-streamer/blob/8bee20a09efab659ea3ecea8ff67db32202a807c/streamer/transcoder_node.py
-
-export type FfmpegData = {
-  params: {
-    input: Input;
-    stream: Stream;
-    segmentSize: number;
-    assetId: string;
-  };
-  metadata: {
-    parentSortKey: number;
-  };
-};
-
-export type FfmpegResult = {
-  name: string;
-  stream: Stream;
-};
 
 async function prepareInput(input: Input) {
   const filePath = parseFilePath(input.path);

@@ -1,14 +1,13 @@
 import { Queue, FlowProducer, Job } from "bullmq";
 import { randomUUID } from "crypto";
-import type { Input, Stream } from "@mixwave/shared/schema";
-import type { TranscodeData } from "./consumer/workers/transcode.js";
-import type { PackageData } from "./consumer/workers/package.js";
-import type { FfmpegData } from "./consumer/workers/ffmpeg.js";
+import { env } from "./env";
 import type { FlowChildJob } from "bullmq";
+import type { Input, Stream } from "./types";
+import type { TranscodeData, PackageData, FfmpegData } from "./types";
 
 const connection = {
-  host: process.env.REDIS_HOST,
-  port: +process.env.REDIS_PORT!,
+  host: env.REDIS_HOST,
+  port: env.REDIS_PORT,
 };
 
 export const flowProducer = new FlowProducer({

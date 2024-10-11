@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import { env } from "./env";
 import { getAdMediasFromVast } from "./vast";
 import { Presentation } from "./presentation";
-import { VmapResponse } from "./vmap";
+import type { VmapResponse } from "./vmap";
 import type { DateRange } from "./parser";
 import type {
   Session,
@@ -43,7 +43,7 @@ export function getStaticDateRanges(session: Session) {
   return Object.entries(group).map<DateRange>(([startDate, types], index) => {
     const assetListUrl = `${env.PUBLIC_STITCHER_ENDPOINT}/session/${session.id}/asset-list.json?startDate=${encodeURIComponent(startDate)}`;
 
-    const clientAttributes = {
+    const clientAttributes: Record<string, number | string> = {
       RESTRICT: "SKIP,JUMP",
       "RESUME-OFFSET": 0,
       "ASSET-LIST": assetListUrl,

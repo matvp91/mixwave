@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { TableCell, TableRow } from "@/components/ui/table";
 import Folder from "lucide-react/icons/folder";
 import { StorageRowFile } from "./StorageRowFile";
-import type { FolderContentDto, FileDto } from "@/tsr";
+import type { FolderContentDto, FileDto } from "@/api";
 
 type StorageRowProps = {
   content: FolderContentDto;

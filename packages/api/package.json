@@ -2,37 +2,22 @@
   "name": "@mixwave/api",
   "type": "module",
   "exports": {
-    "./client": "./dist/client/index.js"
-  },
-  "typesVersions": {
-    "*": {
-      "client": [
-        "src/client/index.ts"
-      ]
-    }
+    "./client": "./src/client.ts"
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc-watch --noClear --onSuccess \"node ./dist/index.js\""
+    "dev": "bun --watch ./src/index.ts"
   },
   "devDependencies": {
-    "@types/node": "^22.1.0",
-    "tsc-watch": "^6.2.0",
+    "@types/bun": "latest",
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@anatine/zod-openapi": "^2.2.6",
     "@aws-sdk/client-s3": "^3.623.0",
-    "@fastify/cors": "^9.0.1",
-    "@mixwave/artisan": "workspace:*",
+    "@elysiajs/cors": "^1.1.1",
+    "@elysiajs/swagger": "^1.1.5",
+    "@mixwave/artisan-producer": "workspace:*",
     "@mixwave/shared": "workspace:*",
-    "@ts-rest/core": "^3.49.3",
-    "@ts-rest/fastify": "^3.49.3",
-    "@ts-rest/open-api": "^3.49.3",
     "bullmq": "^5.12.0",
-    "fastify": "^4.28.1",
-    "fastify-plugin": "^4.5.1",
-    "object-property-extractor": "^1.0.11",
-    "zod": "^3.23.8"
+    "elysia": "^1.1.20"
   }
 }

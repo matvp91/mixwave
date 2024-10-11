@@ -6,7 +6,8 @@
   },
   "scripts": {
     "dev": "bun --watch ./src/index.ts",
-    "lint": "eslint \"./src/**/*.ts\""
+    "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
+    "typecheck": "tsc"
   },
   "devDependencies": {
     "@types/bun": "latest"

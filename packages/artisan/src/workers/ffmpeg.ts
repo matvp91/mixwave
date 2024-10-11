@@ -74,7 +74,7 @@ export default async function (job: Job<FfmpegData, FfmpegResult>) {
 
   if (params.stream.type === "text") {
     name = `text_${params.stream.language}.vtt`;
-    outputOptions.push(...getTextOutputOptions(params.stream));
+    outputOptions.push(...getTextOutputOptions());
   }
 
   if (!name) {
@@ -176,10 +176,7 @@ function getAudioOutputOptions(
   return args;
 }
 
-// We don't use stream as param, for now. But provide it for consistency.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function getTextOutputOptions(stream: Extract<Stream, { type: "text" }>) {
+function getTextOutputOptions() {
   const args: string[] = ["-f webvtt"];
-
   return args;
 }

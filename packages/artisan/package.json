@@ -3,7 +3,8 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch ./src/index.ts",
-    "lint": "eslint \"./src/**/*.ts\""
+    "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
+    "typecheck": "tsc"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.623.0",

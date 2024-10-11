@@ -1,1 +1,0 @@
-(cd packages/api && tsc)

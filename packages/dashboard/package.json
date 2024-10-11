@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "NODE_OPTIONS=\"--import tsx/esm\" pnpm exec vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint \"./src/**/*.ts\" \"./src/**/*.tsx\""
+    "build": "tsc -b && NODE_OPTIONS=\"--import tsx/esm\" pnpm exec vite build",
+    "lint": "eslint \"./src/**/*.ts\" \"./src/**/*.tsx\" && prettier --check \"./src/**/*.ts\" \"./src/**/*.tsx\""
   },
   "dependencies": {
     "@elysiajs/eden": "^1.1.3",

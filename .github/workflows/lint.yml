@@ -1,12 +1,10 @@
-name: Test Build
+name: Lint
 
 on:
   push:
-  pull_request:
-  workflow_dispatch:
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,5 +19,5 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install
-      - name: Build
-        run: pnpm build
+      - name: Run eslint
+        run: pnpm lint

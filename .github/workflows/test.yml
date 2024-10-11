@@ -1,18 +1,19 @@
-name: Unit Tests
+name: Test
 
 on:
   push:
-  pull_request:
-  workflow_dispatch:
 
 jobs:
-  all:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
       - uses: pnpm/action-setup@v3
       - name: Setup node
         uses: actions/setup-node@v4
@@ -22,4 +23,4 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Stitcher
-        run: pnpm --filter "stitcher" test
+        run: pnpm test

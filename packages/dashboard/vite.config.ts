@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
-import { parseEnv } from "@mixwave/shared/env";
+import { parseEnv } from "@mixwave/shared";
 
 parseEnv((t) => ({
   PUBLIC_API_ENDPOINT: t.String(),

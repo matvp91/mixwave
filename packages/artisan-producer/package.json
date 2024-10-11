@@ -3,14 +3,10 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./schemas": "./src/schemas.ts",
     "./types": "./src/types.ts"
   },
   "dependencies": {
-    "@sinclair/typebox": "^0.33.16",
-    "bullmq": "^5.12.0",
-    "zod": "^3.23.8",
-    "iso-language-codes": "^2.0.0"
+    "bullmq": "^5.12.0"
   },
   "devDependencies": {
     "@mixwave/shared": "workspace:*"

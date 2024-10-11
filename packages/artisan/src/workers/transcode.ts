@@ -6,7 +6,7 @@ import type {
   FfmpegResult,
   TranscodeData,
   TranscodeResult,
-} from "@mixwave/artisan-producer/types";
+} from "@mixwave/artisan-producer";
 import type { Job } from "bullmq";
 
 export default async function (job: Job<TranscodeData, TranscodeResult>) {

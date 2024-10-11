@@ -1,13 +1,12 @@
 {
   "name": "@mixwave/shared",
   "type": "module",
-  "exports": {
-    "./env": "./src/env.ts"
-  },
+  "main": "./src/index.ts",
   "dependencies": {
     "@sinclair/typebox": "^0.33.16",
     "dotenv": "^16.4.5",
-    "find-config": "^1.0.0"
+    "find-config": "^1.0.0",
+    "iso-language-codes": "^2.0.0"
   },
   "devDependencies": {
     "@types/find-config": "^1.0.4"

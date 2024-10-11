@@ -1,4 +1,4 @@
-import { parseEnv } from "@mixwave/shared/env";
+import { parseEnv } from "@mixwave/shared";
 
 export const env = parseEnv((t) => ({
   // config.env

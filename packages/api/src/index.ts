@@ -2,7 +2,7 @@ import { Elysia, t } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
 import { addTranscodeJob, addPackageJob } from "@mixwave/artisan-producer";
-import { inputSchema, streamSchema } from "@mixwave/artisan-producer/schemas";
+import { LangCodeEnum, VideoCodecEnum, AudioCodecEnum } from "@mixwave/shared";
 import { env } from "./env";
 import { getJob, getJobs, getJobLogs } from "./jobs";
 import { getStorage, getStorageFile } from "./s3";
@@ -15,13 +15,53 @@ const app = new Elysia()
   .post(
     "/transcode",
     async ({ body }) => {
-      const job = await addTranscodeJob(body);
-      return { jobId: job.id };
+      return body;
+      // const job = await addTranscodeJob(body);
+      // return { jobId: job.id };
     },
     {
       body: t.Object({
-        inputs: t.Array(inputSchema),
-        streams: t.Array(streamSchema),
+        inputs: t.Object({
+          video: t.Array(
+            t.Object({
+              path: t.String(),
+            }),
+          ),
+          audio: t.Array(
+            t.Object({
+              path: t.String(),
+              language: LangCodeEnum,
+            }),
+          ),
+          text: t.Array(
+            t.Object({
+              path: t.String(),
+              language: LangCodeEnum,
+            }),
+          ),
+        }),
+        streams: t.Object({
+          video: t.Array(
+            t.Object({
+              codec: VideoCodecEnum,
+              height: t.Number(),
+              bitrate: t.Number(),
+              framerate: t.Number(),
+            }),
+          ),
+          audio: t.Array(
+            t.Object({
+              codec: AudioCodecEnum,
+              bitrate: t.Number(),
+              language: LangCodeEnum,
+            }),
+          ),
+          text: t.Array(
+            t.Object({
+              language: LangCodeEnum,
+            }),
+          ),
+        }),
         segmentSize: t.Optional(t.Number()),
         assetId: t.Optional(t.String()),
         packageAfter: t.Optional(t.Boolean()),

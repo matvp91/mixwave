@@ -9,7 +9,7 @@ import type {
   Input,
   FfmpegData,
   FfmpegResult,
-} from "@mixwave/artisan-producer/types";
+} from "@mixwave/artisan-producer";
 
 if (!ffmpegBin) {
   throw new Error("Cannot find ffmpeg bin");

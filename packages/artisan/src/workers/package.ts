@@ -1,5 +1,4 @@
 import { dirSync } from "tmp";
-import { readFile } from "fs/promises";
 import { once } from "events";
 import { lookup } from "mime-types";
 import { fork } from "child_process";
@@ -7,21 +6,10 @@ import { createRequire } from "node:module";
 import { by639_2T } from "iso-language-codes";
 import { copyFile, downloadFolder, uploadFolder } from "../s3";
 import parseFilePath from "parse-filepath";
-import { streamSchema } from "@mixwave/artisan-producer/schemas";
-import { Type as t } from "@sinclair/typebox";
-import { Value } from "@sinclair/typebox/value";
+import { getMetaJson } from "../meta-json";
 import type { Job } from "bullmq";
 import type { Code } from "iso-language-codes";
-import type {
-  PackageData,
-  PackageResult,
-} from "@mixwave/artisan-producer/types";
-
-const metaSchema = t.Object({
-  version: t.Number(),
-  streams: t.Record(t.String(), streamSchema),
-  segmentSize: t.Number(),
-});
+import type { PackageData, PackageResult } from "@mixwave/artisan-producer";
 
 function formatLanguage(code: Code) {
   return code.name.split(",")[0].toUpperCase();
@@ -33,10 +21,7 @@ export default async function (job: Job<PackageData, PackageResult>) {
   const dir = dirSync();
   await downloadFolder(dir.name, `transcode/${params.assetId}`);
 
-  const meta = Value.Parse(
-    metaSchema,
-    JSON.parse(await readFile(`${dir.name}/meta.json`, "utf8")),
-  );
+  const meta = await getMetaJson(dir.name);
 
   // If we do not specify the segmentSize, grab it from the meta file.
   const segmentSize = params.segmentSize ?? meta.segmentSize;

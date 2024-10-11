@@ -1,7 +1,7 @@
 import uniqolor from "uniqolor";
 
 type JobTagProps = {
-  tag: string | null;
+  tag?: string;
 };
 
 export function JobTag({ tag }: JobTagProps) {

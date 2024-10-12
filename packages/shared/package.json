@@ -1,5 +1,6 @@
 {
   "name": "@mixwave/shared",
+  "version": "1.0.0",
   "type": "module",
   "main": "./src/index.ts",
   "scripts": {

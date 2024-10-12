@@ -54,7 +54,7 @@ cp config.env.example config.env
 docker compose up -d
 ```
 
-## Developer
+## Run locally
 
 We try to make it as easy for you to run Mixwave locally. Install [Bun](https://bun.sh/) (v1.1.30 or above), and [pnpm](https://pnpm.io/installation). Next up, make sure you have the `config.env` file configured properly as well. Run the following commands at the root of the project:
 

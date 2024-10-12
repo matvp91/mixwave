@@ -25,4 +25,4 @@ jobs:
         env:
           PUBLIC_API_ENDPOINT: http://api
           PUBLIC_STITCHER_ENDPOINT: http://stitcher
-        run: pnpm build
+        run: pnpm --filter="@mixwave/*" build

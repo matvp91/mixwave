@@ -13,5 +13,4 @@ export const env = parseEnv((t) => ({
   S3_ACCESS_KEY: t.String(),
   S3_SECRET_KEY: t.String(),
   S3_BUCKET: t.String(),
-  PUBLIC_API_ENDPOINT: t.String(),
 }));

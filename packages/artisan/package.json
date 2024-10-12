@@ -3,9 +3,9 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch ./src/index.ts",
+    "build": "bun build ./src/index.ts --target=bun --outdir=./dist",
     "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
-    "typecheck": "tsc",
-    "compile": "./scripts/compile.sh"
+    "typecheck": "tsc"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.623.0",

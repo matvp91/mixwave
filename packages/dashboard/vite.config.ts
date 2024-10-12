@@ -6,6 +6,13 @@ import { loadConfigEnv } from "@mixwave/shared";
 
 loadConfigEnv();
 
+const MANUAL_CHUNKS = [
+  "hls.js",
+  "monaco-editor",
+  "radix-ui",
+  "react-syntax-highlighter",
+];
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
@@ -21,5 +28,14 @@ export default defineConfig({
   clearScreen: false,
   server: {
     port: 52000,
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          return MANUAL_CHUNKS.find((chunk) => id.includes(chunk));
+        },
+      },
+    },
   },
 });

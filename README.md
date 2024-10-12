@@ -20,6 +20,7 @@
   </p>
 
 [<img src="./public/button-buy-me-a-coffee.png" width="150" alt="Buy me a coffee button"/>](https://www.buymeacoffee.com/matvp91)
+[<img src="./public/button-join-discord.png" width="136" alt="Join Discord button"/>](https://discord.gg/4hXgz9EsF4)
 
 </div>
 
@@ -32,7 +33,7 @@ Mixwave is a self hostable platform that aims to simplify the complexities of vi
 - Parses an [Ad Playlist](https://www.iab.com/guidelines/vmap/) (VMAP), transcodes and packages the ad media files and inserts them as interstitials, on the fly.
 - Player included, with a UI written in React.
 
-We're on [Discord](https://discord.gg/4hXgz9EsF4) if you'd like to chat or need support.
+Give us a ⭐ if you like our work. Much appreciated!
 
 ## Motivation
 

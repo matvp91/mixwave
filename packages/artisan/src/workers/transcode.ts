@@ -1,6 +1,6 @@
-import { getFakeJob } from "../job-helpers";
-import { uploadJsonFile } from "../s3";
 import { addPackageJob } from "@mixwave/artisan-producer";
+import { getFakeJob } from "../helpers";
+import { uploadJsonFile } from "../s3";
 import type {
   Stream,
   FfmpegResult,

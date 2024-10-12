@@ -1,8 +1,8 @@
-import { dirSync } from "tmp";
 import parseFilePath from "parse-filepath";
 import { FFmpeggy } from "ffmpeggy";
 import ffmpegBin from "ffmpeg-static";
 import { downloadFile, uploadFile } from "../s3";
+import { DirManager } from "../dir-manager";
 import type { Job } from "bullmq";
 import type {
   Stream,
@@ -23,29 +23,32 @@ FFmpeggy.DefaultConfig = {
 // The guys at shaka-streamer did a great job implementing an ffmpeg pipeline, we can always learn from it:
 // https://github.com/shaka-project/shaka-streamer/blob/8bee20a09efab659ea3ecea8ff67db32202a807c/streamer/transcoder_node.py
 
-async function prepareInput(input: Input) {
+async function prepareInput(job: Job, dirManager: DirManager, input: Input) {
   const filePath = parseFilePath(input.path);
 
+  // If the input is on S3, download the file locally.
   if (filePath.dir.startsWith("s3://")) {
-    // If the input is on S3, download the file locally.
-    const dir = dirSync();
+    const inDir = await dirManager.tmpDir();
 
-    const s3SourcePath = filePath.path.replace("s3://", "");
+    job.log(`Download "${filePath.path}" to "${inDir}"`);
+    await downloadFile(inDir, filePath.path.replace("s3://", ""));
 
-    await downloadFile(dir.name, s3SourcePath);
-
-    return parseFilePath(`${dir.name}/${filePath.basename}`);
+    return parseFilePath(`${inDir}/${filePath.basename}`);
   }
 
+  // Assume that the input can be handled directly by ffmpeg, such as http(s).
   return filePath;
 }
 
-export default async function (job: Job<FfmpegData, FfmpegResult>) {
+async function runJob(
+  job: Job<FfmpegData, FfmpegResult>,
+  dirManager: DirManager,
+): Promise<FfmpegResult> {
   const { params } = job.data;
 
-  const dir = dirSync();
+  const outDir = await dirManager.tmpDir();
 
-  const inputFile = await prepareInput(params.input);
+  const inputFile = await prepareInput(job, dirManager, params.input);
 
   job.log(`Input is ${inputFile.path}`);
 
@@ -83,7 +86,7 @@ export default async function (job: Job<FfmpegData, FfmpegResult>) {
     );
   }
 
-  ffmpeg.setOutput(`${dir.name}/${name}`);
+  ffmpeg.setOutput(`${outDir}/${name}`);
   ffmpeg.setOutputOptions(outputOptions);
 
   job.log(`Transcode to ${name}`);
@@ -102,19 +105,23 @@ export default async function (job: Job<FfmpegData, FfmpegResult>) {
 
   job.updateProgress(100);
 
-  job.log(
-    `Uploading ${dir.name}/${name} to transcode/${params.assetId}/${name}`,
-  );
+  job.log(`Uploading ${outDir}/${name} to transcode/${params.assetId}/${name}`);
 
-  await uploadFile(
-    `transcode/${params.assetId}/${name}`,
-    `${dir.name}/${name}`,
-  );
+  await uploadFile(`transcode/${params.assetId}/${name}`, `${outDir}/${name}`);
 
   return {
     name,
     stream: params.stream,
   };
+}
+
+export default async function (job: Job<FfmpegData, FfmpegResult>) {
+  const dirManager = new DirManager();
+  try {
+    return await runJob(job, dirManager);
+  } finally {
+    await dirManager.deleteTmpDirs();
+  }
 }
 
 function getVideoOutputOptions(

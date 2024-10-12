@@ -5,7 +5,7 @@
     "dev": "bun --watch ./src/index.ts",
     "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
     "typecheck": "tsc",
-    "compile": "bun build --compile ./src/index.ts --outfile ./dist/artisan"
+    "compile": "bun build --compile --minify --sourcemap ./src/index.ts --outfile ./dist/artisan"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.623.0",
@@ -20,13 +20,11 @@
     "mime-types": "^2.1.35",
     "parse-filepath": "^1.0.2",
     "s3-sync-client": "^4.3.1",
-    "shaka-packager": "^3.2.0",
-    "tmp": "^0.2.3"
+    "shaka-packager": "^3.2.0"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/mime-types": "^2.1.4",
-    "@types/parse-filepath": "^1.0.2",
-    "@types/tmp": "^0.2.6"
+    "@types/parse-filepath": "^1.0.2"
   }
 }

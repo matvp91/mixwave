@@ -15,7 +15,7 @@ COPY --from=builder /app/out/json/ .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 COPY --from=builder /app/out/full/ .
 COPY --from=builder /app/config.env .
-RUN turbo run build --filter=@mixwave/dashboard
+RUN turbo run build:frontend --filter=@mixwave/dashboard
 
 FROM devforth/spa-to-http as runner
 COPY --from=installer ./app/packages/dashboard/dist .

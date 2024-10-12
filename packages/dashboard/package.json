@@ -5,13 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "NODE_OPTIONS=\"--import tsx/esm\" pnpm exec vite",
-    "build": "tsc -b && NODE_OPTIONS=\"--import tsx/esm\" pnpm exec vite build",
+    "build:frontend": "tsc -b && NODE_OPTIONS=\"--import tsx/esm\" pnpm exec vite build",
     "lint": "eslint \"./src/**/*.ts\" \"./src/**/*.tsx\" && prettier --check \"./src/**/*.ts\" \"./src/**/*.tsx\""
   },
   "dependencies": {
     "@elysiajs/eden": "^1.1.3",
     "@hookform/resolvers": "^3.9.0",
-    "@mixwave/api": "workspace:*",
     "@mixwave/player": "workspace:*",
     "@monaco-editor/react": "^4.6.0",
     "@radix-ui/react-accordion": "^1.2.0",
@@ -46,6 +45,7 @@
     "uniqolor": "^1.1.1"
   },
   "devDependencies": {
+    "@mixwave/api": "workspace:*",
     "@mixwave/shared": "workspace:*",
     "@types/node": "^22.1.0",
     "@types/react": "^18.3.3",

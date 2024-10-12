@@ -2,7 +2,8 @@
   "name": "mixwave",
   "scripts": {
     "dev": "turbo dev",
-    "build": "turbo build",
+    "build:frontend": "turbo build:frontend",
+    "build:backend": "turbo build:backend",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "test": "turbo test"

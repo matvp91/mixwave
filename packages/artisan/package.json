@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch ./src/index.ts",
-    "build": "bun build ./src/index.ts --target=bun --outdir=./dist",
+    "build:backend": "bun build ./src/index.ts --target=bun --outdir=./dist",
     "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
     "typecheck": "tsc"
   },

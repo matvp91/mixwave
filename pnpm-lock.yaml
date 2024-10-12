@@ -136,9 +136,6 @@ importers:
       '@hookform/resolvers':
         specifier: ^3.9.0
         version: 3.9.0(react-hook-form@7.52.2)
-      '@mixwave/api':
-        specifier: workspace:*
-        version: link:../api
       '@mixwave/player':
         specifier: workspace:*
         version: link:../player
@@ -236,6 +233,9 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1
     devDependencies:
+      '@mixwave/api':
+        specifier: workspace:*
+        version: link:../api
       '@mixwave/shared':
         specifier: workspace:*
         version: link:../shared

@@ -5,7 +5,7 @@
     "dev": "bun --watch ./src/index.ts",
     "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
     "typecheck": "tsc",
-    "compile": "bun build --compile --minify --sourcemap ./src/index.ts --outfile ./dist/artisan"
+    "compile": "./scripts/compile.sh"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.623.0",

@@ -58,6 +58,7 @@ export default defineConfig({
       {
         text: "Miscellaneous",
         items: [
+          { text: "Beta features", link: "misc/beta-features" },
           { text: "Contribute", link: "misc/contribute" },
           { text: "Tips", link: "misc/tips" },
           { text: "Credits", link: "misc/credits" },

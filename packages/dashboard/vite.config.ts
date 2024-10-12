@@ -5,10 +5,11 @@ import { fileURLToPath } from "url";
 import { parseEnv } from "@mixwave/shared";
 
 // When we inject new PUBLIC_ variables, make sure to add them
-// in src/globals.d.ts too.
+// in src/globals.d.ts too. All of these are optional because we
+// can inject them through SSI.
 const env = parseEnv((t) => ({
-  PUBLIC_API_ENDPOINT: t.String(),
-  PUBLIC_STITCHER_ENDPOINT: t.String(),
+  PUBLIC_API_ENDPOINT: t.Optional(t.String()),
+  PUBLIC_STITCHER_ENDPOINT: t.Optional(t.String()),
 }));
 
 const MANUAL_CHUNKS = [

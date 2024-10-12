@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "bun --watch ./src/index.ts",
     "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "compile": "bun build --compile ./src/index.ts --outfile ./dist/artisan"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.623.0",

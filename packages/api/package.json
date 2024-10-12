@@ -5,7 +5,7 @@
     "./client": "./src/client.ts"
   },
   "scripts": {
-    "dev": "bun --watch ./src/index.ts",
+    "dev": "bun run ./src/index.ts --watch",
     "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
     "typecheck": "tsc"
   },

@@ -6,11 +6,11 @@
     [
       "@mixwave/api",
       "@mixwave/artisan",
+      "@mixwave/artisan-producer",
       "@mixwave/dashboard",
       "@mixwave/shared",
       "@mixwave/stitcher"
-    ],
-    ["@mixwave/artisan", "@mixwave/artisan-producer"]
+    ]
   ],
   "linked": [],
   "access": "public",

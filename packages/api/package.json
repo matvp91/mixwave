@@ -6,7 +6,7 @@
   },
   "scripts": {
     "dev": "bun run ./src/index.ts --watch",
-    "build:backend": "bun build ./src/index.ts --target=bun --outdir=./dist",
+    "build": "bun build ./src/index.ts --target=bun --outdir=./dist",
     "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
     "typecheck": "tsc"
   },

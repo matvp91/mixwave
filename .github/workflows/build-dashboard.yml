@@ -1,4 +1,4 @@
-name: Build frontend
+name: Build dashboard
 
 on:
   push:
@@ -18,6 +18,8 @@ jobs:
           node-version: 20
           cache: pnpm
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm --filter "@mixwave/dashboard" install
       - name: Build
-        run: pnpm build:frontend
+        run: |
+          cd ./packages/dashboard
+          pnpm build

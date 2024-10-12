@@ -33,8 +33,6 @@ importers:
         specifier: ^1.3.2
         version: 1.3.2(@algolia/client-search@4.24.0)(search-insights@2.16.2)(typescript@5.5.4)
 
-  extern/hls.js: {}
-
   extern/vast-client:
     dependencies:
       '@xmldom/xmldom':
@@ -147,9 +145,6 @@ importers:
       '@mixwave/api':
         specifier: workspace:*
         version: link:../api
-      '@mixwave/hls.js':
-        specifier: ^1.6.0
-        version: link:../../extern/hls.js
       '@mixwave/player':
         specifier: workspace:*
         version: link:../player
@@ -204,6 +199,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      hls.js:
+        specifier: 1.6.0-beta.1
+        version: 1.6.0-beta.1
       lucide-react:
         specifier: ^0.424.0
         version: 0.424.0(react@18.3.1)
@@ -283,15 +281,15 @@ importers:
 
   packages/player:
     dependencies:
-      '@mixwave/hls.js':
-        specifier: ^1.6.0
-        version: link:../../extern/hls.js
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
       eventemitter3:
         specifier: ^5.0.1
         version: 5.0.1
+      hls.js:
+        specifier: ^1.6.0-beta.1
+        version: 1.6.0-beta.1
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -5715,6 +5713,10 @@ packages:
 
   /highlight.js@10.7.3:
     resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
+    dev: false
+
+  /hls.js@1.6.0-beta.1:
+    resolution: {integrity: sha512-yVe7fsABEfsoHW7cG+hB0YC5ckuYyCIQV/cYrDCusVegSRjpvSqkX5JYbOFYMK+geL6s+a+R7+GSDD72a6OGTQ==}
     dev: false
 
   /hookable@5.5.3:

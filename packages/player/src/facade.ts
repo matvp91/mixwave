@@ -1,4 +1,4 @@
-import Hls from "@mixwave/hls.js";
+import Hls from "hls.js";
 import EventEmitter from "eventemitter3";
 import { assert } from "./assert";
 import { EventManager } from "./event-manager";
@@ -7,7 +7,7 @@ import type {
   InterstitialAssetStartedData,
   Level,
   MediaPlaylist,
-} from "@mixwave/hls.js";
+} from "hls.js";
 import type {
   MixType,
   Quality,

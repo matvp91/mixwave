@@ -22,7 +22,7 @@
     "lint": "eslint \"./src/**/*.ts\" \"./src/**/*.tsx\" && prettier --check \"./src/**/*.ts\" \"./src/**/*.tsx\""
   },
   "peerDependencies": {
-    "@mixwave/hls.js": "^1.6.0",
+    "hls.js": "^1.6.0-beta.1",
     "react": "^18.3.1"
   },
   "dependencies": {

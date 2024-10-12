@@ -63,7 +63,7 @@ pnpm install
 pnpm dev # That's it!
 ```
 
-Go to `http://localhost:5200` and you're good to go!
+Go to `http://localhost:52000` and you're good to go!
 
 There's more info in the [Getting Started](https://matvp91.github.io/mixwave/getting-started.html) section in the docs.
 

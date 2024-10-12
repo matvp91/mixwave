@@ -4,11 +4,13 @@
   "commit": false,
   "fixed": [
     [
-      "@mixwave/dashboard",
       "@mixwave/api",
       "@mixwave/artisan",
+      "@mixwave/dashboard",
+      "@mixwave/shared",
       "@mixwave/stitcher"
-    ]
+    ],
+    ["@mixwave/artisan", "@mixwave/artisan-producer"]
   ],
   "linked": [],
   "access": "public",

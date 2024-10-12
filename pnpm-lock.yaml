@@ -53,9 +53,9 @@ importers:
       '@elysiajs/swagger':
         specifier: ^1.1.5
         version: 1.1.5(elysia@1.1.20)
-      '@mixwave/artisan-producer':
+      '@mixwave/artisan':
         specifier: workspace:*
-        version: link:../artisan-producer
+        version: link:../artisan
       '@mixwave/shared':
         specifier: workspace:*
         version: link:../shared
@@ -78,9 +78,6 @@ importers:
       '@aws-sdk/lib-storage':
         specifier: ^3.669.0
         version: 3.669.0(@aws-sdk/client-s3@3.623.0)
-      '@mixwave/artisan-producer':
-        specifier: workspace:*
-        version: link:../artisan-producer
       '@mixwave/shared':
         specifier: workspace:*
         version: link:../shared
@@ -121,15 +118,6 @@ importers:
       '@types/parse-filepath':
         specifier: ^1.0.2
         version: 1.0.2
-
-  packages/artisan-producer:
-    dependencies:
-      '@mixwave/shared':
-        specifier: workspace:*
-        version: link:../shared
-      bullmq:
-        specifier: ^5.12.0
-        version: 5.12.0
 
   packages/dashboard:
     dependencies:
@@ -343,9 +331,9 @@ importers:
       '@elysiajs/swagger':
         specifier: ^1.1.5
         version: 1.1.5(elysia@1.1.20)
-      '@mixwave/artisan-producer':
+      '@mixwave/artisan':
         specifier: workspace:*
-        version: link:../artisan-producer
+        version: link:../artisan
       '@mixwave/shared':
         specifier: workspace:*
         version: link:../shared

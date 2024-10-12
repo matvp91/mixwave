@@ -1,13 +1,24 @@
-import { addPackageJob } from "@mixwave/artisan-producer";
+import { addPackageJob } from "../../producer";
 import { getFakeJob } from "../helpers";
 import { uploadJson } from "../s3";
-import type {
-  Stream,
-  FfmpegResult,
-  TranscodeData,
-  TranscodeResult,
-} from "@mixwave/artisan-producer";
+import type { FfmpegResult } from "./ffmpeg";
+import type { Stream } from "../../types";
 import type { Job } from "bullmq";
+
+export type TranscodeData = {
+  params: {
+    assetId: string;
+    segmentSize: number;
+    packageAfter: boolean;
+  };
+  metadata: {
+    tag?: string;
+  };
+};
+
+export type TranscodeResult = {
+  assetId: string;
+};
 
 export default async function (job: Job<TranscodeData, TranscodeResult>) {
   const { params, metadata } = job.data;

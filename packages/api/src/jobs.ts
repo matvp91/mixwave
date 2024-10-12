@@ -1,7 +1,7 @@
-import { allQueus, flowProducer } from "@mixwave/artisan-producer";
+import { allQueus, flowProducer } from "@mixwave/artisan/producer";
 import { Job } from "bullmq";
-import type { JobDto } from "./types";
 import type { JobNode, JobState, Queue } from "bullmq";
+import type { JobDto } from "./types";
 
 function findQueueByName(name: string): Queue {
   const queue = allQueus.find((queue) => queue.name === name);

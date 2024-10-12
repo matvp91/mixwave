@@ -2,10 +2,10 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as os from "node:os";
 
-export class DirManager {
+export class TmpDir {
   private dirs_ = new Set<string>();
 
-  async tmpDir() {
+  async create() {
     const dir = await fs.mkdtemp(
       path.join(os.tmpdir(), `mixwave-${crypto.randomUUID()}`),
     );
@@ -13,7 +13,7 @@ export class DirManager {
     return dir;
   }
 
-  async deleteTmpDirs() {
+  async deleteAll() {
     const promises = Array.from(this.dirs_).map(async (dir) => {
       await fs.rm(dir, { recursive: true });
     });

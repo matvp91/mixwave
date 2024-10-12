@@ -1,14 +1,11 @@
 import { Queue, FlowProducer, Job } from "bullmq";
 import { randomUUID } from "crypto";
-import { env } from "./env";
+import { connection } from "./env";
 import type { FlowChildJob } from "bullmq";
-import type { Input, Stream } from "./types";
-import type { TranscodeData, PackageData, FfmpegData } from "./types";
-
-const connection = {
-  host: env.REDIS_HOST,
-  port: env.REDIS_PORT,
-};
+import type { Input, Stream } from "../types";
+import type { TranscodeData } from "../consumer/workers/transcode";
+import type { PackageData } from "../consumer/workers/package";
+import type { FfmpegData } from "../consumer/workers/ffmpeg";
 
 export const flowProducer = new FlowProducer({
   connection,

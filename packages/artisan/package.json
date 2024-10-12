@@ -2,16 +2,18 @@
   "name": "@mixwave/artisan",
   "version": "1.0.0",
   "type": "module",
+  "exports": {
+    "./producer": "./src/producer/index.ts"
+  },
   "scripts": {
-    "dev": "bun --watch ./src/index.ts",
-    "build": "bun build ./src/index.ts --target=bun --outdir=./dist",
+    "dev": "bun --watch ./src/consumer/index.ts",
+    "build": "bun build ./src/consumer/index.ts --target=bun --outdir=./dist",
     "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
     "typecheck": "tsc"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.623.0",
     "@aws-sdk/lib-storage": "^3.669.0",
-    "@mixwave/artisan-producer": "workspace:*",
     "@mixwave/shared": "workspace:*",
     "@sinclair/typebox": "^0.33.16",
     "bullmq": "^5.12.0",

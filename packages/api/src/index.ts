@@ -1,7 +1,7 @@
 import { Elysia, t } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
-import { addTranscodeJob, addPackageJob } from "@mixwave/artisan-producer";
+import { addTranscodeJob, addPackageJob } from "@mixwave/artisan/producer";
 import { LangCodeEnum, VideoCodecEnum, AudioCodecEnum } from "@mixwave/shared";
 import { env } from "./env";
 import { getJob, getJobs, getJobLogs } from "./jobs";

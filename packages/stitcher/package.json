@@ -20,7 +20,7 @@
   "dependencies": {
     "@elysiajs/cors": "^1.1.1",
     "@elysiajs/swagger": "^1.1.5",
-    "@mixwave/artisan-producer": "workspace:*",
+    "@mixwave/artisan": "workspace:*",
     "@mixwave/shared": "workspace:*",
     "@xmldom/xmldom": "^0.8.10",
     "dom-parser": "^1.1.5",

@@ -1,5 +1,5 @@
 import { Worker } from "bullmq";
-import { connection } from "../connection";
+import { connection } from "../env";
 import transcodeFn from "./transcode";
 import packageFn from "./package";
 import ffmpegFn from "./ffmpeg";

@@ -5,11 +5,25 @@ import { createRequire } from "node:module";
 import { by639_2T } from "iso-language-codes";
 import { downloadFolder, uploadFolder } from "../s3";
 import parseFilePath from "parse-filepath";
-import { DirManager } from "../dir-manager";
-import { getMetaJson } from "../helpers";
+import { TmpDir } from "../tmp-dir";
+import { getMetaFile } from "../meta-file";
 import type { Job } from "bullmq";
 import type { Code } from "iso-language-codes";
-import type { PackageData, PackageResult } from "@mixwave/artisan-producer";
+
+export type PackageData = {
+  params: {
+    assetId: string;
+    segmentSize?: number;
+    name: string;
+  };
+  metadata: {
+    tag?: string;
+  };
+};
+
+export type PackageResult = {
+  assetId: string;
+};
 
 function formatLanguage(code: Code) {
   return code.name.split(",")[0].toUpperCase();
@@ -17,28 +31,28 @@ function formatLanguage(code: Code) {
 
 async function runJob(
   job: Job<PackageData, PackageResult>,
-  dirManager: DirManager,
+  tmpDir: TmpDir,
 ): Promise<PackageResult> {
   const { params } = job.data;
 
-  const inDir = await dirManager.tmpDir();
+  const inDir = await tmpDir.create();
   await downloadFolder(inDir, `transcode/${params.assetId}`);
 
   job.log(`Synced folder in ${inDir}`);
 
-  const meta = await getMetaJson(inDir);
+  const metaFile = await getMetaFile(inDir);
 
-  job.log(`Got meta file: "${JSON.stringify(meta)}"`);
+  job.log(`Got meta file: "${JSON.stringify(metaFile)}"`);
 
   // If we do not specify the segmentSize, grab it from the meta file.
-  const segmentSize = params.segmentSize ?? meta.segmentSize;
+  const segmentSize = params.segmentSize ?? metaFile.segmentSize;
 
-  const outDir = await dirManager.tmpDir();
+  const outDir = await tmpDir.create();
 
   const packagerParams: string[][] = [];
 
-  for (const key of Object.keys(meta.streams)) {
-    const stream = meta.streams[key];
+  for (const key of Object.keys(metaFile.streams)) {
+    const stream = metaFile.streams[key];
     const file = parseFilePath(key);
 
     if (stream.type === "video") {
@@ -116,10 +130,10 @@ async function runJob(
 }
 
 export default async function (job: Job<PackageData, PackageResult>) {
-  const dirManager = new DirManager();
+  const tmpDir = new TmpDir();
   try {
-    return await runJob(job, dirManager);
+    return await runJob(job, tmpDir);
   } finally {
-    await dirManager.deleteTmpDirs();
+    await tmpDir.deleteAll();
   }
 }

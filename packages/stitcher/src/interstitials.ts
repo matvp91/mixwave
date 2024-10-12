@@ -1,14 +1,14 @@
 import { DateTime } from "luxon";
-import { env } from "./env.js";
-import { getAdMediasFromVast } from "./vast.js";
-import { Presentation } from "./presentation.js";
-import { VmapResponse } from "./vmap.js";
-import type { DateRange } from "./parser/types.js";
+import { env } from "./env";
+import { getAdMediasFromVast } from "./vast";
+import { Presentation } from "./presentation";
+import type { VmapResponse } from "./vmap";
+import type { DateRange } from "./parser";
 import type {
   Session,
   SessionInterstitialType,
   SessionInterstitial,
-} from "./session.js";
+} from "./session";
 
 type InterstitialAsset = {
   URI: string;
@@ -43,7 +43,7 @@ export function getStaticDateRanges(session: Session) {
   return Object.entries(group).map<DateRange>(([startDate, types], index) => {
     const assetListUrl = `${env.PUBLIC_STITCHER_ENDPOINT}/session/${session.id}/asset-list.json?startDate=${encodeURIComponent(startDate)}`;
 
-    const clientAttributes = {
+    const clientAttributes: Record<string, number | string> = {
       RESTRICT: "SKIP,JUMP",
       "RESUME-OFFSET": 0,
       "ASSET-LIST": assetListUrl,

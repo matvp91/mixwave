@@ -1,4 +1,4 @@
-import { JobDto } from "@/tsr";
+import { JobDto } from "@/api";
 
 export type JobsFilterData = {
   tag?: string;

@@ -1,5 +1,5 @@
 import type { JobsFilterData } from "@/components/types";
-import type { JobDto } from "@/tsr";
+import type { JobDto } from "@/api";
 
 export function filterJobs(jobs: JobDto[], filter: JobsFilterData) {
   if (filter.tag) {

@@ -1,4 +1,4 @@
-import Hls from "@mixwave/hls.js";
+import Hls from "hls.js";
 import { HlsFacade, HlsUi } from "@mixwave/player";
 import { useEffect, useRef, useState } from "react";
 

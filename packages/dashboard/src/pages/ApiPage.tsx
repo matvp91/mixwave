@@ -1,5 +1,8 @@
-import { Scalar } from "@/components/Scalar";
-
 export function ApiPage() {
-  return <Scalar url={import.meta.env.PUBLIC_API_ENDPOINT} />;
+  return (
+    <iframe
+      className="w-full h-full"
+      src={`${import.meta.env.PUBLIC_API_ENDPOINT}/swagger`}
+    />
+  );
 }

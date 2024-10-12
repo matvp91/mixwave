@@ -1,10 +1,11 @@
-import { tsr } from "@/tsr";
+import { api } from "@/api";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Loader } from "@/components/Loader";
 import { StorageTable } from "./StorageTable";
 import { StorageFilePreview } from "./StorageFilePreview";
 import { StoragePathBreadcrumbs } from "./StoragePathBreadcrumbs";
-import type { FileDto } from "@/tsr";
+import type { FileDto } from "@/api";
 
 type StorageProps = {
   path: string;
@@ -13,27 +14,29 @@ type StorageProps = {
 export function Storage({ path }: StorageProps) {
   const [file, setFile] = useState<FileDto | null>(null);
 
-  const { data, fetchNextPage } = tsr.getStorage.useInfiniteQuery({
+  const { data, fetchNextPage } = useInfiniteQuery({
     queryKey: ["storage", path],
-    queryData: ({ pageParam }) => ({
-      query: {
-        path,
-        cursor: pageParam.cursor,
-        take: 30,
-      },
-    }),
+    queryFn: async ({ queryKey, pageParam }) => {
+      const result = await api.storage.get({
+        query: {
+          path: queryKey[1],
+          cursor: pageParam.cursor,
+          take: 30,
+        },
+      });
+      if (result.error) {
+        throw result.error;
+      }
+      return result.data;
+    },
     initialPageParam: { cursor: "" },
     getNextPageParam: (lastPage) => {
-      return lastPage.body.cursor
-        ? { cursor: lastPage.body.cursor }
-        : undefined;
+      return lastPage?.cursor ? { cursor: lastPage.cursor } : undefined;
     },
   });
 
   const contents = data
-    ? data.pages.flatMap((page) =>
-        page.status === 200 ? page.body.contents : [],
-      )
+    ? data.pages.flatMap((page) => page.contents ?? [])
     : null;
 
   return (

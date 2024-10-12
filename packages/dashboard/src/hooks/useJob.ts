@@ -1,33 +1,39 @@
-import { tsr } from "@/tsr";
 import { useEffect } from "react";
-import type { JobDto } from "@/tsr";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/api";
+import type { JobDto } from "@/api";
 
 export function useJob(id: string) {
-  const queryClient = tsr.useQueryClient();
+  const queryClient = useQueryClient();
 
-  const { data } = tsr.getJob.useQuery({
+  const { data } = useQuery({
     queryKey: ["jobsFromRoot", id],
-    queryData: { params: { id }, query: { fromRoot: true } },
+    queryFn: async ({ queryKey }) => {
+      const result = await api
+        .jobs({ id: queryKey[1] })
+        .get({ query: { fromRoot: true } });
+      if (result.error) {
+        throw result.error;
+      }
+      return result.data;
+    },
     refetchInterval: 2000,
   });
 
   useEffect(() => {
-    const populateCache = (root: typeof data, jobs: JobDto[]) => {
+    const populateCache = (rootJob: JobDto, jobs: JobDto[]) => {
       jobs.forEach((job) => {
-        if (job.id !== id) {
-          queryClient.setQueryData(["jobsFromRoot", job.id], root);
-        }
-        populateCache(root, job.children);
+        queryClient.setQueryData(["jobsFromRoot", job.id], rootJob);
+        populateCache(rootJob, job.children);
       });
     };
 
-    if (data?.status === 200) {
-      populateCache(data, [data.body]);
+    if (data) {
+      populateCache(data, [data]);
     }
   }, [data, queryClient, id]);
 
-  const rootJob = data?.body;
-
+  const rootJob = data;
   if (!rootJob) {
     return null;
   }

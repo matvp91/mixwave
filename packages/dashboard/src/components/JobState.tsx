@@ -3,7 +3,7 @@ import CircleDotDashed from "lucide-react/icons/circle-dot-dashed";
 import Check from "lucide-react/icons/check";
 import X from "lucide-react/icons/x";
 import { cn } from "@/lib/utils";
-import type { JobDto } from "@/tsr";
+import type { JobDto } from "@/api";
 
 export function JobState({ state }: { state: JobDto["state"] }) {
   if (state === "completed") {

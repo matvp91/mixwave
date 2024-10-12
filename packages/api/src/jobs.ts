@@ -1,7 +1,6 @@
-import { allQueus, flowProducer } from "@mixwave/artisan/producer";
+import { allQueus, flowProducer } from "@mixwave/artisan-producer";
 import { Job } from "bullmq";
-import extract from "object-property-extractor";
-import type { JobDto } from "./types.js";
+import type { JobDto } from "./types";
 import type { JobNode, JobState, Queue } from "bullmq";
 
 function findQueueByName(name: string): Queue {
@@ -98,10 +97,12 @@ async function formatJobNode(node: JobNode): Promise<JobDto> {
 
   const state = mapJobState(await job.getState());
 
-  const failedReason = state === "failed" ? job.failedReason : null;
+  const failedReason = state === "failed" ? job.failedReason : undefined;
 
-  const findParentSortKey = (obj: Job): number =>
-    extract(obj, "data.metadata.parentSortKey", 0) as number;
+  const findParentSortKey = (job: Job): number => {
+    const value = job.data?.metadata?.parentSortKey;
+    return typeof value === "number" ? value : 0;
+  };
   (children ?? []).sort(
     (a, b) => findParentSortKey(a.job) - findParentSortKey(b.job),
   );
@@ -111,7 +112,11 @@ async function formatJobNode(node: JobNode): Promise<JobDto> {
   let processedOn = job.processedOn;
   if (processedOn) {
     for (const jobChild of jobChildren) {
-      if (jobChild.processedOn && jobChild.processedOn < processedOn) {
+      if (
+        jobChild.processedOn &&
+        processedOn !== undefined &&
+        jobChild.processedOn < processedOn
+      ) {
         processedOn = jobChild.processedOn;
       }
     }
@@ -120,9 +125,13 @@ async function formatJobNode(node: JobNode): Promise<JobDto> {
   const duration =
     state === "completed" && processedOn && job.finishedOn
       ? job.finishedOn - processedOn
-      : null;
+      : undefined;
 
-  const tag = extract(job.data, "metadata.tag", null) as string | null;
+  let tag: string | undefined;
+  const potentialTag = job.data?.metadata?.tag;
+  if (typeof potentialTag === "string") {
+    tag = potentialTag;
+  }
 
   return {
     id: job.id,
@@ -130,11 +139,11 @@ async function formatJobNode(node: JobNode): Promise<JobDto> {
     state,
     progress,
     duration,
-    processedOn: job.processedOn ?? null,
-    finishedOn: job.finishedOn ?? null,
+    processedOn: job.processedOn,
+    finishedOn: job.finishedOn,
     createdOn: job.timestamp,
     inputData: JSON.stringify(job.data),
-    outputData: job.returnvalue ? JSON.stringify(job.returnvalue) : null,
+    outputData: job.returnvalue ? JSON.stringify(job.returnvalue) : undefined,
     failedReason,
     tag,
     children: jobChildren,

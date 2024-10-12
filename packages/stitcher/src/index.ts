@@ -1,27 +1,22 @@
-import Fastify from "fastify";
-import cors from "@fastify/cors";
-import { env } from "./env.js";
-import { contract } from "./contract.js";
-import { initServer } from "@ts-rest/fastify";
-import { openApiSpec } from "./openapi.js";
-import { createSession } from "./session.js";
+import { Elysia, t } from "elysia";
+import { cors } from "@elysiajs/cors";
+import { swagger } from "@elysiajs/swagger";
+import { env } from "./env";
+import { createSession } from "./session";
+import { validateFilter } from "./filters";
+import { getMasterUrl } from "./url";
 import {
   formatMasterPlaylist,
   formatMediaPlaylist,
   formatAssetList,
-} from "./playlist.js";
-import { validateFilter } from "./filters.js";
-import { getMasterUrl } from "./url.js";
+} from "./playlist";
 
-async function buildServer() {
-  const app = Fastify();
-
-  app.register(cors);
-
-  const s = initServer();
-
-  const router = s.router(contract, {
-    postSession: async ({ body }) => {
+const app = new Elysia()
+  .use(cors())
+  .use(swagger())
+  .post(
+    "/session",
+    async ({ body }) => {
       // This'll fail when uri is invalid.
       getMasterUrl(body.uri);
 
@@ -34,44 +29,77 @@ async function buildServer() {
       const session = await createSession(body);
 
       return {
-        status: 200,
-        body: {
-          url: `${env.PUBLIC_STITCHER_ENDPOINT}/session/${session.id}/master.m3u8`,
-          session,
-        },
+        url: `${env.PUBLIC_STITCHER_ENDPOINT}/session/${session.id}/master.m3u8`,
       };
     },
-    getMasterPlaylist: async ({ params, reply }) => {
-      const response = await formatMasterPlaylist(params.sessionId);
-      return reply.type("application/x-mpegURL").send(response);
+    {
+      body: t.Object({
+        uri: t.String(),
+        interstitials: t.Optional(
+          t.Array(
+            t.Object({
+              timeOffset: t.Number(),
+              uri: t.String(),
+              type: t.Optional(t.Union([t.Literal("ad"), t.Literal("bumper")])),
+            }),
+          ),
+        ),
+        filter: t.Optional(
+          t.Object({
+            resolution: t.Optional(t.String()),
+          }),
+        ),
+        vmap: t.Optional(
+          t.Object({
+            url: t.String(),
+          }),
+        ),
+      }),
     },
-    getMediaPlaylist: async ({ params, reply }) => {
-      const response = await formatMediaPlaylist(params.sessionId, params["*"]);
-      return reply.type("application/x-mpegURL").send(response);
+  )
+  .get(
+    "/session/:sessionId/master.m3u8",
+    async ({ set, params }) => {
+      const playlist = await formatMasterPlaylist(params.sessionId);
+      set.headers["content-type"] = "application/x-mpegURL";
+      return playlist;
     },
-    getAssetList: async ({ query, params }) => {
-      return {
-        status: 200,
-        body: await formatAssetList(params.sessionId, query.startDate),
-      };
+    {
+      params: t.Object({
+        sessionId: t.String(),
+      }),
     },
-    getSpec: async () => {
-      return {
-        status: 200,
-        body: openApiSpec,
-      };
+  )
+  .get(
+    "/session/:sessionId/*",
+    async ({ set, params }) => {
+      const playlist = await formatMediaPlaylist(params.sessionId, params["*"]);
+      set.headers["content-type"] = "application/x-mpegURL";
+      return playlist;
     },
-  });
+    {
+      params: t.Object({
+        sessionId: t.String(),
+        "*": t.String(),
+      }),
+    },
+  )
+  .get(
+    "/session/:sessionId/asset-list.json",
+    async ({ params, query }) => {
+      return await formatAssetList(params.sessionId, query.startDate);
+    },
+    {
+      params: t.Object({
+        sessionId: t.String(),
+      }),
+      query: t.Object({
+        startDate: t.String(),
+      }),
+    },
+  );
 
-  app.register(s.plugin(router));
-
-  return app;
-}
-
-async function main() {
-  const app = await buildServer();
-
-  await app.listen({ host: env.HOST, port: env.PORT });
-}
-
-main();
+app.listen({
+  port: env.PORT,
+  hostname: env.HOST,
+});

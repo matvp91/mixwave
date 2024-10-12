@@ -1,7 +1,0 @@
-{
-  "name": "@mixwave/hls.js",
-  "version": "1.6.0",
-  "type": "module",
-  "main": "./hls.mjs",
-  "types": "./hls.js.d.ts"
-}

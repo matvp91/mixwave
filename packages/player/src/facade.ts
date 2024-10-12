@@ -1,4 +1,4 @@
-import Hls from "@mixwave/hls.js";
+import Hls from "hls.js";
 import EventEmitter from "eventemitter3";
 import { assert } from "./assert";
 import { EventManager } from "./event-manager";
@@ -7,7 +7,7 @@ import type {
   InterstitialAssetStartedData,
   Level,
   MediaPlaylist,
-} from "@mixwave/hls.js";
+} from "hls.js";
 import type {
   MixType,
   Quality,
@@ -254,8 +254,17 @@ export class HlsFacade extends EventEmitter<Events> {
     }
   };
 
+  private tempMediaCache_?: HTMLMediaElement;
+
   private get media_() {
+    if (this.tempMediaCache_) {
+      return this.tempMediaCache_;
+    }
     assert(this.hls.media, "Missing media element");
+
+    // This is temporary. Until we find a better way to manage (multiple) media elements.
+    this.tempMediaCache_ = this.hls.media;
+
     return this.hls.media;
   }
 

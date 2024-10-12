@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { JobTreeItem } from "./JobTreeItem";
-import type { JobDto } from "@/tsr";
+import type { JobDto } from "@/api";
 
 type JobTreeProps = {
   job: JobDto;

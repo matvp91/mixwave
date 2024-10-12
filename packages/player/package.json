@@ -1,6 +1,6 @@
 {
   "name": "@mixwave/player",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Video player controls (React, Tailwind) and an HLS.js facade",
   "author": "Mixwave",
   "homepage": "https://github.com/matvp91/mixwave/tree/main/packages/player",
@@ -17,11 +17,12 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "vite build --watch",
-    "build": "tsc -b && vite build --emptyOutDir",
-    "typedoc": "pnpm run build && typedoc --tsconfig tsconfig.typedoc.json"
+    "build": "tsc -b && vite build",
+    "typedoc": "pnpm run build && typedoc --tsconfig tsconfig.typedoc.json",
+    "lint": "eslint \"./src/**/*.ts\" \"./src/**/*.tsx\" && prettier --check \"./src/**/*.ts\" \"./src/**/*.tsx\""
   },
   "peerDependencies": {
-    "@mixwave/hls.js": "^1.6.0",
+    "hls.js": "^1.6.0-beta.1",
     "react": "^18.3.1"
   },
   "dependencies": {
@@ -35,7 +36,6 @@
     "@vitejs/plugin-react": "^4.3.1",
     "typedoc": "^0.26.8",
     "typedoc-plugin-markdown": "^4.2.9",
-    "typescript": "^5.5.3",
     "vite": "^5.4.1",
     "vite-plugin-dts": "^4.1.0",
     "vite-plugin-svgr": "^4.2.0"

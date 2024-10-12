@@ -1,0 +1,13 @@
+{
+  "name": "@mixwave/artisan-producer",
+  "type": "module",
+  "main": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "bullmq": "^5.12.0",
+    "@mixwave/shared": "workspace:*"
+  }
+}

@@ -4,7 +4,7 @@ import AlertCircle from "lucide-react/icons/alert-circle";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { getDurationStr } from "@/lib/helpers";
 import { JsonHighlight } from "./JsonHighlight";
-import type { JobDto } from "@/tsr";
+import type { JobDto } from "@/api";
 
 type JobViewProps = {
   job: JobDto;

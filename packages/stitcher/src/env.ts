@@ -1,14 +1,13 @@
-import { parseEnv } from "@mixwave/shared/env";
-import { z } from "zod";
+import { parseEnv } from "@mixwave/shared";
 
-export const env = parseEnv({
+export const env = parseEnv((t) => ({
   // process
-  PORT: z.coerce.number().default(52002),
-  HOST: z.string().default("0.0.0.0"),
+  PORT: t.Number({ default: 52002 }),
+  HOST: t.String({ default: "0.0.0.0" }),
 
   // config.env
-  REDIS_HOST: z.string(),
-  REDIS_PORT: z.coerce.number(),
-  PUBLIC_S3_ENDPOINT: z.string(),
-  PUBLIC_STITCHER_ENDPOINT: z.string(),
-});
+  REDIS_HOST: t.String(),
+  REDIS_PORT: t.Number(),
+  PUBLIC_S3_ENDPOINT: t.String(),
+  PUBLIC_STITCHER_ENDPOINT: t.String(),
+}));

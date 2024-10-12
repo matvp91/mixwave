@@ -12,11 +12,10 @@ RUN turbo prune @mixwave/stitcher --docker
 FROM base AS installer
 WORKDIR /app
 COPY --from=builder /app/out/json/ .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 COPY --from=builder /app/out/full/ .
-RUN turbo run build
 
-FROM base as runner
+FROM oven/bun:1 as runner
 WORKDIR /app
 COPY --from=installer ./app .
-CMD [ "node", "packages/stitcher/dist/index.js" ]
+CMD [ "bun", "run", "./packages/stitcher/src/index.ts" ]

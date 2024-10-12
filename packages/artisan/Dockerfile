@@ -12,14 +12,10 @@ RUN turbo prune @mixwave/artisan --docker
 FROM base AS installer
 WORKDIR /app
 COPY --from=builder /app/out/json/ .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 COPY --from=builder /app/out/full/ .
-RUN turbo run build
 
-FROM base as runner
+FROM oven/bun:1 as runner
 WORKDIR /app
-RUN apt-get -y update
-RUN apt-get -y upgrade
-RUN apt-get install -y ffmpeg
 COPY --from=installer ./app .
-CMD [ "node", "packages/artisan/dist/consumer/index.js" ]
+CMD [ "bun", "run", "./packages/artisan/src/index.ts" ]

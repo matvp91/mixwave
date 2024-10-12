@@ -2,37 +2,32 @@
   "name": "@mixwave/stitcher",
   "type": "module",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc-watch --noClear --onSuccess \"node ./dist/index.js\"",
-    "test": "vitest run"
+    "dev": "bun --watch ./src/index.ts",
+    "test": "bun test",
+    "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
+    "typecheck": "tsc"
   },
   "devDependencies": {
+    "@types/bun": "latest",
     "@types/hh-mm-ss": "^1.2.3",
     "@types/lru-cache": "^7.10.10",
     "@types/luxon": "^3.4.2",
     "@types/node": "^22.1.0",
-    "@types/uuid": "^10.0.0",
-    "tsc-watch": "^6.2.0",
-    "typescript": "^5.5.4",
-    "vitest": "^2.1.2"
+    "@types/uuid": "^10.0.0"
   },
   "dependencies": {
-    "@fastify/cors": "^9.0.1",
-    "@fastify/error": "^4.0.0",
-    "@mixwave/artisan": "workspace:*",
-    "@ts-rest/core": "^3.49.3",
-    "@ts-rest/fastify": "^3.49.3",
-    "@ts-rest/open-api": "^3.49.3",
+    "@elysiajs/cors": "^1.1.1",
+    "@elysiajs/swagger": "^1.1.5",
+    "@mixwave/artisan-producer": "workspace:*",
+    "@mixwave/shared": "workspace:*",
     "@xmldom/xmldom": "^0.8.10",
     "dom-parser": "^1.1.5",
-    "fastify": "^4.28.1",
+    "elysia": "^1.1.20",
     "hh-mm-ss": "^1.2.0",
     "lru-cache": "^11.0.1",
     "luxon": "^3.5.0",
     "redis": "^4.7.0",
     "uuid": "^10.0.0",
-    "vast-client": "workspace:*",
-    "zod": "^3.23.8",
-    "@mixwave/shared": "workspace:*"
+    "vast-client": "workspace:*"
   }
 }

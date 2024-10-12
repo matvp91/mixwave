@@ -1,6 +1,5 @@
-import { FilterResolutionInvalidError } from "./errors.js";
-import type { MasterPlaylist, Variant } from "./parser/index.js";
-import type { SessionFilter } from "./session.js";
+import type { MasterPlaylist, Variant } from "./parser";
+import type { SessionFilter } from "./session";
 
 const FILTER_VARIANTS_OPERATOR = {
   "<": (a: number, b: number) => a < b,
@@ -9,14 +8,17 @@ const FILTER_VARIANTS_OPERATOR = {
   ">=": (a: number, b: number) => a >= b,
 } as const;
 
-function getResolutionFilter(resolution: string) {
+function getResolutionFilter(
+  resolution: string,
+): [number, (a: number, b: number) => boolean] {
   const [operator, value] = resolution.split(" ");
   const height = parseInt(value, 10);
 
-  const fn = FILTER_VARIANTS_OPERATOR[operator];
+  const fn =
+    FILTER_VARIANTS_OPERATOR[operator as keyof typeof FILTER_VARIANTS_OPERATOR];
 
-  if (Number.isNaN(height) || typeof fn !== "function") {
-    throw new FilterResolutionInvalidError(resolution);
+  if (Number.isNaN(height) || !fn) {
+    throw new Error(`Resolution filter with value "${resolution}" is invalid.`);
   }
 
   return [height, fn];

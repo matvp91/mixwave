@@ -1,11 +1,11 @@
 import { TableCell, TableRow } from "@/components/ui/table";
-import { tsr } from "@/tsr";
+import { api } from "@/api";
 import { useState } from "react";
 import { Loader } from "./Loader";
 import { Button } from "@/components/ui/button";
 import SquareArrowOutUpRight from "lucide-react/icons/square-arrow-out-up-right";
 import { getSizeStr } from "@/lib/helpers";
-import type { FolderContentDto, FileDto } from "@/tsr";
+import type { FolderContentDto, FileDto } from "@/api";
 
 type StorageRowFileProps = {
   name: string;
@@ -23,11 +23,11 @@ export function StorageRowFile({
   const onClick = async () => {
     setLoading(true);
     try {
-      const response = await tsr.getStorageFile.query({
+      const response = await api.storage.file.get({
         query: { path: content.path },
       });
-      if (response.status === 200) {
-        setFile(response.body);
+      if (response.data) {
+        setFile(response.data);
       }
     } finally {
       setLoading(false);

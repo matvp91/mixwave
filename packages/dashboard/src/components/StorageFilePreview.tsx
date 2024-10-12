@@ -4,7 +4,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import type { FileDto } from "@/tsr";
+import type { FileDto } from "@/api";
 
 type StoragePreviewProps = {
   file: FileDto | null;

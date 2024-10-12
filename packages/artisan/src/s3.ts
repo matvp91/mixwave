@@ -59,13 +59,13 @@ export async function uploadFile(key: string, path: string) {
   await upload.done();
 }
 
-export async function uploadJsonFile(key: string, content: string) {
+export async function uploadJson(key: string, data: object) {
   const upload = new Upload({
     client,
     params: {
       Bucket: env.S3_BUCKET,
       Key: key,
-      Body: content,
+      Body: JSON.stringify(data, null, 2),
       ContentType: "application/json",
     },
   });

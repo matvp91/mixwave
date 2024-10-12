@@ -1,6 +1,6 @@
 import { addPackageJob } from "@mixwave/artisan-producer";
 import { getFakeJob } from "../helpers";
-import { uploadJsonFile } from "../s3";
+import { uploadJson } from "../s3";
 import type {
   Stream,
   FfmpegResult,
@@ -33,10 +33,7 @@ export default async function (job: Job<TranscodeData, TranscodeResult>) {
 
   await job.log(`Writing meta.json (${JSON.stringify(meta)})`);
 
-  await uploadJsonFile(
-    `transcode/${params.assetId}/meta.json`,
-    JSON.stringify(meta, null, 2),
-  );
+  await uploadJson(`transcode/${params.assetId}/meta.json`, meta);
 
   if (params.packageAfter) {
     await job.log("Will queue package job");

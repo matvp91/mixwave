@@ -18,8 +18,11 @@ jobs:
           node-version: 20
           cache: pnpm
       - name: Install dependencies
-        run: pnpm --filter "@mixwave/dashboard" install
+        run: pnpm install
       - name: Build
+        env:
+          PUBLIC_API_ENDPOINT: http://api
+          PUBLIC_STITCHER_ENDPOINT: http://stitcher
         run: |
           cd ./packages/dashboard
           pnpm build

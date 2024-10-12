@@ -235,9 +235,6 @@ importers:
       uniqolor:
         specifier: ^1.1.1
         version: 1.1.1
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
     devDependencies:
       '@mixwave/shared':
         specifier: workspace:*
@@ -7819,10 +7816,6 @@ packages:
 
   /zhead@2.2.4:
     resolution: {integrity: sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag==}
-    dev: false
-
-  /zod@3.23.8:
-    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
     dev: false
 
   /zwitch@2.0.4:

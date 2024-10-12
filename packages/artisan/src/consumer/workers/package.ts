@@ -36,7 +36,7 @@ async function runJob(
   const { params } = job.data;
 
   const inDir = await tmpDir.create();
-  await downloadFolder(inDir, `transcode/${params.assetId}`);
+  await downloadFolder(`transcode/${params.assetId}`, inDir);
 
   job.log(`Synced folder in ${inDir}`);
 

@@ -24,6 +24,12 @@ type UploadFolderOptions = {
   commandInput?: (event: { Key: string }) => Partial<object>;
 };
 
+/**
+ * Upload a folder, with all files and subdirectories to S3.
+ * @param path Local file path
+ * @param key S3 key
+ * @param options
+ */
 export async function uploadFolder(
   path: string,
   key: string,
@@ -32,10 +38,20 @@ export async function uploadFolder(
   await sync(path, `s3://${env.S3_BUCKET}/${key}`, options as SyncOptions);
 }
 
-export async function downloadFolder(path: string, key: string) {
+/**
+ * Download a folder, with all subdirectories from S3.
+ * @param key S3 key
+ * @param path Local file path
+ */
+export async function downloadFolder(key: string, path: string) {
   await sync(`s3://${env.S3_BUCKET}/${key}`, path);
 }
 
+/**
+ * Download a single file from S3 to local file system.
+ * @param path Local file path
+ * @param key S3 key
+ */
 export async function downloadFile(path: string, key: string) {
   const response = await client.send(
     new GetObjectCommand({
@@ -47,6 +63,11 @@ export async function downloadFile(path: string, key: string) {
   await writeFile(`${path}/${basename(key)}`, response.Body as Readable);
 }
 
+/**
+ * Upload a single file to S3 from local file system.
+ * @param key S3 key
+ * @param path Local file path
+ */
 export async function uploadFile(key: string, path: string) {
   const upload = new Upload({
     client,
@@ -59,7 +80,15 @@ export async function uploadFile(key: string, path: string) {
   await upload.done();
 }
 
+/**
+ * Upload an object as a *.json file.
+ * @param key S3 key
+ * @param data Any object, will be serialized to json.
+ */
 export async function uploadJson(key: string, data: object) {
+  if (!key.endsWith(".json")) {
+    throw new Error("Key must be a .json file");
+  }
   const upload = new Upload({
     client,
     params: {

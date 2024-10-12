@@ -38,6 +38,11 @@ type AddTranscodeJobData = {
   tag?: string;
 };
 
+/**
+ * Add a transcode job to the queue.
+ * When called multiple times with the same assetId, duplicate jobs will
+ * be discarded.
+ */
 export async function addTranscodeJob({
   assetId = randomUUID(),
   inputs,
@@ -135,6 +140,9 @@ type AddPackageJobData = {
   tag?: string;
 };
 
+/**
+ * Add a package job to the queue.
+ */
 export async function addPackageJob({
   assetId,
   segmentSize,

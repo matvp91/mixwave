@@ -20,6 +20,12 @@ export type TranscodeResult = {
   assetId: string;
 };
 
+/**
+ * The transcode job relies on the underlying ffmpeg jobs. It waits until these
+ * are finished, and handles the meta.json file.
+ * @param job
+ * @returns
+ */
 export default async function (job: Job<TranscodeData, TranscodeResult>) {
   const { params, metadata } = job.data;
 

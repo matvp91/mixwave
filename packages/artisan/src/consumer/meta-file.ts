@@ -3,6 +3,9 @@ import { Value } from "@sinclair/typebox/value";
 import * as fs from "node:fs/promises";
 import { VideoCodecEnum, AudioCodecEnum, LangCodeEnum } from "@mixwave/shared";
 
+/**
+ * Versioned schema of the meta file.
+ */
 const metaSchema = t.Object({
   version: t.Number(),
   streams: t.Record(
@@ -30,6 +33,11 @@ const metaSchema = t.Object({
   segmentSize: t.Number(),
 });
 
+/**
+ * Will fetch meta file when meta.json is found in path.
+ * @param path S3 dir
+ * @returns
+ */
 export async function getMetaFile(path: string) {
   const text = await fs.readFile(`${path}/meta.json`, "utf8");
   return Value.Parse(metaSchema, JSON.parse(text));

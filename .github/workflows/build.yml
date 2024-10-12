@@ -1,4 +1,4 @@
-name: Build dashboard
+name: Build
 
 on:
   push:
@@ -17,12 +17,12 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
       - name: Install dependencies
         run: pnpm install
       - name: Build
         env:
           PUBLIC_API_ENDPOINT: http://api
           PUBLIC_STITCHER_ENDPOINT: http://stitcher
-        run: |
-          cd ./packages/dashboard
-          pnpm build
+        run: pnpm build

@@ -8,6 +8,8 @@ export function Progress() {
   const { time, state, seeking, setSeeking, seekTo } = useUiContext();
 
   const ref = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+
   const [hover, setHover] = useState(false);
   const [value, setValue] = useState(0);
 
@@ -81,12 +83,18 @@ export function Progress() {
       onPointerLeave={onPointerLeave}
     >
       <div
+        ref={tooltipRef}
         className={cn(
           "absolute bg-black/95 text-white rounded-md -translate-x-1/2 bottom-6 h-8 px-2 flex items-center opacity-0 transition-opacity pointer-events-none text-sm",
           active && "opacity-100",
         )}
         style={{
-          left: `${(value / state.duration) * 100}%`,
+          left: calculateTooltipLeft(
+            value,
+            state.duration,
+            ref.current,
+            tooltipRef.current,
+          ),
         }}
       >
         {toHMS(value)}
@@ -126,4 +134,25 @@ export function Progress() {
       })}
     </div>
   );
+}
+
+function calculateTooltipLeft(
+  value: number,
+  duration: number,
+  element: HTMLDivElement | null,
+  tooltipElement: HTMLDivElement | null,
+) {
+  let percentage = value / duration;
+
+  if (element && tooltipElement) {
+    const half = tooltipElement.clientWidth / 2;
+    const bound = half / element.clientWidth;
+    if (percentage < bound) {
+      percentage = bound;
+    } else if (percentage > 1 - bound) {
+      percentage = 1 - bound;
+    }
+  }
+
+  return `${percentage * 100}%`;
 }

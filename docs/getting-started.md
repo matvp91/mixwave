@@ -61,35 +61,32 @@ In a scalable architecture, you probably do not want to run the ffmpeg and trans
 ### Prerequisites
 
 - A [Redis](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/) server, with [JSON](https://redis.io/docs/latest/develop/data-types/json/) support. We suggest [Redis Stack](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/).
-- Node v20.16.0 or above.
+- Bun v1.1.30 or above.
 - The [pnpm](https://pnpm.io/installation) package manager.
 
 ### Build
 
 Mixwave is a monorepo, running `pnpm run build` at the root of the project will create a `dist` folder with the node files needed to start the api, stitcher and workers.
 
-### Services
+Mixwave is a monorepo, we rely on Bun as a runtime. There's a couple of packages (such as client apps) that require a build step, you can do that by running `pnpm build` in the root. This'll build the player, dashboard and docs.
 
-Once built, you can run each package separately by going to the package directory and running `pnpm run start`. When you run redis locally, add the following variables to the `config.env` file at your root:
-
-::: code-group
-
-```sh [config.env]
-REDIS_HOST=localhost
-REDIS_PORT=6379
-```
-
-:::
-
-There's two packages that provide you with an API:
-
-- `api`: The main api endpoint where you can start a transcode or package job. Runs on port `52001` by default.
-- `stitcher`: A playlist manipulator proxy where you can customize the HLS playlist on the fly. Runs on port `52002` by default.
-
-Then there's `artisan`, the actual job runner.
+### Development
 
 ::: info
-Jobs get pushed onto a queue and are consumed by artisan. You can run multiple artisan instances across different machines in order to scale the ffmpeg or package work.
+Make sure you have a config.env file at the root, and it contains the right info.
 :::
 
-Finally, we have a React app named `dashboard` which uses the api package to display a list of running, completed or failed jobs. This is a single page application and can be hosted statically, it does not require node.
+We aim to make it as easy for you to get started with development. All you'll have to do is install the dependencies (once), and call the dev script.
+
+```sh
+pnpm install
+pnpm dev
+```
+
+If you did not specify other ports for the separate services, you'd have these services running now:
+
+- Dashboard: localhost:52000
+- API: localhost:52001
+- Stitcher: localhost:52002
+
+The artisan workers have also been booted in the background, and they're ready to do some transcoding work.

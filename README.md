@@ -64,9 +64,8 @@ We built a `facade` that simplifies working with [HLS.js](https://github.com/vid
 - **Documentation**: There's a separate [README](https://github.com/matvp91/mixwave/tree/main/packages/player) dedicated to the player module.
 
 ```sh
-# When hls.js releases v1.6.0, we'll deprecate our own fork. For now, we'll use it
-# as it contains interstitials support.
-npm i @mixwave/hls.js
+# We currently rely on HLS.js 1.6.0 beta as it contains interstitials support.
+npm i hls.js@1.6.0-beta.1
 npm i @mixwave/player
 ```
 

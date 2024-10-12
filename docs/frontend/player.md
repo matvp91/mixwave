@@ -9,21 +9,21 @@ next:
 We built a couple of tools to simplify working with HLS streams through [HLS.js](https://github.com/video-dev/hls.js) and HLS Interstitials. HLS.js is primarily a streaming library and can get tricky once you dive into the details. We tried to abstract away these details by providing a simple `HlsFacade` wrapper. Since you provide an `Hls` instance yourself, you're still in full control to do as you please. Our goal is not to abstract away the neat HLS.js API, but rather build an extension that simplifies certain things like quality selection, reading interstitial state, events, ...
 
 > [!CAUTION]
-> Today we rely on a fork of HLS.js - [@mixwave/hls.js](https://www.npmjs.com/package/@mixwave/hls.js), this is an unreleased build of HLS.js with interstitials support. Once `v1.6.0` ([see progress](https://github.com/video-dev/hls.js/milestone/80)) is released, we'll deprecate our fork.
+> Today we rely on a beta build of HLS.js, v1.6.0-beta.1, once a final version is out, we'll update the peer dependency.
 
 <video class="video-frame" src="/video/Player.mp4" loop muted autoplay></video>
 
 ## Installation
 
 ```sh
-npm i @mixwave/hls.js
+npm i hls.js@1.6.0-beta.1
 npm i @mixwave/player
 ```
 
 ## Facade
 
 ```typescript
-import Hls from "@mixwave/hls.js";
+import Hls from "hls.js";
 import { HlsFacade } from "@mixwave/player";
 
 const hls = new Hls();
@@ -61,7 +61,7 @@ module.exports = {
 We primarily built the UI on top of methods and state managed by the `facade`. State exposed by the facade holds all necessary info to get you started on building your own UI, and the methods are designed in a way that it makes sense for a UI to bind directly to them (eg; `facade.playOrPause()`).
 
 ```tsx
-import Hls from "@mixwave/hls.js";
+import Hls from "hls.js";
 import { HlsUi, HlsFacade } from "@mixwave/player";
 
 export function PlayerControls() {

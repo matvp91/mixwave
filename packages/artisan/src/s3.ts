@@ -1,9 +1,4 @@
-import {
-  GetObjectCommand,
-  S3,
-  CopyObjectCommand,
-  DeleteObjectCommand,
-} from "@aws-sdk/client-s3";
+import { GetObjectCommand, S3 } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { S3SyncClient } from "s3-sync-client";
 import { basename } from "path";
@@ -12,7 +7,6 @@ import { createReadStream } from "node:fs";
 import { env } from "./env";
 import type { Readable } from "node:stream";
 import type { SyncOptions } from "s3-sync-client/dist/commands/SyncCommand";
-import type { ObjectCannedACL } from "@aws-sdk/client-s3";
 
 const client = new S3({
   endpoint: env.S3_ENDPOINT,
@@ -76,26 +70,4 @@ export async function uploadJsonFile(key: string, content: string) {
     },
   });
   await upload.done();
-}
-
-export async function copyFile(
-  name: string,
-  key: string,
-  acl?: ObjectCannedACL,
-) {
-  await client.send(
-    new CopyObjectCommand({
-      Bucket: env.S3_BUCKET,
-      Key: key,
-      CopySource: `/${env.S3_BUCKET}/${name}`,
-      ACL: acl,
-    }),
-  );
-
-  await client.send(
-    new DeleteObjectCommand({
-      Bucket: env.S3_BUCKET,
-      Key: name,
-    }),
-  );
 }

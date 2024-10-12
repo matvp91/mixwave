@@ -12,7 +12,7 @@ export function PlayerPage() {
   const [error, setError] = useState<object>();
 
   useEffect(() => {
-    fetch(`${import.meta.env.PUBLIC_STITCHER_ENDPOINT}/swagger/json`)
+    fetch(`${window.__ENV__.PUBLIC_STITCHER_ENDPOINT}/swagger/json`)
       .then((response) => response.json())
       .then((data) => {
         setSchema(
@@ -27,7 +27,7 @@ export function PlayerPage() {
     setMasterUrl(undefined);
 
     const response = await fetch(
-      `${import.meta.env.PUBLIC_STITCHER_ENDPOINT}/session`,
+      `${window.__ENV__.PUBLIC_STITCHER_ENDPOINT}/session`,
       {
         method: "post",
         headers: {
@@ -59,7 +59,7 @@ export function PlayerPage() {
           title={
             <div className="flex gap-2 text-xs">
               <span className="font-bold">POST</span>
-              {import.meta.env.PUBLIC_STITCHER_ENDPOINT}/session
+              {window.__ENV__.PUBLIC_STITCHER_ENDPOINT}/session
             </div>
           }
           onSave={onSave}

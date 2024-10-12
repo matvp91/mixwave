@@ -1,10 +1,15 @@
-import { defineConfig } from "vite";
+import { defineConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
-import { loadConfigEnv } from "@mixwave/shared";
+import { parseEnv } from "@mixwave/shared";
 
-loadConfigEnv();
+// When we inject new PUBLIC_ variables, make sure to add them
+// in src/globals.d.ts too.
+const env = parseEnv((t) => ({
+  PUBLIC_API_ENDPOINT: t.String(),
+  PUBLIC_STITCHER_ENDPOINT: t.String(),
+}));
 
 const MANUAL_CHUNKS = [
   "hls.js",
@@ -13,10 +18,21 @@ const MANUAL_CHUNKS = [
   "react-syntax-highlighter",
 ];
 
+function ssiEnvPlugin(values: Record<string, string>) {
+  return {
+    name: "html-transform",
+    transformIndexHtml(html) {
+      Object.entries(values).forEach(([key, value]) => {
+        html = html.replace(`<!--#echo var="${key}"-->`, value);
+      });
+      return html;
+    },
+  } satisfies Plugin;
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  envPrefix: "PUBLIC_",
+  plugins: [react(), ssiEnvPlugin(env)],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

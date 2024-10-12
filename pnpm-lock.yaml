@@ -1471,7 +1471,7 @@ packages:
     peerDependencies:
       elysia: '>= 1.1.0'
     dependencies:
-      elysia: 1.1.20(@sinclair/typebox@0.33.16)(typescript@5.5.4)
+      elysia: 1.1.20(@sinclair/typebox@0.33.16)
     dev: false
 
   /@elysiajs/swagger@1.1.5(elysia@1.1.20):
@@ -5168,6 +5168,23 @@ packages:
   /electron-to-chromium@1.5.5:
     resolution: {integrity: sha512-QR7/A7ZkMS8tZuoftC/jfqNkZLQO779SSW3YuZHP4eXpj3EffGLFcB/Xu9AAZQzLccTiCV+EmUo3ha4mQ9wnlA==}
     dev: true
+
+  /elysia@1.1.20(@sinclair/typebox@0.33.16):
+    resolution: {integrity: sha512-WDkl9RUK+g9laBhHhAEMZedzDRDwNq5XlLfGEbn5dVMG0HLUgr1y6IaJ7495S1mbSOCVSM+7qpqT3ULji6ftew==}
+    peerDependencies:
+      '@sinclair/typebox': '>= 0.32.0'
+      openapi-types: '>= 12.0.0'
+      typescript: '>= 5.0.0'
+    peerDependenciesMeta:
+      openapi-types:
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      '@sinclair/typebox': 0.33.16
+      cookie: 0.6.0
+      fast-decode-uri-component: 1.0.1
+    dev: false
 
   /elysia@1.1.20(@sinclair/typebox@0.33.16)(typescript@5.5.4):
     resolution: {integrity: sha512-WDkl9RUK+g9laBhHhAEMZedzDRDwNq5XlLfGEbn5dVMG0HLUgr1y6IaJ7495S1mbSOCVSM+7qpqT3ULji6ftew==}

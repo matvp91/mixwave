@@ -56,11 +56,11 @@ docker compose up -d
 
 ## Run locally
 
-We try to make it as easy for you to run Mixwave locally. Install [Bun](https://bun.sh/) (v1.1.30 or above), and [pnpm](https://pnpm.io/installation). Next up, make sure you have the `config.env` file configured properly as well. Run the following commands at the root of the project:
+We try to make it as easy for you to run Mixwave locally. Install [Bun](https://bun.sh/) (v1.1.30 or above), and [pnpm](https://pnpm.io/installation). Next up, make sure you have the `config.env` file configured properly as well. We recommend [Redis Stack](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/) in your dev env. Run the following commands at the root of the project:
 
 ```shell
 pnpm install
-pnpm dev # This'll spin up everything for you, with hot reloading and all.
+pnpm dev # That's it!
 ```
 
 Go to `http://localhost:5200` and you're good to go!

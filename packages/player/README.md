@@ -28,7 +28,7 @@ module.exports = {
 Pass your `HLS.js` instance to the facade.
 
 ```ts
-import Hls from "@mixwave/hls.js";
+import Hls from "hls.js";
 import { HlsFacade } from "@mixwave/player";
 
 const hls = new Hls();

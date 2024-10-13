@@ -1,6 +1,6 @@
 // Bun Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`playlists playlist(master-audioChannels.m3u8) 1`] = `
+exports[`playlists parse playlist(master-audioChannels.m3u8) 1`] = `
 {
   "independentSegments": false,
   "variants": [
@@ -41,7 +41,7 @@ exports[`playlists playlist(master-audioChannels.m3u8) 1`] = `
 }
 `;
 
-exports[`playlists playlist(media-mediaSequence.m3u8) 1`] = `
+exports[`playlists parse playlist(media-mediaSequence.m3u8) 1`] = `
 {
   "dateRanges": [],
   "discontinuitySequenceBase": undefined,
@@ -83,7 +83,7 @@ exports[`playlists playlist(media-mediaSequence.m3u8) 1`] = `
 }
 `;
 
-exports[`playlists playlist(media-fmp4.m3u8) 1`] = `
+exports[`playlists parse playlist(media-fmp4.m3u8) 1`] = `
 {
   "dateRanges": [],
   "discontinuitySequenceBase": undefined,
@@ -115,7 +115,7 @@ exports[`playlists playlist(media-fmp4.m3u8) 1`] = `
 }
 `;
 
-exports[`playlists playlist(media-simple.m3u8) 1`] = `
+exports[`playlists parse playlist(media-simple.m3u8) 1`] = `
 {
   "dateRanges": [],
   "discontinuitySequenceBase": undefined,
@@ -157,7 +157,7 @@ exports[`playlists playlist(media-simple.m3u8) 1`] = `
 }
 `;
 
-exports[`playlists playlist(master-multipleAudioGroups.m3u8) 1`] = `
+exports[`playlists parse playlist(master-multipleAudioGroups.m3u8) 1`] = `
 {
   "independentSegments": false,
   "variants": [
@@ -297,7 +297,7 @@ exports[`playlists playlist(master-multipleAudioGroups.m3u8) 1`] = `
 }
 `;
 
-exports[`playlists playlist(media-interstitials.m3u8) 1`] = `
+exports[`playlists parse playlist(media-interstitials.m3u8) 1`] = `
 {
   "dateRanges": [
     {
@@ -467,7 +467,7 @@ exports[`playlists playlist(media-interstitials.m3u8) 1`] = `
 }
 `;
 
-exports[`playlists playlist(media-dateTime.m3u8) 1`] = `
+exports[`playlists parse playlist(media-dateTime.m3u8) 1`] = `
 {
   "dateRanges": [],
   "discontinuitySequenceBase": undefined,
@@ -531,7 +531,7 @@ exports[`playlists playlist(media-dateTime.m3u8) 1`] = `
 }
 `;
 
-exports[`playlists playlist(master-simple.m3u8) 1`] = `
+exports[`playlists parse playlist(master-simple.m3u8) 1`] = `
 {
   "independentSegments": false,
   "variants": [
@@ -580,7 +580,7 @@ exports[`playlists playlist(master-simple.m3u8) 1`] = `
 }
 `;
 
-exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
+exports[`playlists parse playlist(master-fmp4.m3u8) 1`] = `
 {
   "independentSegments": true,
   "variants": [
@@ -1284,7 +1284,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
 }
 `;
 
-exports[`playlists playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
+exports[`playlists parse playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
 {
   "independentSegments": false,
   "variants": [
@@ -1422,4 +1422,73 @@ exports[`playlists playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
     },
   ],
 }
+`;
+
+exports[`playlists stringify playlist(master-fmp4.mjs) 1`] = `
+"#EXTM3U
+#EXT-X-VERSION:8
+#EXT-X-INDEPENDENT-SEGMENTS
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="aud1",NAME="English",LANGUAGE="eng",URI="a1/prog_index.m3u8"
+#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="sub1",NAME="English",LANGUAGE="eng",URI="s1/eng/prog_index.m3u8"
+#EXT-X-STREAM-INF:BANDWIDTH=2215219,CODECS="avc1.640020,mp4a.40.2",RESOLUTION=960x540,AUDIO="aud1",SUBTITLES="sub1"
+v4/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=7976430,CODECS="avc1.64002a,mp4a.40.2",RESOLUTION=1920x1080,AUDIO="aud1",SUBTITLES="sub1"
+v8/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=6181885,CODECS="avc1.64002a,mp4a.40.2",RESOLUTION=1920x1080,AUDIO="aud1",SUBTITLES="sub1"
+v7/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=4682666,CODECS="avc1.64002a,mp4a.40.2",RESOLUTION=1920x1080,AUDIO="aud1",SUBTITLES="sub1"
+v6/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=3170746,CODECS="avc1.640020,mp4a.40.2",RESOLUTION=1280x720,AUDIO="aud1",SUBTITLES="sub1"
+v5/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=1276223,CODECS="avc1.64001e,mp4a.40.2",RESOLUTION=768x432,AUDIO="aud1",SUBTITLES="sub1"
+v3/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=904744,CODECS="avc1.64001e,mp4a.40.2",RESOLUTION=640x360,AUDIO="aud1",SUBTITLES="sub1"
+v2/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=538201,CODECS="avc1.640015,mp4a.40.2",RESOLUTION=480x270,AUDIO="aud1",SUBTITLES="sub1"
+v1/prog_index.m3u8
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="aud2",NAME="English",LANGUAGE="eng",URI="a2/prog_index.m3u8"
+#EXT-X-STREAM-INF:BANDWIDTH=2440329,CODECS="avc1.640020,ac-3",RESOLUTION=960x540,AUDIO="aud2",SUBTITLES="sub1"
+v4/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=8201540,CODECS="avc1.64002a,ac-3",RESOLUTION=1920x1080,AUDIO="aud2",SUBTITLES="sub1"
+v8/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=6406995,CODECS="avc1.64002a,ac-3",RESOLUTION=1920x1080,AUDIO="aud2",SUBTITLES="sub1"
+v7/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=4907776,CODECS="avc1.64002a,ac-3",RESOLUTION=1920x1080,AUDIO="aud2",SUBTITLES="sub1"
+v6/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=3395856,CODECS="avc1.640020,ac-3",RESOLUTION=1280x720,AUDIO="aud2",SUBTITLES="sub1"
+v5/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=1501333,CODECS="avc1.64001e,ac-3",RESOLUTION=768x432,AUDIO="aud2",SUBTITLES="sub1"
+v3/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=1129854,CODECS="avc1.64001e,ac-3",RESOLUTION=640x360,AUDIO="aud2",SUBTITLES="sub1"
+v2/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=763311,CODECS="avc1.640015,ac-3",RESOLUTION=480x270,AUDIO="aud2",SUBTITLES="sub1"
+v1/prog_index.m3u8
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="aud3",NAME="English",LANGUAGE="eng",URI="a3/prog_index.m3u8"
+#EXT-X-STREAM-INF:BANDWIDTH=2248329,CODECS="avc1.640020,ec-3",RESOLUTION=960x540,AUDIO="aud3",SUBTITLES="sub1"
+v4/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=8009540,CODECS="avc1.64002a,ec-3",RESOLUTION=1920x1080,AUDIO="aud3",SUBTITLES="sub1"
+v8/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=6214995,CODECS="avc1.64002a,ec-3",RESOLUTION=1920x1080,AUDIO="aud3",SUBTITLES="sub1"
+v7/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=4715776,CODECS="avc1.64002a,ec-3",RESOLUTION=1920x1080,AUDIO="aud3",SUBTITLES="sub1"
+v6/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=3203856,CODECS="avc1.640020,ec-3",RESOLUTION=1280x720,AUDIO="aud3",SUBTITLES="sub1"
+v5/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=1309333,CODECS="avc1.64001e,ec-3",RESOLUTION=768x432,AUDIO="aud3",SUBTITLES="sub1"
+v3/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=937854,CODECS="avc1.64001e,ec-3",RESOLUTION=640x360,AUDIO="aud3",SUBTITLES="sub1"
+v2/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=571311,CODECS="avc1.640015,ec-3",RESOLUTION=480x270,AUDIO="aud3",SUBTITLES="sub1"
+v1/prog_index.m3u8"
+`;
+
+exports[`playlists stringify playlist(master-audioChannels.mjs) 1`] = `
+"#EXTM3U
+#EXT-X-VERSION:8
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio-hi",NAME="Espanol Surround",LANGUAGE="sp",URI="sp/prog_index1.m3u8",CHANNELS="6"
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio-hi",NAME="Espanol Stereo",LANGUAGE="sp",URI="sp/prog_index2.m3u8",CHANNELS="2"
+#EXT-X-STREAM-INF:BANDWIDTH=195023,CODECS="mp4a.40.5",AUDIO="audio-hi"
+lo/prog_index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=195023,CODECS="mp4a.40.5"
+lo/prog_index.m3u8"
 `;

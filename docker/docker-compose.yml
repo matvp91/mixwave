@@ -1,0 +1,48 @@
+version: "3"
+
+volumes:
+  mixwave_redis_data:
+
+services:
+  mixwave-api:
+    image: "mixwave/api:latest"
+    restart: always
+    ports:
+      - 52001:52001
+    depends_on:
+      - mixwave-redis
+    env_file: config.env
+    environment:
+      - REDIS_HOST=mixwave-redis
+      - REDIS_PORT=6379
+
+  mixwave-stitcher:
+    image: "mixwave/stitcher:latest"
+    restart: always
+    ports:
+      - 52002:52002
+    depends_on:
+      - mixwave-redis
+    env_file: config.env
+    environment:
+      - REDIS_HOST=mixwave-redis
+      - REDIS_PORT=6379
+
+  mixwave-artisan:
+    image: "mixwave/artisan:latest"
+    restart: always
+    depends_on:
+      - mixwave-redis
+    env_file: config.env
+    environment:
+      - REDIS_HOST=mixwave-redis
+      - REDIS_PORT=6379
+
+  mixwave-redis:
+    image: redis/redis-stack-server:7.2.0-v6
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+    volumes:
+      - mixwave_redis_data:/data

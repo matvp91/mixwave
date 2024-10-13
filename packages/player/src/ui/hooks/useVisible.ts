@@ -41,7 +41,7 @@ export function useVisible(): UseVisible {
 
     setVisible(true);
 
-    timerRef.current = setTimeout(() => {
+    timerRef.current = window.setTimeout(() => {
       setVisible(false);
     }, 3000);
   }, [setVisible]);

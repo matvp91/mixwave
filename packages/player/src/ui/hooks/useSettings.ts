@@ -27,7 +27,7 @@ export function useSettings(): UseSettings {
         }
 
         if (!isOver && timerRef.current === undefined) {
-          timerRef.current = setTimeout(() => {
+          timerRef.current = window.setTimeout(() => {
             setValue(null);
             timerRef.current = undefined;
           }, 200);

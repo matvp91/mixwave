@@ -24,7 +24,7 @@ export function SqButton({
 
   const onMouseEnter = () => {
     clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
+    timerRef.current = window.setTimeout(() => {
       onIdle?.();
     }, idleTime ?? 200);
   };

@@ -199,7 +199,7 @@ export class HlsFacade extends EventEmitter<Events> {
 
     // Basic batch mechanism if we call setState_ close to the last time tick.
     clearTimeout(this.batchTimerId_);
-    this.batchTimerId_ = setTimeout(() => {
+    this.batchTimerId_ = window.setTimeout(() => {
       this.emit("*");
     }, 10);
   }
@@ -222,7 +222,7 @@ export class HlsFacade extends EventEmitter<Events> {
     assert(this.state);
 
     clearTimeout(this.timerId_);
-    this.timerId_ = setTimeout(this.pollTime_, 250);
+    this.timerId_ = window.setTimeout(this.pollTime_, 250);
 
     const timings = this.getTimings_();
 

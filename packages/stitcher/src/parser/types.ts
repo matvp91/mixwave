@@ -11,6 +11,7 @@ export type Rendition = {
   type: RenditionType;
   groupId: string;
   name: string;
+  language?: string;
   uri?: string;
   channels?: string;
 };

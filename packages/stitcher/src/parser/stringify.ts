@@ -15,6 +15,9 @@ function buildRendition(lines: Lines, rendition: Rendition) {
     `GROUP-ID="${rendition.groupId}"`,
     `NAME="${rendition.name}"`,
   ];
+  if (rendition.language) {
+    attrs.push(`LANGUAGE="${rendition.language}"`);
+  }
   if (rendition.uri) {
     attrs.push(`URI="${rendition.uri}"`);
   }

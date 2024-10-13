@@ -60,6 +60,7 @@ export type Media = {
   type: MediaType;
   groupId: string;
   name: string;
+  language?: string;
   uri?: string;
   channels?: string;
 };
@@ -165,6 +166,9 @@ function parseLine(line: string): Tag | null {
           case "GROUP-ID":
             attrs.groupId = value;
             break;
+          case "LANGUAGE":
+            attrs.language = value;
+            break;
           case "NAME":
             attrs.name = value;
             break;
@@ -179,6 +183,7 @@ function parseLine(line: string): Tag | null {
 
       assert(attrs.type, "EXT-X-MEDIA: no type");
       assert(attrs.groupId, "EXT-X-MEDIA: no groupId");
+      assert(attrs.language, "EXT-X-MEDIA: no language");
       assert(attrs.name, "EXT-X-MEDIA: no name");
 
       return [
@@ -186,6 +191,7 @@ function parseLine(line: string): Tag | null {
         {
           type: attrs.type,
           groupId: attrs.groupId,
+          language: attrs.language,
           name: attrs.name,
           uri: attrs.uri,
           channels: attrs.channels,

@@ -125,6 +125,7 @@ function addRendition(variant: Variant, media: Media) {
     type: media.type,
     groupId: media.groupId,
     name: media.name,
+    language: media.language,
     uri: media.uri,
     channels: media.channels,
   };

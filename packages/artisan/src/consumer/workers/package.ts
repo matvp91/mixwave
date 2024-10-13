@@ -75,6 +75,7 @@ async function runJob(
         `playlist_name=${file.name}/playlist.m3u8`,
         "hls_group_id=audio",
         `hls_name=${formatLanguage(by639_2T[stream.language])}`,
+        `language=${stream.language}`,
       ]);
     }
 

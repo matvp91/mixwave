@@ -31,7 +31,9 @@ export function TextAudioPane() {
           onSelect={(id) => facade.setAudioTrack(id)}
           items={state.audioTracks.map((it) => ({
             id: it.id,
-            label: toLang(it.playlist.name),
+            label: it.playlist.lang
+              ? it.playlist.lang
+              : toLang(it.playlist.name),
             checked: it.active,
           }))}
         />

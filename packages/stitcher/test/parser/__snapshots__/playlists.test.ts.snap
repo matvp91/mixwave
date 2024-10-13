@@ -1,1246 +1,4 @@
-// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
-
-exports[`playlists > playlist(master-audioChannels.m3u8) 1`] = `
-{
-  "independentSegments": false,
-  "variants": [
-    {
-      "audio": [
-        {
-          "channels": "6",
-          "groupId": "audio-hi",
-          "name": "Espanol Surround",
-          "type": "AUDIO",
-          "uri": "sp/prog_index1.m3u8",
-        },
-        {
-          "channels": "2",
-          "groupId": "audio-hi",
-          "name": "Espanol Stereo",
-          "type": "AUDIO",
-          "uri": "sp/prog_index2.m3u8",
-        },
-      ],
-      "bandwidth": 195023,
-      "codecs": "mp4a.40.5",
-      "resolution": undefined,
-      "subtitles": [],
-      "uri": "lo/prog_index.m3u8",
-    },
-    {
-      "audio": [],
-      "bandwidth": 195023,
-      "codecs": "mp4a.40.5",
-      "resolution": undefined,
-      "subtitles": [],
-      "uri": "lo/prog_index.m3u8",
-    },
-  ],
-}
-`;
-
-exports[`playlists > playlist(master-fmp4.m3u8) 1`] = `
-{
-  "independentSegments": true,
-  "variants": [
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud1",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a1/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 2215219,
-      "codecs": "avc1.640020,mp4a.40.2",
-      "resolution": {
-        "height": 540,
-        "width": 960,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v4/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud1",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a1/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 7976430,
-      "codecs": "avc1.64002a,mp4a.40.2",
-      "resolution": {
-        "height": 1080,
-        "width": 1920,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v8/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud1",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a1/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 6181885,
-      "codecs": "avc1.64002a,mp4a.40.2",
-      "resolution": {
-        "height": 1080,
-        "width": 1920,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v7/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud1",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a1/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 4682666,
-      "codecs": "avc1.64002a,mp4a.40.2",
-      "resolution": {
-        "height": 1080,
-        "width": 1920,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v6/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud1",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a1/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 3170746,
-      "codecs": "avc1.640020,mp4a.40.2",
-      "resolution": {
-        "height": 720,
-        "width": 1280,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v5/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud1",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a1/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 1276223,
-      "codecs": "avc1.64001e,mp4a.40.2",
-      "resolution": {
-        "height": 432,
-        "width": 768,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v3/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud1",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a1/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 904744,
-      "codecs": "avc1.64001e,mp4a.40.2",
-      "resolution": {
-        "height": 360,
-        "width": 640,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v2/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud1",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a1/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 538201,
-      "codecs": "avc1.640015,mp4a.40.2",
-      "resolution": {
-        "height": 270,
-        "width": 480,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v1/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud2",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a2/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 2440329,
-      "codecs": "avc1.640020,ac-3",
-      "resolution": {
-        "height": 540,
-        "width": 960,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v4/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud2",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a2/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 8201540,
-      "codecs": "avc1.64002a,ac-3",
-      "resolution": {
-        "height": 1080,
-        "width": 1920,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v8/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud2",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a2/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 6406995,
-      "codecs": "avc1.64002a,ac-3",
-      "resolution": {
-        "height": 1080,
-        "width": 1920,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v7/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud2",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a2/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 4907776,
-      "codecs": "avc1.64002a,ac-3",
-      "resolution": {
-        "height": 1080,
-        "width": 1920,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v6/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud2",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a2/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 3395856,
-      "codecs": "avc1.640020,ac-3",
-      "resolution": {
-        "height": 720,
-        "width": 1280,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v5/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud2",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a2/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 1501333,
-      "codecs": "avc1.64001e,ac-3",
-      "resolution": {
-        "height": 432,
-        "width": 768,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v3/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud2",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a2/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 1129854,
-      "codecs": "avc1.64001e,ac-3",
-      "resolution": {
-        "height": 360,
-        "width": 640,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v2/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud2",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a2/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 763311,
-      "codecs": "avc1.640015,ac-3",
-      "resolution": {
-        "height": 270,
-        "width": 480,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v1/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud3",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a3/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 2248329,
-      "codecs": "avc1.640020,ec-3",
-      "resolution": {
-        "height": 540,
-        "width": 960,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v4/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud3",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a3/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 8009540,
-      "codecs": "avc1.64002a,ec-3",
-      "resolution": {
-        "height": 1080,
-        "width": 1920,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v8/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud3",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a3/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 6214995,
-      "codecs": "avc1.64002a,ec-3",
-      "resolution": {
-        "height": 1080,
-        "width": 1920,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v7/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud3",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a3/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 4715776,
-      "codecs": "avc1.64002a,ec-3",
-      "resolution": {
-        "height": 1080,
-        "width": 1920,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v6/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud3",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a3/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 3203856,
-      "codecs": "avc1.640020,ec-3",
-      "resolution": {
-        "height": 720,
-        "width": 1280,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v5/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud3",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a3/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 1309333,
-      "codecs": "avc1.64001e,ec-3",
-      "resolution": {
-        "height": 432,
-        "width": 768,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v3/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud3",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a3/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 937854,
-      "codecs": "avc1.64001e,ec-3",
-      "resolution": {
-        "height": 360,
-        "width": 640,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v2/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "aud3",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "a3/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 571311,
-      "codecs": "avc1.640015,ec-3",
-      "resolution": {
-        "height": 270,
-        "width": 480,
-      },
-      "subtitles": [
-        {
-          "channels": undefined,
-          "groupId": "sub1",
-          "name": "English",
-          "type": "SUBTITLES",
-          "uri": "s1/eng/prog_index.m3u8",
-        },
-      ],
-      "uri": "v1/prog_index.m3u8",
-    },
-  ],
-}
-`;
-
-exports[`playlists > playlist(master-multipleAudioGroups.m3u8) 1`] = `
-{
-  "independentSegments": false,
-  "variants": [
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "audio-lo",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "englo/prog_index.m3u8",
-        },
-        {
-          "channels": undefined,
-          "groupId": "audio-lo",
-          "name": "Français",
-          "type": "AUDIO",
-          "uri": "frelo/prog_index.m3u8",
-        },
-        {
-          "channels": undefined,
-          "groupId": "audio-lo",
-          "name": "Espanol",
-          "type": "AUDIO",
-          "uri": "splo/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 195023,
-      "codecs": "mp4a.40.5",
-      "resolution": undefined,
-      "subtitles": [],
-      "uri": "lo/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "audio-lo",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "englo/prog_index.m3u8",
-        },
-        {
-          "channels": undefined,
-          "groupId": "audio-lo",
-          "name": "Français",
-          "type": "AUDIO",
-          "uri": "frelo/prog_index.m3u8",
-        },
-        {
-          "channels": undefined,
-          "groupId": "audio-lo",
-          "name": "Espanol",
-          "type": "AUDIO",
-          "uri": "splo/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 260000,
-      "codecs": "avc1.42e01e,mp4a.40.2",
-      "resolution": undefined,
-      "subtitles": [],
-      "uri": "lo2/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "audio-hi",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "eng/prog_index.m3u8",
-        },
-        {
-          "channels": undefined,
-          "groupId": "audio-hi",
-          "name": "Français",
-          "type": "AUDIO",
-          "uri": "fre/prog_index.m3u8",
-        },
-        {
-          "channels": undefined,
-          "groupId": "audio-hi",
-          "name": "Espanol",
-          "type": "AUDIO",
-          "uri": "sp/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 591680,
-      "codecs": "mp4a.40.2, avc1.64001e",
-      "resolution": undefined,
-      "subtitles": [],
-      "uri": "hi/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "audio-hi",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "eng/prog_index.m3u8",
-        },
-        {
-          "channels": undefined,
-          "groupId": "audio-hi",
-          "name": "Français",
-          "type": "AUDIO",
-          "uri": "fre/prog_index.m3u8",
-        },
-        {
-          "channels": undefined,
-          "groupId": "audio-hi",
-          "name": "Espanol",
-          "type": "AUDIO",
-          "uri": "sp/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 650000,
-      "codecs": "avc1.42e01e,mp4a.40.2",
-      "resolution": undefined,
-      "subtitles": [],
-      "uri": "hi2/prog_index.m3u8",
-    },
-  ],
-}
-`;
-
-exports[`playlists > playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
-{
-  "independentSegments": false,
-  "variants": [
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "audio-lo",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": undefined,
-        },
-        {
-          "channels": undefined,
-          "groupId": "audio-lo",
-          "name": "Français",
-          "type": "AUDIO",
-          "uri": "frelo/prog_index.m3u8",
-        },
-        {
-          "channels": undefined,
-          "groupId": "audio-lo",
-          "name": "Espanol",
-          "type": "AUDIO",
-          "uri": "splo/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 195023,
-      "codecs": "mp4a.40.5",
-      "resolution": undefined,
-      "subtitles": [],
-      "uri": "lo/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "audio-lo",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": undefined,
-        },
-        {
-          "channels": undefined,
-          "groupId": "audio-lo",
-          "name": "Français",
-          "type": "AUDIO",
-          "uri": "frelo/prog_index.m3u8",
-        },
-        {
-          "channels": undefined,
-          "groupId": "audio-lo",
-          "name": "Espanol",
-          "type": "AUDIO",
-          "uri": "splo/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 260000,
-      "codecs": "avc1.42e01e,mp4a.40.2",
-      "resolution": undefined,
-      "subtitles": [],
-      "uri": "lo2/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "audio-hi",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "eng/prog_index.m3u8",
-        },
-        {
-          "channels": undefined,
-          "groupId": "audio-hi",
-          "name": "Français",
-          "type": "AUDIO",
-          "uri": "fre/prog_index.m3u8",
-        },
-        {
-          "channels": undefined,
-          "groupId": "audio-hi",
-          "name": "Espanol",
-          "type": "AUDIO",
-          "uri": "sp/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 591680,
-      "codecs": "mp4a.40.2, avc1.64001e",
-      "resolution": undefined,
-      "subtitles": [],
-      "uri": "hi/prog_index.m3u8",
-    },
-    {
-      "audio": [
-        {
-          "channels": undefined,
-          "groupId": "audio-hi",
-          "name": "English",
-          "type": "AUDIO",
-          "uri": "eng/prog_index.m3u8",
-        },
-        {
-          "channels": undefined,
-          "groupId": "audio-hi",
-          "name": "Français",
-          "type": "AUDIO",
-          "uri": "fre/prog_index.m3u8",
-        },
-        {
-          "channels": undefined,
-          "groupId": "audio-hi",
-          "name": "Espanol",
-          "type": "AUDIO",
-          "uri": "sp/prog_index.m3u8",
-        },
-      ],
-      "bandwidth": 650000,
-      "codecs": "avc1.42e01e,mp4a.40.2",
-      "resolution": undefined,
-      "subtitles": [],
-      "uri": "hi2/prog_index.m3u8",
-    },
-  ],
-}
-`;
-
-exports[`playlists > playlist(master-simple.m3u8) 1`] = `
-{
-  "independentSegments": false,
-  "variants": [
-    {
-      "audio": [],
-      "bandwidth": 240000,
-      "codecs": undefined,
-      "resolution": {
-        "height": 224,
-        "width": 396,
-      },
-      "subtitles": [],
-      "uri": "media.m3u8",
-    },
-    {
-      "audio": [],
-      "bandwidth": 40000,
-      "codecs": undefined,
-      "resolution": undefined,
-      "subtitles": [],
-      "uri": "media1.m3u8",
-    },
-    {
-      "audio": [],
-      "bandwidth": 440000,
-      "codecs": undefined,
-      "resolution": {
-        "height": 224,
-        "width": 396,
-      },
-      "subtitles": [],
-      "uri": "media2.m3u8",
-    },
-    {
-      "audio": [],
-      "bandwidth": 1928000,
-      "codecs": undefined,
-      "resolution": {
-        "height": 540,
-        "width": 960,
-      },
-      "subtitles": [],
-      "uri": "media3.m3u8",
-    },
-  ],
-}
-`;
-
-exports[`playlists > playlist(media-dateTime.m3u8) 1`] = `
-{
-  "dateRanges": [],
-  "discontinuitySequenceBase": undefined,
-  "endlist": true,
-  "independentSegments": false,
-  "mediaSequenceBase": 0,
-  "playlistType": "VOD",
-  "segments": [
-    {
-      "discontinuity": undefined,
-      "duration": 10,
-      "map": undefined,
-      "programDateTime": undefined,
-      "uri": "hls_450k_video.ts",
-    },
-    {
-      "discontinuity": undefined,
-      "duration": 10,
-      "map": undefined,
-      "programDateTime": "2016-06-22T13:20:26.166+00:00",
-      "uri": "hls_450k_video.ts",
-    },
-  ],
-  "targetDuration": 10,
-}
-`;
-
-exports[`playlists > playlist(media-fmp4.m3u8) 1`] = `
-{
-  "dateRanges": [],
-  "discontinuitySequenceBase": undefined,
-  "endlist": true,
-  "independentSegments": true,
-  "mediaSequenceBase": 1,
-  "playlistType": "VOD",
-  "segments": [
-    {
-      "discontinuity": undefined,
-      "duration": 6.006,
-      "map": {
-        "uri": "main.mp4",
-      },
-      "programDateTime": undefined,
-      "uri": "main.mp4",
-    },
-    {
-      "discontinuity": undefined,
-      "duration": 6.006,
-      "map": {
-        "uri": "main.mp4",
-      },
-      "programDateTime": undefined,
-      "uri": "main.mp4",
-    },
-  ],
-  "targetDuration": 6,
-}
-`;
-
-exports[`playlists > playlist(media-interstitials.m3u8) 1`] = `
-{
-  "dateRanges": [
-    {
-      "classId": "com.apple.hls.interstitial",
-      "clientAttributes": {
-        "ASSET-LIST": "http://localhost:52002/session/b41fa084-fad0-47f7-af9e-7f03c2e81edb/asset-list.json?startDate",
-        "RESTRICT": "SKIP,JUMP",
-        "RESUME-OFFSET": 0,
-      },
-      "id": "i0",
-      "startDate": "2024-10-07T17:17:00.207+00:00",
-    },
-    {
-      "classId": "com.apple.hls.interstitial",
-      "clientAttributes": {
-        "ASSET-LIST": "http://localhost:52002/session/b41fa084-fad0-47f7-af9e-7f03c2e81edb/asset-list.json?startDate",
-        "RESTRICT": "SKIP,JUMP",
-        "RESUME-OFFSET": 0,
-      },
-      "id": "i1",
-      "startDate": "2024-10-07T17:17:10.207+00:00",
-    },
-  ],
-  "discontinuitySequenceBase": undefined,
-  "endlist": true,
-  "independentSegments": false,
-  "mediaSequenceBase": undefined,
-  "playlistType": "VOD",
-  "segments": [
-    {
-      "discontinuity": undefined,
-      "duration": 4,
-      "map": {
-        "uri": "init.mp4",
-      },
-      "programDateTime": undefined,
-      "uri": "1.m4s",
-    },
-    {
-      "discontinuity": undefined,
-      "duration": 4,
-      "map": {
-        "uri": "init.mp4",
-      },
-      "programDateTime": undefined,
-      "uri": "2.m4s",
-    },
-    {
-      "discontinuity": undefined,
-      "duration": 4,
-      "map": {
-        "uri": "init.mp4",
-      },
-      "programDateTime": undefined,
-      "uri": "3.m4s",
-    },
-    {
-      "discontinuity": undefined,
-      "duration": 4,
-      "map": {
-        "uri": "init.mp4",
-      },
-      "programDateTime": undefined,
-      "uri": "4.m4s",
-    },
-    {
-      "discontinuity": undefined,
-      "duration": 4,
-      "map": {
-        "uri": "init.mp4",
-      },
-      "programDateTime": undefined,
-      "uri": "5.m4s",
-    },
-    {
-      "discontinuity": undefined,
-      "duration": 5.833,
-      "map": {
-        "uri": "init.mp4",
-      },
-      "programDateTime": undefined,
-      "uri": "6.m4s",
-    },
-    {
-      "discontinuity": undefined,
-      "duration": 3.792,
-      "map": {
-        "uri": "init.mp4",
-      },
-      "programDateTime": undefined,
-      "uri": "7.m4s",
-    },
-  ],
-  "targetDuration": 6,
-}
-`;
-
-exports[`playlists > playlist(media-mediaSequence.m3u8) 1`] = `
-{
-  "dateRanges": [],
-  "discontinuitySequenceBase": undefined,
-  "endlist": true,
-  "independentSegments": false,
-  "mediaSequenceBase": 0,
-  "playlistType": "VOD",
-  "segments": [
-    {
-      "discontinuity": undefined,
-      "duration": 6.64,
-      "map": undefined,
-      "programDateTime": undefined,
-      "uri": "/test/ts-files/tvy7/8a5e2822668b5370f4eb1438b2564fb7ab12ffe1-hi720.ts",
-    },
-    {
-      "discontinuity": undefined,
-      "duration": 6.08,
-      "map": undefined,
-      "programDateTime": undefined,
-      "uri": "/test/ts-files/tvy7/56be1cef869a1c0cc8e38864ad1add17d187f051-hi720.ts",
-    },
-    {
-      "discontinuity": undefined,
-      "duration": 6.6,
-      "map": undefined,
-      "programDateTime": undefined,
-      "uri": "/test/ts-files/tvy7/549c8c77f55f049741a06596e5c1e01dacaa46d0-hi720.ts",
-    },
-    {
-      "discontinuity": undefined,
-      "duration": 5,
-      "map": undefined,
-      "programDateTime": undefined,
-      "uri": "/test/ts-files/tvy7/6cfa378684ffeb1c455a64dae6c103290a1f53d4-hi720.ts",
-    },
-  ],
-  "targetDuration": 8,
-}
-`;
-
-exports[`playlists > playlist(media-simple.m3u8) 1`] = `
-{
-  "dateRanges": [],
-  "discontinuitySequenceBase": undefined,
-  "endlist": true,
-  "independentSegments": false,
-  "mediaSequenceBase": undefined,
-  "playlistType": "VOD",
-  "segments": [
-    {
-      "discontinuity": undefined,
-      "duration": 10,
-      "map": undefined,
-      "programDateTime": undefined,
-      "uri": "media-00001.ts",
-    },
-    {
-      "discontinuity": undefined,
-      "duration": 10,
-      "map": undefined,
-      "programDateTime": undefined,
-      "uri": "media-00002.ts",
-    },
-    {
-      "discontinuity": undefined,
-      "duration": 10,
-      "map": undefined,
-      "programDateTime": undefined,
-      "uri": "media-00003.ts",
-    },
-    {
-      "discontinuity": undefined,
-      "duration": 10,
-      "map": undefined,
-      "programDateTime": undefined,
-      "uri": "media-00004.ts",
-    },
-  ],
-  "targetDuration": 10,
-}
-`;
+// Bun Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`playlists playlist(master-audioChannels.m3u8) 1`] = `
 {
@@ -1251,6 +9,7 @@ exports[`playlists playlist(master-audioChannels.m3u8) 1`] = `
         {
           "channels": "6",
           "groupId": "audio-hi",
+          "language": "sp",
           "name": "Espanol Surround",
           "type": "AUDIO",
           "uri": "sp/prog_index1.m3u8",
@@ -1258,6 +17,7 @@ exports[`playlists playlist(master-audioChannels.m3u8) 1`] = `
         {
           "channels": "2",
           "groupId": "audio-hi",
+          "language": "sp",
           "name": "Espanol Stereo",
           "type": "AUDIO",
           "uri": "sp/prog_index2.m3u8",
@@ -1406,6 +166,7 @@ exports[`playlists playlist(master-multipleAudioGroups.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-lo",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "englo/prog_index.m3u8",
@@ -1413,6 +174,7 @@ exports[`playlists playlist(master-multipleAudioGroups.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-lo",
+          "language": "fre",
           "name": "Français",
           "type": "AUDIO",
           "uri": "frelo/prog_index.m3u8",
@@ -1420,6 +182,7 @@ exports[`playlists playlist(master-multipleAudioGroups.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-lo",
+          "language": "sp",
           "name": "Espanol",
           "type": "AUDIO",
           "uri": "splo/prog_index.m3u8",
@@ -1436,6 +199,7 @@ exports[`playlists playlist(master-multipleAudioGroups.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-lo",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "englo/prog_index.m3u8",
@@ -1443,6 +207,7 @@ exports[`playlists playlist(master-multipleAudioGroups.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-lo",
+          "language": "fre",
           "name": "Français",
           "type": "AUDIO",
           "uri": "frelo/prog_index.m3u8",
@@ -1450,6 +215,7 @@ exports[`playlists playlist(master-multipleAudioGroups.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-lo",
+          "language": "sp",
           "name": "Espanol",
           "type": "AUDIO",
           "uri": "splo/prog_index.m3u8",
@@ -1466,6 +232,7 @@ exports[`playlists playlist(master-multipleAudioGroups.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-hi",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "eng/prog_index.m3u8",
@@ -1473,6 +240,7 @@ exports[`playlists playlist(master-multipleAudioGroups.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-hi",
+          "language": "fre",
           "name": "Français",
           "type": "AUDIO",
           "uri": "fre/prog_index.m3u8",
@@ -1480,6 +248,7 @@ exports[`playlists playlist(master-multipleAudioGroups.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-hi",
+          "language": "sp",
           "name": "Espanol",
           "type": "AUDIO",
           "uri": "sp/prog_index.m3u8",
@@ -1496,6 +265,7 @@ exports[`playlists playlist(master-multipleAudioGroups.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-hi",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "eng/prog_index.m3u8",
@@ -1503,6 +273,7 @@ exports[`playlists playlist(master-multipleAudioGroups.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-hi",
+          "language": "fre",
           "name": "Français",
           "type": "AUDIO",
           "uri": "fre/prog_index.m3u8",
@@ -1510,6 +281,7 @@ exports[`playlists playlist(master-multipleAudioGroups.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-hi",
+          "language": "sp",
           "name": "Espanol",
           "type": "AUDIO",
           "uri": "sp/prog_index.m3u8",
@@ -1817,6 +589,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud1",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a1/prog_index.m3u8",
@@ -1832,6 +605,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -1844,6 +618,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud1",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a1/prog_index.m3u8",
@@ -1859,6 +634,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -1871,6 +647,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud1",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a1/prog_index.m3u8",
@@ -1886,6 +663,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -1898,6 +676,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud1",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a1/prog_index.m3u8",
@@ -1913,6 +692,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -1925,6 +705,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud1",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a1/prog_index.m3u8",
@@ -1940,6 +721,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -1952,6 +734,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud1",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a1/prog_index.m3u8",
@@ -1967,6 +750,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -1979,6 +763,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud1",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a1/prog_index.m3u8",
@@ -1994,6 +779,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2006,6 +792,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud1",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a1/prog_index.m3u8",
@@ -2021,6 +808,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2033,6 +821,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud2",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a2/prog_index.m3u8",
@@ -2048,6 +837,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2060,6 +850,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud2",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a2/prog_index.m3u8",
@@ -2075,6 +866,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2087,6 +879,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud2",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a2/prog_index.m3u8",
@@ -2102,6 +895,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2114,6 +908,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud2",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a2/prog_index.m3u8",
@@ -2129,6 +924,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2141,6 +937,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud2",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a2/prog_index.m3u8",
@@ -2156,6 +953,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2168,6 +966,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud2",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a2/prog_index.m3u8",
@@ -2183,6 +982,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2195,6 +995,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud2",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a2/prog_index.m3u8",
@@ -2210,6 +1011,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2222,6 +1024,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud2",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a2/prog_index.m3u8",
@@ -2237,6 +1040,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2249,6 +1053,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud3",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a3/prog_index.m3u8",
@@ -2264,6 +1069,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2276,6 +1082,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud3",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a3/prog_index.m3u8",
@@ -2291,6 +1098,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2303,6 +1111,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud3",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a3/prog_index.m3u8",
@@ -2318,6 +1127,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2330,6 +1140,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud3",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a3/prog_index.m3u8",
@@ -2345,6 +1156,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2357,6 +1169,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud3",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a3/prog_index.m3u8",
@@ -2372,6 +1185,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2384,6 +1198,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud3",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a3/prog_index.m3u8",
@@ -2399,6 +1214,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2411,6 +1227,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud3",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a3/prog_index.m3u8",
@@ -2426,6 +1243,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2438,6 +1256,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "aud3",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "a3/prog_index.m3u8",
@@ -2453,6 +1272,7 @@ exports[`playlists playlist(master-fmp4.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "sub1",
+          "language": "eng",
           "name": "English",
           "type": "SUBTITLES",
           "uri": "s1/eng/prog_index.m3u8",
@@ -2473,6 +1293,7 @@ exports[`playlists playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-lo",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": undefined,
@@ -2480,6 +1301,7 @@ exports[`playlists playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-lo",
+          "language": "fre",
           "name": "Français",
           "type": "AUDIO",
           "uri": "frelo/prog_index.m3u8",
@@ -2487,6 +1309,7 @@ exports[`playlists playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-lo",
+          "language": "sp",
           "name": "Espanol",
           "type": "AUDIO",
           "uri": "splo/prog_index.m3u8",
@@ -2503,6 +1326,7 @@ exports[`playlists playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-lo",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": undefined,
@@ -2510,6 +1334,7 @@ exports[`playlists playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-lo",
+          "language": "fre",
           "name": "Français",
           "type": "AUDIO",
           "uri": "frelo/prog_index.m3u8",
@@ -2517,6 +1342,7 @@ exports[`playlists playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-lo",
+          "language": "sp",
           "name": "Espanol",
           "type": "AUDIO",
           "uri": "splo/prog_index.m3u8",
@@ -2533,6 +1359,7 @@ exports[`playlists playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-hi",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "eng/prog_index.m3u8",
@@ -2540,6 +1367,7 @@ exports[`playlists playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-hi",
+          "language": "fre",
           "name": "Français",
           "type": "AUDIO",
           "uri": "fre/prog_index.m3u8",
@@ -2547,6 +1375,7 @@ exports[`playlists playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-hi",
+          "language": "sp",
           "name": "Espanol",
           "type": "AUDIO",
           "uri": "sp/prog_index.m3u8",
@@ -2563,6 +1392,7 @@ exports[`playlists playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-hi",
+          "language": "eng",
           "name": "English",
           "type": "AUDIO",
           "uri": "eng/prog_index.m3u8",
@@ -2570,6 +1400,7 @@ exports[`playlists playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-hi",
+          "language": "fre",
           "name": "Français",
           "type": "AUDIO",
           "uri": "fre/prog_index.m3u8",
@@ -2577,6 +1408,7 @@ exports[`playlists playlist(master-multipleAudioGroupsCombined.m3u8) 1`] = `
         {
           "channels": undefined,
           "groupId": "audio-hi",
+          "language": "sp",
           "name": "Espanol",
           "type": "AUDIO",
           "uri": "sp/prog_index.m3u8",

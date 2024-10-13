@@ -5,6 +5,9 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
     branches:
       - main
+  push:
+    branches:
+      - main
   workflow_dispatch: # Allows for manual triggering.
 
 jobs:

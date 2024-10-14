@@ -69,6 +69,20 @@ install_ffmpeg () {
     success "Downloaded ffmpeg"
 }
 
+install_ffprobe () {
+    ffprobe_uri=https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffprobe-$target.gz
+
+    info "Downloading ffprob from \"$ffprobe_uri\""
+
+    ffprobe_exe=$bin_dir/ffprobe.gz
+    curl --fail --location --progress-bar --output "$ffprobe_exe" "$ffprobe_uri" ||
+        error "Failed to download ffprobe from \"$ffprobe_uri\""
+
+    gzip -d $ffprobe_exe
+
+    success "Downloaded ffprobe"
+}
+
 install_packager () {
     packager_target=$target
     if [ "$packager_target" == "darwin-x64" ]; then
@@ -89,6 +103,7 @@ install_packager () {
 }
 
 install_ffmpeg
+install_ffprobe
 install_packager
 
 chmod +x $bin_dir/ffmpeg

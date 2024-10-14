@@ -3,6 +3,7 @@ import { getFakeJob } from "../helpers";
 import { uploadJson } from "../s3";
 import type { FfmpegResult } from "./ffmpeg";
 import type { Stream } from "../../types";
+import type { MetaFile } from "../meta-file";
 import type { Job } from "bullmq";
 
 export type TranscodeData = {
@@ -33,7 +34,7 @@ export default async function (job: Job<TranscodeData, TranscodeResult>) {
 
   const childrenValues = await fakeJob.getChildrenValues();
 
-  const meta = {
+  const meta: MetaFile = {
     version: 1,
     streams: Object.entries(childrenValues).reduce<Record<string, Stream>>(
       (acc, [key, value]) => {

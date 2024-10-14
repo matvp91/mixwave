@@ -1,7 +1,11 @@
-import { Type as t } from "@sinclair/typebox";
+import { Type as t, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 import * as fs from "node:fs/promises";
-import { VideoCodecEnum, AudioCodecEnum, LangCodeEnum } from "@mixwave/shared";
+import {
+  VideoCodecSchema,
+  AudioCodecSchema,
+  LangCodeSchema,
+} from "@mixwave/shared";
 
 /**
  * Versioned schema of the meta file.
@@ -13,25 +17,27 @@ const metaSchema = t.Object({
     t.Union([
       t.Object({
         type: t.Literal("video"),
-        codec: VideoCodecEnum,
+        codec: VideoCodecSchema,
         height: t.Number(),
         bitrate: t.Number(),
         framerate: t.Number(),
       }),
       t.Object({
         type: t.Literal("audio"),
-        codec: AudioCodecEnum,
+        codec: AudioCodecSchema,
         bitrate: t.Number(),
-        language: LangCodeEnum,
+        language: LangCodeSchema,
       }),
       t.Object({
         type: t.Literal("text"),
-        language: LangCodeEnum,
+        language: LangCodeSchema,
       }),
     ]),
   ),
   segmentSize: t.Number(),
 });
+
+export type MetaFile = Static<typeof metaSchema>;
 
 /**
  * Will fetch meta file when meta.json is found in path.

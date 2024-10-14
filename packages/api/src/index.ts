@@ -2,7 +2,11 @@ import { Elysia, t } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
 import { addTranscodeJob, addPackageJob } from "@mixwave/artisan/producer";
-import { LangCodeEnum, VideoCodecEnum, AudioCodecEnum } from "@mixwave/shared";
+import {
+  LangCodeSchema,
+  VideoCodecSchema,
+  AudioCodecSchema,
+} from "@mixwave/shared";
 import { env } from "./env";
 import { getJob, getJobs, getJobLogs } from "./jobs";
 import { getStorageFolder, getStorageFile } from "./s3";
@@ -41,6 +45,9 @@ const app = new Elysia()
     }),
   )
   .model({
+    LangCode: LangCodeSchema,
+    VideoCodec: VideoCodecSchema,
+    AudioCodec: AudioCodecSchema,
     Job: JobSchema,
     StorageFolder: StorageFolderSchema,
     StorageFile: StorageFileSchema,
@@ -71,7 +78,7 @@ const app = new Elysia()
                 description:
                   "The source path, starting with http(s):// or s3://",
               }),
-              language: LangCodeEnum,
+              language: t.Ref(LangCodeSchema),
             }),
             t.Object({
               type: t.Literal("text"),
@@ -79,7 +86,7 @@ const app = new Elysia()
                 description:
                   "The source path, starting with http(s):// or s3://",
               }),
-              language: LangCodeEnum,
+              language: t.Ref(LangCodeSchema),
             }),
           ]),
           {
@@ -92,20 +99,20 @@ const app = new Elysia()
           t.Union([
             t.Object({
               type: t.Literal("video"),
-              codec: VideoCodecEnum,
+              codec: t.Ref(VideoCodecSchema),
               height: t.Number(),
               bitrate: t.Number({ description: "Bitrate in bps" }),
               framerate: t.Number({ description: "Frames per second" }),
             }),
             t.Object({
               type: t.Literal("audio"),
-              codec: AudioCodecEnum,
+              codec: t.Ref(AudioCodecSchema),
               bitrate: t.Number({ description: "Bitrate in bps" }),
-              language: LangCodeEnum,
+              language: t.Ref(LangCodeSchema),
             }),
             t.Object({
               type: t.Literal("text"),
-              language: LangCodeEnum,
+              language: t.Ref(LangCodeSchema),
             }),
           ]),
           {
@@ -188,9 +195,7 @@ const app = new Elysia()
       return await getJobs();
     },
     {
-      response: {
-        200: t.Array(JobSchema),
-      },
+      response: t.Array(t.Ref(JobSchema)),
     },
   )
   .get(
@@ -205,9 +210,7 @@ const app = new Elysia()
       query: t.Object({
         fromRoot: t.Optional(t.Boolean()),
       }),
-      response: {
-        200: "Job",
-      },
+      response: t.Ref(JobSchema),
     },
   )
   .get(
@@ -219,9 +222,7 @@ const app = new Elysia()
       params: t.Object({
         id: t.String(),
       }),
-      response: {
-        200: t.Array(t.String()),
-      },
+      response: t.Array(t.String()),
     },
   )
   .get(
@@ -235,9 +236,7 @@ const app = new Elysia()
         cursor: t.Optional(t.String()),
         take: t.Optional(t.Number()),
       }),
-      response: {
-        200: "StorageFolder",
-      },
+      response: t.Ref(StorageFolderSchema),
     },
   )
   .get(
@@ -249,9 +248,7 @@ const app = new Elysia()
       query: t.Object({
         path: t.String(),
       }),
-      response: {
-        200: "StorageFile",
-      },
+      response: t.Ref(StorageFileSchema),
     },
   );
 

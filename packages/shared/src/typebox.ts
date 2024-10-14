@@ -13,18 +13,22 @@ function StringLiteralUnion<T extends string[]>(
   return t.Union(literals) as TUnion<IntoStringLiteralUnion<T>>;
 }
 
-export const LangCodeEnum = StringLiteralUnion(
+export const LangCodeSchema = StringLiteralUnion(
   Object.keys(by639_2T) as (keyof typeof by639_2T)[],
 );
+LangCodeSchema.description = "ISO 639 (T2), 3 characters, language code.";
+LangCodeSchema.$id = "#/components/schemas/LangCode";
 
-LangCodeEnum.description = "ISO 639 (T2), 3 characters, language code.";
+export type LangCode = Static<typeof LangCodeSchema>;
 
-export type LangCode = Static<typeof LangCodeEnum>;
+export const VideoCodecSchema = StringLiteralUnion(["h264", "vp9", "hevc"]);
+VideoCodecSchema.description = "Supported video codecs.";
+VideoCodecSchema.$id = "#/components/schemas/VideoCodec";
 
-export const VideoCodecEnum = StringLiteralUnion(["h264", "vp9", "hevc"]);
+export type VideoCodec = Static<typeof VideoCodecSchema>;
 
-export type VideoCodec = Static<typeof VideoCodecEnum>;
+export const AudioCodecSchema = StringLiteralUnion(["aac"]);
+AudioCodecSchema.description = "Supported audio codecs.";
+AudioCodecSchema.$id = "#/components/schemas/AudoCodec";
 
-export const AudioCodecEnum = StringLiteralUnion(["aac"]);
-
-export type AudioCodec = Static<typeof AudioCodecEnum>;
+export type AudioCodec = Static<typeof AudioCodecSchema>;

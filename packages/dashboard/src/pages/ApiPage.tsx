@@ -3,14 +3,14 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export function ApiPage() {
   const navigate = useNavigate();
-  const { service } = useParams() as {
+  const { service = "api" } = useParams() as {
     service?: string;
   };
 
   const baseUrl = {
     api: window.__ENV__.PUBLIC_API_ENDPOINT,
     stitcher: window.__ENV__.PUBLIC_STITCHER_ENDPOINT,
-  }[service ?? "api"];
+  }[service];
 
   return (
     <>

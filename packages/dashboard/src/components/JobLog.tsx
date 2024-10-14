@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import ArrowDownFromLine from "lucide-react/icons/arrow-down-from-line";
 import ArrowUpFromLine from "lucide-react/icons/arrow-up-from-line";
@@ -14,13 +14,17 @@ export function JobLog({ value, index }: JobLogProps) {
   const [expanded, setExpanded] = useState(false);
 
   useLayoutEffect(() => {
-    if (!ref.current) {
-      return;
-    }
-
-    if (ref.current.clientHeight < ref.current.scrollHeight) {
-      setShowMore(true);
-    }
+    const onResize = () => {
+      if (!ref.current) {
+        return;
+      }
+      setShowMore(ref.current.clientHeight < ref.current.scrollHeight);
+    };
+    window.addEventListener("resize", onResize);
+    onResize();
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
   }, []);
 
   return (
@@ -35,15 +39,12 @@ export function JobLog({ value, index }: JobLogProps) {
         </div>
         {showMore ? (
           <button
+            className="text-xs font-medium"
             onClick={() => {
               setExpanded((v) => !v);
             }}
           >
-            {expanded ? (
-              <ArrowUpFromLine className="w-4 h-4" />
-            ) : (
-              <ArrowDownFromLine className="w-4 h-4" />
-            )}
+            {expanded ? "collapse" : "expand"}
           </button>
         ) : null}
       </div>

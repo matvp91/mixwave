@@ -219,6 +219,9 @@ const app = new Elysia()
       params: t.Object({
         id: t.String(),
       }),
+      response: {
+        200: t.Array(t.String()),
+      },
     },
   )
   .get(

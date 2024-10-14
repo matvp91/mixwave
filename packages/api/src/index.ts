@@ -63,8 +63,7 @@ const app = new Elysia()
     },
     {
       detail: {
-        summary: "Transcode",
-        description: "Push a transcode job",
+        summary: "Create transcode job",
       },
       body: t.Object({
         inputs: t.Array(
@@ -166,8 +165,7 @@ const app = new Elysia()
     },
     {
       detail: {
-        summary: "Package",
-        description: "Push a package job",
+        summary: "Create package job",
       },
       body: t.Object({
         assetId: t.String(),

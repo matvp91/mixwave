@@ -3,9 +3,9 @@ import CircleDotDashed from "lucide-react/icons/circle-dot-dashed";
 import Check from "lucide-react/icons/check";
 import X from "lucide-react/icons/x";
 import { cn } from "@/lib/utils";
-import type { JobDto } from "@/api";
+import type { Job } from "@/api";
 
-export function JobState({ state }: { state: JobDto["state"] }) {
+export function JobState({ state }: { state: Job["state"] }) {
   if (state === "completed") {
     return createCircle("bg-emerald-200 text-emerald-800", Check);
   }

@@ -1,10 +1,10 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { JobStatsTile } from "./JobStatsTile";
-import type { JobDto } from "@/api";
+import type { Job } from "@/api";
 import type { JobsFilterData } from "./types";
 
 type JobsStatsProps = {
-  jobs: JobDto[];
+  jobs: Job[];
   filter: JobsFilterData;
   onChange(value: Partial<JobsFilterData>): void;
 };
@@ -30,7 +30,7 @@ export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
     }
   }
 
-  const filterJobState = (state?: JobDto["state"]) => {
+  const filterJobState = (state?: Job["state"]) => {
     if (state === filter.state) {
       state = undefined;
     }

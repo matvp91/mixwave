@@ -1,7 +1,7 @@
 import { allQueus, flowProducer } from "@mixwave/artisan/producer";
-import { Job } from "bullmq";
+import { Job as BullMQJob } from "bullmq";
 import type { JobNode, JobState, Queue } from "bullmq";
-import type { JobDto } from "./types";
+import type { Job } from "./types";
 
 function findQueueByName(name: string): Queue {
   const queue = allQueus.find((queue) => queue.name === name);
@@ -16,8 +16,8 @@ function formatIdPair(id: string): [Queue, string] {
   return [findQueueByName(queueName), id];
 }
 
-export async function getJobs(): Promise<JobDto[]> {
-  const result: JobDto[] = [];
+export async function getJobs(): Promise<Job[]> {
+  const result: Job[] = [];
 
   for (const queue of allQueus) {
     const jobs = await queue.getJobs();
@@ -35,7 +35,7 @@ export async function getJobs(): Promise<JobDto[]> {
   return result;
 }
 
-export async function getJob(id: string, fromRoot?: boolean): Promise<JobDto> {
+export async function getJob(id: string, fromRoot?: boolean): Promise<Job> {
   const node = await getJobNode(id, fromRoot);
   return await formatJobNode(node);
 }
@@ -51,7 +51,7 @@ export async function getJobLogs(id: string): Promise<string[]> {
 async function getJobNode(id: string, fromRoot?: boolean): Promise<JobNode> {
   const [queue, jobId] = formatIdPair(id);
 
-  let job = await Job.fromId(queue, jobId);
+  let job = await BullMQJob.fromId(queue, jobId);
   if (fromRoot) {
     // If we want the root, resolve it and work with that as our job.
     job = await findRootJob(job);
@@ -67,14 +67,14 @@ async function getJobNode(id: string, fromRoot?: boolean): Promise<JobNode> {
   });
 }
 
-async function findRootJob(job?: Job): Promise<Job | undefined> {
+async function findRootJob(job?: BullMQJob): Promise<BullMQJob | undefined> {
   if (!job) {
     return;
   }
 
   while (job.parent) {
     const [queue, jobId] = formatIdPair(job.parent.id);
-    const parentJob = await Job.fromId(queue, jobId);
+    const parentJob = await BullMQJob.fromId(queue, jobId);
     if (!parentJob) {
       throw new Error("No parent job found.");
     }
@@ -84,7 +84,7 @@ async function findRootJob(job?: Job): Promise<Job | undefined> {
   return job;
 }
 
-async function formatJobNode(node: JobNode): Promise<JobDto> {
+async function formatJobNode(node: JobNode): Promise<Job> {
   const { job, children } = node;
   if (!job.id) {
     throw new Error("Missing job id");
@@ -99,7 +99,7 @@ async function formatJobNode(node: JobNode): Promise<JobDto> {
 
   const failedReason = state === "failed" ? job.failedReason : undefined;
 
-  const findParentSortKey = (job: Job): number => {
+  const findParentSortKey = (job: BullMQJob): number => {
     const value = job.data?.metadata?.parentSortKey;
     return typeof value === "number" ? value : 0;
   };
@@ -150,7 +150,7 @@ async function formatJobNode(node: JobNode): Promise<JobDto> {
   };
 }
 
-function mapJobState(jobState: JobState | "unknown"): JobDto["state"] {
+function mapJobState(jobState: JobState | "unknown"): Job["state"] {
   if (jobState === "active" || jobState === "waiting-children") {
     return "running";
   }

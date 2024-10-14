@@ -5,8 +5,8 @@ import { addTranscodeJob, addPackageJob } from "@mixwave/artisan/producer";
 import { LangCodeEnum, VideoCodecEnum, AudioCodecEnum } from "@mixwave/shared";
 import { env } from "./env";
 import { getJob, getJobs, getJobLogs } from "./jobs";
-import { getStorage, getStorageFile } from "./s3";
-import { FolderDtoSchema, FileDtoSchema } from "./types";
+import { getStorageFolder, getStorageFile } from "./s3";
+import { StorageFolderSchema, StorageFileSchema, JobSchema } from "./types";
 
 export type App = typeof app;
 
@@ -41,11 +41,9 @@ const app = new Elysia()
     }),
   )
   .model({
-    StorageDto: t.Object({
-      cursor: t.Optional(t.String()),
-      contents: t.Array(FolderDtoSchema),
-    }),
-    FileDto: FileDtoSchema,
+    Job: JobSchema,
+    StorageFolder: StorageFolderSchema,
+    StorageFile: StorageFileSchema,
   })
   .post(
     "/transcode",
@@ -184,9 +182,17 @@ const app = new Elysia()
       },
     },
   )
-  .get("/jobs", async () => {
-    return await getJobs();
-  })
+  .get(
+    "/jobs",
+    async () => {
+      return await getJobs();
+    },
+    {
+      response: {
+        200: t.Array(JobSchema),
+      },
+    },
+  )
   .get(
     "/jobs/:id",
     async ({ params, query }) => {
@@ -199,6 +205,9 @@ const app = new Elysia()
       query: t.Object({
         fromRoot: t.Optional(t.Boolean()),
       }),
+      response: {
+        200: "Job",
+      },
     },
   )
   .get(
@@ -213,9 +222,9 @@ const app = new Elysia()
     },
   )
   .get(
-    "/storage",
+    "/storage/folder",
     async ({ query }) => {
-      return await getStorage(query.path, query.take, query.cursor);
+      return await getStorageFolder(query.path, query.take, query.cursor);
     },
     {
       query: t.Object({
@@ -224,7 +233,7 @@ const app = new Elysia()
         take: t.Optional(t.Number()),
       }),
       response: {
-        200: "StorageDto",
+        200: "StorageFolder",
       },
     },
   )
@@ -238,7 +247,7 @@ const app = new Elysia()
         path: t.String(),
       }),
       response: {
-        200: "FileDto",
+        200: "StorageFile",
       },
     },
   );

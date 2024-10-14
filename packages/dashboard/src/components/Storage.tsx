@@ -5,19 +5,19 @@ import { Loader } from "@/components/Loader";
 import { StorageTable } from "./StorageTable";
 import { StorageFilePreview } from "./StorageFilePreview";
 import { StoragePathBreadcrumbs } from "./StoragePathBreadcrumbs";
-import type { FileDto } from "@/api";
+import type { StorageFile } from "@/api";
 
 type StorageProps = {
   path: string;
 };
 
 export function Storage({ path }: StorageProps) {
-  const [file, setFile] = useState<FileDto | null>(null);
+  const [file, setFile] = useState<StorageFile | null>(null);
 
   const { data, fetchNextPage } = useInfiniteQuery({
     queryKey: ["storage", path],
     queryFn: async ({ queryKey, pageParam }) => {
-      const result = await api.storage.get({
+      const result = await api.storage.folder.get({
         query: {
           path: queryKey[1],
           cursor: pageParam.cursor,
@@ -35,21 +35,15 @@ export function Storage({ path }: StorageProps) {
     },
   });
 
-  const contents = data
-    ? data.pages.flatMap((page) => page.contents ?? [])
-    : null;
+  const items = data ? data.pages.flatMap((page) => page.items ?? []) : null;
 
   return (
     <div className="flex flex-col grow">
       <div className="p-4 h-14 border-b flex items-center">
         <StoragePathBreadcrumbs path={path} />
       </div>
-      {contents ? (
-        <StorageTable
-          contents={contents}
-          onNext={fetchNextPage}
-          setFile={setFile}
-        />
+      {items ? (
+        <StorageTable items={items} onNext={fetchNextPage} setFile={setFile} />
       ) : (
         <Loader className="min-h-44" />
       )}

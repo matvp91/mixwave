@@ -7,19 +7,15 @@ import {
 } from "@/components/ui/table";
 import { StorageRow } from "./StorageRow";
 import type { UIEventHandler } from "react";
-import type { FileDto, FolderDto } from "@/api";
+import type { StorageFolderItem, StorageFile } from "@/api";
 
 type StorageExplorerProps = {
-  contents: FolderDto[];
+  items: StorageFolderItem[];
   onNext(): void;
-  setFile(file: FileDto): void;
+  setFile(file: StorageFile): void;
 };
 
-export function StorageTable({
-  contents,
-  onNext,
-  setFile,
-}: StorageExplorerProps) {
+export function StorageTable({ items, onNext, setFile }: StorageExplorerProps) {
   const onScroll: UIEventHandler<HTMLDivElement> = (event) => {
     const target = event.target as HTMLDivElement;
     const totalHeight = target.scrollHeight - target.offsetHeight;
@@ -39,14 +35,8 @@ export function StorageTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {contents.map((content) => {
-            return (
-              <StorageRow
-                key={content.path}
-                content={content}
-                setFile={setFile}
-              />
-            );
+          {items.map((item) => {
+            return <StorageRow key={item.path} item={item} setFile={setFile} />;
           })}
         </TableBody>
       </Table>

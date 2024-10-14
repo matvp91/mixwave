@@ -4,10 +4,10 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import type { FileDto } from "@/api";
+import type { StorageFile } from "@/api";
 
 type StoragePreviewProps = {
-  file: FileDto | null;
+  file: StorageFile | null;
   onClose(): void;
 };
 

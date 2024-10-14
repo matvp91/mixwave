@@ -33,14 +33,14 @@ export function VolumeButton({ volume, setVolume }: VolumeButtonProps) {
 
   let Icon;
   const iconStyle: CSSProperties = {};
-  if (volume > 0.8) {
+  if (volume > 0.66) {
     Icon = Volume2Icon;
     iconStyle.width = iconStyle.height = "1.6rem";
-  } else if (volume > 0.5) {
+  } else if (volume > 0.33) {
     Icon = Volume1Icon;
     iconStyle.width = iconStyle.height = "1.4rem";
     iconStyle.left = "-0.1rem";
-  } else if (volume > 0.2) {
+  } else if (volume > 0) {
     Icon = Volume0Icon;
     iconStyle.width = iconStyle.height = "1.07rem";
     iconStyle.left = "-0.48rem";

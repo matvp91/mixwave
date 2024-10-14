@@ -183,7 +183,6 @@ function parseLine(line: string): Tag | null {
 
       assert(attrs.type, "EXT-X-MEDIA: no type");
       assert(attrs.groupId, "EXT-X-MEDIA: no groupId");
-      assert(attrs.language, "EXT-X-MEDIA: no language");
       assert(attrs.name, "EXT-X-MEDIA: no name");
 
       return [

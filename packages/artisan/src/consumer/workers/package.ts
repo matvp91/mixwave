@@ -52,6 +52,9 @@ async function runJob(
 
   const packagerParams: string[][] = [];
 
+  const audioGroups: string[] = [];
+  const textGroups: string[] = [];
+
   for (const key of Object.keys(metaFile.streams)) {
     const stream = metaFile.streams[key];
     const file = parseFilePath(key);
@@ -68,25 +71,35 @@ async function runJob(
     }
 
     if (stream.type === "audio") {
+      let audioGroupId = audioGroups.indexOf(`${stream.codec}`);
+      if (audioGroupId === -1) {
+        audioGroupId = audioGroups.push(`${stream.codec}`) - 1;
+      }
+
       packagerParams.push([
         `in=${inDir}/${key}`,
         "stream=audio",
         `init_segment=${file.name}/init.mp4`,
         `segment_template=${file.name}/$Number$.m4a`,
         `playlist_name=${file.name}/playlist.m3u8`,
-        "hls_group_id=audio",
+        `hls_group_id=aud${audioGroupId}`,
         `hls_name=${formatLanguage(by639_2T[stream.language])}`,
         `language=${stream.language}`,
       ]);
     }
 
     if (stream.type === "text") {
+      let textGroupId = textGroups.indexOf("");
+      if (textGroupId === -1) {
+        textGroupId = textGroups.push("") - 1;
+      }
+
       packagerParams.push([
         `in=${inDir}/${key}`,
         "stream=text",
         `segment_template=${file.name}/$Number$.vtt`,
         `playlist_name=${file.name}/playlist.m3u8`,
-        "hls_group_id=text",
+        `hls_group_id=tex${textGroupId}`,
         `hls_name=${formatLanguage(by639_2T[stream.language])}`,
       ]);
     }

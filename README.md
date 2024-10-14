@@ -46,9 +46,7 @@ Video from source to consumer is a hard task to get right, [howvideo.works](http
 ## Getting Started
 
 ```shell
-# Clone repository locally.
-git clone git@github.com:matvp91/mixwave.git
-cd mixwave
+# We have prebuilt containers, see docker/docker-compose.yml
 
 cp config.env.example config.env
 # Open config.env and change the variables.
@@ -60,8 +58,9 @@ docker compose up -d
 We try to make it as easy for you to run Mixwave locally. Install [Bun](https://bun.sh/) (v1.1.30 or above), and [pnpm](https://pnpm.io/installation). Next up, make sure you have the `config.env` file configured properly as well. We recommend [Redis Stack](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/) in your dev env. Run the following commands at the root of the project:
 
 ```shell
-pnpm install
-pnpm dev # That's it!
+pnpm install-bin # Helper to install ffmpeg, packager
+pnpm install # Install npm dependencies
+pnpm dev # Run dev env
 ```
 
 Go to `http://localhost:52000` and you're good to go!

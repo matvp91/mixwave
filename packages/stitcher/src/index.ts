@@ -11,9 +11,33 @@ import {
   formatAssetList,
 } from "./playlist";
 
+const CUSTOM_SCALAR_CSS = `
+  .scalar-container.z-overlay {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .scalar-api-client__send-request-button, .show-api-client-button {
+    background: var(--scalar-button-1);
+  }
+`;
+
 const app = new Elysia()
   .use(cors())
-  .use(swagger())
+  .use(
+    swagger({
+      documentation: {
+        info: {
+          title: "Mixwave Stitcher API",
+          version: "1.0.0",
+        },
+      },
+      scalarConfig: {
+        hideDownloadButton: true,
+        customCss: CUSTOM_SCALAR_CSS,
+      },
+    }),
+  )
   .post(
     "/session",
     async ({ body }) => {
@@ -99,7 +123,21 @@ const app = new Elysia()
     },
   );
 
-app.listen({
-  port: env.PORT,
-  hostname: env.HOST,
+app.on("stop", () => {
+  process.exit(0);
 });
+
+process
+  .on("beforeExit", app.stop)
+  .on("SIGINT", app.stop)
+  .on("SIGTERM", app.stop);
+
+app.listen(
+  {
+    port: env.PORT,
+    hostname: env.HOST,
+  },
+  () => {
+    console.log(`Started stitcher on port ${env.PORT}`);
+  },
+);

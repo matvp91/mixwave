@@ -21,3 +21,14 @@ export async function getFakeJob<T>(job: Job) {
 
   return fakeJob;
 }
+
+export async function getBinaryPath(name: string) {
+  const path = `${process.cwd()}/bin/${name}`;
+  const exists = await Bun.file(path).exists();
+  if (!exists) {
+    throw new Error(
+      `Failed to get bin dep "${name}", run scripts/bin-deps.sh to install binary dependencies.`,
+    );
+  }
+  return path;
+}

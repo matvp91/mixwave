@@ -1,6 +1,6 @@
 import { S3, ListObjectsCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { env } from "./env";
-import type { FolderContentDto, FileDto } from "./types";
+import type { FolderDto, FileDto } from "./types";
 
 const client = new S3({
   endpoint: env.S3_ENDPOINT,
@@ -17,7 +17,7 @@ export async function getStorage(
   cursor?: string,
 ): Promise<{
   cursor?: string;
-  contents: FolderContentDto[];
+  contents: FolderDto[];
 }> {
   path = path.substring(1);
 
@@ -31,7 +31,7 @@ export async function getStorage(
     }),
   );
 
-  const contents: FolderContentDto[] = [];
+  const contents: FolderDto[] = [];
 
   response.CommonPrefixes?.forEach((prefix) => {
     if (!prefix.Prefix) {

@@ -1,3 +1,6 @@
+import { t } from "elysia";
+import type { Static } from "elysia";
+
 export type JobDto = {
   id: string;
   name: string;
@@ -14,20 +17,25 @@ export type JobDto = {
   children: JobDto[];
 };
 
-export type FolderContentDto =
-  | {
-      type: "file";
-      path: string;
-      size: number;
-      canPreview: boolean;
-    }
-  | {
-      type: "folder";
-      path: string;
-    };
+export const FolderDtoSchema = t.Union([
+  t.Object({
+    type: t.Literal("file"),
+    path: t.String(),
+    size: t.Number({ description: "Size in bytes" }),
+    canPreview: t.Boolean(),
+  }),
+  t.Object({
+    type: t.Literal("folder"),
+    path: t.String(),
+  }),
+]);
 
-export type FileDto = {
-  path: string;
-  size: number;
-  data: string;
-};
+export type FolderDto = Static<typeof FolderDtoSchema>;
+
+export const FileDtoSchema = t.Object({
+  path: t.String(),
+  size: t.Number({ description: "Size in bytes" }),
+  data: t.String(),
+});
+
+export type FileDto = Static<typeof FileDtoSchema>;

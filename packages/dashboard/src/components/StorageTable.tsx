@@ -7,10 +7,10 @@ import {
 } from "@/components/ui/table";
 import { StorageRow } from "./StorageRow";
 import type { UIEventHandler } from "react";
-import type { FileDto, FolderContentDto } from "@/api";
+import type { FileDto, FolderDto } from "@/api";
 
 type StorageExplorerProps = {
-  contents: FolderContentDto[];
+  contents: FolderDto[];
   onNext(): void;
   setFile(file: FileDto): void;
 };

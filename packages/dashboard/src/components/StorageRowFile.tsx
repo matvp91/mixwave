@@ -5,11 +5,11 @@ import { Loader } from "./Loader";
 import { Button } from "@/components/ui/button";
 import SquareArrowOutUpRight from "lucide-react/icons/square-arrow-out-up-right";
 import { getSizeStr } from "@/lib/helpers";
-import type { FolderContentDto, FileDto } from "@/api";
+import type { FolderDto, FileDto } from "@/api";
 
 type StorageRowFileProps = {
   name: string;
-  content: Extract<FolderContentDto, { type: "file" }>;
+  content: Extract<FolderDto, { type: "file" }>;
   setFile(file: FileDto): void;
 };
 

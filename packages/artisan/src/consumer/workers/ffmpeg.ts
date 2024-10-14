@@ -1,14 +1,12 @@
 import parseFilePath from "parse-filepath";
 import { FFmpeggy } from "ffmpeggy";
-import ffmpegBin from "ffmpeg-static";
 import { downloadFile, uploadFile } from "../s3";
 import { TmpDir } from "../tmp-dir";
+import { getBinaryPath } from "../helpers";
 import type { Job } from "bullmq";
 import type { Stream, Input } from "../../types";
 
-if (!ffmpegBin) {
-  throw new Error("Cannot find ffmpeg bin");
-}
+const ffmpegBin = await getBinaryPath("ffmpeg");
 
 FFmpeggy.DefaultConfig = {
   ...FFmpeggy.DefaultConfig,

@@ -3,14 +3,18 @@ import { FFmpeggy } from "ffmpeggy";
 import { downloadFile, uploadFile } from "../s3";
 import { TmpDir } from "../tmp-dir";
 import { getBinaryPath } from "../helpers";
+import { SKIP_JOB } from "./helpers";
 import type { Job } from "bullmq";
 import type { Stream, Input } from "../../types";
+import type { SkippableJobResult } from "./helpers";
 
 const ffmpegBin = await getBinaryPath("ffmpeg");
+const ffprobeBin = await getBinaryPath("ffprobe");
 
 FFmpeggy.DefaultConfig = {
   ...FFmpeggy.DefaultConfig,
   ffmpegBin,
+  ffprobeBin,
 };
 
 // The guys at shaka-streamer did a great job implementing an ffmpeg pipeline, we can always learn from it:
@@ -28,10 +32,10 @@ export type FfmpegData = {
   };
 };
 
-export type FfmpegResult = {
+export type FfmpegResult = SkippableJobResult<{
   name: string;
   stream: Stream;
-};
+}>;
 
 async function prepareInput(job: Job, tmpDir: TmpDir, input: Input) {
   const filePath = parseFilePath(input.path);
@@ -62,6 +66,10 @@ async function runJob(
 
   job.log(`Input is ${inputFile.path}`);
 
+  const inputInfo = await FFmpeggy.probe(inputFile.path);
+
+  job.log(`Probed info (${JSON.stringify(inputInfo)})`);
+
   const ffmpeg = new FFmpeggy({
     input: inputFile.path,
     globalOptions: ["-loglevel error"],
@@ -72,6 +80,20 @@ async function runJob(
   const outputOptions: string[] = [];
 
   if (params.stream.type === "video") {
+    const maxHeight = inputInfo.streams.reduce<number>((acc, stream) => {
+      if (!stream.height) {
+        return acc;
+      }
+      return acc > stream.height ? acc : stream.height;
+    }, 0);
+
+    if (maxHeight && params.stream.height > maxHeight) {
+      job.log(
+        `Skip upscale, requested ${params.stream.height} is larger than input ${maxHeight}`,
+      );
+      return SKIP_JOB;
+    }
+
     name = `video_${params.stream.height}_${params.stream.bitrate}_${params.stream.codec}.m4v`;
     outputOptions.push(
       ...getVideoOutputOptions(params.stream, params.segmentSize),

@@ -107,6 +107,7 @@ install_ffprobe
 install_packager
 
 chmod +x $bin_dir/ffmpeg
+chmod +x $bin_dir/ffprobe
 chmod +x $bin_dir/packager
 
 info "Added exec permissions"

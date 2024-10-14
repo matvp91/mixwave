@@ -2,6 +2,7 @@ import Loader from "lucide-react/icons/loader";
 import CircleDotDashed from "lucide-react/icons/circle-dot-dashed";
 import Check from "lucide-react/icons/check";
 import X from "lucide-react/icons/x";
+import CircleOff from "lucide-react/icons/circle-off";
 import { cn } from "@/lib/utils";
 import type { Job } from "@/api";
 
@@ -14,6 +15,9 @@ export function JobState({ state }: { state: Job["state"] }) {
   }
   if (state === "running") {
     return createCircle("bg-blue-200 text-blue-800", Loader, "animate-spin");
+  }
+  if (state === "skipped") {
+    return createCircle("bg-gray-200 text-gray-800", CircleOff);
   }
   return createCircle("bg-violet-200 text-violet-800", CircleDotDashed);
 }

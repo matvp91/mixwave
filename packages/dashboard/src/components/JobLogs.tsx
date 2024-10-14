@@ -1,5 +1,6 @@
 import { api } from "@/api";
 import { useQuery } from "@tanstack/react-query";
+import { JobLog } from "./JobLog";
 
 type JobLogsProps = {
   id: string;
@@ -23,12 +24,8 @@ export function JobLogs({ id }: JobLogsProps) {
   return (
     <ul className="flex flex-col gap-2 text-xs">
       {logs.map((it, index) => (
-        <li
-          key={index}
-          className="border border-border rounded-md p-2 break-all flex"
-        >
-          <div className="mr-2 font-medium">{index + 1}</div>
-          <div>{it}</div>
+        <li key={index}>
+          <JobLog value={it} index={index} />
         </li>
       ))}
     </ul>

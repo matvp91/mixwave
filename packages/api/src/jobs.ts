@@ -95,7 +95,7 @@ async function formatJobNode(node: JobNode): Promise<Job> {
     progress = job.progress;
   }
 
-  const state = mapJobState(await job.getState());
+  const state = mapJobState(await job.getState(), job.returnvalue);
 
   const failedReason = state === "failed" ? job.failedReason : undefined;
 
@@ -150,7 +150,13 @@ async function formatJobNode(node: JobNode): Promise<Job> {
   };
 }
 
-function mapJobState(jobState: JobState | "unknown"): Job["state"] {
+function mapJobState(
+  jobState: JobState | "unknown",
+  returnValue: unknown,
+): Job["state"] {
+  if (typeof returnValue === "string" && returnValue === "skipped") {
+    return "skipped";
+  }
   if (jobState === "active" || jobState === "waiting-children") {
     return "running";
   }

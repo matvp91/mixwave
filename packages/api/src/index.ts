@@ -62,6 +62,10 @@ const app = new Elysia()
       return { jobId: job.id };
     },
     {
+      detail: {
+        summary: "Transcode",
+        description: "Push a transcode job",
+      },
       body: t.Object({
         inputs: t.Array(
           t.Union([
@@ -161,6 +165,10 @@ const app = new Elysia()
       return { jobId: job.id };
     },
     {
+      detail: {
+        summary: "Package",
+        description: "Push a package job",
+      },
       body: t.Object({
         assetId: t.String(),
         segmentSize: t.Optional(
@@ -195,6 +203,9 @@ const app = new Elysia()
       return await getJobs();
     },
     {
+      detail: {
+        summary: "Get all jobs",
+      },
       response: {
         200: t.Array(t.Ref(JobSchema)),
       },
@@ -206,6 +217,9 @@ const app = new Elysia()
       return await getJob(params.id, query.fromRoot);
     },
     {
+      detail: {
+        summary: "Get a job",
+      },
       params: t.Object({
         id: t.String(),
       }),
@@ -223,6 +237,9 @@ const app = new Elysia()
       return await getJobLogs(params.id);
     },
     {
+      detail: {
+        summary: "Get a job' logs",
+      },
       params: t.Object({
         id: t.String(),
       }),
@@ -237,6 +254,11 @@ const app = new Elysia()
       return await getStorageFolder(query.path, query.take, query.cursor);
     },
     {
+      detail: {
+        summary: "Get a storage folder",
+        description:
+          "Get a folder from your S3 storage by path with all files and subfolders.",
+      },
       query: t.Object({
         path: t.String(),
         cursor: t.Optional(t.String()),
@@ -253,6 +275,10 @@ const app = new Elysia()
       return await getStorageFile(query.path);
     },
     {
+      detail: {
+        summary: "Get a storage file",
+        description: "Get a single file from storage with raw data.",
+      },
       query: t.Object({
         path: t.String(),
       }),

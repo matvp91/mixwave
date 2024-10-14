@@ -5,26 +5,22 @@ import { Loader } from "./Loader";
 import { Button } from "@/components/ui/button";
 import SquareArrowOutUpRight from "lucide-react/icons/square-arrow-out-up-right";
 import { getSizeStr } from "@/lib/helpers";
-import type { FolderContentDto, FileDto } from "@/api";
+import type { StorageFolderItem, StorageFile } from "@/api";
 
 type StorageRowFileProps = {
   name: string;
-  content: Extract<FolderContentDto, { type: "file" }>;
-  setFile(file: FileDto): void;
+  item: Extract<StorageFolderItem, { type: "file" }>;
+  setFile(file: StorageFile): void;
 };
 
-export function StorageRowFile({
-  name,
-  content,
-  setFile,
-}: StorageRowFileProps) {
+export function StorageRowFile({ name, item, setFile }: StorageRowFileProps) {
   const [loading, setLoading] = useState(false);
 
   const onClick = async () => {
     setLoading(true);
     try {
       const response = await api.storage.file.get({
-        query: { path: content.path },
+        query: { path: item.path },
       });
       if (response.data) {
         setFile(response.data);
@@ -39,7 +35,7 @@ export function StorageRowFile({
       <TableCell></TableCell>
       <TableCell className="flex gap-2 items-center">
         {name}
-        {content.canPreview ? (
+        {item.canPreview ? (
           <Button
             size="icon"
             disabled={loading}
@@ -55,7 +51,7 @@ export function StorageRowFile({
           </Button>
         ) : null}
       </TableCell>
-      <TableCell>{getSizeStr(content.size)}</TableCell>
+      <TableCell>{getSizeStr(item.size)}</TableCell>
     </TableRow>
   );
 }

@@ -11,9 +11,35 @@ import {
   formatAssetList,
 } from "./playlist";
 
+const CUSTOM_SCALAR_CSS = `
+  .scalar-container.z-overlay {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .scalar-api-client__send-request-button, .show-api-client-button {
+    background: var(--scalar-button-1);
+  }
+`;
+
 const app = new Elysia()
   .use(cors())
-  .use(swagger())
+  .use(
+    swagger({
+      documentation: {
+        info: {
+          title: "Mixwave Stitcher API",
+          version: "1.0.0",
+          description:
+            "Realtime playlist manipulator. Can be used for ad, bumper or other HLS interstitials insertion on-the-fly. Can apply filters to playlists.",
+        },
+      },
+      scalarConfig: {
+        hideDownloadButton: true,
+        customCss: CUSTOM_SCALAR_CSS,
+      },
+    }),
+  )
   .post(
     "/session",
     async ({ body }) => {
@@ -33,8 +59,14 @@ const app = new Elysia()
       };
     },
     {
+      detail: {
+        summary: "Create a session",
+      },
       body: t.Object({
-        uri: t.String(),
+        uri: t.String({
+          description:
+            'Reference to a master playlist, you can point to an asset with "asset://{uuid}" or as http(s).',
+        }),
         interstitials: t.Optional(
           t.Array(
             t.Object({
@@ -42,17 +74,35 @@ const app = new Elysia()
               uri: t.String(),
               type: t.Optional(t.Union([t.Literal("ad"), t.Literal("bumper")])),
             }),
+            {
+              description: "Manual HLS interstitial insertion.",
+            },
           ),
         ),
         filter: t.Optional(
-          t.Object({
-            resolution: t.Optional(t.String()),
-          }),
+          t.Object(
+            {
+              resolution: t.Optional(
+                t.String({
+                  description: 'Filter on resolution, like "<= 720".',
+                }),
+              ),
+            },
+            {
+              description: "Filter applies to master and media playlist.",
+            },
+          ),
         ),
         vmap: t.Optional(
-          t.Object({
-            url: t.String(),
-          }),
+          t.Object(
+            {
+              url: t.String(),
+            },
+            {
+              description:
+                "Describes a VMAP, will transcode ads and insert interstitials on the fly.",
+            },
+          ),
         ),
       }),
     },
@@ -65,6 +115,9 @@ const app = new Elysia()
       return playlist;
     },
     {
+      detail: {
+        hide: true,
+      },
       params: t.Object({
         sessionId: t.String(),
       }),
@@ -78,6 +131,9 @@ const app = new Elysia()
       return playlist;
     },
     {
+      detail: {
+        hide: true,
+      },
       params: t.Object({
         sessionId: t.String(),
         "*": t.String(),
@@ -90,6 +146,9 @@ const app = new Elysia()
       return await formatAssetList(params.sessionId, query.startDate);
     },
     {
+      detail: {
+        hide: true,
+      },
       params: t.Object({
         sessionId: t.String(),
       }),
@@ -99,7 +158,21 @@ const app = new Elysia()
     },
   );
 
-app.listen({
-  port: env.PORT,
-  hostname: env.HOST,
+app.on("stop", () => {
+  process.exit(0);
 });
+
+process
+  .on("beforeExit", app.stop)
+  .on("SIGINT", app.stop)
+  .on("SIGTERM", app.stop);
+
+app.listen(
+  {
+    port: env.PORT,
+    hostname: env.HOST,
+  },
+  () => {
+    console.log(`Started stitcher on port ${env.PORT}`);
+  },
+);

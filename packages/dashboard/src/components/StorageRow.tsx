@@ -2,17 +2,17 @@ import { Link } from "react-router-dom";
 import { TableCell, TableRow } from "@/components/ui/table";
 import Folder from "lucide-react/icons/folder";
 import { StorageRowFile } from "./StorageRowFile";
-import type { FolderContentDto, FileDto } from "@/api";
+import type { StorageFolderItem, StorageFile } from "@/api";
 
 type StorageRowProps = {
-  content: FolderContentDto;
-  setFile(file: FileDto): void;
+  item: StorageFolderItem;
+  setFile(file: StorageFile): void;
 };
 
-export function StorageRow({ content, setFile }: StorageRowProps) {
-  const chunks = content.path.split("/");
+export function StorageRow({ item, setFile }: StorageRowProps) {
+  const chunks = item.path.split("/");
 
-  if (content.type === "folder") {
+  if (item.type === "folder") {
     const name = chunks[chunks.length - 2];
     return (
       <TableRow>
@@ -21,7 +21,7 @@ export function StorageRow({ content, setFile }: StorageRowProps) {
         </TableCell>
         <TableCell>
           <Link
-            to={`/storage?path=${content.path}`}
+            to={`/storage?path=${item.path}`}
             className="flex gap-2 text-sm items-center hover:underline w-full"
           >
             {name}
@@ -32,9 +32,9 @@ export function StorageRow({ content, setFile }: StorageRowProps) {
     );
   }
 
-  if (content.type === "file") {
+  if (item.type === "file") {
     const name = chunks[chunks.length - 1];
-    return <StorageRowFile name={name} content={content} setFile={setFile} />;
+    return <StorageRowFile name={name} item={item} setFile={setFile} />;
   }
   return null;
 }

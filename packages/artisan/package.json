@@ -9,7 +9,8 @@
     "dev": "bun --watch ./src/consumer/index.ts",
     "build": "bun build ./src/consumer/index.ts --target=bun --outdir=./dist",
     "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "install-bin": "./scripts/install-bin.sh"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.623.0",
@@ -17,13 +18,12 @@
     "@mixwave/shared": "workspace:*",
     "@sinclair/typebox": "^0.33.16",
     "bullmq": "^5.12.0",
-    "ffmpeg-static": "^5.2.0",
+    "execa": "^9.4.0",
     "ffmpeggy": "^3.0.1",
     "iso-language-codes": "^2.0.0",
     "mime-types": "^2.1.35",
     "parse-filepath": "^1.0.2",
-    "s3-sync-client": "^4.3.1",
-    "shaka-packager": "^3.2.0"
+    "s3-sync-client": "^4.3.1"
   },
   "devDependencies": {
     "@types/bun": "latest",

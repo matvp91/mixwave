@@ -1,7 +1,7 @@
 import type { JobsFilterData } from "@/components/types";
-import type { JobDto } from "@/api";
+import type { Job } from "@/api";
 
-export function filterJobs(jobs: JobDto[], filter: JobsFilterData) {
+export function filterJobs(jobs: Job[], filter: JobsFilterData) {
   if (filter.tag) {
     jobs = jobs.filter((job) => {
       if (filter.tag === "none") {

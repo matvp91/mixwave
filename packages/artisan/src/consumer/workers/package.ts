@@ -1,14 +1,15 @@
-import { once } from "events";
+import { execa } from "execa";
 import { lookup } from "mime-types";
-import { fork } from "child_process";
-import { createRequire } from "node:module";
 import { by639_2T } from "iso-language-codes";
-import { downloadFolder, uploadFolder } from "../s3";
 import parseFilePath from "parse-filepath";
+import { downloadFolder, uploadFolder } from "../s3";
 import { TmpDir } from "../tmp-dir";
 import { getMetaFile } from "../meta-file";
+import { getBinaryPath } from "../helpers";
 import type { Job } from "bullmq";
 import type { Code } from "iso-language-codes";
+
+const packagerBin = await getBinaryPath("packager");
 
 export type PackageData = {
   params: {
@@ -102,20 +103,18 @@ async function runJob(
     "master.m3u8",
   );
 
-  const fakeRequire = createRequire(import.meta.url);
-  const packagerBin = await fakeRequire.resolve("shaka-packager");
-
   job.log(packagerArgs.join("\n"));
 
-  const packagerProcess = fork(packagerBin, packagerArgs, {
+  await execa(packagerBin, packagerArgs, {
     stdio: "inherit",
     cwd: outDir,
     detached: false,
   });
 
-  await once(packagerProcess, "close");
+  const s3Dir = `package/${params.assetId}/${params.name}`;
+  job.log(`Uploading to ${s3Dir}`);
 
-  await uploadFolder(outDir, `package/${params.assetId}/${params.name}`, {
+  await uploadFolder(outDir, s3Dir, {
     del: true,
     commandInput: (input) => ({
       ContentType: lookup(input.Key) || "binary/octet-stream",

@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { JobState } from "./JobState";
 import { getDurationStr } from "@/lib/helpers";
-import type { JobDto } from "@/api";
+import type { Job } from "@/api";
 
 type JobTreeItemProps = {
-  job: JobDto;
+  job: Job;
   activeId: string;
 };
 

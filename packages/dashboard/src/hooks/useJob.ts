@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api";
-import type { JobDto } from "@/api";
+import type { Job } from "@/api";
 
 export function useJob(id: string) {
   const queryClient = useQueryClient();
@@ -21,7 +21,7 @@ export function useJob(id: string) {
   });
 
   useEffect(() => {
-    const populateCache = (rootJob: JobDto, jobs: JobDto[]) => {
+    const populateCache = (rootJob: Job, jobs: Job[]) => {
       jobs.forEach((job) => {
         queryClient.setQueryData(["jobsFromRoot", job.id], rootJob);
         populateCache(rootJob, job.children);
@@ -46,7 +46,7 @@ export function useJob(id: string) {
   return { job, rootJob };
 }
 
-function findJob(job: JobDto, id: string): JobDto | null {
+function findJob(job: Job, id: string): Job | null {
   if (job.id === id) {
     return job;
   }

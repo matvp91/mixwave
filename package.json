@@ -5,7 +5,8 @@
     "build": "turbo build",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
-    "test": "turbo test"
+    "test": "turbo test",
+    "install-bin": "turbo install-bin"
   },
   "packageManager": "pnpm@8.15.1",
   "devDependencies": {

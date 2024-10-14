@@ -1,6 +1,6 @@
 import { S3, ListObjectsCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { env } from "./env";
-import type { FolderContentDto, FileDto } from "./types";
+import type { StorageFolder, StorageFile, StorageFolderItem } from "./types";
 
 const client = new S3({
   endpoint: env.S3_ENDPOINT,
@@ -11,14 +11,11 @@ const client = new S3({
   },
 });
 
-export async function getStorage(
+export async function getStorageFolder(
   path: string,
   take = 10,
   cursor?: string,
-): Promise<{
-  cursor?: string;
-  contents: FolderContentDto[];
-}> {
+): Promise<StorageFolder> {
   path = path.substring(1);
 
   const response = await client.send(
@@ -31,13 +28,13 @@ export async function getStorage(
     }),
   );
 
-  const contents: FolderContentDto[] = [];
+  const items: StorageFolderItem[] = [];
 
   response.CommonPrefixes?.forEach((prefix) => {
     if (!prefix.Prefix) {
       return;
     }
-    contents.push({
+    items.push({
       type: "folder",
       path: `/${prefix.Prefix}`,
     });
@@ -48,7 +45,7 @@ export async function getStorage(
       return;
     }
 
-    contents.push({
+    items.push({
       type: "file",
       path: `/${content.Key}`,
       size: content.Size ?? 0,
@@ -58,11 +55,11 @@ export async function getStorage(
 
   return {
     cursor: response.IsTruncated ? response.NextMarker : undefined,
-    contents,
+    items,
   };
 }
 
-export async function getStorageFile(path: string): Promise<FileDto> {
+export async function getStorageFile(path: string): Promise<StorageFile> {
   path = path.substring(1);
 
   if (!canFilePreview(path)) {

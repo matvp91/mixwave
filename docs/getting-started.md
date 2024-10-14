@@ -8,20 +8,70 @@ next:
 
 ## Docker Compose
 
-Since Mixwave consists of several packages that need to work together, the easiest way to get yourself familiar is to use [Docker](https://docs.docker.com/engine/install/).
+If you're familiar with [Docker](https://docs.docker.com/engine/install/), we suggest you use our hosted Docker images.
 
-First, clone the repository.
+Create a new folder with a fresh `docker-compose.yml` file and copy it from below. The original file can be found on [GitHub](https://github.com/matvp91/mixwave/tree/main/docker/docker-compose.yml).
 
-::: code-group
+```yaml
+version: "3"
 
-```sh [shell]
-$ git clone git@github.com:matvp91/mixwave.git
-$ cd mixwave
+volumes:
+  mixwave_redis_data:
+
+services:
+  mixwave-dashboard:
+    image: "mixwave/dashboard:latest"
+    ports:
+      - 52000:52000
+    environment:
+      - PUBLIC_API_ENDPOINT=http://localhost:52001
+      - PUBLIC_STITCHER_ENDPOINT=http://localhost:52002
+
+  mixwave-api:
+    image: "mixwave/api:latest"
+    restart: always
+    ports:
+      - 52001:52001
+    depends_on:
+      - mixwave-redis
+    env_file: config.env
+    environment:
+      - REDIS_HOST=mixwave-redis
+      - REDIS_PORT=6379
+
+  mixwave-stitcher:
+    image: "mixwave/stitcher:latest"
+    restart: always
+    ports:
+      - 52002:52002
+    depends_on:
+      - mixwave-redis
+    env_file: config.env
+    environment:
+      - REDIS_HOST=mixwave-redis
+      - REDIS_PORT=6379
+
+  mixwave-artisan:
+    image: "mixwave/artisan:latest"
+    restart: always
+    depends_on:
+      - mixwave-redis
+    env_file: config.env
+    environment:
+      - REDIS_HOST=mixwave-redis
+      - REDIS_PORT=6379
+
+  mixwave-redis:
+    image: redis/redis-stack-server:7.2.0-v6
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+    volumes:
+      - mixwave_redis_data:/data
 ```
 
-:::
-
-Create a `config.env` file at the root of the project. Make sure you use the same keys defined in `config.env.example`.
+Create a `config.env` file in the same folder. The original example can be found on [GitHub](https://github.com/matvp91/mixwave/blob/main/config.env.example).
 
 ::: code-group
 
@@ -40,12 +90,12 @@ PUBLIC_S3_ENDPOINT=https://s3.us-east-1.amazonaws.com/mixwave
 
 :::
 
-Build and start the necessary services with [Docker Compose](https://docs.docker.com/compose/).
+Start the necessary services with [Docker Compose](https://docs.docker.com/compose/).
 
 ::: code-group
 
 ```sh [shell]
-$ docker compose up -d --build
+$ docker compose up -d
 ```
 
 :::
@@ -79,6 +129,7 @@ Make sure you have a config.env file at the root, and it contains the right info
 We aim to make it as easy for you to get started with development. All you'll have to do is install the dependencies (once), and call the dev script.
 
 ```sh
+pnpm install-bin # helper to install ffmpeg, packager
 pnpm install
 pnpm dev
 ```

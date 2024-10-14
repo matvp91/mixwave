@@ -1,21 +1,13 @@
-FROM node:20-slim AS base
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
-RUN pnpm install turbo@^2 -g
+FROM oven/bun:1
 
-FROM base AS builder
-WORKDIR /app
-COPY . .
-RUN turbo prune @mixwave/artisan --docker
+RUN apt-get update && apt-get install -y \
+  curl
 
-FROM base AS installer
-WORKDIR /app
-COPY --from=builder /app/out/json/ .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
-COPY --from=builder /app/out/full/ .
+WORKDIR /usr/src/app
+COPY ./dist .
+COPY ./scripts .
 
-FROM oven/bun:1 as runner
-WORKDIR /app
-COPY --from=installer ./app .
-CMD [ "bun", "run", "./packages/artisan/src/index.ts" ]
+RUN "./install-bin.sh"
+
+USER bun
+CMD [ "bun", "run", "./index.js" ]

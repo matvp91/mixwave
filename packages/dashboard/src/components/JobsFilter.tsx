@@ -1,11 +1,11 @@
 import { JobTag } from "@/components/JobTag";
 import { SelectObject } from "./SelectObject";
-import type { JobDto } from "@/api";
+import type { Job } from "@/api";
 import type { JobsFilterData } from "./types";
 import type { SelectObjectItem } from "./SelectObject";
 
 type JobsFilterProps = {
-  allJobs: JobDto[];
+  allJobs: Job[];
   filter: JobsFilterData;
   onChange(value: Partial<JobsFilterData>): void;
 };
@@ -44,7 +44,7 @@ export function JobsFilter({ allJobs, filter, onChange }: JobsFilterProps) {
   );
 }
 
-function getTags(jobs: JobDto[]) {
+function getTags(jobs: Job[]) {
   return jobs.reduce<string[]>((acc, job) => {
     if (job.tag && !acc.includes(job.tag)) {
       acc.push(job.tag);
@@ -53,7 +53,7 @@ function getTags(jobs: JobDto[]) {
   }, []);
 }
 
-function getNames(jobs: JobDto[]) {
+function getNames(jobs: Job[]) {
   return jobs.reduce<string[]>((acc, job) => {
     if (!acc.includes(job.name)) {
       acc.push(job.name);

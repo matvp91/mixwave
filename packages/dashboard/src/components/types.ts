@@ -1,7 +1,7 @@
-import { JobDto } from "@/api";
+import { Job } from "@/api";
 
 export type JobsFilterData = {
   tag?: string;
   name?: string;
-  state?: JobDto["state"];
+  state?: Job["state"];
 };

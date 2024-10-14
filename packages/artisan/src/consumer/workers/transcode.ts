@@ -1,10 +1,12 @@
 import { addPackageJob } from "../../producer";
 import { getFakeJob } from "../helpers";
 import { uploadJson } from "../s3";
+import { SKIP_JOB } from "./helpers";
 import type { FfmpegResult } from "./ffmpeg";
 import type { Stream } from "../../types";
 import type { MetaFile } from "../meta-file";
 import type { Job } from "bullmq";
+import type { SkippableJobResult } from "./helpers";
 
 export type TranscodeData = {
   params: {
@@ -17,9 +19,9 @@ export type TranscodeData = {
   };
 };
 
-export type TranscodeResult = {
+export type TranscodeResult = SkippableJobResult<{
   assetId: string;
-};
+}>;
 
 /**
  * The transcode job relies on the underlying ffmpeg jobs. It waits until these
@@ -34,18 +36,29 @@ export default async function (job: Job<TranscodeData, TranscodeResult>) {
 
   const childrenValues = await fakeJob.getChildrenValues();
 
+  const streams = Object.entries(childrenValues).reduce<Record<string, Stream>>(
+    (acc, [key, value]) => {
+      if (key.startsWith("bull:ffmpeg")) {
+        const result: FfmpegResult = value;
+        if (result === SKIP_JOB) {
+          // We skipped this job, bail out early.
+          return acc;
+        }
+        acc[result.name] = result.stream;
+      }
+      return acc;
+    },
+    {},
+  );
+
+  if (!Object.keys(streams).length) {
+    job.log("Skip transcode, no streams found");
+    return SKIP_JOB;
+  }
+
   const meta: MetaFile = {
     version: 1,
-    streams: Object.entries(childrenValues).reduce<Record<string, Stream>>(
-      (acc, [key, value]) => {
-        if (key.startsWith("bull:ffmpeg")) {
-          const ffmpegResult: FfmpegResult = value;
-          acc[ffmpegResult.name] = ffmpegResult.stream;
-        }
-        return acc;
-      },
-      {},
-    ),
+    streams,
     segmentSize: params.segmentSize,
   };
 

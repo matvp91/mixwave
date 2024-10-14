@@ -13,7 +13,7 @@ export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
   let completed = 0;
   let failed = 0;
   let running = 0;
-  let waiting = 0;
+  let skipped = 0;
 
   for (const job of jobs) {
     if (job.state === "completed") {
@@ -25,8 +25,8 @@ export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
     if (job.state === "failed") {
       failed += 1;
     }
-    if (job.state === "waiting") {
-      waiting += 1;
+    if (job.state === "skipped") {
+      skipped += 1;
     }
   }
 
@@ -62,11 +62,11 @@ export function JobsStats({ jobs, filter, onChange }: JobsStatsProps) {
           tooltip="Running"
         />
         <JobStatsTile
-          value={waiting}
-          className="bg-violet-400"
-          onClick={() => filterJobState("waiting")}
-          active={filter.state === "waiting"}
-          tooltip="Waiting"
+          value={skipped}
+          className="bg-gray-400"
+          onClick={() => filterJobState("skipped")}
+          active={filter.state === "skipped"}
+          tooltip="Skipped"
         />
       </div>
     </TooltipProvider>

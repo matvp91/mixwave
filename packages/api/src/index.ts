@@ -112,6 +112,7 @@ const app = new Elysia()
               codec: AudioCodecSchema,
               bitrate: t.Number({ description: "Bitrate in bps" }),
               language: LangCodeSchema,
+              channels: t.Number(),
             }),
             t.Object({
               type: t.Literal("text"),

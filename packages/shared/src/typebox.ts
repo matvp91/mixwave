@@ -27,7 +27,7 @@ VideoCodecSchema.$id = "#/components/schemas/VideoCodec";
 
 export type VideoCodec = Static<typeof VideoCodecSchema>;
 
-export const AudioCodecSchema = StringLiteralUnion(["aac"]);
+export const AudioCodecSchema = StringLiteralUnion(["aac", "ac3", "eac3"]);
 AudioCodecSchema.description = "Supported audio codecs.";
 AudioCodecSchema.$id = "#/components/schemas/AudioCodec";
 

@@ -156,6 +156,8 @@ function getVideoOutputOptions(
   stream: Extract<Stream, { type: "video" }>,
   segmentSize: number,
 ) {
+  const keyFrameRate = segmentSize * stream.framerate;
+
   const args: string[] = [
     "-f mp4",
     "-an",
@@ -164,6 +166,8 @@ function getVideoOutputOptions(
     `-r ${stream.framerate}`,
     "-movflags +frag_keyframe",
     `-frag_duration ${segmentSize * 1_000_000}`,
+    `-keyint_min ${keyFrameRate}`,
+    `-g ${keyFrameRate}`,
   ];
 
   if (stream.codec === "h264") {
@@ -185,10 +189,9 @@ function getVideoOutputOptions(
 
   const filters: string[] = ["setsar=1:1", `scale=-2:${stream.height}`];
 
-  args.push(`-vf ${filters.join(",")}`);
-
-  const keyFrameRate = segmentSize * stream.framerate;
-  args.push(`-keyint_min ${keyFrameRate}`, `-g ${keyFrameRate}`);
+  if (filters.length) {
+    args.push(`-vf ${filters.join(",")}`);
+  }
 
   return args;
 }
@@ -200,13 +203,22 @@ function getAudioOutputOptions(
   const args: string[] = [
     "-f mp4",
     "-vn",
-    "-ac 2",
+    `-ac ${stream.channels}`,
     `-c:a ${stream.codec}`,
     `-b:a ${stream.bitrate}`,
     `-frag_duration ${segmentSize * 1_000_000}`,
     `-metadata language=${stream.language}`,
     "-strict experimental",
   ];
+
+  const filters: string[] = [];
+  if (stream.channels === 6) {
+    filters.push("channelmap=channel_layout=5.1");
+  }
+
+  if (filters.length) {
+    args.push(`-af ${filters.join(",")}`);
+  }
 
   return args;
 }

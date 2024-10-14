@@ -32,7 +32,7 @@ const router = createBrowserRouter([
         element: <JobPage />,
       },
       {
-        path: "/api",
+        path: "/api/:service?",
         element: <ApiPage />,
       },
       {

@@ -1,22 +1,16 @@
 import { SelectObject } from "@/components/SelectObject";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export function ApiPage() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [service, setService] = useState(
-    () => searchParams.get("service") ?? "api",
-  );
+  const navigate = useNavigate();
+  const { service } = useParams() as {
+    service?: string;
+  };
 
-  useEffect(() => {
-    setSearchParams({ service });
-  }, [service]);
-
-  const baseUrl =
-    {
-      api: window.__ENV__.PUBLIC_API_ENDPOINT,
-      stitcher: window.__ENV__.PUBLIC_STITCHER_ENDPOINT,
-    }[service] ?? "api";
+  const baseUrl = {
+    api: window.__ENV__.PUBLIC_API_ENDPOINT,
+    stitcher: window.__ENV__.PUBLIC_STITCHER_ENDPOINT,
+  }[service ?? "api"];
 
   return (
     <>
@@ -36,9 +30,7 @@ export function ApiPage() {
             ]}
             value={service}
             onChange={(value) => {
-              if (value) {
-                setService(value);
-              }
+              navigate(value === "api" ? "/api" : `/api/${value}`);
             }}
           />
         </div>

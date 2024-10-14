@@ -78,7 +78,7 @@ const app = new Elysia()
                 description:
                   "The source path, starting with http(s):// or s3://",
               }),
-              language: t.Ref(LangCodeSchema),
+              language: LangCodeSchema,
             }),
             t.Object({
               type: t.Literal("text"),
@@ -86,7 +86,7 @@ const app = new Elysia()
                 description:
                   "The source path, starting with http(s):// or s3://",
               }),
-              language: t.Ref(LangCodeSchema),
+              language: LangCodeSchema,
             }),
           ]),
           {
@@ -99,20 +99,20 @@ const app = new Elysia()
           t.Union([
             t.Object({
               type: t.Literal("video"),
-              codec: t.Ref(VideoCodecSchema),
+              codec: VideoCodecSchema,
               height: t.Number(),
               bitrate: t.Number({ description: "Bitrate in bps" }),
               framerate: t.Number({ description: "Frames per second" }),
             }),
             t.Object({
               type: t.Literal("audio"),
-              codec: t.Ref(AudioCodecSchema),
+              codec: AudioCodecSchema,
               bitrate: t.Number({ description: "Bitrate in bps" }),
-              language: t.Ref(LangCodeSchema),
+              language: LangCodeSchema,
             }),
             t.Object({
               type: t.Literal("text"),
-              language: t.Ref(LangCodeSchema),
+              language: LangCodeSchema,
             }),
           ]),
           {
@@ -195,7 +195,9 @@ const app = new Elysia()
       return await getJobs();
     },
     {
-      response: t.Array(t.Ref(JobSchema)),
+      response: {
+        200: t.Array(t.Ref(JobSchema)),
+      },
     },
   )
   .get(
@@ -210,7 +212,9 @@ const app = new Elysia()
       query: t.Object({
         fromRoot: t.Optional(t.Boolean()),
       }),
-      response: t.Ref(JobSchema),
+      response: {
+        200: t.Ref(JobSchema),
+      },
     },
   )
   .get(
@@ -222,7 +226,9 @@ const app = new Elysia()
       params: t.Object({
         id: t.String(),
       }),
-      response: t.Array(t.String()),
+      response: {
+        200: t.Array(t.String()),
+      },
     },
   )
   .get(
@@ -236,7 +242,9 @@ const app = new Elysia()
         cursor: t.Optional(t.String()),
         take: t.Optional(t.Number()),
       }),
-      response: t.Ref(StorageFolderSchema),
+      response: {
+        200: t.Ref(StorageFolderSchema),
+      },
     },
   )
   .get(
@@ -248,7 +256,9 @@ const app = new Elysia()
       query: t.Object({
         path: t.String(),
       }),
-      response: t.Ref(StorageFileSchema),
+      response: {
+        200: t.Ref(StorageFileSchema),
+      },
     },
   );
 

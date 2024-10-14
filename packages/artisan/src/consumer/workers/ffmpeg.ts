@@ -4,6 +4,7 @@ import { downloadFile, uploadFile } from "../s3";
 import { TmpDir } from "../tmp-dir";
 import { getBinaryPath } from "../helpers";
 import { SKIP_JOB } from "./helpers";
+import type { FFprobeResult } from "ffmpeggy";
 import type { Job } from "bullmq";
 import type { Stream, Input } from "../../types";
 import type { SkippableJobResult } from "./helpers";
@@ -80,14 +81,9 @@ async function runJob(
   const outputOptions: string[] = [];
 
   if (params.stream.type === "video") {
-    const maxHeight = inputInfo.streams.reduce<number>((acc, stream) => {
-      if (!stream.height) {
-        return acc;
-      }
-      return acc > stream.height ? acc : stream.height;
-    }, 0);
+    const maxHeight = getMaxHeight(inputInfo);
 
-    if (maxHeight && params.stream.height > maxHeight) {
+    if (maxHeight > 0 && params.stream.height > maxHeight) {
       job.log(
         `Skip upscale, requested ${params.stream.height} is larger than input ${maxHeight}`,
       );
@@ -218,4 +214,13 @@ function getAudioOutputOptions(
 function getTextOutputOptions() {
   const args: string[] = ["-f webvtt"];
   return args;
+}
+
+function getMaxHeight(info: FFprobeResult) {
+  return info.streams.reduce<number>((acc, stream) => {
+    if (!stream.height) {
+      return acc;
+    }
+    return acc > stream.height ? acc : stream.height;
+  }, 0);
 }

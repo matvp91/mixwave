@@ -3,7 +3,7 @@ import { FFmpeggy } from "ffmpeggy";
 import { downloadFile, uploadFile } from "../s3";
 import { TmpDir } from "../tmp-dir";
 import { getBinaryPath } from "../helpers";
-import { SKIP_JOB } from "./helpers";
+import { JOB_SKIPPED } from "./helpers";
 import type { FFprobeResult } from "ffmpeggy";
 import type { Job } from "bullmq";
 import type { Stream, Input } from "../../types";
@@ -87,7 +87,7 @@ async function runJob(
       job.log(
         `Skip upscale, requested ${params.stream.height} is larger than input ${maxHeight}`,
       );
-      return SKIP_JOB;
+      return JOB_SKIPPED;
     }
 
     name = `video_${params.stream.height}_${params.stream.bitrate}_${params.stream.codec}.m4v`;

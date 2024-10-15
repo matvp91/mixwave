@@ -1,13 +1,11 @@
 import { execa } from "execa";
 import { lookup } from "mime-types";
-import { by639_2T } from "iso-language-codes";
 import parseFilePath from "parse-filepath";
 import { downloadFolder, uploadFolder } from "../s3";
 import { TmpDir } from "../tmp-dir";
 import { getMetaFile } from "../meta-file";
 import { getBinaryPath } from "../helpers";
 import type { Job } from "bullmq";
-import type { Code } from "iso-language-codes";
 import type { Stream } from "../../types";
 
 const packagerBin = await getBinaryPath("packager");
@@ -26,10 +24,6 @@ export type PackageData = {
 export type PackageResult = {
   assetId: string;
 };
-
-function formatLanguage(code: Code) {
-  return code.name.split(",")[0].toUpperCase();
-}
 
 async function runJob(
   job: Job<PackageData, PackageResult>,

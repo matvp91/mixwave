@@ -1,4 +1,4 @@
-import type { MediaPlaylist, Level, HlsAssetPlayer } from "hls.js";
+import type { HlsAssetPlayer } from "hls.js";
 
 /**
  * A custom type for each `ASSET`.

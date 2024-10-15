@@ -93,6 +93,8 @@ export class HlsFacade extends EventEmitter<Events> {
     this.hlsEvents_.on(Hls.Events.LEVEL_SWITCHING, (_, data) => {
       assert(this.state);
 
+      this.setState_({ autoQuality: this.hls.autoLevelEnabled });
+
       updateActive_(
         this.state.qualities,
         (quality) => quality.height === data.height,
@@ -326,8 +328,6 @@ export class HlsFacade extends EventEmitter<Events> {
    * @param id
    */
   setQuality(height: number | null) {
-    this.setState_({ autoQuality: height === null });
-
     if (height === null) {
       this.hls.nextLevel = -1;
       return;

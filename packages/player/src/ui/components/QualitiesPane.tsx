@@ -6,12 +6,10 @@ import type { CheckListItem } from "./CheckList";
 export function QualitiesPane() {
   const { facade, state } = useUiContext();
 
-  const activeQuality = state.qualities.find((it) => it.active);
-
   const qualityItems = state.qualities.map<CheckListItem>((it) => ({
     id: it.height,
     label: `${it.height}p`,
-    checked: !state.autoQuality && activeQuality === it,
+    checked: !state.autoQuality && it.active,
   }));
 
   qualityItems.push({

@@ -9,8 +9,8 @@ export function QualitiesPane() {
   const activeQuality = state.qualities.find((it) => it.active);
 
   const qualityItems = state.qualities.map<CheckListItem>((it) => ({
-    id: it.id,
-    label: `${it.level.height}p`,
+    id: it.height,
+    label: `${it.height}p`,
     checked: !state.autoQuality && activeQuality === it,
   }));
 

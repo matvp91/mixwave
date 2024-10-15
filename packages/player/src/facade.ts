@@ -10,12 +10,12 @@ import type {
 } from "hls.js";
 import type {
   MixType,
-  Quality,
   AudioTrack,
   SubtitleTrack,
   Slot,
   Events,
   State,
+  Quality,
 } from "./types";
 
 /**
@@ -90,12 +90,12 @@ export class HlsFacade extends EventEmitter<Events> {
       this.setState_({ playheadState: "ended", time: this.state?.duration });
     });
 
-    this.hlsEvents_.on(Hls.Events.LEVEL_SWITCHING, () => {
+    this.hlsEvents_.on(Hls.Events.LEVEL_SWITCHING, (_, data) => {
       assert(this.state);
 
       updateActive_(
         this.state.qualities,
-        (quality) => quality.id - 1 === this.hls.nextLoadLevel,
+        (quality) => quality.height === data.height,
         (qualities) => {
           this.setState_({ qualities });
         },
@@ -105,9 +105,10 @@ export class HlsFacade extends EventEmitter<Events> {
     this.hlsEvents_.on(Hls.Events.AUDIO_TRACK_SWITCHING, () => {
       assert(this.state);
 
+      const idx = this.getAudioTrackIdx_();
       updateActive_(
         this.state.audioTracks,
-        (audioTrack) => audioTrack.id - 1 === this.hls.audioTrack,
+        (track) => track.id === idx,
         (audioTracks) => {
           this.setState_({ audioTracks });
         },
@@ -117,9 +118,10 @@ export class HlsFacade extends EventEmitter<Events> {
     this.hlsEvents_.on(Hls.Events.SUBTITLE_TRACK_SWITCH, () => {
       assert(this.state);
 
+      const idx = this.getSubtitleTrackIdx_();
       updateActive_(
         this.state.subtitleTracks,
-        (subtitleTrack) => subtitleTrack.id - 1 === this.hls.subtitleTrack,
+        (track) => track.id === idx,
         (subtitleTracks) => {
           this.setState_({ subtitleTracks });
         },
@@ -146,13 +148,15 @@ export class HlsFacade extends EventEmitter<Events> {
       this.setState_({ qualities: this.mapQualities(data.levels) });
     });
 
-    this.hlsEvents_.on(Hls.Events.AUDIO_TRACKS_UPDATED, (_, data) => {
-      this.setState_({ audioTracks: this.mapAudioTracks(data.audioTracks) });
+    this.hlsEvents_.on(Hls.Events.AUDIO_TRACKS_UPDATED, () => {
+      this.setState_({
+        audioTracks: this.mapAudioTracks(),
+      });
     });
 
-    this.hlsEvents_.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, (_, data) => {
+    this.hlsEvents_.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, () => {
       this.setState_({
-        subtitleTracks: this.mapSubtitleTracks(data.subtitleTracks),
+        subtitleTracks: this.mapSubtitleTracks(),
       });
     });
   }
@@ -167,8 +171,8 @@ export class HlsFacade extends EventEmitter<Events> {
       cuePoints: [],
       qualities: this.mapQualities(this.hls.levels),
       autoQuality: this.hls.autoLevelEnabled,
-      audioTracks: this.mapAudioTracks(this.hls.audioTracks),
-      subtitleTracks: this.mapSubtitleTracks(this.hls.subtitleTracks),
+      audioTracks: this.mapAudioTracks(),
+      subtitleTracks: this.mapSubtitleTracks(),
       slot: null,
       volume: this.media_.volume,
     };
@@ -321,9 +325,26 @@ export class HlsFacade extends EventEmitter<Events> {
    * Sets quality by id. All quality levels are defined in `State`.
    * @param id
    */
-  setQuality(id: number | null) {
-    this.setState_({ autoQuality: id === null });
-    this.hls.nextLevel = id ? id - 1 : -1;
+  setQuality(height: number | null) {
+    this.setState_({ autoQuality: height === null });
+
+    if (height === null) {
+      this.hls.nextLevel = -1;
+      return;
+    }
+
+    const currentLevel = this.hls.levels[this.hls.currentLevel];
+    if (!currentLevel) {
+      return;
+    }
+
+    const idx = this.hls.levels.findIndex((level) => {
+      return (
+        level.height === height && level.codecSet === currentLevel.codecSet
+      );
+    });
+
+    this.hls.nextLevel = idx;
   }
 
   /**
@@ -331,41 +352,96 @@ export class HlsFacade extends EventEmitter<Events> {
    * @param id
    */
   setSubtitleTrack(id: number | null) {
-    this.hls.subtitleTrack = id ? id - 1 : -1;
+    if (id === null) {
+      this.hls.subtitleTrack = -1;
+      return;
+    }
+    const subtitleTrack = this.hls.allSubtitleTracks[id];
+    this.hls.setSubtitleOption({
+      lang: subtitleTrack.lang,
+      name: subtitleTrack.name,
+    });
   }
 
   /**
    * Sets audio by id. All audio tracks are defined in `State`.
    * @param id
    */
-  setAudioTrack(id: number | null) {
-    this.hls.audioTrack = id ? id - 1 : -1;
+  setAudioTrack(id: number) {
+    const audioTrack = this.hls.allAudioTracks[id];
+    this.hls.setAudioOption({
+      lang: audioTrack.lang,
+      channels: audioTrack.channels,
+      name: audioTrack.name,
+    });
   }
 
-  private mapQualities(levels: Level[]) {
-    return levels
-      .map<Quality>((level, index) => ({
-        id: index + 1,
-        active: index === this.hls.nextLoadLevel,
-        level,
+  private mapQualities(levels: Level[]): Quality[] {
+    const resolutions: number[] = [];
+    for (const level of levels) {
+      if (resolutions.includes(level.height)) {
+        continue;
+      }
+      resolutions.push(level.height);
+    }
+
+    const nextLoadLevel = levels.find(
+      (level) => level.id === this.hls.nextLoadLevel,
+    );
+
+    return resolutions
+      .map((resolution) => ({
+        height: resolution,
+        active: resolution === nextLoadLevel?.height,
       }))
-      .sort((a, b) => b.level.height - a.level.height);
+      .sort((a, b) => b.height - a.height);
   }
 
-  private mapAudioTracks(audioTracks: MediaPlaylist[]) {
-    return audioTracks.map<AudioTrack>((audioTrack, index) => ({
-      id: index + 1,
-      active: index === this.hls.audioTrack,
-      playlist: audioTrack,
+  private mapAudioTracks(): AudioTrack[] {
+    const idx = this.getAudioTrackIdx_();
+    return this.hls.allAudioTracks.map((track, index) => ({
+      id: index,
+      active: index === idx,
+      lang: track.lang,
+      channels: track.channels,
     }));
   }
 
-  private mapSubtitleTracks(subtitleTracks: MediaPlaylist[]) {
-    return subtitleTracks.map<SubtitleTrack>((subtitleTrack, index) => ({
-      id: index + 1,
-      active: index === this.hls.subtitleTrack,
-      playlist: subtitleTrack,
+  private mapSubtitleTracks(): SubtitleTrack[] {
+    const idx = this.getSubtitleTrackIdx_();
+    return this.hls.allSubtitleTracks.map((track, index) => ({
+      id: index,
+      active: index === idx,
+      lang: track.lang,
     }));
+  }
+
+  private findIdxInAllTracks_(
+    allTracks: MediaPlaylist[],
+    tracks: MediaPlaylist[],
+    id: number,
+  ) {
+    const track = tracks.find((track) => track.id === id);
+    if (!track) {
+      return -1;
+    }
+    return allTracks.indexOf(track);
+  }
+
+  private getSubtitleTrackIdx_() {
+    return this.findIdxInAllTracks_(
+      this.hls.allSubtitleTracks,
+      this.hls.subtitleTracks,
+      this.hls.subtitleTrack,
+    );
+  }
+
+  private getAudioTrackIdx_() {
+    return this.findIdxInAllTracks_(
+      this.hls.allAudioTracks,
+      this.hls.audioTracks,
+      this.hls.audioTrack,
+    );
   }
 }
 

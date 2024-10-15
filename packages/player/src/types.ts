@@ -22,10 +22,7 @@ export type Slot = {
 export type SubtitleTrack = {
   id: number;
   active: boolean;
-  /**
-   * The playlist defined in HLS.js
-   */
-  playlist: MediaPlaylist;
+  lang?: string;
 };
 
 /**
@@ -34,22 +31,16 @@ export type SubtitleTrack = {
 export type AudioTrack = {
   id: number;
   active: boolean;
-  /**
-   * The playlist defined in HLS.js
-   */
-  playlist: MediaPlaylist;
+  lang?: string;
+  channels?: string;
 };
 
 /**
  * Defines a quality level.
  */
 export type Quality = {
-  id: number;
+  height: number;
   active: boolean;
-  /**
-   * The level defined in HLS.js
-   */
-  level: Level;
 };
 
 /**

@@ -8,7 +8,7 @@ export function TextAudioPane() {
 
   const subtitleItems = state.subtitleTracks.map<CheckListItem>((it) => ({
     id: it.id,
-    label: toLang(it.playlist.name),
+    label: it.lang ?? "unk",
     checked: it.active,
   }));
 
@@ -28,21 +28,18 @@ export function TextAudioPane() {
       </Pane>
       <Pane title="Audio">
         <CheckList
-          onSelect={(id) => facade.setAudioTrack(id)}
+          onSelect={(id) => {
+            if (id !== null) {
+              facade.setAudioTrack(id);
+            }
+          }}
           items={state.audioTracks.map((it) => ({
             id: it.id,
-            label: it.playlist.lang
-              ? it.playlist.lang
-              : toLang(it.playlist.name),
+            label: it.lang ? it.lang + " - " + it.channels : "unk",
             checked: it.active,
           }))}
         />
       </Pane>
     </div>
   );
-}
-
-function toLang(name: string) {
-  const lower = name.toLowerCase();
-  return lower.charAt(0).toUpperCase() + lower.slice(1);
 }

@@ -83,6 +83,7 @@ async function runJob(
         `playlist_name=${file.name}/playlist.m3u8`,
         `hls_group_id=${getGroupId(stream)}`,
         `hls_name=${getName(stream)}`,
+        `language=${stream.language}`,
       ]);
     }
   }

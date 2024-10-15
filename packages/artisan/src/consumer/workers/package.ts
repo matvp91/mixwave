@@ -8,6 +8,7 @@ import { getMetaFile } from "../meta-file";
 import { getBinaryPath } from "../helpers";
 import type { Job } from "bullmq";
 import type { Code } from "iso-language-codes";
+import type { Stream } from "../../types";
 
 const packagerBin = await getBinaryPath("packager");
 
@@ -52,9 +53,6 @@ async function runJob(
 
   const packagerParams: string[][] = [];
 
-  const audioGroups: string[] = [];
-  const textGroups: string[] = [];
-
   for (const key of Object.keys(metaFile.streams)) {
     const stream = metaFile.streams[key];
     const file = parseFilePath(key);
@@ -71,36 +69,26 @@ async function runJob(
     }
 
     if (stream.type === "audio") {
-      let audioGroupId = audioGroups.indexOf(`${stream.codec}`);
-      if (audioGroupId === -1) {
-        audioGroupId = audioGroups.push(`${stream.codec}`) - 1;
-      }
-
       packagerParams.push([
         `in=${inDir}/${key}`,
         "stream=audio",
         `init_segment=${file.name}/init.mp4`,
         `segment_template=${file.name}/$Number$.m4a`,
         `playlist_name=${file.name}/playlist.m3u8`,
-        `hls_group_id=aud${audioGroupId}`,
-        `hls_name=${formatLanguage(by639_2T[stream.language])}`,
+        `hls_group_id=${getGroupId(stream)}`,
+        `hls_name=${getName(stream)}`,
         `language=${stream.language}`,
       ]);
     }
 
     if (stream.type === "text") {
-      let textGroupId = textGroups.indexOf("");
-      if (textGroupId === -1) {
-        textGroupId = textGroups.push("") - 1;
-      }
-
       packagerParams.push([
         `in=${inDir}/${key}`,
         "stream=text",
         `segment_template=${file.name}/$Number$.vtt`,
         `playlist_name=${file.name}/playlist.m3u8`,
-        `hls_group_id=tex${textGroupId}`,
-        `hls_name=${formatLanguage(by639_2T[stream.language])}`,
+        `hls_group_id=${getGroupId(stream)}`,
+        `hls_name=${getName(stream)}`,
       ]);
     }
   }
@@ -140,6 +128,36 @@ async function runJob(
   return {
     assetId: params.assetId,
   };
+}
+
+function getGroupId(
+  stream:
+    | Extract<Stream, { type: "audio" }>
+    | Extract<Stream, { type: "text" }>,
+) {
+  if (stream.type === "audio") {
+    // When we package audio, we split codecs into a separate group.
+    // The CODECS attribute would else include "ac-3,mp4a.40.2", which will
+    // make HLS players fail as each CODECS attribute is needs to pass the
+    // method |isTypeSupported| on MSE.
+    return `audio_${stream.codec}`;
+  }
+  if (stream.type === "text") {
+    return `text`;
+  }
+}
+
+function getName(
+  stream:
+    | Extract<Stream, { type: "audio" }>
+    | Extract<Stream, { type: "text" }>,
+) {
+  if (stream.type === "audio") {
+    return `${stream.language}_${stream.codec}`;
+  }
+  if (stream.type === "text") {
+    return `${stream.language}`;
+  }
 }
 
 export default async function (job: Job<PackageData, PackageResult>) {

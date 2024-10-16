@@ -15,7 +15,7 @@ export type HlsUiProps = {
 export function HlsUi({ facade, metadata }: HlsUiProps) {
   const state = useHlsState(facade);
 
-  if (!state) {
+  if (!state.loaded) {
     return null;
   }
 

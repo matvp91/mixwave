@@ -1,3 +1,5 @@
+import type { HlsAssetPlayer } from "hls.js";
+
 /**
  * A custom type for each `ASSET`.
  */
@@ -11,6 +13,7 @@ export type Slot = {
   type?: MixType;
   time: number;
   duration: number;
+  player: HlsAssetPlayer;
 };
 
 /**
@@ -37,6 +40,28 @@ export type AudioTrack = {
 export type Quality = {
   height: number;
   active: boolean;
+};
+
+/**
+ * Player session state.
+ * This is immutable, each state update is a new reference. Can be easily consumed by
+ * reactive libraries such as React.
+ */
+export type State = {
+  isStarted: boolean;
+  playheadState: "idle" | "play" | "pause" | "ended";
+  time: number;
+  duration: number;
+  cuePoints: number[];
+  autoQuality: boolean;
+  qualities: Quality[];
+  audioTracks: AudioTrack[];
+  subtitleTracks: SubtitleTrack[];
+  /**
+   * When null, the player plays the primary content.
+   */
+  slot: Slot | null;
+  volume: number;
 };
 
 export type Events = {

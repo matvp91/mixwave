@@ -1,3 +1,4 @@
+import cn from "clsx";
 import { CheckList } from "./CheckList";
 import { Pane } from "./Pane";
 import { useUiContext } from "../context/UiContext";
@@ -30,20 +31,17 @@ export function QualitiesPane() {
 }
 
 function getAutoLabel(state: State) {
-  let text = "Auto";
-  const height = state.qualities.find((quality) => quality.active)?.height;
-
-  let label = null;
-  if (state.autoQuality && height) {
-    label = (
-      <span className="text-[0.7rem] font-medium ml-auto">{`${height}p`}</span>
-    );
-  }
+  const height = state.qualities.find((quality) => quality.active)?.height ?? 0;
 
   return (
-    <div className="flex items-center min-w-20">
-      {text}
-      {label}
+    <div className="flex items-center min-w-20 overflow-hidden">
+      Auto
+      <span
+        className={cn(
+          "text-[0.7rem] font-medium ml-auto transition-all",
+          state.autoQuality ? "translate-x-0" : "translate-x-1 opacity-0",
+        )}
+      >{`${height}p`}</span>
     </div>
   );
 }

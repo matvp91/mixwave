@@ -62,7 +62,7 @@ export function UiProvider({
   };
 
   let visibleControls = false;
-  if (state.isStarted && (visible.visible || settings.value || seeking)) {
+  if (state.started && (visible.visible || settings.value || seeking)) {
     visibleControls = true;
   }
 

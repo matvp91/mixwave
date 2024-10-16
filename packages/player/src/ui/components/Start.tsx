@@ -9,7 +9,7 @@ export function Start() {
     <button
       className={cn(
         "absolute inset-0 bg-black/30 z-50 transition-opacity text-white flex items-center justify-center group",
-        state.isStarted && "opacity-0 pointer-events-none",
+        state.started && "opacity-0 pointer-events-none",
       )}
       onClick={() => facade.playOrPause()}
     >

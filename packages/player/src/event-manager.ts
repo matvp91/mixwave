@@ -1,76 +1,105 @@
-type Fn = CallableFunction;
-type FnTuple = [Fn, Fn];
+type Handler = (...args: any) => any;
 
-export class EventManager<On extends Fn, Off extends Fn> {
-  on: On;
+type Target = {
+  addEventListener?: Handler;
+  removeEventListener?: Handler;
+  on?: Handler;
+  off?: Handler;
+};
 
-  off: Off;
+type AddCallback<T extends Target> = T extends { addEventListener: Handler }
+  ? T["addEventListener"]
+  : T extends { on: Handler }
+    ? T["on"]
+    : Handler;
 
-  private listeners_: Record<string, FnTuple[]> = {};
+type RemoveCallback<T extends Target> = T extends {
+  removeEventListener: Handler;
+}
+  ? T["removeEventListener"]
+  : T extends { off: Handler }
+    ? T["off"]
+    : Handler;
 
-  constructor(
-    private params_: {
-      on: On;
-      off: Off;
-    },
-  ) {
-    this.on = this.addListener_ as unknown as On;
-    this.off = this.removeListener_ as unknown as Off;
-  }
+export class EventManager {
+  private bindings_ = new Set<Binding>();
 
-  private addListener_ = (event: string, callback: () => void) => {
-    const listener = wrapInLog(callback);
+  listen = <T extends Target>(target: T) =>
+    ((type, listener, context) => {
+      const binding = new Binding(target, type, listener, context);
+      this.bindings_.add(binding);
+    }) as AddCallback<T>;
 
-    if (!this.listeners_[event]) {
-      this.listeners_[event] = [];
-    }
-    this.listeners_[event].push([listener, callback]);
+  listenOnce = <T extends Target>(target: T) =>
+    ((type, listener, context) => {
+      const binding = new Binding(
+        target,
+        type,
+        listener,
+        context,
+        /* once= */ true,
+      );
+      this.bindings_.add(binding);
+    }) as AddCallback<T>;
 
-    this.params_.on(event, listener);
-  };
+  unlisten = <T extends Target>(target: T) =>
+    ((type, listener) => {
+      const binding = this.bindings_
+        .values()
+        .find(
+          (binding) =>
+            binding.target === target &&
+            binding.type === type &&
+            binding.listener === listener,
+        );
+      if (binding) {
+        binding.remove();
+        this.bindings_.delete(binding);
+      }
+    }) as RemoveCallback<T>;
 
-  private removeListener_ = (event: string, callback: () => void) => {
-    const lookupMap = this.listeners_[event];
-    if (!lookupMap) {
-      return;
-    }
-
-    const listener = lookupMap.find((listener) => {
-      return listener[1] === callback;
+  removeAll() {
+    this.bindings_.forEach((binding) => {
+      binding.remove();
     });
-    if (!listener) {
-      return;
-    }
-
-    this.params_.off(event, listener[0]);
-
-    const index = this.listeners_[event].indexOf(listener);
-    if (index > -1) {
-      this.listeners_[event].splice(index, 1);
-    }
-
-    if (!this.listeners_[event].length) {
-      delete this.listeners_[event];
-    }
-  };
-
-  releaseAll() {
-    Object.entries(this.listeners_).forEach(([event, listeners]) => {
-      listeners.forEach((listener) => {
-        this.params_.off(event, listener[0]);
-      });
-    });
-    this.listeners_ = {};
+    this.bindings_.clear();
   }
 }
 
-function wrapInLog<T extends (...args: unknown[]) => void>(callback: T) {
-  const fn = async (...args: unknown[]) => {
-    try {
-      await callback(...args);
-    } catch (error) {
-      console.error(error);
-    }
+class Binding {
+  private methodMap_ = {
+    add:
+      this.target.addEventListener?.bind(this.target) ??
+      this.target.on?.bind(this.target),
+    remove:
+      this.target.removeEventListener?.bind(this.target) ??
+      this.target.off?.bind(this.target),
   };
-  return fn;
+
+  private callback_: Handler;
+
+  constructor(
+    public target: Target,
+    public type: string,
+    public listener: Handler,
+    context?: unknown,
+    once?: boolean,
+  ) {
+    this.callback_ = async (...args: unknown[]) => {
+      try {
+        await this.listener.apply(context, args);
+        if (once) {
+          this.remove();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    this.methodMap_.add?.(this.type, this.callback_);
+  }
+
+  remove() {
+    this.methodMap_.remove?.(this.type, this.callback_);
+  }
 }

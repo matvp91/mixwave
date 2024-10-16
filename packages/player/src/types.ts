@@ -1,17 +1,9 @@
+import type { Level, MediaPlaylist } from "hls.js";
+
 /**
  * A custom type for each `ASSET`.
  */
-export type MixType = "ad" | "bumper";
-
-/**
- * Anything that is not the primary content is a slot,
- * they map 1 to 1 on interstitials in the HLS playlist.
- */
-export type Slot = {
-  type?: MixType;
-  time: number;
-  duration: number;
-};
+export type InterstitialType = "ad" | "bumper";
 
 /**
  * Defines an in-band subtitle track.
@@ -20,6 +12,7 @@ export type SubtitleTrack = {
   id: number;
   active: boolean;
   label: string;
+  track: MediaPlaylist;
 };
 
 /**
@@ -29,6 +22,7 @@ export type AudioTrack = {
   id: number;
   active: boolean;
   label: string;
+  track: MediaPlaylist;
 };
 
 /**
@@ -37,10 +31,34 @@ export type AudioTrack = {
 export type Quality = {
   height: number;
   active: boolean;
+  levels: Level[];
+};
+
+/**
+ * State of playhead across all interstitials.
+ */
+export type PlayheadState = "idle" | "play" | "playing" | "pause" | "ended";
+
+export type Interstitial = {
+  type?: InterstitialType;
+  time: number;
+  duration: number;
+};
+
+export type State = {
+  playheadState: PlayheadState;
+  started: boolean;
+  time: number;
+  duration: number;
+  volume: number;
+  interstitial?: Interstitial;
+  autoQuality: boolean;
+  qualities: Quality[];
+  audioTracks: AudioTrack[];
+  subtitleTracks: SubtitleTrack[];
+  cuePoints: number[];
 };
 
 export type Events = {
   "*": () => void;
 };
-
-export type PlayheadState = "idle" | "play" | "pause" | "ended";

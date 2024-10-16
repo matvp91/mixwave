@@ -1,5 +1,5 @@
 import Hls from "hls.js";
-import { HlsFacade, HlsUi } from "@mixwave/player";
+import { Facade } from "@mixwave/player";
 import { useEffect, useRef, useState } from "react";
 
 type PlayerProps = {
@@ -8,7 +8,7 @@ type PlayerProps = {
 
 export function Player({ url }: PlayerProps) {
   const ref = useRef<HTMLVideoElement>(null);
-  const [facade, setFacade] = useState<HlsFacade | null>(null);
+  const [facade, setFacade] = useState<Facade | null>(null);
 
   useEffect(() => {
     if (!url || !ref.current) {
@@ -19,7 +19,7 @@ export function Player({ url }: PlayerProps) {
       debug: false,
     });
     hls.attachMedia(ref.current);
-    const facade = new HlsFacade(hls);
+    const facade = new Facade(hls);
 
     hls.loadSource(url);
 
@@ -30,7 +30,7 @@ export function Player({ url }: PlayerProps) {
     setFacade(facade);
 
     return () => {
-      facade.dispose();
+      facade.destroy();
       hls.destroy();
     };
   }, [url]);
@@ -45,7 +45,7 @@ export function Player({ url }: PlayerProps) {
       data-mix-container
     >
       <video ref={ref} className="absolute inset-O w-full h-full" />
-      {facade ? <HlsUi facade={facade} /> : null}
+      {/* {facade ? <HlsUi facade={facade} /> : null} */}
     </div>
   );
 }

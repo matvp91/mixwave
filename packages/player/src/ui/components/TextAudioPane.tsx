@@ -2,14 +2,13 @@ import { CheckList } from "./CheckList";
 import { Pane } from "./Pane";
 import { useUiContext } from "../context/UiContext";
 import type { CheckListItem } from "./CheckList";
-import type { SubtitleTrack, AudioTrack } from "@mixwave/player";
 
 export function TextAudioPane() {
   const { facade, state } = useUiContext();
 
   const subtitleItems = state.subtitleTracks.map<CheckListItem>((it) => ({
     id: it.id,
-    label: getSubtitleLabel(it),
+    label: it.label,
     checked: it.active,
   }));
 
@@ -36,23 +35,11 @@ export function TextAudioPane() {
           }}
           items={state.audioTracks.map((it) => ({
             id: it.id,
-            label: getAudioLabel(it),
+            label: it.label,
             checked: it.active,
           }))}
         />
       </Pane>
     </div>
   );
-}
-
-function getSubtitleLabel(track: SubtitleTrack) {
-  return track.lang ?? "unk";
-}
-
-function getAudioLabel(track: AudioTrack) {
-  let label = track.lang ?? "unk";
-  if (track.channels === "6") {
-    label += " 5.1";
-  }
-  return label;
 }

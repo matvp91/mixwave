@@ -2,10 +2,10 @@ import Hls from "hls.js";
 import EventEmitter from "eventemitter3";
 import { assert } from "./assert";
 import { EventManager } from "./event-manager";
+import { getLang } from "./language-map";
 import type {
   InterstitialScheduleItem,
   InterstitialAssetStartedData,
-  Level,
   MediaPlaylist,
 } from "hls.js";
 import type {
@@ -90,18 +90,8 @@ export class HlsFacade extends EventEmitter<Events> {
       this.setState_({ playheadState: "ended", time: this.state?.duration });
     });
 
-    this.hlsEvents_.on(Hls.Events.LEVEL_SWITCHING, (_, data) => {
-      assert(this.state);
-
-      this.setState_({ autoQuality: this.hls.autoLevelEnabled });
-
-      updateActive_(
-        this.state.qualities,
-        (quality) => quality.height === data.height,
-        (qualities) => {
-          this.setState_({ qualities });
-        },
-      );
+    this.hlsEvents_.on(Hls.Events.LEVEL_SWITCHING, () => {
+      this.syncLevel_();
     });
 
     this.hlsEvents_.on(Hls.Events.AUDIO_TRACK_SWITCHING, () => {
@@ -147,7 +137,7 @@ export class HlsFacade extends EventEmitter<Events> {
     });
 
     this.hlsEvents_.on(Hls.Events.LEVELS_UPDATED, (_, data) => {
-      this.setState_({ qualities: this.mapQualities(data.levels) });
+      this.setState_({ qualities: this.mapQualities() });
     });
 
     this.hlsEvents_.on(Hls.Events.AUDIO_TRACKS_UPDATED, () => {
@@ -171,7 +161,7 @@ export class HlsFacade extends EventEmitter<Events> {
       time: timings.time,
       duration: timings.duration,
       cuePoints: [],
-      qualities: this.mapQualities(this.hls.levels),
+      qualities: this.mapQualities(),
       autoQuality: this.hls.autoLevelEnabled,
       audioTracks: this.mapAudioTracks(),
       subtitleTracks: this.mapSubtitleTracks(),
@@ -330,21 +320,21 @@ export class HlsFacade extends EventEmitter<Events> {
   setQuality(height: number | null) {
     if (height === null) {
       this.hls.nextLevel = -1;
+      this.syncLevel_();
       return;
     }
 
-    const currentLevel = this.hls.levels[this.hls.currentLevel];
-    if (!currentLevel) {
+    const loadLevel = this.hls.levels[this.hls.loadLevel];
+    if (!loadLevel) {
       return;
     }
 
     const idx = this.hls.levels.findIndex((level) => {
-      return (
-        level.height === height && level.codecSet === currentLevel.codecSet
-      );
+      return level.height === height && level.codecSet === loadLevel.codecSet;
     });
 
     this.hls.nextLevel = idx;
+    this.syncLevel_();
   }
 
   /**
@@ -376,18 +366,16 @@ export class HlsFacade extends EventEmitter<Events> {
     });
   }
 
-  private mapQualities(levels: Level[]): Quality[] {
+  private mapQualities(): Quality[] {
     const resolutions: number[] = [];
-    for (const level of levels) {
+    for (const level of this.hls.levels) {
       if (resolutions.includes(level.height)) {
         continue;
       }
       resolutions.push(level.height);
     }
 
-    const nextLoadLevel = levels.find(
-      (level) => level.id === this.hls.nextLoadLevel,
-    );
+    const nextLoadLevel = this.hls.levels[this.hls.nextLoadLevel];
 
     return resolutions
       .map((resolution) => ({
@@ -399,21 +387,29 @@ export class HlsFacade extends EventEmitter<Events> {
 
   private mapAudioTracks(): AudioTrack[] {
     const idx = this.getAudioTrackIdx_();
-    return this.hls.allAudioTracks.map((track, index) => ({
-      id: index,
-      active: index === idx,
-      lang: track.lang,
-      channels: track.channels,
-    }));
+    return this.hls.allAudioTracks.map((track, index) => {
+      let label = getLang(track.lang);
+      if (track.channels === "6") {
+        label += " 5.1";
+      }
+
+      return {
+        id: index,
+        active: index === idx,
+        label,
+      };
+    });
   }
 
   private mapSubtitleTracks(): SubtitleTrack[] {
     const idx = this.getSubtitleTrackIdx_();
-    return this.hls.allSubtitleTracks.map((track, index) => ({
-      id: index,
-      active: index === idx,
-      lang: track.lang,
-    }));
+    return this.hls.allSubtitleTracks.map((track, index) => {
+      return {
+        id: index,
+        active: index === idx,
+        label: getLang(track.lang),
+      };
+    });
   }
 
   private findIdxInAllTracks_(
@@ -441,6 +437,22 @@ export class HlsFacade extends EventEmitter<Events> {
       this.hls.allAudioTracks,
       this.hls.audioTracks,
       this.hls.audioTrack,
+    );
+  }
+
+  private syncLevel_() {
+    assert(this.state);
+
+    this.setState_({ autoQuality: this.hls.autoLevelEnabled });
+
+    const nextLoadLevel = this.hls.levels[this.hls.nextLoadLevel];
+
+    updateActive_(
+      this.state.qualities,
+      (quality) => quality.height === nextLoadLevel?.height,
+      (qualities) => {
+        this.setState_({ qualities });
+      },
     );
   }
 }

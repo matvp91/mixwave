@@ -22,7 +22,7 @@ export type Slot = {
 export type SubtitleTrack = {
   id: number;
   active: boolean;
-  lang?: string;
+  label: string;
 };
 
 /**
@@ -31,8 +31,7 @@ export type SubtitleTrack = {
 export type AudioTrack = {
   id: number;
   active: boolean;
-  lang?: string;
-  channels?: string;
+  label: string;
 };
 
 /**

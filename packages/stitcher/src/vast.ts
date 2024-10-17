@@ -90,6 +90,7 @@ function scheduleForPackage(adMedia: AdMedia) {
         codec: "aac",
         bitrate: 128000,
         language: "eng",
+        channels: 2, // TODO: Make optional and derive channels from input
       },
     ],
   });

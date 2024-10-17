@@ -1,7 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import ArrowDownFromLine from "lucide-react/icons/arrow-down-from-line";
-import ArrowUpFromLine from "lucide-react/icons/arrow-up-from-line";
 
 type JobLogProps = {
   value: string;

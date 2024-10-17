@@ -3,7 +3,8 @@ import { FFmpeggy } from "ffmpeggy";
 import { downloadFile, uploadFile } from "../s3";
 import { TmpDir } from "../tmp-dir";
 import { getBinaryPath } from "../helpers";
-import { SKIP_JOB } from "./helpers";
+import { JOB_SKIPPED } from "./helpers";
+import type { FFprobeResult } from "ffmpeggy";
 import type { Job } from "bullmq";
 import type { Stream, Input } from "../../types";
 import type { SkippableJobResult } from "./helpers";
@@ -80,18 +81,13 @@ async function runJob(
   const outputOptions: string[] = [];
 
   if (params.stream.type === "video") {
-    const maxHeight = inputInfo.streams.reduce<number>((acc, stream) => {
-      if (!stream.height) {
-        return acc;
-      }
-      return acc > stream.height ? acc : stream.height;
-    }, 0);
+    const maxHeight = getMaxHeight(inputInfo);
 
-    if (maxHeight && params.stream.height > maxHeight) {
+    if (maxHeight > 0 && params.stream.height > maxHeight) {
       job.log(
         `Skip upscale, requested ${params.stream.height} is larger than input ${maxHeight}`,
       );
-      return SKIP_JOB;
+      return JOB_SKIPPED;
     }
 
     name = `video_${params.stream.height}_${params.stream.bitrate}_${params.stream.codec}.m4v`;
@@ -160,6 +156,8 @@ function getVideoOutputOptions(
   stream: Extract<Stream, { type: "video" }>,
   segmentSize: number,
 ) {
+  const keyFrameRate = segmentSize * stream.framerate;
+
   const args: string[] = [
     "-f mp4",
     "-an",
@@ -168,6 +166,8 @@ function getVideoOutputOptions(
     `-r ${stream.framerate}`,
     "-movflags +frag_keyframe",
     `-frag_duration ${segmentSize * 1_000_000}`,
+    `-keyint_min ${keyFrameRate}`,
+    `-g ${keyFrameRate}`,
   ];
 
   if (stream.codec === "h264") {
@@ -189,10 +189,9 @@ function getVideoOutputOptions(
 
   const filters: string[] = ["setsar=1:1", `scale=-2:${stream.height}`];
 
-  args.push(`-vf ${filters.join(",")}`);
-
-  const keyFrameRate = segmentSize * stream.framerate;
-  args.push(`-keyint_min ${keyFrameRate}`, `-g ${keyFrameRate}`);
+  if (filters.length) {
+    args.push(`-vf ${filters.join(",")}`);
+  }
 
   return args;
 }
@@ -204,7 +203,7 @@ function getAudioOutputOptions(
   const args: string[] = [
     "-f mp4",
     "-vn",
-    "-ac 2",
+    `-ac ${stream.channels}`,
     `-c:a ${stream.codec}`,
     `-b:a ${stream.bitrate}`,
     `-frag_duration ${segmentSize * 1_000_000}`,
@@ -212,10 +211,28 @@ function getAudioOutputOptions(
     "-strict experimental",
   ];
 
+  const filters: string[] = [];
+  if (stream.channels === 6) {
+    filters.push("channelmap=channel_layout=5.1");
+  }
+
+  if (filters.length) {
+    args.push(`-af ${filters.join(",")}`);
+  }
+
   return args;
 }
 
 function getTextOutputOptions() {
   const args: string[] = ["-f webvtt"];
   return args;
+}
+
+function getMaxHeight(info: FFprobeResult) {
+  return info.streams.reduce<number>((acc, stream) => {
+    if (!stream.height) {
+      return acc;
+    }
+    return acc > stream.height ? acc : stream.height;
+  }, 0);
 }

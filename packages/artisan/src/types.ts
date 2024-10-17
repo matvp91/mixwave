@@ -13,6 +13,7 @@ export type Stream =
       codec: AudioCodec;
       bitrate: number;
       language: LangCode;
+      channels: number;
     }
   | {
       type: "text";

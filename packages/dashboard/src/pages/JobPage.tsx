@@ -4,6 +4,7 @@ import { JobView } from "@/components/JobView";
 import { getShortId } from "@/lib/helpers";
 import { useJob } from "@/hooks/useJob";
 import { Loader } from "@/components/Loader";
+import { JobTag } from "@/components/JobTag";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -39,6 +40,9 @@ export function JobPage() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
+        <div className="ml-auto">
+          <JobTag tag={job.tag} />
+        </div>
       </div>
       <div className="flex grow basis-0 overflow-hidden">
         <div className="px-4 py-2 border-r min-w-[300px] overflow-auto grow">

@@ -74,7 +74,6 @@ function createBinding(
   };
 
   const remove = () => {
-    console.log(methodMap, type, callback);
     methodMap.remove?.(type, callback);
   };
 

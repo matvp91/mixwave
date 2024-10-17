@@ -1,9 +1,12 @@
 import Hls from "hls.js";
+import type {
+  InterstitialAssetEndedData,
+  InterstitialAssetPlayerCreatedData,
+  InterstitialAssetStartedData,
+} from "hls.js";
 import EventEmitter from "eventemitter3";
-import { EventManager } from "./event-manager";
-import { StateObserver } from "./state-observer";
-import { assert } from "./assert";
-import { getAssetListItem, getTypes } from "./helpers";
+import { getAssetListItem, getTypes, pipeState } from "./helpers";
+import { Asset } from "./asset";
 import type { StateObserverEmit } from "./state-observer";
 import type { FacadeListeners, Interstitial } from "./types";
 import type { HlsAssetPlayer } from "hls.js";
@@ -11,25 +14,27 @@ import type { HlsAssetPlayer } from "hls.js";
 export class Facade {
   private emitter_ = new EventEmitter();
 
-  private eventManager_ = new EventManager();
-
-  private observer_: StateObserver;
-
-  private assetObservers_ = new Map<HlsAssetPlayer, StateObserver>();
+  private assets_ = new Set<Asset>();
 
   interstitial: Interstitial | null = null;
 
   constructor(public hls: Hls) {
-    if (!hls.media) {
-      throw new Error(
-        "Hls.media is not set, call attachMedia first creating a facade",
-      );
-    }
-
-    this.observer_ = new StateObserver(hls, this.observerEmit_);
-
-    const listen = this.eventManager_.listen(hls);
-    listen(Hls.Events.BUFFER_RESET, this.onBufferReset_, this);
+    hls.on(Hls.Events.BUFFER_RESET, this.onBufferReset_, this);
+    hls.on(
+      Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED,
+      this.onInterstitialAssetPlayerCreated_,
+      this,
+    );
+    hls.on(
+      Hls.Events.INTERSTITIAL_ASSET_STARTED,
+      this.onInterstitialAssetStarted_,
+      this,
+    );
+    hls.on(
+      Hls.Events.INTERSTITIAL_ASSET_ENDED,
+      this.onInterstitialAssetEnded_,
+      this,
+    );
   }
 
   on<E extends keyof FacadeListeners>(event: E, listener: FacadeListeners[E]) {
@@ -41,136 +46,129 @@ export class Facade {
   }
 
   destroy() {
+    this.hls.off(Hls.Events.BUFFER_RESET, this.onBufferReset_, this);
+    this.hls.off(
+      Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED,
+      this.onInterstitialAssetPlayerCreated_,
+      this,
+    );
+    this.hls.off(
+      Hls.Events.INTERSTITIAL_ASSET_STARTED,
+      this.onInterstitialAssetStarted_,
+      this,
+    );
+    this.hls.off(
+      Hls.Events.INTERSTITIAL_ASSET_ENDED,
+      this.onInterstitialAssetEnded_,
+      this,
+    );
+
     this.reset_();
-    this.observer_.destroy();
-  }
-
-  private reset_() {
-    this.eventManager_.removeAll();
-
-    this.assetObservers_.forEach((observer) => {
-      observer.destroy();
-    });
-    this.assetObservers_.clear();
   }
 
   private onBufferReset_() {
     this.reset_();
 
-    const listen = this.eventManager_.listen(this.hls);
+    const primaryAsset = new Asset(this.hls, this.observerEmit_);
+    this.assets_.add(primaryAsset);
+  }
 
-    listen(Hls.Events.INTERSTITIALS_UPDATED, () => {
-      this.observer_.requestTimeTick();
-    });
+  private onInterstitialAssetPlayerCreated_(
+    _: string,
+    data: InterstitialAssetPlayerCreatedData,
+  ) {
+    const interstitialAsset = new Asset(data.player, this.observerEmit_);
+    this.assets_.add(interstitialAsset);
+  }
 
-    listen(Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED, (_, data) => {
-      const player = data.player;
-      const observer = new StateObserver(player.hls, this.observerEmit_);
-      this.assetObservers_.set(player, observer);
-    });
+  private onInterstitialAssetStarted_(
+    _: string,
+    data: InterstitialAssetStartedData,
+  ) {
+    const asset = this.getAssetByPlayer(data.player);
+    const assetListItem = getAssetListItem(data);
 
-    listen(Hls.Events.INTERSTITIAL_ASSET_STARTED, (_, data) => {
-      const observer = this.assetObservers_.get(data.player);
-      assert(observer, "No observer in asset started. This is a bug, report");
+    this.interstitial = {
+      get time() {
+        return pipeState("time", asset);
+      },
+      get duration() {
+        return pipeState("duration", asset);
+      },
+      player: data.player,
+      type: assetListItem.type,
+    };
+  }
 
-      const assetListItem = getAssetListItem(data);
-
-      this.interstitial = {
-        get time() {
-          return observer.state.time;
+  private onInterstitialAssetEnded_(
+    _: string,
+    data: InterstitialAssetEndedData,
+  ) {
+    const asset = this.getAssetByPlayer(data.player);
+    if (!asset) {
+      throw new Error(
+        "No asset for interstitials player. This is a bug, report",
+        {
+          cause: { data, assets: this.assets_ },
         },
-        get duration() {
-          return observer.state.duration;
-        },
-        player: data.player,
-        type: assetListItem.type,
-      };
-    });
-
-    listen(Hls.Events.INTERSTITIAL_ASSET_ENDED, (_, data) => {
-      this.assetObservers_.delete(data.player);
-      this.interstitial = null;
-    });
-
-    listen(Hls.Events.INTERSTITIALS_PRIMARY_RESUMED, () => {
-      if (this.assetObservers_.size === 0) {
-        return;
-      }
-      throw new SyntaxError(
-        "Primary resumed but asset observers are still present. " +
-          "This is a bug, report",
       );
+    }
+    this.assets_.delete(asset);
+    this.interstitial = null;
+  }
+
+  private reset_() {
+    this.assets_.forEach((asset) => {
+      asset.destroy();
     });
+    this.assets_.clear();
   }
 
   private observerEmit_: StateObserverEmit = (hls, event, eventObj) => {
-    if (
-      this.interstitial &&
-      // If we have an interstitial, we discard all events on primary.
-      (this.hls === hls ||
-        // If the event comes from a preloaded interstitial, discard.
-        this.interstitial.player.hls !== hls)
-    ) {
+    if (hls !== this.primaryAsset?.hls && hls !== this.activeAsset?.hls) {
       return;
     }
     this.emitter_.emit(event, eventObj);
     this.emitter_.emit("*");
   };
 
-  get activeItem() {
-    if (this.interstitial) {
-      const player = this.interstitial.player;
-      const observer = this.assetObservers_.get(player);
-      assert(observer, "Interstitial has no observer. This is a bug, report");
-      return {
-        media: player.media,
-        state: observer.state,
-      };
-    }
-    return this.item;
-  }
-
-  get item() {
-    return {
-      media: this.hls.media,
-      state: this.observer_.state,
-    };
-  }
-
   get playhead() {
-    return this.activeItem.state.playhead;
+    return pipeState("playhead", this.activeAsset);
   }
 
   get started() {
-    return this.activeItem.state.started;
+    return pipeState("started", this.activeAsset);
   }
 
   get time() {
-    return this.item.state.time;
+    return pipeState("time", this.primaryAsset);
   }
 
   get duration() {
-    return this.item.state.duration;
+    if (this.hls.interstitialsManager) {
+      return this.hls.interstitialsManager.primary.duration;
+    }
+    return pipeState("duration", this.primaryAsset);
   }
 
   get autoQuality() {
-    return this.item.state.autoQuality;
+    return pipeState("autoQuality", this.primaryAsset);
   }
 
   get qualities() {
-    return this.item.state.qualities;
+    return pipeState("qualities", this.primaryAsset);
   }
 
   get audioTracks() {
-    return this.item.state.audioTracks;
+    return pipeState("audioTracks", this.primaryAsset);
   }
 
   get subtitleTracks() {
-    return this.item.state.subtitleTracks;
+    return pipeState("subtitleTracks", this.primaryAsset);
   }
 
   get volume() {
-    return this.activeItem.state.volume;
+    return pipeState("volume", this.activeAsset);
   }
 
   get cuePoints() {
@@ -191,7 +189,7 @@ export class Facade {
    * Toggles play or pause.
    */
   playOrPause() {
-    const media = this.activeItem.media;
+    const media = this.activeAsset?.hls.media;
     if (!media) {
       return;
     }
@@ -219,7 +217,7 @@ export class Facade {
    * @param volume
    */
   setVolume(volume: number) {
-    const media = this.activeItem.media;
+    const media = this.activeAsset?.hls.media;
     if (media) {
       media.volume = volume;
     }
@@ -229,20 +227,48 @@ export class Facade {
    * Sets quality by id. All quality levels are defined in `State`.
    * @param id
    */
-  // @ts-ignore
-  setQuality(height: number | null) {}
+  setQuality(height: number | null) {
+    this.primaryAsset?.observer.setQuality(height);
+  }
 
   /**
    * Sets subtitle by id. All subtitle tracks are defined in `State`.
    * @param id
    */
-  // @ts-ignore
-  setSubtitleTrack(id: number | null) {}
+  setSubtitleTrack(id: number | null) {
+    this.primaryAsset?.observer.setSubtitleTrack(id);
+  }
 
   /**
    * Sets audio by id. All audio tracks are defined in `State`.
    * @param id
    */
-  // @ts-ignore
-  setAudioTrack(id: number) {}
+  setAudioTrack(id: number) {
+    this.primaryAsset?.observer.setAudioTrack(id);
+  }
+
+  private getAssetByPlayer(player: HlsAssetPlayer) {
+    for (const asset of this.assets_) {
+      if (asset.assetPlayer === player) {
+        return asset;
+      }
+    }
+    return null;
+  }
+
+  get primaryAsset() {
+    for (const asset of this.assets_) {
+      if (!asset.assetPlayer) {
+        return asset;
+      }
+    }
+    return null;
+  }
+
+  get activeAsset() {
+    if (this.interstitial) {
+      return this.getAssetByPlayer(this.interstitial.player);
+    }
+    return this.primaryAsset;
+  }
 }

@@ -8,7 +8,7 @@ import type { UseVisible } from "../hooks/useVisible";
 import type { UseSettings } from "../hooks/useSettings";
 import type { UseFullscreen } from "../hooks/useFullscreen";
 import type { StoreState } from "../hooks/useHlsState";
-import type { Facade } from "..";
+import type { Facade } from "../..";
 import type { Metadata } from "../types";
 
 type UiContextValue = {

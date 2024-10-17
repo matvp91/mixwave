@@ -1,5 +1,5 @@
 import { useSyncExternalStore, useRef } from "react";
-import type { Facade } from "..";
+import type { Facade } from "../..";
 
 function buildState(f: Facade) {
   return {

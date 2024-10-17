@@ -65,6 +65,7 @@ export enum Events {
   QUALITIES_CHANGE = "qualitiesChange",
   AUDIO_TRACKS_CHANGE = "audioTracksChange",
   SUBTITLE_TRACKS_CHANGE = "subtitleTracksChange",
+  AUTO_QUALITY_CHANGE = "autoQualityChange",
 }
 
 export type PlayheadChangeEventData = {
@@ -92,6 +93,10 @@ export type SubtitleTracksChangeEventData = {
   subtitleTracks: SubtitleTrack[];
 };
 
+export type AutoQualityChangeEventData = {
+  autoQuality: boolean;
+};
+
 export type FacadeListeners = {
   "*": () => void;
   [Events.PLAYHEAD_CHANGE]: (data: PlayheadChangeEventData) => void;
@@ -102,4 +107,5 @@ export type FacadeListeners = {
   [Events.SUBTITLE_TRACKS_CHANGE]: (
     data: SubtitleTracksChangeEventData,
   ) => void;
+  [Events.AUTO_QUALITY_CHANGE]: (data: AutoQualityChangeEventData) => void;
 };

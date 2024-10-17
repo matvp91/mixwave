@@ -15,7 +15,6 @@ export default defineConfig({
     svgr(),
   ],
   build: {
-    emptyOutDir: false,
     lib: {
       entry: {
         index: resolve(__dirname, "src/facade/index.ts"),

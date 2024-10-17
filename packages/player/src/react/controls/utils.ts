@@ -22,3 +22,14 @@ export function toHMS(seconds: number) {
 
   return result;
 }
+
+export function insertGenericStyle() {
+  const style = document.createElement("style");
+  style.setAttribute("data-mix-style", "");
+  style.innerText = `
+  [data-mix-container] video::-webkit-media-text-track-container {
+    transform: scale(0.95);
+  }
+`;
+  document.head.appendChild(style);
+}

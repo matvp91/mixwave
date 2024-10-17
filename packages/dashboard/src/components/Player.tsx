@@ -1,5 +1,5 @@
 import Hls from "hls.js";
-import { Controls, useFacade } from "@mixwave/player/react";
+import { Controls, useController } from "@mixwave/player/react";
 import { useEffect } from "react";
 
 type PlayerProps = {
@@ -9,7 +9,7 @@ type PlayerProps = {
 const hls = new Hls();
 
 export function Player({ url }: PlayerProps) {
-  const [videoRef, facade] = useFacade(hls);
+  const controller = useController(hls);
 
   useEffect(() => {
     if (url) {
@@ -18,16 +18,21 @@ export function Player({ url }: PlayerProps) {
   }, [url]);
 
   useEffect(() => {
-    Object.assign(window, { facade });
-  }, [facade]);
+    Object.assign(window, {
+      facade: controller.facade,
+    });
+  }, [controller]);
 
   return (
     <div
       className="relative aspect-video bg-black overflow-hidden"
       data-mix-container
     >
-      <video ref={videoRef} className="absolute inset-O w-full h-full" />
-      {facade ? <Controls facade={facade} /> : null}
+      <video
+        ref={controller.mediaRef}
+        className="absolute inset-O w-full h-full"
+      />
+      <Controls controller={controller} />
     </div>
   );
 }

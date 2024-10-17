@@ -42,11 +42,13 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "eventemitter3": "^5.0.1",
-    "screenfull": "^6.0.2"
+    "screenfull": "^6.0.2",
+    "use-sync-external-store": "^1.2.2"
   },
   "devDependencies": {
     "@types/eventemitter3": "^2.0.2",
     "@types/react": "^18.3.3",
+    "@types/use-sync-external-store": "^0.0.6",
     "@vitejs/plugin-react": "^4.3.1",
     "typedoc": "^0.26.8",
     "typedoc-plugin-markdown": "^4.2.9",

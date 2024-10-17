@@ -3,7 +3,8 @@ import type {
   InterstitialAssetStartedData,
   InterstitialScheduleItem,
 } from "hls.js";
-import type { CustomInterstitialType } from "./types";
+import type { CustomInterstitialType, State } from "./types";
+import type { Asset } from "./asset";
 
 export function updateActive<T extends { active: boolean }>(
   items: T[],
@@ -64,3 +65,25 @@ export function getTypes(item: InterstitialScheduleItem) {
     bumper: false,
   } satisfies Record<CustomInterstitialType, boolean>);
 }
+
+export function pipeState<P extends keyof State>(
+  prop: P,
+  asset: Asset | null,
+): State[P] {
+  if (!asset) {
+    return noState[prop];
+  }
+  return asset.state[prop];
+}
+
+const noState: State = {
+  playhead: "idle",
+  started: false,
+  time: 0,
+  duration: NaN,
+  volume: 0,
+  autoQuality: false,
+  qualities: [],
+  audioTracks: [],
+  subtitleTracks: [],
+};

@@ -2,18 +2,19 @@ import { BaseControls } from "./components/BaseControls";
 import { Start } from "./components/Start";
 import { useHlsState } from "./hooks/useHlsState";
 import { UiProvider } from "./context/UiContext";
-import type { Facade } from ".";
+import type { Controller } from "..";
 import type { Metadata } from "./types";
 
 export type ControlsProps = {
-  facade: Facade;
+  controller: Controller;
   metadata?: Metadata;
 };
 
-export function Controls({ facade, metadata }: ControlsProps) {
-  const state = useHlsState(facade);
+export function Controls({ controller, metadata }: ControlsProps) {
+  const state = useHlsState(controller.facade);
+
   return (
-    <UiProvider facade={facade} metadata={metadata} state={state}>
+    <UiProvider facade={controller.facade} metadata={metadata} state={state}>
       <Start />;
       <BaseControls />
     </UiProvider>

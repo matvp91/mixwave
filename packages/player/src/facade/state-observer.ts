@@ -164,6 +164,15 @@ export class StateObserver {
       });
 
       this.hls.nextLevel = idx;
+      this.onLevelSwitching_();
+    }
+
+    const newAutoQuality = this.hls.autoLevelEnabled;
+    if (newAutoQuality !== this.state.autoQuality) {
+      this.state.autoQuality = newAutoQuality;
+      this.dispatchEvent_(Events.AUTO_QUALITY_CHANGE, {
+        autoQuality: newAutoQuality,
+      });
     }
   }
 
@@ -235,6 +244,7 @@ export class StateObserver {
       return;
     }
 
+    this.state.qualities = newQualities;
     this.dispatchEvent_(Events.QUALITIES_CHANGE, {
       qualities: this.state.qualities,
     });
@@ -286,12 +296,6 @@ export class StateObserver {
     if (this.hls.media) {
       time = this.hls.media.currentTime;
       duration = this.hls.media.duration;
-    }
-
-    const mgr = this.hls.interstitialsManager;
-    if (mgr) {
-      time = mgr.primary.currentTime;
-      duration = mgr.primary.duration;
     }
 
     const oldTime = this.state.time;

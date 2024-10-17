@@ -1,15 +1,16 @@
 import cn from "clsx";
 import PlayIcon from "../icons/play.svg?react";
-import { useUiContext } from "../context/UiContext";
+import { useFacade, useSelector } from "../..";
 
 export function Start() {
-  const { facade, state } = useUiContext();
+  const facade = useFacade();
+  const started = useSelector((facade) => facade.started);
 
   return (
     <button
       className={cn(
         "absolute inset-0 bg-black/30 z-50 transition-opacity text-white flex items-center justify-center group",
-        state.started && "opacity-0 pointer-events-none",
+        started && "opacity-0 pointer-events-none",
       )}
       onClick={() => facade.playOrPause()}
     >

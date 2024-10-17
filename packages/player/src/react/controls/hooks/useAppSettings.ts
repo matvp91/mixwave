@@ -1,23 +1,26 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import { useAppStore } from "../AppStoreProvider";
 
 export type SettingsMode = "text-audio" | "quality";
 
-export type SettingsValue = {
+export type Settings = {
   entry: "hover" | "explicit";
   mode: SettingsMode;
 };
 
-export type UseSettings = {
-  set: (mode: SettingsMode | null, hoverEntry?: boolean) => void;
-  value: SettingsValue | null;
-};
+export type SetAppSettings = ReturnType<typeof useAppSettings>;
 
-export function useSettings(): UseSettings {
+export function useAppSettings() {
   const timerRef = useRef<number>();
-  const [value, setValue] = useState<SettingsValue | null>(null);
+  const settings = useAppStore((state) => state.settings);
+  const setSettings = useAppStore((state) => state.setSettings);
 
   useEffect(() => {
-    if (value?.entry === "hover") {
+    if (!settings) {
+      return;
+    }
+
+    if (settings.entry === "hover") {
       const onPointerMove = (event: PointerEvent) => {
         const isOver = isOverSettings(event.target);
 
@@ -28,7 +31,7 @@ export function useSettings(): UseSettings {
 
         if (!isOver && timerRef.current === undefined) {
           timerRef.current = window.setTimeout(() => {
-            setValue(null);
+            setSettings(null);
             timerRef.current = undefined;
           }, 200);
         }
@@ -39,15 +42,14 @@ export function useSettings(): UseSettings {
       return () => {
         window.removeEventListener("pointermove", onPointerMove);
         clearTimeout(timerRef.current);
-        timerRef.current = undefined;
       };
     }
 
-    if (value?.entry === "explicit") {
+    if (settings.entry === "explicit") {
       const onPointerDown = (event: PointerEvent) => {
         const isOver = isOverSettings(event.target);
         if (!isOver) {
-          setValue(null);
+          setSettings(null);
         }
       };
 
@@ -57,32 +59,36 @@ export function useSettings(): UseSettings {
         window.removeEventListener("pointerdown", onPointerDown);
       };
     }
-  }, [value]);
+  }, [settings]);
 
-  const set = useCallback(
+  const setAppSettings = useCallback(
     (mode: SettingsMode | null, hoverEntry?: boolean) => {
-      if (mode === value?.mode && hoverEntry && value?.entry === "explicit") {
+      if (
+        mode === settings?.mode &&
+        hoverEntry &&
+        settings?.entry === "explicit"
+      ) {
         return;
       }
 
-      if (value?.entry === "explicit" && value.mode === mode) {
-        setValue(null);
+      if (settings?.entry === "explicit" && settings.mode === mode) {
+        setSettings(null);
         return;
       }
 
       if (mode === null) {
-        setValue(null);
+        setSettings(null);
       } else {
-        setValue({
+        setSettings({
           mode,
           entry: hoverEntry ? "hover" : "explicit",
         });
       }
     },
-    [value],
+    [setSettings, settings],
   );
 
-  return { set, value };
+  return setAppSettings;
 }
 
 function matchElement(target: EventTarget | null, attr: string) {

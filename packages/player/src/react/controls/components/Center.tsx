@@ -1,18 +1,18 @@
-import { useUiContext } from "../context/UiContext";
+import { useFacade } from "../..";
 import type { MouseEventHandler } from "react";
 
 type CenterProps = {
-  onFullscreenClick?: MouseEventHandler<HTMLElement>;
+  onDoubleClick?: MouseEventHandler<HTMLElement>;
 };
 
-export function Center({ onFullscreenClick }: CenterProps) {
-  const { facade } = useUiContext();
+export function Center({ onDoubleClick }: CenterProps) {
+  const facade = useFacade();
 
   return (
     <div
       className="absolute inset-0"
       onClick={() => facade.playOrPause()}
-      onDoubleClick={onFullscreenClick}
+      onDoubleClick={onDoubleClick}
     />
   );
 }

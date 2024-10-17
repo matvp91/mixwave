@@ -1,12 +1,13 @@
-import type { StoreState } from "../hooks/useHlsState";
+import { useSelector } from "../..";
 import type { Metadata } from "../types";
 
 type LabelProps = {
-  interstitial: StoreState["interstitial"];
   metadata?: Metadata;
 };
 
-export function Label({ interstitial, metadata }: LabelProps) {
+export function Label({ metadata }: LabelProps) {
+  const interstitial = useSelector((facade) => facade.interstitial);
+
   if (interstitial?.type === "ad") {
     return (
       <div className="text-white text-sm font-medium flex items-center px-2">

@@ -34,7 +34,10 @@ export function useController(hls: Hls) {
 function createController(facade: Facade, mediaRef: MediaRefCallback) {
   const listeners = new Set<() => void>();
 
+  let lastFacade = [facade];
+
   facade.on("*", () => {
+    lastFacade = [facade];
     for (const listener of listeners) {
       listener();
     }
@@ -47,7 +50,7 @@ function createController(facade: Facade, mediaRef: MediaRefCallback) {
     };
   };
 
-  const getSnapshot = () => facade;
+  const getSnapshot = () => lastFacade;
 
   return {
     facade,

@@ -1,9 +1,6 @@
-import { ControllerContext } from "..";
-import { BaseControls } from "./components/BaseControls";
+import { Playback } from "./components/Playback";
 import { Start } from "./components/Start";
-import { useHlsState } from "./hooks/useHlsState";
-import { UiProvider } from "./context/UiContext";
-import { useContext } from "react";
+import { AppStoreProvider } from "./AppStoreProvider";
 import type { Metadata } from "./types";
 
 export type ControlsProps = {
@@ -11,13 +8,10 @@ export type ControlsProps = {
 };
 
 export function Controls({ metadata }: ControlsProps) {
-  const controller = useContext(ControllerContext);
-  const state = useHlsState(controller.facade);
-
   return (
-    <UiProvider facade={controller.facade} metadata={metadata} state={state}>
+    <AppStoreProvider>
       <Start />
-      <BaseControls />
-    </UiProvider>
+      <Playback metadata={metadata} />
+    </AppStoreProvider>
   );
 }

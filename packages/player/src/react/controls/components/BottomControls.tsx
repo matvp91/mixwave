@@ -8,79 +8,91 @@ import FullscreenExitIcon from "../icons/fullscreen-exit.svg?react";
 import { SqButton } from "./SqButton";
 import { VolumeButton } from "./VolumeButton";
 import { Label } from "./Label";
-import { useUiContext } from "../context/UiContext";
+import { useFacade, useSelector } from "../..";
+import { useAppStore } from "../AppStoreProvider";
+import type { MouseEventHandler } from "react";
+import type { SetAppSettings } from "../hooks/useAppSettings";
+import type { Metadata } from "../types";
 
-export function BottomControls() {
-  const {
-    visible,
-    facade,
-    state,
-    settings,
-    metadata,
-    time,
-    fullscreen,
-    seekTo,
-  } = useUiContext();
+type BottomControlsProps = {
+  fakeTime: number;
+  nudgeVisible(): void;
+  setAppSettings: SetAppSettings;
+  metadata?: Metadata;
+  toggleFullscreen: MouseEventHandler<HTMLElement>;
+  seekTo(targetTime: number): void;
+};
+
+export function BottomControls({
+  fakeTime,
+  nudgeVisible,
+  setAppSettings,
+  metadata,
+  toggleFullscreen,
+  seekTo,
+}: BottomControlsProps) {
+  const facade = useFacade();
+
+  const playhead = useSelector((facade) => facade.playhead);
+  const interstitial = useSelector((facade) => facade.interstitial);
+  const volume = useSelector((facade) => facade.volume);
+
+  const settings = useAppStore((state) => state.settings);
+  const fullscreen = useAppStore((state) => state.fullscreen);
 
   return (
     <div className="flex gap-1">
       <SqButton
         onClick={() => {
           facade.playOrPause();
-          visible.nudge();
+          nudgeVisible();
         }}
       >
-        {state.playhead === "play" || state.playhead === "playing" ? (
+        {playhead === "play" || playhead === "playing" ? (
           <PauseIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
         ) : (
           <PlayIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
         )}
       </SqButton>
       <SqButton
-        disabled={state.interstitial !== null}
+        disabled={interstitial !== null}
         onClick={() => {
-          seekTo(time + 10);
+          seekTo(fakeTime + 10);
         }}
       >
         <ForwardIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
       </SqButton>
       <VolumeButton
-        volume={state.volume}
+        volume={volume}
         setVolume={(volume) => facade.setVolume(volume)}
       />
-      <Label interstitial={state.interstitial} metadata={metadata} />
+      <Label metadata={metadata} />
       <div className="grow" />
       <SqButton
-        onClick={() => settings.set("text-audio")}
-        onIdle={() => settings.set("text-audio", true)}
+        onClick={() => setAppSettings("text-audio")}
+        onIdle={() => setAppSettings("text-audio", true)}
         selected={
-          settings.value?.mode === "text-audio" &&
-          settings.value.entry === "explicit"
+          settings?.mode === "text-audio" && settings.entry === "explicit"
         }
         data-mix-settings-action
       >
         <SubtitlesIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
       </SqButton>
       <SqButton
-        onClick={() => settings.set("quality")}
-        onIdle={() => settings.set("quality", true)}
-        selected={
-          settings.value?.mode === "quality" &&
-          settings.value.entry === "explicit"
-        }
+        onClick={() => setAppSettings("quality")}
+        onIdle={() => setAppSettings("quality", true)}
+        selected={settings?.mode === "quality" && settings.entry === "explicit"}
         data-mix-settings-action
       >
         <SettingsIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
       </SqButton>
-      {fullscreen ? (
-        <SqButton onClick={fullscreen.onClick}>
-          {fullscreen.active ? (
-            <FullscreenExitIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
-          ) : (
-            <FullscreenIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
-          )}
-        </SqButton>
-      ) : null}
+      <SqButton onClick={toggleFullscreen}>
+        {fullscreen ? (
+          <FullscreenExitIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
+        ) : (
+          <FullscreenIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
+        )}
+      </SqButton>
     </div>
   );
 }

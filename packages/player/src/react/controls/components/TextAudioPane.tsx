@@ -1,12 +1,14 @@
 import { CheckList } from "./CheckList";
 import { Pane } from "./Pane";
-import { useUiContext } from "../context/UiContext";
+import { useFacade, useSelector } from "../..";
 import type { CheckListItem } from "./CheckList";
 
 export function TextAudioPane() {
-  const { facade, state } = useUiContext();
+  const facade = useFacade();
+  const subtitleTracks = useSelector((facade) => facade.subtitleTracks);
+  const audioTracks = useSelector((facade) => facade.audioTracks);
 
-  const subtitleItems = state.subtitleTracks.map<CheckListItem>((it) => ({
+  const subtitleItems = subtitleTracks.map<CheckListItem>((it) => ({
     id: it.id,
     label: it.label,
     checked: it.active,
@@ -15,7 +17,7 @@ export function TextAudioPane() {
   subtitleItems.push({
     id: null,
     label: "None",
-    checked: !state.subtitleTracks.some((it) => it.active),
+    checked: !subtitleTracks.some((it) => it.active),
   });
 
   return (
@@ -33,7 +35,7 @@ export function TextAudioPane() {
               facade.setAudioTrack(id);
             }
           }}
-          items={state.audioTracks.map((it) => ({
+          items={audioTracks.map((it) => ({
             id: it.id,
             label: it.label,
             checked: it.active,

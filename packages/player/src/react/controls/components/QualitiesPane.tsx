@@ -1,23 +1,24 @@
 import cn from "clsx";
 import { CheckList } from "./CheckList";
 import { Pane } from "./Pane";
-import { useUiContext } from "../context/UiContext";
+import { Quality, useFacade, useSelector } from "../..";
 import type { CheckListItem } from "./CheckList";
-import type { StoreState } from "../hooks/useHlsState";
 
 export function QualitiesPane() {
-  const { facade, state } = useUiContext();
+  const facade = useFacade();
+  const qualities = useSelector((facade) => facade.qualities);
+  const autoQuality = useSelector((facade) => facade.autoQuality);
 
-  const qualityItems = state.qualities.map<CheckListItem>((it) => ({
+  const qualityItems = qualities.map<CheckListItem>((it) => ({
     id: it.height,
     label: `${it.height}p`,
-    checked: !state.autoQuality && it.active,
+    checked: !autoQuality && it.active,
   }));
 
   qualityItems.push({
     id: null,
-    label: getAutoLabel(state),
-    checked: state.autoQuality,
+    label: getAutoLabel(qualities, autoQuality),
+    checked: autoQuality,
   });
 
   return (
@@ -30,8 +31,8 @@ export function QualitiesPane() {
   );
 }
 
-function getAutoLabel(state: StoreState) {
-  const height = state.qualities.find((quality) => quality.active)?.height ?? 0;
+function getAutoLabel(qualities: Quality[], autoQuality: boolean) {
+  const height = qualities.find((it) => it.active)?.height ?? 0;
 
   return (
     <div className="flex items-center min-w-20 overflow-hidden">
@@ -39,7 +40,7 @@ function getAutoLabel(state: StoreState) {
       <span
         className={cn(
           "text-[0.7rem] font-medium ml-auto transition-all",
-          state.autoQuality ? "translate-x-0" : "translate-x-1 opacity-0",
+          autoQuality ? "translate-x-0" : "translate-x-1 opacity-0",
         )}
       >{`${height}p`}</span>
     </div>

@@ -1,30 +1,40 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { toHMS } from "../utils";
 import cn from "clsx";
-import { useUiContext } from "../context/UiContext";
+import { useSelector } from "../..";
+import { useAppStore } from "../AppStoreProvider";
 import type { PointerEventHandler } from "react";
 
-export function Progress() {
-  const { time, state, seeking, setSeeking, seekTo } = useUiContext();
+type ProgressProps = {
+  seekTo(targetTime: number): void;
+  fakeTime: number;
+};
 
+export function Progress({ fakeTime, seekTo }: ProgressProps) {
   const ref = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   const [hover, setHover] = useState(false);
   const [value, setValue] = useState(0);
 
+  const duration = useSelector((facade) => facade.duration);
+  const cuePoints = useSelector((facade) => facade.cuePoints);
+
+  const setSeeking = useAppStore((state) => state.setSeeking);
+  const seeking = useAppStore((state) => state.seeking);
+
   const updateValue = useCallback(
     (event: PointerEvent | React.PointerEvent) => {
       const rect = ref.current!.getBoundingClientRect();
       let x = (event.pageX - (rect.left + window.scrollX)) / rect.width;
       x = Math.min(Math.max(x, 0), 1);
-      x *= state.duration;
+      x *= duration;
 
       setValue(x);
 
       return x;
     },
-    [state.duration],
+    [duration],
   );
 
   const onPointerDown: PointerEventHandler = (event) => {
@@ -72,7 +82,7 @@ export function Progress() {
   }, [updateValue, seeking]);
 
   const active = seeking || hover;
-  const progress = seeking ? value : time;
+  const progress = seeking ? value : fakeTime;
 
   return (
     <div
@@ -91,7 +101,7 @@ export function Progress() {
         style={{
           left: calculateTooltipLeft(
             value,
-            state.duration,
+            duration,
             ref.current,
             tooltipRef.current,
           ),
@@ -103,13 +113,13 @@ export function Progress() {
       {active ? (
         <div
           className="absolute left-0 bg-white/50 h-1"
-          style={{ width: `${(value / state.duration) * 100}%` }}
+          style={{ width: `${(value / duration) * 100}%` }}
         />
       ) : null}
       <div
         className="absolute left-0 bg-white h-1"
         style={{
-          width: `${(progress / state.duration) * 100}%`,
+          width: `${(progress / duration) * 100}%`,
         }}
       />
       <div
@@ -117,9 +127,9 @@ export function Progress() {
           "absolute bg-white h-4 w-4 rounded-full -translate-x-1/2 z-10 after:opacity-0 after:absolute after:inset-0 after:rounded-full after:bg-white/30 after:-z-10 after:transition-all",
           seeking && "after:opacity-100 after:scale-150",
         )}
-        style={{ left: `${(progress / state.duration) * 100}%` }}
+        style={{ left: `${(progress / duration) * 100}%` }}
       />
-      {state.cuePoints.map((cuePoint) => {
+      {cuePoints.map((cuePoint) => {
         if (cuePoint === 0) {
           // Do not show preroll.
           return null;
@@ -128,7 +138,7 @@ export function Progress() {
           <div
             key={cuePoint}
             className="absolute w-3 h-3 bg-[#ffd32c] rounded-full border-2 border-black -translate-x-1/2"
-            style={{ left: `${(cuePoint / state.duration) * 100}%` }}
+            style={{ left: `${(cuePoint / duration) * 100}%` }}
           />
         );
       })}

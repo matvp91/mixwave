@@ -1,10 +1,14 @@
 import { toHMS } from "../utils";
-import { useUiContext } from "../context/UiContext";
+import { useSelector } from "../..";
 
-export function TimeStat() {
-  const { time, state } = useUiContext();
+type TimeStatProps = {
+  fakeTime: number;
+};
 
-  const remaining = Math.ceil(state.duration - time);
+export function TimeStat({ fakeTime }: TimeStatProps) {
+  const duration = useSelector((facade) => facade.duration);
+
+  const remaining = Math.ceil(duration - fakeTime);
   const hms = toHMS(remaining);
 
   return (

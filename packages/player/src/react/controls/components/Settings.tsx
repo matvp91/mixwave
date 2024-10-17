@@ -1,24 +1,24 @@
-import { SettingsMode } from "../hooks/useSettings";
-import { useEffect, useLayoutEffect, useRef } from "react";
 import cn from "clsx";
+import { useEffect, useLayoutEffect, useRef } from "react";
+import usePrevious from "../hooks/usePrevious";
 import { SettingsPane } from "./SettingsPane";
 import { QualitiesPane } from "./QualitiesPane";
 import { TextAudioPane } from "./TextAudioPane";
-import usePrevious from "../hooks/usePrevious";
-import { useUiContext } from "../context/UiContext";
+import { useAppStore } from "../AppStoreProvider";
+import type { SettingsMode } from "../hooks/useAppSettings";
 
 export function Settings() {
-  const { settings } = useUiContext();
-
-  const mode = settings.value?.mode ?? null;
-
+  const settings = useAppStore((state) => state.settings);
   const ref = useRef<HTMLDivElement>(null);
-  const lastModeRef = useRef<SettingsMode>();
-  const modePrev = usePrevious(mode);
 
+  const mode = settings?.mode ?? null;
+
+  const lastModeRef = useRef<SettingsMode>();
   if (mode !== null) {
     lastModeRef.current = mode;
   }
+
+  const modePrev = usePrevious(mode);
 
   useEffect(() => {
     if (mode === null && modePrev) {

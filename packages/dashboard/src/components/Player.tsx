@@ -4,15 +4,14 @@ import {
   useController,
   ControllerProvider,
 } from "@mixwave/player/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type PlayerProps = {
   url?: string;
 };
 
-const hls = new Hls();
-
 export function Player({ url }: PlayerProps) {
+  const [hls] = useState(() => new Hls());
   const controller = useController(hls);
 
   useEffect(() => {

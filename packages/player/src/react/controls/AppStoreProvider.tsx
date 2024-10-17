@@ -1,5 +1,6 @@
 import { createStore, useStore } from "zustand";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect } from "react";
+import { ControllerContext } from "..";
 import type { ReactNode } from "react";
 import type { Settings } from "./hooks/useAppSettings";
 
@@ -38,6 +39,26 @@ type StoreProviderProps = {
 };
 
 export function AppStoreProvider({ children }: StoreProviderProps) {
+  const controller = useContext(ControllerContext);
+
+  useEffect(() => {
+    let prevTime = 0;
+
+    return controller.subscribe(() => {
+      const { targetTime, setTargetTime } = appStore.getState();
+
+      if (targetTime) {
+        const { time, playhead } = controller.facade;
+        const delta = time - prevTime;
+        prevTime = time;
+
+        if ((delta > 0 && time > targetTime) || playhead === "ended") {
+          setTargetTime(null);
+        }
+      }
+    });
+  }, [controller]);
+
   return (
     <StoreContext.Provider value={appStore}>{children}</StoreContext.Provider>
   );

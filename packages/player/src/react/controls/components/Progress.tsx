@@ -3,14 +3,11 @@ import { toHMS } from "../utils";
 import cn from "clsx";
 import { useSelector } from "../..";
 import { useAppStore } from "../AppStoreProvider";
-import type { PointerEventHandler } from "react";
 import { useFakeTime } from "../hooks/useFakeTime";
+import { useSeekTo } from "../hooks/useSeekTo";
+import type { PointerEventHandler } from "react";
 
-type ProgressProps = {
-  seekTo(targetTime: number): void;
-};
-
-export function Progress({ seekTo }: ProgressProps) {
+export function Progress() {
   const ref = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
@@ -23,6 +20,7 @@ export function Progress({ seekTo }: ProgressProps) {
   const setSeeking = useAppStore((state) => state.setSeeking);
   const seeking = useAppStore((state) => state.seeking);
 
+  const seekTo = useSeekTo();
   const fakeTime = useFakeTime();
 
   const updateValue = useCallback(

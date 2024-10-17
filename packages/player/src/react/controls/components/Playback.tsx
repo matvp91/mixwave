@@ -8,9 +8,9 @@ import { BottomControls } from "./BottomControls";
 import { useAppVisible } from "../hooks/useAppVisible";
 import { useAppStore } from "../AppStoreProvider";
 import { useAppSettings } from "../hooks/useAppSettings";
-import { useFacade, useSelector } from "../..";
+import { useSelector } from "../..";
 import { useAppFullscreen } from "../hooks/useAppFullscreen";
-import { useSideEffects } from "../hooks/useSideEffects";
+import { useVisibleControls } from "../hooks/useVisibleControls";
 import type { Metadata } from "../types";
 
 type PlaybackProps = {
@@ -18,31 +18,12 @@ type PlaybackProps = {
 };
 
 export function Playback({ metadata }: PlaybackProps) {
-  useSideEffects();
-
   const [ref, nudgeVisible] = useAppVisible();
   const setAppSettings = useAppSettings();
   const toggleFullscreen = useAppFullscreen();
-
-  const visible = useAppStore((state) => state.visible);
-  const settings = useAppStore((state) => state.settings);
-  const seeking = useAppStore((state) => state.seeking);
-
-  const facade = useFacade();
   const interstitial = useSelector((facade) => facade.interstitial);
-  const started = useSelector((facade) => facade.started);
-
-  let visibleControls = false;
-  if (started && (visible || settings || seeking)) {
-    visibleControls = true;
-  }
-
-  const setTargetTime = useAppStore((state) => state.setTargetTime);
-
-  const seekTo = (targetTime: number) => {
-    facade.seekTo(targetTime);
-    setTargetTime(targetTime);
-  };
+  const settings = useAppStore((state) => state.settings);
+  const visibleControls = useVisibleControls();
 
   return (
     <>
@@ -65,7 +46,7 @@ export function Playback({ metadata }: PlaybackProps) {
             </div>
           ) : (
             <div className="absolute left-0 right-0 bottom-0 flex items-center px-4">
-              <Progress seekTo={seekTo} />
+              <Progress />
               <TimeStat />
             </div>
           )}
@@ -76,7 +57,6 @@ export function Playback({ metadata }: PlaybackProps) {
             setAppSettings={setAppSettings}
             metadata={metadata}
             toggleFullscreen={toggleFullscreen}
-            seekTo={seekTo}
           />
         </div>
       </div>

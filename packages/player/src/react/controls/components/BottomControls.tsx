@@ -11,6 +11,7 @@ import { Label } from "./Label";
 import { useFacade, useSelector } from "../..";
 import { useAppStore } from "../AppStoreProvider";
 import { useFakeTime } from "../hooks/useFakeTime";
+import { useSeekTo } from "../hooks/useSeekTo";
 import type { MouseEventHandler } from "react";
 import type { SetAppSettings } from "../hooks/useAppSettings";
 import type { Metadata } from "../types";
@@ -20,7 +21,6 @@ type BottomControlsProps = {
   setAppSettings: SetAppSettings;
   metadata?: Metadata;
   toggleFullscreen: MouseEventHandler<HTMLElement>;
-  seekTo(targetTime: number): void;
 };
 
 export function BottomControls({
@@ -28,7 +28,6 @@ export function BottomControls({
   setAppSettings,
   metadata,
   toggleFullscreen,
-  seekTo,
 }: BottomControlsProps) {
   const facade = useFacade();
 
@@ -39,6 +38,7 @@ export function BottomControls({
   const settings = useAppStore((state) => state.settings);
   const fullscreen = useAppStore((state) => state.fullscreen);
 
+  const seekTo = useSeekTo();
   const fakeTime = useFakeTime();
 
   return (

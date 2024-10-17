@@ -44,19 +44,23 @@ export function AppStoreProvider({ children }: StoreProviderProps) {
   useEffect(() => {
     let prevTime = 0;
 
-    return controller.subscribe(() => {
+    const onChange = () => {
       const { targetTime, setTargetTime } = appStore.getState();
 
-      if (targetTime) {
-        const { time, playhead } = controller.facade;
-        const delta = time - prevTime;
-        prevTime = time;
-
-        if ((delta > 0 && time > targetTime) || playhead === "ended") {
-          setTargetTime(null);
-        }
+      if (targetTime === null) {
+        return;
       }
-    });
+
+      const { time, playhead } = controller.facade;
+      const delta = time - prevTime;
+      prevTime = time;
+
+      if ((delta > 0 && time > targetTime) || playhead === "ended") {
+        setTargetTime(null);
+      }
+    };
+
+    return controller.subscribe(onChange);
   }, [controller]);
 
   return (

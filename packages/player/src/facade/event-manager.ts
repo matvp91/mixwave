@@ -38,14 +38,12 @@ export class EventManager {
 
   unlisten = <T extends Target>(target: T) =>
     ((type, listener) => {
-      const binding = this.bindings_
-        .values()
-        .find(
-          (binding) =>
-            binding.target === target &&
-            binding.type === type &&
-            binding.listener === listener,
-        );
+      const binding = Array.from(this.bindings_).find(
+        (binding) =>
+          binding.target === target &&
+          binding.type === type &&
+          binding.listener === listener,
+      );
       if (binding) {
         binding.remove();
         this.bindings_.delete(binding);

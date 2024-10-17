@@ -12,3 +12,5 @@ style.innerText = `
   }
 `;
 document.head.appendChild(style);
+
+export * from "./useFacade";

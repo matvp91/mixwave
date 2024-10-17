@@ -41,17 +41,21 @@ export class Facade {
   }
 
   destroy() {
-    this.eventManager_.removeAll();
-
+    this.reset_();
     this.observer_.destroy();
+  }
+
+  private reset_() {
+    this.eventManager_.removeAll();
 
     this.assetObservers_.forEach((observer) => {
       observer.destroy();
     });
+    this.assetObservers_.clear();
   }
 
   private onBufferReset_() {
-    this.eventManager_.removeAll();
+    this.reset_();
 
     const listen = this.eventManager_.listen(this.hls);
 

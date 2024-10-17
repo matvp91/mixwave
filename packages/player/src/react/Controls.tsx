@@ -5,13 +5,11 @@ import { UiProvider } from "./context/UiContext";
 import type { Facade } from ".";
 import type { Metadata } from "./types";
 
-/** @hidden */
 export type ControlsProps = {
   facade: Facade;
   metadata?: Metadata;
 };
 
-/** @hidden */
 export function Controls({ facade, metadata }: ControlsProps) {
   const state = useHlsState(facade);
   return (

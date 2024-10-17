@@ -1,5 +1,5 @@
 export class Timer {
-  private timerId_?: NodeJS.Timer;
+  private timerId_?: number;
 
   constructor(private onTick_: () => void) {}
 
@@ -14,7 +14,7 @@ export class Timer {
   tickAfter(seconds: number) {
     this.stop();
 
-    this.timerId_ = setTimeout(() => {
+    this.timerId_ = window.setTimeout(() => {
       this.onTick_();
     }, seconds * 1000);
 
@@ -24,7 +24,7 @@ export class Timer {
   tickEvery(seconds: number) {
     this.stop();
 
-    this.timerId_ = setTimeout(() => {
+    this.timerId_ = window.setTimeout(() => {
       this.onTick_();
       this.tickEvery(seconds);
     }, seconds * 1000);

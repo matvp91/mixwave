@@ -108,9 +108,6 @@ export class Facade {
     if (!asset) {
       throw new Error(
         "No asset for interstitials player. This is a bug, report",
-        {
-          cause: { data, assets: this.assets_ },
-        },
       );
     }
     this.assets_.delete(asset);

@@ -2,9 +2,6 @@ import { useSelector } from "../..";
 
 export function SlotProgress() {
   const interstitial = useSelector((facade) => facade.interstitial);
-
-  // TODO: I need to recheck this. Maybe we can use a flat timing obj specifically
-  // for interstitials instead of a getter?
   const time = useSelector((facade) => facade.interstitial?.time);
   const duration = useSelector((facade) => facade.interstitial?.duration);
 

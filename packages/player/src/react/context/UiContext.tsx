@@ -7,15 +7,16 @@ import type { ReactNode } from "react";
 import type { UseVisible } from "../hooks/useVisible";
 import type { UseSettings } from "../hooks/useSettings";
 import type { UseFullscreen } from "../hooks/useFullscreen";
-import type { HlsFacade, State } from "../..";
+import type { StoreState } from "../hooks/useHlsState";
+import type { Facade } from "..";
 import type { Metadata } from "../types";
 
 type UiContextValue = {
   visible: UseVisible;
   settings: UseSettings;
   fullscreen: UseFullscreen | null;
-  facade: HlsFacade;
-  state: State;
+  facade: Facade;
+  state: StoreState;
   metadata: Metadata;
   seekTo(time: number): void;
   time: number;
@@ -32,8 +33,8 @@ export function useUiContext() {
 
 type UiProviderProps = {
   children: ReactNode;
-  facade: HlsFacade;
-  state: State;
+  facade: Facade;
+  state: StoreState;
   metadata?: Metadata;
 };
 

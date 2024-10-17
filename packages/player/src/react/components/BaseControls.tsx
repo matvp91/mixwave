@@ -7,7 +7,7 @@ import { Center } from "./Center";
 import { BottomControls } from "./BottomControls";
 import { useUiContext } from "../context/UiContext";
 
-export function Controls() {
+export function BaseControls() {
   const { state, visible, visibleControls, settings, fullscreen } =
     useUiContext();
 
@@ -26,7 +26,7 @@ export function Controls() {
             !!settings.value && "opacity-0 pointer-events-none",
           )}
         >
-          {state.slot ? (
+          {state.interstitial ? (
             <div className="absolute left-0 right-0 bottom-0 px-4">
               <SlotProgress />
             </div>

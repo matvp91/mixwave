@@ -30,14 +30,14 @@ export function BottomControls() {
           visible.nudge();
         }}
       >
-        {state.playheadState === "play" ? (
+        {state.playhead === "play" || state.playhead === "playing" ? (
           <PauseIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
         ) : (
           <PlayIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
         )}
       </SqButton>
       <SqButton
-        disabled={state.slot !== null}
+        disabled={state.interstitial !== null}
         onClick={() => {
           seekTo(time + 10);
         }}
@@ -48,7 +48,7 @@ export function BottomControls() {
         volume={state.volume}
         setVolume={(volume) => facade.setVolume(volume)}
       />
-      <Label slot={state.slot} metadata={metadata} />
+      <Label interstitial={state.interstitial} metadata={metadata} />
       <div className="grow" />
       <SqButton
         onClick={() => settings.set("text-audio")}

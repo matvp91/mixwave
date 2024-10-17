@@ -12,8 +12,14 @@ import {
   type SubtitleTrack,
 } from "./types";
 import type { Level } from "hls.js";
-import type { Facade, Playhead } from ".";
+import type { Playhead } from "./types";
 import type { MediaPlaylist } from "hls.js";
+
+export type StateObserverEmit = <E extends keyof FacadeListeners>(
+  hls: Hls,
+  event: E,
+  eventObj: Parameters<FacadeListeners[E]>[0],
+) => void;
 
 export class StateObserver {
   private eventManager_ = new EventManager();
@@ -35,10 +41,10 @@ export class StateObserver {
   private timeTick_ = new Timer(() => this.onTimeTick_());
 
   constructor(
-    private hls_: Hls,
-    private facade_: Facade,
+    public hls: Hls,
+    private emit_: StateObserverEmit,
   ) {
-    const listen = this.eventManager_.listen(hls_);
+    const listen = this.eventManager_.listen(hls);
 
     listen(Hls.Events.MANIFEST_LOADED, this.onManifestLoaded_, this);
     listen(Hls.Events.BUFFER_CREATED, this.onBufferCreated_, this);
@@ -46,11 +52,6 @@ export class StateObserver {
     listen(Hls.Events.LEVEL_SWITCHING, this.onLevelSwitching_, this);
     listen(Hls.Events.MEDIA_ATTACHED, this.onMediaAttached_, this);
     listen(Hls.Events.MEDIA_DETACHED, this.onMediaDetached_, this);
-    listen(
-      Hls.Events.INTERSTITIALS_UPDATED,
-      this.onInterstitialsUpdated_,
-      this,
-    );
     listen(
       Hls.Events.SUBTITLE_TRACKS_UPDATED,
       this.onSubtitleTracksUpdated_,
@@ -61,8 +62,16 @@ export class StateObserver {
     listen(Hls.Events.AUDIO_TRACK_SWITCHING, this.onAudioTrackSwitching_, this);
   }
 
+  private onManifestLoaded_() {
+    this.onLevelsUpdated_();
+  }
+
+  private onBufferCreated_() {
+    this.timeTick_.tickNow();
+  }
+
   private onAudioTracksUpdated_() {
-    const tracks = this.hls_.allAudioTracks.map<AudioTrack>((track, index) => {
+    const tracks = this.hls.allAudioTracks.map<AudioTrack>((track, index) => {
       let label = getLang(track.lang);
       if (track.channels === "6") {
         label += " 5.1";
@@ -76,14 +85,22 @@ export class StateObserver {
     });
 
     this.state.audioTracks = tracks;
-    this.emit_(Events.AUDIO_TRACKS_CHANGE, { audioTracks: tracks });
+
+    this.dispatchEvent_(Events.AUDIO_TRACKS_CHANGE, { audioTracks: tracks });
   }
 
   private isAudioTrackActive_(t: MediaPlaylist) {
-    if (!this.hls_.audioTracks.includes(t)) {
+    if (!this.hls.audioTracks.includes(t)) {
       return false;
     }
-    return t.id === this.hls_.audioTrack;
+    return t.id === this.hls.audioTrack;
+  }
+
+  private isSubtitleTrackActive_(t: MediaPlaylist) {
+    if (!this.hls.subtitleTracks.includes(t)) {
+      return false;
+    }
+    return t.id === this.hls.subtitleTrack;
   }
 
   private onAudioTrackSwitching_() {
@@ -97,16 +114,16 @@ export class StateObserver {
 
     this.state.audioTracks = newTracks;
 
-    this.emit_(Events.AUDIO_TRACKS_CHANGE, {
+    this.dispatchEvent_(Events.AUDIO_TRACKS_CHANGE, {
       audioTracks: newTracks,
     });
   }
 
   private onSubtitleTracksUpdated_() {
-    const tracks = this.hls_.allSubtitleTracks.map<SubtitleTrack>(
+    const tracks = this.hls.allSubtitleTracks.map<SubtitleTrack>(
       (track, index) => ({
         id: index,
-        active: false,
+        active: this.isSubtitleTrackActive_(track),
         label: getLang(track.lang),
         track,
       }),
@@ -114,62 +131,57 @@ export class StateObserver {
 
     this.state.subtitleTracks = tracks;
 
-    this.updateActiveSubtitleTrack_();
+    this.dispatchEvent_(Events.SUBTITLE_TRACKS_CHANGE, {
+      subtitleTracks: tracks,
+    });
   }
 
   private onSubtitleTrackSwitch_() {
-    this.updateActiveSubtitleTrack_();
-  }
-
-  private updateActiveSubtitleTrack_() {
-    const oldSubtitleTracks = this.state.subtitleTracks;
-    this.state.subtitleTracks = updateActive(
-      this.state.subtitleTracks,
-      (t) =>
-        t.track.id === this.hls_.subtitleTrack &&
-        this.hls_.subtitleTracks.includes(t.track),
+    const newTracks = updateActive(this.state.subtitleTracks, (t) =>
+      this.isSubtitleTrackActive_(t.track),
     );
 
-    const fireEmit = oldSubtitleTracks !== this.state.subtitleTracks;
-    if (fireEmit) {
-      this.emit_(Events.SUBTITLE_TRACKS_CHANGE, {
-        subtitleTracks: this.state.subtitleTracks,
-      });
+    if (newTracks === this.state.subtitleTracks) {
+      return;
     }
+
+    this.state.subtitleTracks = newTracks;
+
+    this.dispatchEvent_(Events.SUBTITLE_TRACKS_CHANGE, {
+      subtitleTracks: newTracks,
+    });
   }
 
   setQuality(height: number | null) {
     if (height === null) {
-      this.hls_.nextLevel = -1;
-      this.updateActiveQuality_();
+      this.hls.nextLevel = -1;
     } else {
-      const loadLevel = this.hls_.levels[this.hls_.loadLevel];
+      const loadLevel = this.hls.levels[this.hls.loadLevel];
       assert(loadLevel, "No level found for loadLevel index");
 
-      const idx = this.hls_.levels.findIndex((level) => {
+      const idx = this.hls.levels.findIndex((level) => {
         return level.height === height && level.codecSet === loadLevel.codecSet;
       });
 
-      this.hls_.nextLevel = idx;
-      this.updateActiveQuality_();
+      this.hls.nextLevel = idx;
     }
   }
 
   setSubtitleTrack(id: number | null) {
     if (id === null) {
-      this.hls_.subtitleTrack = -1;
+      this.hls.subtitleTrack = -1;
       return;
     }
-    const subtitleTrack = this.hls_.allSubtitleTracks[id];
-    this.hls_.setSubtitleOption({
+    const subtitleTrack = this.hls.allSubtitleTracks[id];
+    this.hls.setSubtitleOption({
       lang: subtitleTrack.lang,
       name: subtitleTrack.name,
     });
   }
 
   setAudioTrack(id: number) {
-    const audioTrack = this.hls_.allAudioTracks[id];
-    this.hls_.setAudioOption({
+    const audioTrack = this.hls.allAudioTracks[id];
+    this.hls.setAudioOption({
       lang: audioTrack.lang,
       channels: audioTrack.channels,
       name: audioTrack.name,
@@ -185,36 +197,21 @@ export class StateObserver {
     this.timeTick_.stop();
   }
 
-  private onManifestLoaded_() {
-    this.initState_();
-  }
-
-  private onBufferCreated_() {
-    this.initState_();
-  }
-
-  private initState_() {
-    this.onLevelsUpdated_();
-    this.onSubtitleTracksUpdated_();
-    this.onAudioTracksUpdated_();
-
-    this.timeTick_.tickNow();
-  }
-
   private onLevelsUpdated_() {
     const map: Record<string, Level[]> = {};
-    for (const level of this.hls_.levels) {
+    for (const level of this.hls.levels) {
       if (!map[level.height]) {
         map[level.height] = [];
       }
       map[level.height].push(level);
     }
 
+    const level = this.hls.levels[this.hls.nextLoadLevel];
     const mapEntries = Object.entries(map);
     const qualities = mapEntries.reduce<Quality[]>((acc, [key, levels]) => {
       acc.push({
         height: +key,
-        active: false,
+        active: +key === level?.height,
         levels,
       });
       return acc;
@@ -223,18 +220,30 @@ export class StateObserver {
     qualities.sort((a, b) => b.height - a.height);
 
     this.state.qualities = qualities;
-
-    this.updateActiveQuality_();
+    this.dispatchEvent_(Events.QUALITIES_CHANGE, { qualities });
   }
 
   private onLevelSwitching_() {
-    this.updateActiveQuality_();
+    const level = this.hls.levels[this.hls.nextLoadLevel];
+
+    const newQualities = updateActive(
+      this.state.qualities,
+      (q) => q.height === level.height,
+    );
+
+    if (newQualities === this.state.qualities) {
+      return;
+    }
+
+    this.dispatchEvent_(Events.QUALITIES_CHANGE, {
+      qualities: this.state.qualities,
+    });
   }
 
   private onMediaAttached_() {
-    assert(this.hls_.media);
+    assert(this.hls.media);
 
-    const media = this.hls_.media;
+    const media = this.hls.media;
     const state = this.state;
 
     // Set initial state when we have media attached.
@@ -257,7 +266,7 @@ export class StateObserver {
 
     listen("volumechange", () => {
       state.volume = media.volume;
-      this.emit_(Events.VOLUME_CHANGE, { volume: media.volume });
+      this.dispatchEvent_(Events.VOLUME_CHANGE, { volume: media.volume });
     });
 
     listen("ended", () => this.setPlayhead_("ended"));
@@ -270,39 +279,16 @@ export class StateObserver {
     this.mediaEventManager_ = null;
   }
 
-  private updateActiveQuality_() {
-    const oldAutoQuality = this.state.autoQuality;
-    this.state.autoQuality = this.hls_.autoLevelEnabled;
-
-    const level = this.hls_.levels[this.hls_.nextLoadLevel];
-
-    const oldQualities = this.state.qualities;
-    this.state.qualities = updateActive(
-      this.state.qualities,
-      (q) => q.height === level.height,
-    );
-
-    const fireEmit =
-      oldAutoQuality !== this.state.autoQuality ||
-      oldQualities !== this.state.qualities;
-
-    if (fireEmit) {
-      this.emit_(Events.QUALITIES_CHANGE, {
-        qualities: this.state.qualities,
-      });
-    }
-  }
-
   private onTimeTick_() {
     let time = 0;
     let duration = NaN;
 
-    if (this.hls_.media) {
-      time = this.hls_.media.currentTime;
-      duration = this.hls_.media.duration;
+    if (this.hls.media) {
+      time = this.hls.media.currentTime;
+      duration = this.hls.media.duration;
     }
 
-    const mgr = this.hls_.interstitialsManager;
+    const mgr = this.hls.interstitialsManager;
     if (mgr) {
       time = mgr.primary.currentTime;
       duration = mgr.primary.duration;
@@ -314,12 +300,18 @@ export class StateObserver {
     const oldDuration = this.state.duration;
     this.state.duration = preciseFloat(duration);
 
-    if (oldTime !== this.state.time || oldDuration !== this.state.duration) {
-      this.emit_(Events.TIME_CHANGE, {
-        time: this.state.time,
-        duration: this.state.duration,
-      });
+    if (isNaN(duration)) {
+      return;
     }
+
+    if (oldTime === this.state.time && oldDuration === this.state.duration) {
+      return;
+    }
+
+    this.dispatchEvent_(Events.TIME_CHANGE, {
+      time: this.state.time,
+      duration: this.state.duration,
+    });
   }
 
   private setPlayhead_(playhead: Playhead) {
@@ -329,19 +321,17 @@ export class StateObserver {
       this.state.started = true;
     }
 
-    this.emit_(Events.PLAYHEAD_CHANGE, { playhead });
+    this.dispatchEvent_(Events.PLAYHEAD_CHANGE, { playhead });
   }
 
-  private onInterstitialsUpdated_() {
-    // The interstitialsManager is available now, tick time to force a sync with the primary.
-    this.timeTick_.tickNow();
-  }
-
-  private emit_<E extends Events>(
+  private dispatchEvent_<E extends Events>(
     event: E,
     eventObj: Parameters<FacadeListeners[E]>[0],
   ) {
-    this.facade_.emit(event, eventObj);
-    this.facade_.emit("*", event);
+    this.emit_(this.hls, event, eventObj);
+  }
+
+  requestTimeTick() {
+    this.timeTick_.tickNow();
   }
 }

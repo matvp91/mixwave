@@ -3,7 +3,7 @@ import { CheckList } from "./CheckList";
 import { Pane } from "./Pane";
 import { useUiContext } from "../context/UiContext";
 import type { CheckListItem } from "./CheckList";
-import type { State } from "../..";
+import type { StoreState } from "../hooks/useHlsState";
 
 export function QualitiesPane() {
   const { facade, state } = useUiContext();
@@ -30,7 +30,7 @@ export function QualitiesPane() {
   );
 }
 
-function getAutoLabel(state: State) {
+function getAutoLabel(state: StoreState) {
   const height = state.qualities.find((quality) => quality.active)?.height ?? 0;
 
   return (

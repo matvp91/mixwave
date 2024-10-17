@@ -1,18 +1,15 @@
 import { useState } from "react";
 import { useDelta } from "./useDelta";
-import type { State } from "../..";
+import type { StoreState } from "../hooks/useHlsState";
 
-export function useTime(state: State) {
+export function useTime(state: StoreState) {
   const [targetTime, setTargetTime] = useState<null | number>(null);
 
   const delta = useDelta(state.time);
 
   if (targetTime !== null) {
     // Check if we need to reset targetTime.
-    if (
-      (delta > 0 && state.time > targetTime) ||
-      state.playheadState === "ended"
-    ) {
+    if ((delta > 0 && state.time > targetTime) || state.playhead === "ended") {
       setTargetTime(null);
     }
   }

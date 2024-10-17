@@ -92,7 +92,7 @@ export type SubtitleTracksChangeEventData = {
 };
 
 export type FacadeListeners = {
-  "*": (event: Events) => void;
+  "*": () => void;
   [Events.PLAYHEAD_CHANGE]: (data: PlayheadChangeEventData) => void;
   [Events.TIME_CHANGE]: (data: TimeChangeEventData) => void;
   [Events.VOLUME_CHANGE]: (data: VolumeChangeEventData) => void;

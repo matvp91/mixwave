@@ -1,13 +1,13 @@
-import type { Slot } from "../..";
+import type { StoreState } from "../hooks/useHlsState";
 import type { Metadata } from "../types";
 
 type LabelProps = {
-  slot: Slot | null;
+  interstitial: StoreState["interstitial"];
   metadata?: Metadata;
 };
 
-export function Label({ slot, metadata }: LabelProps) {
-  if (slot?.type === "ad") {
+export function Label({ interstitial, metadata }: LabelProps) {
+  if (interstitial?.type === "ad") {
     return (
       <div className="text-white text-sm font-medium flex items-center px-2">
         Ad

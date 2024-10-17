@@ -15,10 +15,11 @@ export default defineConfig({
     svgr(),
   ],
   build: {
-    emptyOutDir: false,
     lib: {
-      entry: resolve(__dirname, "src/index.ts"),
-      fileName: "index",
+      entry: {
+        index: resolve(__dirname, "src/facade/index.ts"),
+        react: resolve(__dirname, "src/react/index.tsx"),
+      },
       formats: ["es"],
     },
     rollupOptions: {

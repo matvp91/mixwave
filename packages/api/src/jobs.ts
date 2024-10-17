@@ -150,11 +150,18 @@ async function formatJobNode(node: JobNode): Promise<Job> {
   };
 }
 
+// Keep these in sync with ocnsumer/workers/helpers.ts in artisan,
+// we can treat the result as a string literal to indicate non standard
+// job states such as "skipped".
+type JobReturnValueStatus = "__JOB_SKIPPED__";
+
 function mapJobState(
   jobState: JobState | "unknown",
-  returnValue: unknown,
+  maybeReturnValue?: JobReturnValueStatus,
 ): Job["state"] {
-  if (typeof returnValue === "string" && returnValue === "skipped") {
+  // We pass maybeReturnValue as "any" from the input, it's not typed. But we
+  // can check whether it is a defined return value for non standard job states.
+  if (maybeReturnValue === "__JOB_SKIPPED__") {
     return "skipped";
   }
   if (jobState === "active" || jobState === "waiting-children") {

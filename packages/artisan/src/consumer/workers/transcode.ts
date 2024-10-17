@@ -1,7 +1,7 @@
 import { addPackageJob } from "../../producer";
 import { getFakeJob } from "../helpers";
 import { uploadJson } from "../s3";
-import { SKIP_JOB } from "./helpers";
+import { JOB_SKIPPED } from "./helpers";
 import type { FfmpegResult } from "./ffmpeg";
 import type { Stream } from "../../types";
 import type { MetaFile } from "../meta-file";
@@ -29,7 +29,9 @@ export type TranscodeResult = SkippableJobResult<{
  * @param job
  * @returns
  */
-export default async function (job: Job<TranscodeData, TranscodeResult>) {
+export default async function (
+  job: Job<TranscodeData, TranscodeResult>,
+): Promise<TranscodeResult> {
   const { params, metadata } = job.data;
 
   const fakeJob = await getFakeJob<TranscodeData>(job);
@@ -40,7 +42,7 @@ export default async function (job: Job<TranscodeData, TranscodeResult>) {
     (acc, [key, value]) => {
       if (key.startsWith("bull:ffmpeg")) {
         const result: FfmpegResult = value;
-        if (result === SKIP_JOB) {
+        if (result === JOB_SKIPPED) {
           // We skipped this job, bail out early.
           return acc;
         }
@@ -53,7 +55,7 @@ export default async function (job: Job<TranscodeData, TranscodeResult>) {
 
   if (!Object.keys(streams).length) {
     job.log("Skip transcode, no streams found");
-    return SKIP_JOB;
+    return JOB_SKIPPED;
   }
 
   const meta: MetaFile = {

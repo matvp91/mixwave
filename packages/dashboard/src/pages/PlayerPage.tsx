@@ -24,7 +24,6 @@ export function PlayerPage() {
 
   const onSave = async (body: string) => {
     setError(undefined);
-    setMasterUrl(undefined);
 
     const response = await fetch(
       `${window.__ENV__.PUBLIC_STITCHER_ENDPOINT}/session`,

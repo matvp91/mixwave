@@ -160,8 +160,14 @@ export class StateObserver {
       assert(loadLevel, "No level found for loadLevel index");
 
       const idx = this.hls.levels.findIndex((level) => {
-        return level.height === height && level.codecSet === loadLevel.codecSet;
+        return (
+          level.height === height && level.audioCodec === loadLevel.audioCodec
+        );
       });
+
+      if (idx < 0) {
+        throw new Error("Could not find matching level");
+      }
 
       this.hls.nextLevel = idx;
       this.onLevelSwitching_();

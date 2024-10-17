@@ -12,7 +12,7 @@ function buildState(f: Facade) {
     qualities: f.qualities,
     audioTracks: f.audioTracks,
     subtitleTracks: f.subtitleTracks,
-    cuePoints: [],
+    cuePoints: f.cuePoints,
     interstitial: f.interstitial,
   };
 }

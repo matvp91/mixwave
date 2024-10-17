@@ -1,4 +1,9 @@
 import { langMap } from "./lang-map";
+import type {
+  InterstitialAssetStartedData,
+  InterstitialScheduleItem,
+} from "hls.js";
+import type { CustomInterstitialType } from "./types";
 
 export function updateActive<T extends { active: boolean }>(
   items: T[],
@@ -32,4 +37,30 @@ export function preciseFloat(value: number) {
 export function getLang(key?: string) {
   const value = key ? langMap[key]?.split(",")[0] : null;
   return value ?? "Unknown";
+}
+
+export function getAssetListItem(data: InterstitialAssetStartedData): {
+  type?: CustomInterstitialType;
+} {
+  const assetListItem = data.event.assetListResponse?.ASSETS[
+    data.assetListIndex
+  ] as
+    | {
+        "MIX-TYPE"?: CustomInterstitialType;
+      }
+    | undefined;
+
+  return {
+    type: assetListItem?.["MIX-TYPE"],
+  };
+}
+
+export function getTypes(item: InterstitialScheduleItem) {
+  if (!item.event) {
+    return null;
+  }
+  return item.event.dateRange.attr.enumeratedStringList("X-MIX-TYPES", {
+    ad: false,
+    bumper: false,
+  } satisfies Record<CustomInterstitialType, boolean>);
 }

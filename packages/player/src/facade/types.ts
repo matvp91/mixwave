@@ -1,9 +1,9 @@
-import type { Level, MediaPlaylist } from "hls.js";
+import type { HlsAssetPlayer, Level, MediaPlaylist } from "hls.js";
 
 /**
  * A custom type for each `ASSET`.
  */
-export type InterstitialType = "ad" | "bumper";
+export type CustomInterstitialType = "ad" | "bumper";
 
 /**
  * Defines an in-band subtitle track.
@@ -40,9 +40,10 @@ export type Quality = {
 export type Playhead = "idle" | "play" | "playing" | "pause" | "ended";
 
 export type Interstitial = {
-  type?: InterstitialType;
   time: number;
   duration: number;
+  player: HlsAssetPlayer;
+  type?: CustomInterstitialType;
 };
 
 export type State = {

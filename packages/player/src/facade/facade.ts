@@ -3,6 +3,7 @@ import EventEmitter from "eventemitter3";
 import { EventManager } from "./event-manager";
 import { StateObserver } from "./state-observer";
 import { assert } from "./assert";
+import { getAssetListItem, getTypes } from "./helpers";
 import type { StateObserverEmit } from "./state-observer";
 import type { FacadeListeners, Interstitial } from "./types";
 import type { HlsAssetPlayer } from "hls.js";
@@ -14,9 +15,9 @@ export class Facade {
 
   private observer_: StateObserver;
 
-  private assetPlayer_: HlsAssetPlayer | null = null;
-
   private assetObservers_ = new Map<HlsAssetPlayer, StateObserver>();
+
+  interstitial: Interstitial | null = null;
 
   constructor(public hls: Hls) {
     if (!hls.media) {
@@ -65,12 +66,26 @@ export class Facade {
     });
 
     listen(Hls.Events.INTERSTITIAL_ASSET_STARTED, (_, data) => {
-      this.assetPlayer_ = data.player;
+      const observer = this.assetObservers_.get(data.player);
+      assert(observer, "No observer in asset started. This is a bug, report");
+
+      const assetListItem = getAssetListItem(data);
+
+      this.interstitial = {
+        get time() {
+          return observer.state.time;
+        },
+        get duration() {
+          return observer.state.duration;
+        },
+        player: data.player,
+        type: assetListItem.type,
+      };
     });
 
     listen(Hls.Events.INTERSTITIAL_ASSET_ENDED, (_, data) => {
       this.assetObservers_.delete(data.player);
-      this.assetPlayer_ = null;
+      this.interstitial = null;
     });
 
     listen(Hls.Events.INTERSTITIALS_PRIMARY_RESUMED, () => {
@@ -86,11 +101,11 @@ export class Facade {
 
   private observerEmit_: StateObserverEmit = (hls, event, eventObj) => {
     if (
-      this.assetPlayer_ &&
-      // If we have an assetPlayer, we discard all events on primary.
+      this.interstitial &&
+      // If we have an interstitial, we discard all events on primary.
       (this.hls === hls ||
-        // Emit no events when the assetPlayer is not the currently active one.
-        this.assetPlayer_.hls !== hls)
+        // If the event comes from a preloaded interstitial, discard.
+        this.interstitial.player.hls !== hls)
     ) {
       return;
     }
@@ -98,70 +113,84 @@ export class Facade {
     this.emitter_.emit("*");
   };
 
-  get state() {
-    return this.observer_.state;
+  get activeItem() {
+    if (this.interstitial) {
+      const player = this.interstitial.player;
+      const observer = this.assetObservers_.get(player);
+      assert(observer, "Interstitial has no observer. This is a bug, report");
+      return {
+        media: player.media,
+        state: observer.state,
+      };
+    }
+    return this.item;
   }
 
-  get activeMedia() {
-    return this.assetPlayer_ ? this.assetPlayer_.media : this.hls.media;
-  }
-
-  get activeState() {
-    const state = this.assetPlayer_
-      ? this.assetObservers_.get(this.assetPlayer_)?.state
-      : this.observer_.state;
-    assert(state, "No active state. This is a bug, report");
-    return state;
+  get item() {
+    return {
+      media: this.hls.media,
+      state: this.observer_.state,
+    };
   }
 
   get playhead() {
-    return this.activeState.playhead;
+    return this.activeItem.state.playhead;
   }
 
   get started() {
-    return this.activeState.started;
+    return this.activeItem.state.started;
   }
 
   get time() {
-    return this.state.time;
+    return this.item.state.time;
   }
 
   get duration() {
-    return this.state.duration;
+    return this.item.state.duration;
   }
 
   get autoQuality() {
-    return this.activeState.autoQuality;
+    return this.item.state.autoQuality;
   }
 
   get qualities() {
-    return this.state.qualities;
+    return this.item.state.qualities;
   }
 
   get audioTracks() {
-    return this.state.audioTracks;
+    return this.item.state.audioTracks;
   }
 
   get subtitleTracks() {
-    return this.state.subtitleTracks;
+    return this.item.state.subtitleTracks;
   }
 
   get volume() {
-    return this.activeState.volume;
+    return this.activeItem.state.volume;
   }
 
-  get interstitial() {
-    return null as Interstitial | null;
+  get cuePoints() {
+    const manager = this.hls.interstitialsManager;
+    if (!manager) {
+      return [];
+    }
+    return manager.schedule.reduce<number[]>((acc, item) => {
+      const types = getTypes(item);
+      if (types?.ad && !acc.includes(item.start)) {
+        acc.push(item.start);
+      }
+      return acc;
+    }, []);
   }
 
   /**
    * Toggles play or pause.
    */
   playOrPause() {
-    if (!this.activeMedia) {
+    const media = this.activeItem.media;
+    if (!media) {
       return;
     }
-    const media = this.activeMedia;
     if (this.playhead === "play" || this.playhead === "playing") {
       media.pause();
     } else {
@@ -186,8 +215,9 @@ export class Facade {
    * @param volume
    */
   setVolume(volume: number) {
-    if (this.activeMedia) {
-      this.activeMedia.volume = volume;
+    const media = this.activeItem.media;
+    if (media) {
+      media.volume = volume;
     }
   }
 

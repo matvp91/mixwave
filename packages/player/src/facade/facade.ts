@@ -71,11 +71,21 @@ export class Facade {
       this,
     );
 
-    this.reset_();
+    this.disposeAssets_();
   }
 
   private onBufferReset_() {
-    this.reset_();
+    this.disposeAssets_();
+
+    // In case anyone is listening, reset your state.
+    this.emitter_.emit(Events.RESET);
+
+    // Build a generic map, eg; when we started atleast 1 asset,
+    // it means we started the session as a whole.
+    this.genericState_ = {
+      started: false,
+      playRequested: false,
+    };
 
     const primaryAsset = new Asset(this.hls, this.observerEmit_);
     this.assets_.add(primaryAsset);
@@ -122,20 +132,13 @@ export class Facade {
     this.interstitial = null;
   }
 
-  private reset_() {
+  private disposeAssets_() {
     this.assets_.forEach((asset) => {
       asset.destroy();
     });
     this.assets_.clear();
 
     this.interstitial = null;
-
-    // Build a generic map, eg; when we started atleast 1 asset,
-    // it means we started the session as a whole.
-    this.genericState_ = {
-      started: false,
-      playRequested: false,
-    };
   }
 
   private observerEmit_: StateObserverEmit = (hls, event, eventObj) => {

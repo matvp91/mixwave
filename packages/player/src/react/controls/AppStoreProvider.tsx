@@ -1,6 +1,6 @@
 import { createStore, useStore } from "zustand";
-import { createContext, useContext, useEffect } from "react";
-import { ControllerContext } from "..";
+import { createContext, useContext, useEffect, useState } from "react";
+import { ControllerContext, Events } from "..";
 import type { ReactNode } from "react";
 import type { Settings } from "./hooks/useAppSettings";
 
@@ -17,20 +17,7 @@ interface AppState {
   setFullscreen(value: boolean): void;
 }
 
-const appStore = createStore<AppState>((set) => ({
-  seeking: false,
-  setSeeking: (seeking) => set({ seeking }),
-  targetTime: null,
-  setTargetTime: (targetTime) => set({ targetTime }),
-  visible: false,
-  setVisible: (visible) => set({ visible }),
-  settings: null,
-  setSettings: (settings) => set({ settings }),
-  fullscreen: false,
-  setFullscreen: (fullscreen) => set({ fullscreen }),
-}));
-
-type AppStore = typeof appStore;
+type AppStore = ReturnType<typeof createAppStore>;
 
 export const StoreContext = createContext<AppStore>({} as AppStore);
 
@@ -39,13 +26,14 @@ type StoreProviderProps = {
 };
 
 export function AppStoreProvider({ children }: StoreProviderProps) {
+  const [store] = useState(createAppStore);
   const controller = useContext(ControllerContext);
 
   useEffect(() => {
     let prevTime = 0;
 
     const onChange = () => {
-      const { targetTime, setTargetTime } = appStore.getState();
+      const { targetTime, setTargetTime } = store.getState();
 
       if (targetTime === null) {
         return;
@@ -63,12 +51,38 @@ export function AppStoreProvider({ children }: StoreProviderProps) {
     return controller.subscribe(onChange);
   }, [controller]);
 
+  useEffect(() => {
+    const onReset = () => {
+      const initialState = store.getInitialState();
+      store.setState(initialState, true);
+    };
+    controller.facade.on(Events.RESET, onReset);
+    return () => {
+      controller.facade.off(Events.RESET, onReset);
+    };
+  }, [controller.facade]);
+
   return (
-    <StoreContext.Provider value={appStore}>{children}</StoreContext.Provider>
+    <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
   );
 }
 
 export function useAppStore<T>(selector: (state: AppState) => T) {
   const store = useContext(StoreContext);
   return useStore(store, selector);
+}
+
+function createAppStore() {
+  return createStore<AppState>((set) => ({
+    seeking: false,
+    setSeeking: (seeking) => set({ seeking }),
+    targetTime: null,
+    setTargetTime: (targetTime) => set({ targetTime }),
+    visible: false,
+    setVisible: (visible) => set({ visible }),
+    settings: null,
+    setSettings: (settings) => set({ settings }),
+    fullscreen: false,
+    setFullscreen: (fullscreen) => set({ fullscreen }),
+  }));
 }

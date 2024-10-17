@@ -59,6 +59,7 @@ export type State = {
 };
 
 export enum Events {
+  RESET = "reset",
   PLAYHEAD_CHANGE = "playheadChange",
   TIME_CHANGE = "timeChange",
   VOLUME_CHANGE = "volumeChange",
@@ -99,6 +100,7 @@ export type AutoQualityChangeEventData = {
 
 export type FacadeListeners = {
   "*": () => void;
+  [Events.RESET]: () => void;
   [Events.PLAYHEAD_CHANGE]: (data: PlayheadChangeEventData) => void;
   [Events.TIME_CHANGE]: (data: TimeChangeEventData) => void;
   [Events.VOLUME_CHANGE]: (data: VolumeChangeEventData) => void;

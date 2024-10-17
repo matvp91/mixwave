@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState, useRef } from "react";
 import { Facade } from "..";
 import type Hls from "hls.js";
 
-export type Controller = ReturnType<typeof createController>;
+type MediaRefCallback = (media: HTMLMediaElement | null) => void;
 
-export type State = ReturnType<typeof createState>;
+export type Controller = ReturnType<typeof createController>;
 
 export function useController(hls: Hls) {
   const [facade] = useState<Facade>(() => new Facade(hls));
@@ -31,13 +31,10 @@ export function useController(hls: Hls) {
   return controllerRef.current;
 }
 
-function createController<T>(facade: Facade, mediaRef: T) {
+function createController(facade: Facade, mediaRef: MediaRefCallback) {
   const listeners = new Set<() => void>();
 
-  let lastState = createState(facade);
-
   facade.on("*", () => {
-    lastState = createState(facade);
     for (const listener of listeners) {
       listener();
     }
@@ -50,28 +47,12 @@ function createController<T>(facade: Facade, mediaRef: T) {
     };
   };
 
-  const getSnapshot = () => lastState;
+  const getSnapshot = () => facade;
 
   return {
     facade,
     mediaRef,
     subscribe,
     getSnapshot,
-  };
-}
-
-function createState(f: Facade) {
-  return {
-    playhead: f.playhead,
-    started: f.started,
-    time: f.time,
-    duration: f.duration,
-    volume: f.volume,
-    autoQuality: f.autoQuality,
-    qualities: f.qualities,
-    audioTracks: f.audioTracks,
-    subtitleTracks: f.subtitleTracks,
-    cuePoints: f.cuePoints,
-    interstitial: f.interstitial,
   };
 }

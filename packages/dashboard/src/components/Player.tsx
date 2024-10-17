@@ -1,5 +1,9 @@
 import Hls from "hls.js";
-import { Controls, useController } from "@mixwave/player/react";
+import {
+  Controls,
+  useController,
+  ControllerProvider,
+} from "@mixwave/player/react";
 import { useEffect } from "react";
 
 type PlayerProps = {
@@ -24,15 +28,17 @@ export function Player({ url }: PlayerProps) {
   }, [controller]);
 
   return (
-    <div
-      className="relative aspect-video bg-black overflow-hidden"
-      data-mix-container
-    >
-      <video
-        ref={controller.mediaRef}
-        className="absolute inset-O w-full h-full"
-      />
-      <Controls controller={controller} />
-    </div>
+    <ControllerProvider controller={controller}>
+      <div
+        className="relative aspect-video bg-black overflow-hidden"
+        data-mix-container
+      >
+        <video
+          ref={controller.mediaRef}
+          className="absolute inset-O w-full h-full"
+        />
+        <Controls />
+      </div>
+    </ControllerProvider>
   );
 }

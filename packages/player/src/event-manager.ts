@@ -26,19 +26,13 @@ export class EventManager {
 
   listen = <T extends Target>(target: T) =>
     ((type, listener, context) => {
-      const binding = new Binding(target, type, listener, context);
+      const binding = createBinding(target, type, listener, context);
       this.bindings_.add(binding);
     }) as AddCallback<T>;
 
   listenOnce = <T extends Target>(target: T) =>
     ((type, listener, context) => {
-      const binding = new Binding(
-        target,
-        type,
-        listener,
-        context,
-        /* once= */ true,
-      );
+      const binding = createBinding(target, type, listener, context, true);
       this.bindings_.add(binding);
     }) as AddCallback<T>;
 
@@ -66,40 +60,44 @@ export class EventManager {
   }
 }
 
-class Binding {
-  private methodMap_ = {
-    add:
-      this.target.addEventListener?.bind(this.target) ??
-      this.target.on?.bind(this.target),
+function createBinding(
+  target: Target,
+  type: string,
+  listener: Handler,
+  context?: unknown,
+  once?: boolean,
+) {
+  const methodMap = {
+    add: target.addEventListener?.bind(target) ?? target.on?.bind(target),
     remove:
-      this.target.removeEventListener?.bind(this.target) ??
-      this.target.off?.bind(this.target),
+      target.removeEventListener?.bind(target) ?? target.off?.bind(target),
   };
 
-  private callback_: Handler;
+  const remove = () => {
+    methodMap.remove?.(type, callback);
+  };
 
-  constructor(
-    public target: Target,
-    public type: string,
-    public listener: Handler,
-    context?: unknown,
-    once?: boolean,
-  ) {
-    this.callback_ = async (...args: unknown[]) => {
-      try {
-        await this.listener.apply(context, args);
-        if (once) {
-          this.remove();
-        }
-      } catch (error) {
-        console.error(error);
+  const callback = async (...args: unknown[]) => {
+    try {
+      await listener.apply(context, args);
+      if (once) {
+        remove();
       }
-    };
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-    this.methodMap_.add?.(this.type, this.callback_);
-  }
+  methodMap.add?.(type, callback);
 
-  remove() {
-    this.methodMap_.remove?.(this.type, this.callback_);
-  }
+  return {
+    target,
+    type,
+    listener,
+    context,
+    once,
+    remove,
+  };
 }
+
+type Binding = ReturnType<typeof createBinding>;

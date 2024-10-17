@@ -37,7 +37,7 @@ export type Quality = {
 /**
  * State of playhead across all interstitials.
  */
-export type PlayheadState = "idle" | "play" | "playing" | "pause" | "ended";
+export type Playhead = "idle" | "play" | "playing" | "pause" | "ended";
 
 export type Interstitial = {
   type?: InterstitialType;
@@ -46,19 +46,59 @@ export type Interstitial = {
 };
 
 export type State = {
-  playheadState: PlayheadState;
+  playhead: Playhead;
   started: boolean;
   time: number;
   duration: number;
   volume: number;
-  interstitial?: Interstitial;
   autoQuality: boolean;
   qualities: Quality[];
   audioTracks: AudioTrack[];
   subtitleTracks: SubtitleTrack[];
-  cuePoints: number[];
 };
 
-export type Events = {
-  "*": () => void;
+export enum Events {
+  PLAYHEAD_CHANGE = "playheadChange",
+  TIME_CHANGE = "timeChange",
+  VOLUME_CHANGE = "volumeChange",
+  QUALITIES_CHANGE = "qualitiesChange",
+  AUDIO_TRACKS_CHANGE = "audioTracksChange",
+  SUBTITLE_TRACKS_CHANGE = "subtitleTracksChange",
+}
+
+export type PlayheadChangeEventData = {
+  playhead: Playhead;
+};
+
+export type TimeChangeEventData = {
+  time: number;
+  duration: number;
+};
+
+export type VolumeChangeEventData = {
+  volume: number;
+};
+
+export type QualitiesChangeEventData = {
+  qualities: Quality[];
+};
+
+export type AudioTracksChangeEventData = {
+  audioTracks: AudioTrack[];
+};
+
+export type SubtitleTracksChangeEventData = {
+  subtitleTracks: SubtitleTrack[];
+};
+
+export type FacadeListeners = {
+  "*": (event: Events) => void;
+  [Events.PLAYHEAD_CHANGE]: (data: PlayheadChangeEventData) => void;
+  [Events.TIME_CHANGE]: (data: TimeChangeEventData) => void;
+  [Events.VOLUME_CHANGE]: (data: VolumeChangeEventData) => void;
+  [Events.QUALITIES_CHANGE]: (data: QualitiesChangeEventData) => void;
+  [Events.AUDIO_TRACKS_CHANGE]: (data: AudioTracksChangeEventData) => void;
+  [Events.SUBTITLE_TRACKS_CHANGE]: (
+    data: SubtitleTracksChangeEventData,
+  ) => void;
 };

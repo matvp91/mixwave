@@ -21,6 +21,10 @@ export function Player({ url }: PlayerProps) {
     hls.attachMedia(ref.current);
     const facade = new Facade(hls);
 
+    facade.on("*", (event) => {
+      console.log(event, facade.state);
+    });
+
     hls.loadSource(url);
 
     hls.on(Hls.Events.ERROR, (_, error) => {

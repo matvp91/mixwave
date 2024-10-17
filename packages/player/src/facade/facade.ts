@@ -7,14 +7,22 @@ import type {
 import EventEmitter from "eventemitter3";
 import { getAssetListItem, getTypes, pipeState } from "./helpers";
 import { Asset } from "./asset";
+import { Events } from "./types";
 import type { StateObserverEmit } from "./state-observer";
 import type { FacadeListeners, Interstitial } from "./types";
 import type { HlsAssetPlayer } from "hls.js";
+
+type GenericState = {
+  started: boolean;
+  playRequested: boolean;
+};
 
 export class Facade {
   private emitter_ = new EventEmitter();
 
   private assets_ = new Set<Asset>();
+
+  private genericState_: GenericState | null = null;
 
   interstitial: Interstitial | null = null;
 
@@ -121,22 +129,44 @@ export class Facade {
     this.assets_.clear();
 
     this.interstitial = null;
+
+    // Build a generic map, eg; when we started atleast 1 asset,
+    // it means we started the session as a whole.
+    this.genericState_ = {
+      started: false,
+      playRequested: false,
+    };
   }
 
   private observerEmit_: StateObserverEmit = (hls, event, eventObj) => {
     if (hls !== this.primaryAsset?.hls && hls !== this.activeAsset?.hls) {
       return;
     }
+
+    if (
+      this.genericState_ &&
+      event === Events.PLAYHEAD_CHANGE &&
+      this.activeAsset?.state.started
+    ) {
+      this.genericState_.started = true;
+    }
+
     this.emitter_.emit(event, eventObj);
     this.emitter_.emit("*");
   };
 
-  get playhead() {
-    return pipeState("playhead", this.activeAsset);
+  get started() {
+    return this.genericState_?.started ?? false;
   }
 
-  get started() {
-    return pipeState("started", this.activeAsset);
+  get playhead() {
+    const playhead = pipeState("playhead", this.activeAsset);
+    if (playhead === "pause" && this.genericState_?.playRequested) {
+      // We explicitly requested play, we didn't pause ourselves. Assume
+      // this is an interstitial transition.
+      return "playing";
+    }
+    return playhead;
   }
 
   get time() {
@@ -188,14 +218,19 @@ export class Facade {
    * Toggles play or pause.
    */
   playOrPause() {
+    if (!this.genericState_) {
+      return;
+    }
     const media = this.activeAsset?.hls.media;
     if (!media) {
       return;
     }
     if (this.playhead === "play" || this.playhead === "playing") {
       media.pause();
+      this.genericState_.playRequested = false;
     } else {
       media.play();
+      this.genericState_.playRequested = true;
     }
   }
 

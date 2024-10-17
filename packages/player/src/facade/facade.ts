@@ -122,6 +122,8 @@ export class Facade {
       asset.destroy();
     });
     this.assets_.clear();
+
+    this.interstitial = null;
   }
 
   private observerEmit_: StateObserverEmit = (hls, event, eventObj) => {

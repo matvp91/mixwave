@@ -1,11 +1,9 @@
 import { toHMS } from "../utils";
 import { useSelector } from "../..";
+import { useFakeTime } from "../hooks/useFakeTime";
 
-type TimeStatProps = {
-  fakeTime: number;
-};
-
-export function TimeStat({ fakeTime }: TimeStatProps) {
+export function TimeStat() {
+  const fakeTime = useFakeTime();
   const duration = useSelector((facade) => facade.duration);
 
   const remaining = Math.ceil(duration - fakeTime);

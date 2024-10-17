@@ -4,13 +4,13 @@ import cn from "clsx";
 import { useSelector } from "../..";
 import { useAppStore } from "../AppStoreProvider";
 import type { PointerEventHandler } from "react";
+import { useFakeTime } from "../hooks/useFakeTime";
 
 type ProgressProps = {
   seekTo(targetTime: number): void;
-  fakeTime: number;
 };
 
-export function Progress({ fakeTime, seekTo }: ProgressProps) {
+export function Progress({ seekTo }: ProgressProps) {
   const ref = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
@@ -22,6 +22,8 @@ export function Progress({ fakeTime, seekTo }: ProgressProps) {
 
   const setSeeking = useAppStore((state) => state.setSeeking);
   const seeking = useAppStore((state) => state.seeking);
+
+  const fakeTime = useFakeTime();
 
   const updateValue = useCallback(
     (event: PointerEvent | React.PointerEvent) => {

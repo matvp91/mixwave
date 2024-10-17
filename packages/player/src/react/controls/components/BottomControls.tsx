@@ -10,12 +10,12 @@ import { VolumeButton } from "./VolumeButton";
 import { Label } from "./Label";
 import { useFacade, useSelector } from "../..";
 import { useAppStore } from "../AppStoreProvider";
+import { useFakeTime } from "../hooks/useFakeTime";
 import type { MouseEventHandler } from "react";
 import type { SetAppSettings } from "../hooks/useAppSettings";
 import type { Metadata } from "../types";
 
 type BottomControlsProps = {
-  fakeTime: number;
   nudgeVisible(): void;
   setAppSettings: SetAppSettings;
   metadata?: Metadata;
@@ -24,7 +24,6 @@ type BottomControlsProps = {
 };
 
 export function BottomControls({
-  fakeTime,
   nudgeVisible,
   setAppSettings,
   metadata,
@@ -39,6 +38,8 @@ export function BottomControls({
 
   const settings = useAppStore((state) => state.settings);
   const fullscreen = useAppStore((state) => state.fullscreen);
+
+  const fakeTime = useFakeTime();
 
   return (
     <div className="flex gap-1">

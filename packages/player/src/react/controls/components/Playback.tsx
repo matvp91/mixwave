@@ -10,7 +10,7 @@ import { useAppStore } from "../AppStoreProvider";
 import { useAppSettings } from "../hooks/useAppSettings";
 import { useFacade, useSelector } from "../..";
 import { useAppFullscreen } from "../hooks/useAppFullscreen";
-import { useFakeTime } from "../hooks/useFakeTime";
+import { useSideEffects } from "../hooks/useSideEffects";
 import type { Metadata } from "../types";
 
 type PlaybackProps = {
@@ -18,6 +18,8 @@ type PlaybackProps = {
 };
 
 export function Playback({ metadata }: PlaybackProps) {
+  useSideEffects();
+
   const [ref, nudgeVisible] = useAppVisible();
   const setAppSettings = useAppSettings();
   const toggleFullscreen = useAppFullscreen();
@@ -29,8 +31,6 @@ export function Playback({ metadata }: PlaybackProps) {
   const facade = useFacade();
   const interstitial = useSelector((facade) => facade.interstitial);
   const started = useSelector((facade) => facade.started);
-
-  const fakeTime = useFakeTime();
 
   let visibleControls = false;
   if (started && (visible || settings || seeking)) {
@@ -65,15 +65,14 @@ export function Playback({ metadata }: PlaybackProps) {
             </div>
           ) : (
             <div className="absolute left-0 right-0 bottom-0 flex items-center px-4">
-              <Progress seekTo={seekTo} fakeTime={fakeTime} />
-              <TimeStat fakeTime={fakeTime} />
+              <Progress seekTo={seekTo} />
+              <TimeStat />
             </div>
           )}
         </div>
         <div className="px-4 mb-2">
           <BottomControls
             nudgeVisible={nudgeVisible}
-            fakeTime={fakeTime}
             setAppSettings={setAppSettings}
             metadata={metadata}
             toggleFullscreen={toggleFullscreen}

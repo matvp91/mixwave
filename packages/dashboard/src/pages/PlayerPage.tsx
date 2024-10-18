@@ -62,13 +62,15 @@ export function PlayerPage() {
           onSave={onSave}
         />
       </div>
-      <div className="basis-1/2 p-4">
-        <PlayerView masterUrl={masterUrl} />
+      <div className="basis-1/2">
         {error ? (
-          <Alert variant="destructive" className="text-xs">
-            <pre>{JSON.stringify(error, null, 2)}</pre>
-          </Alert>
+          <div className="p-4">
+            <Alert variant="destructive" className="text-xs">
+              <pre>{JSON.stringify(error, null, 2)}</pre>
+            </Alert>
+          </div>
         ) : null}
+        <PlayerView masterUrl={masterUrl} />
       </div>
     </div>
   );

@@ -66,16 +66,6 @@ export function getTypes(item: InterstitialScheduleItem) {
   } satisfies Record<CustomInterstitialType, boolean>);
 }
 
-export function pipeState<P extends keyof State>(
-  prop: P,
-  asset: Asset | null,
-): State[P] {
-  if (!asset) {
-    return noState[prop];
-  }
-  return asset.state[prop];
-}
-
 const noState: State = {
   playhead: "idle",
   started: false,
@@ -87,3 +77,13 @@ const noState: State = {
   audioTracks: [],
   subtitleTracks: [],
 };
+
+export function pipeState<P extends keyof State>(
+  prop: P,
+  asset: Asset | null,
+): State[P] {
+  if (!asset) {
+    return noState[prop];
+  }
+  return asset.state[prop];
+}

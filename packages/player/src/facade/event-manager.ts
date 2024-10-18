@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Handler = (...args: any) => any;
-
 type Target = {
   addEventListener?: Handler;
   removeEventListener?: Handler;
@@ -59,6 +56,15 @@ export class EventManager {
   }
 }
 
+/**
+ * Create a binding for a specific target.
+ * @param target
+ * @param type
+ * @param listener
+ * @param context
+ * @param once
+ * @returns
+ */
 function createBinding(
   target: Target,
   type: string,
@@ -100,3 +106,6 @@ function createBinding(
 }
 
 type Binding = ReturnType<typeof createBinding>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Handler = (...args: any) => any;

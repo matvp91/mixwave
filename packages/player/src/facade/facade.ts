@@ -4,6 +4,7 @@ import { getAssetListItem, getTypes, pipeState } from "./helpers";
 import { Asset } from "./asset";
 import { Events } from "./types";
 import { assert } from "./assert";
+import { MediaManager } from "./media-manager";
 import type {
   InterstitialAssetEndedData,
   InterstitialAssetPlayerCreatedData,
@@ -17,10 +18,16 @@ import type {
   PlayheadChangeEventData,
 } from "./types";
 
+export type FacadeOptions = {
+  multipleVideoElements: boolean;
+};
+
 /**
  * A facade wrapper that simplifies working with HLS.js API.
  */
 export class Facade {
+  private options_: FacadeOptions;
+
   private emitter_ = new EventEmitter();
 
   private primaryAsset_: Asset | null = null;
@@ -31,7 +38,18 @@ export class Facade {
 
   private interstitial_: Interstitial | null = null;
 
-  constructor(public hls: Hls) {
+  private mediaManager_: MediaManager | null = null;
+
+  constructor(
+    public hls: Hls,
+    userOptions?: Partial<FacadeOptions>,
+  ) {
+    this.options_ = {
+      // Add default values.
+      multipleVideoElements: false,
+      ...userOptions,
+    };
+
     hls.on(Hls.Events.BUFFER_RESET, this.onBufferReset_, this);
     hls.on(Hls.Events.MANIFEST_LOADED, this.onManifestLoaded_, this);
     hls.on(
@@ -49,6 +67,19 @@ export class Facade {
       this.onInterstitialAssetEnded_,
       this,
     );
+    hls.on(
+      Hls.Events.INTERSTITIALS_PRIMARY_RESUMED,
+      this.onInterstitialsPrimaryResumed_,
+      this,
+    );
+
+    if (hls.media) {
+      // We have media attached when we created the facade, fire it.
+      this.onMediaAttached_();
+    } else {
+      // Wait once until we can grab the media.
+      hls.once(Hls.Events.MEDIA_ATTACHED, this.onMediaAttached_, this);
+    }
   }
 
   on<E extends keyof FacadeListeners>(event: E, listener: FacadeListeners[E]) {
@@ -80,6 +111,12 @@ export class Facade {
       this.onInterstitialAssetEnded_,
       this,
     );
+    this.hls.off(
+      Hls.Events.INTERSTITIALS_PRIMARY_RESUMED,
+      this.onInterstitialsPrimaryResumed_,
+      this,
+    );
+    this.hls.off(Hls.Events.MEDIA_ATTACHED, this.onMediaAttached_, this);
 
     this.disposeAssets_();
   }
@@ -231,10 +268,9 @@ export class Facade {
    * @param volume
    */
   setVolume(volume: number) {
-    const media = this.activeAsset_?.media;
-    if (media) {
-      media.volume = volume;
-    }
+    // We'll pass this on to the media manager, in case we have multiple
+    // media elements, we'll set volume for all.
+    this.mediaManager_?.setVolume(volume);
   }
 
   /**
@@ -282,6 +318,8 @@ export class Facade {
     _: string,
     data: InterstitialAssetPlayerCreatedData,
   ) {
+    this.mediaManager_?.attachMedia(data.player);
+
     const asset = new Asset(data.player, this.observerEmit_);
     this.interstitialAssets_.set(data.player, asset);
   }
@@ -292,6 +330,8 @@ export class Facade {
   ) {
     const asset = this.interstitialAssets_.get(data.player);
     assert(asset, "No asset for interstitials player");
+
+    this.mediaManager_?.setActive(data.player);
 
     const assetListItem = getAssetListItem(data);
 
@@ -313,6 +353,20 @@ export class Facade {
   ) {
     this.interstitialAssets_.delete(data.player);
     this.interstitial_ = null;
+  }
+
+  private onMediaAttached_() {
+    assert(this.hls.media);
+
+    this.mediaManager_ = new MediaManager(
+      this.hls.media,
+      this.options_.multipleVideoElements,
+    );
+  }
+
+  private onInterstitialsPrimaryResumed_() {
+    assert(this.mediaManager_);
+    this.mediaManager_.reset();
   }
 
   private disposeAssets_() {

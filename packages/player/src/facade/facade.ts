@@ -1,33 +1,57 @@
 import Hls from "hls.js";
-import type {
-  InterstitialAssetEndedData,
-  InterstitialAssetPlayerCreatedData,
-  InterstitialAssetStartedData,
-} from "hls.js";
 import EventEmitter from "eventemitter3";
 import { getAssetListItem, getTypes, pipeState } from "./helpers";
 import { Asset } from "./asset";
 import { Events } from "./types";
+import { assert } from "./assert";
+import { MediaManager } from "./media-manager";
+import type {
+  InterstitialAssetEndedData,
+  InterstitialAssetPlayerCreatedData,
+  InterstitialAssetStartedData,
+  HlsAssetPlayer,
+} from "hls.js";
 import type { StateObserverEmit } from "./state-observer";
-import type { FacadeListeners, Interstitial } from "./types";
-import type { HlsAssetPlayer } from "hls.js";
+import type {
+  FacadeListeners,
+  Interstitial,
+  PlayheadChangeEventData,
+} from "./types";
 
-type GenericState = {
-  started: boolean;
-  playRequested: boolean;
+export type FacadeOptions = {
+  multipleVideoElements: boolean;
 };
 
+/**
+ * A facade wrapper that simplifies working with HLS.js API.
+ */
 export class Facade {
+  private options_: FacadeOptions;
+
   private emitter_ = new EventEmitter();
 
-  private assets_ = new Set<Asset>();
+  private primaryAsset_: Asset | null = null;
 
-  private genericState_: GenericState | null = null;
+  private interstitialAssets_ = new Map<HlsAssetPlayer, Asset>();
 
-  interstitial: Interstitial | null = null;
+  private state_: DominantState | null = null;
 
-  constructor(public hls: Hls) {
+  private interstitial_: Interstitial | null = null;
+
+  private mediaManager_: MediaManager | null = null;
+
+  constructor(
+    public hls: Hls,
+    userOptions?: Partial<FacadeOptions>,
+  ) {
+    this.options_ = {
+      // Add default values.
+      multipleVideoElements: false,
+      ...userOptions,
+    };
+
     hls.on(Hls.Events.BUFFER_RESET, this.onBufferReset_, this);
+    hls.on(Hls.Events.MANIFEST_LOADED, this.onManifestLoaded_, this);
     hls.on(
       Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED,
       this.onInterstitialAssetPlayerCreated_,
@@ -43,6 +67,19 @@ export class Facade {
       this.onInterstitialAssetEnded_,
       this,
     );
+    hls.on(
+      Hls.Events.INTERSTITIALS_PRIMARY_RESUMED,
+      this.onInterstitialsPrimaryResumed_,
+      this,
+    );
+
+    if (hls.media) {
+      // We have media attached when we created the facade, fire it.
+      this.onMediaAttached_();
+    } else {
+      // Wait once until we can grab the media.
+      hls.once(Hls.Events.MEDIA_ATTACHED, this.onMediaAttached_, this);
+    }
   }
 
   on<E extends keyof FacadeListeners>(event: E, listener: FacadeListeners[E]) {
@@ -53,8 +90,12 @@ export class Facade {
     this.emitter_.off(event, listener);
   }
 
+  /**
+   * Destroys the facade.
+   */
   destroy() {
     this.hls.off(Hls.Events.BUFFER_RESET, this.onBufferReset_, this);
+    this.hls.off(Hls.Events.MANIFEST_LOADED, this.onManifestLoaded_, this);
     this.hls.off(
       Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED,
       this.onInterstitialAssetPlayerCreated_,
@@ -70,101 +111,42 @@ export class Facade {
       this.onInterstitialAssetEnded_,
       this,
     );
+    this.hls.off(
+      Hls.Events.INTERSTITIALS_PRIMARY_RESUMED,
+      this.onInterstitialsPrimaryResumed_,
+      this,
+    );
+    this.hls.off(Hls.Events.MEDIA_ATTACHED, this.onMediaAttached_, this);
 
     this.disposeAssets_();
   }
 
-  private onBufferReset_() {
-    this.disposeAssets_();
-
-    // In case anyone is listening, reset your state.
-    this.emitter_.emit(Events.RESET);
-
-    // Build a generic map, eg; when we started atleast 1 asset,
-    // it means we started the session as a whole.
-    this.genericState_ = {
-      started: false,
-      playRequested: false,
-    };
-
-    const primaryAsset = new Asset(this.hls, this.observerEmit_);
-    this.assets_.add(primaryAsset);
+  /**
+   * We're ready when the master playlist is loaded.
+   */
+  get ready() {
+    return this.state_ !== null;
   }
 
-  private onInterstitialAssetPlayerCreated_(
-    _: string,
-    data: InterstitialAssetPlayerCreatedData,
-  ) {
-    const interstitialAsset = new Asset(data.player, this.observerEmit_);
-    this.assets_.add(interstitialAsset);
-  }
-
-  private onInterstitialAssetStarted_(
-    _: string,
-    data: InterstitialAssetStartedData,
-  ) {
-    const asset = this.getAssetByPlayer(data.player);
-    const assetListItem = getAssetListItem(data);
-
-    this.interstitial = {
-      get time() {
-        return pipeState("time", asset);
-      },
-      get duration() {
-        return pipeState("duration", asset);
-      },
-      player: data.player,
-      type: assetListItem.type,
-    };
-  }
-
-  private onInterstitialAssetEnded_(
-    _: string,
-    data: InterstitialAssetEndedData,
-  ) {
-    const asset = this.getAssetByPlayer(data.player);
-    if (!asset) {
-      throw new Error(
-        "No asset for interstitials player. This is a bug, report",
-      );
-    }
-    this.assets_.delete(asset);
-    this.interstitial = null;
-  }
-
-  private disposeAssets_() {
-    this.assets_.forEach((asset) => {
-      asset.destroy();
-    });
-    this.assets_.clear();
-
-    this.interstitial = null;
-  }
-
-  private observerEmit_: StateObserverEmit = (hls, event, eventObj) => {
-    if (hls !== this.primaryAsset?.hls && hls !== this.activeAsset?.hls) {
-      return;
-    }
-
-    if (
-      this.genericState_ &&
-      event === Events.PLAYHEAD_CHANGE &&
-      this.activeAsset?.state.started
-    ) {
-      this.genericState_.started = true;
-    }
-
-    this.emitter_.emit(event, eventObj);
-    this.emitter_.emit("*");
-  };
-
+  /**
+   * We're started when atleast 1 asset started playback, either the master
+   * or interstitial playlist started playing.
+   */
   get started() {
-    return this.genericState_?.started ?? false;
+    return this.state_?.started ?? false;
   }
 
+  /**
+   * Returns the playhead, will preserve the user intent across interstitials.
+   * When we're switching to an interstitial, and the user explicitly requested play,
+   * we'll still return the state as playing.
+   */
   get playhead() {
-    const playhead = pipeState("playhead", this.activeAsset);
-    if (playhead === "pause" && this.genericState_?.playRequested) {
+    const playhead = pipeState("playhead", this.activeAsset_);
+    if (
+      (playhead === "pause" || playhead === "idle") &&
+      this.state_?.playRequested
+    ) {
       // We explicitly requested play, we didn't pause ourselves. Assume
       // this is an interstitial transition.
       return "playing";
@@ -172,37 +154,61 @@ export class Facade {
     return playhead;
   }
 
+  /**
+   * Time of the primary asset.
+   */
   get time() {
-    return pipeState("time", this.primaryAsset);
+    return pipeState("time", this.primaryAsset_);
   }
 
+  /**
+   * Duration of the primary asset.
+   */
   get duration() {
     if (this.hls.interstitialsManager) {
       return this.hls.interstitialsManager.primary.duration;
     }
-    return pipeState("duration", this.primaryAsset);
+    return pipeState("duration", this.primaryAsset_);
   }
 
+  /**
+   * Whether auto quality is enabled for all assets.
+   */
   get autoQuality() {
-    return pipeState("autoQuality", this.primaryAsset);
+    return pipeState("autoQuality", this.primaryAsset_);
   }
 
+  /**
+   * Qualities list of the primary asset.
+   */
   get qualities() {
-    return pipeState("qualities", this.primaryAsset);
+    return pipeState("qualities", this.primaryAsset_);
   }
 
+  /**
+   * Audio tracks of the primary asset.
+   */
   get audioTracks() {
-    return pipeState("audioTracks", this.primaryAsset);
+    return pipeState("audioTracks", this.primaryAsset_);
   }
 
+  /**
+   * Subtitle tracks of the primary asset.
+   */
   get subtitleTracks() {
-    return pipeState("subtitleTracks", this.primaryAsset);
+    return pipeState("subtitleTracks", this.primaryAsset_);
   }
 
+  /**
+   * Volume across all assets.
+   */
   get volume() {
-    return pipeState("volume", this.activeAsset);
+    return pipeState("volume", this.activeAsset_);
   }
 
+  /**
+   * A list of ad cue points, can be used to plot on a seekbar.
+   */
   get cuePoints() {
     const manager = this.hls.interstitialsManager;
     if (!manager) {
@@ -218,22 +224,30 @@ export class Facade {
   }
 
   /**
+   * When currently playing an interstitial, this holds all the info
+   * from that interstitial, such as time / duration, ...
+   */
+  get interstitial() {
+    return this.interstitial_;
+  }
+
+  /**
    * Toggles play or pause.
    */
   playOrPause() {
-    if (!this.genericState_) {
+    if (!this.state_) {
       return;
     }
-    const media = this.activeAsset?.hls.media;
+    const media = this.activeAsset_?.media;
     if (!media) {
       return;
     }
     if (this.playhead === "play" || this.playhead === "playing") {
       media.pause();
-      this.genericState_.playRequested = false;
+      this.state_.playRequested = false;
     } else {
       media.play();
-      this.genericState_.playRequested = true;
+      this.state_.playRequested = true;
     }
   }
 
@@ -244,8 +258,8 @@ export class Facade {
   seekTo(targetTime: number) {
     if (this.hls.interstitialsManager) {
       this.hls.interstitialsManager.primary.seekTo(targetTime);
-    } else if (this.hls.media) {
-      this.hls.media.currentTime = targetTime;
+    } else if (this.primaryAsset_?.media) {
+      this.primaryAsset_.media.currentTime = targetTime;
     }
   }
 
@@ -254,58 +268,157 @@ export class Facade {
    * @param volume
    */
   setVolume(volume: number) {
-    const media = this.activeAsset?.hls.media;
-    if (media) {
-      media.volume = volume;
-    }
+    // We'll pass this on to the media manager, in case we have multiple
+    // media elements, we'll set volume for all.
+    this.mediaManager_?.setVolume(volume);
   }
 
   /**
-   * Sets quality by id. All quality levels are defined in `State`.
+   * Sets quality by id. All quality levels are defined in `qualities`.
    * @param id
    */
   setQuality(height: number | null) {
-    this.primaryAsset?.observer.setQuality(height);
+    this.primaryAsset_?.observer.setQuality(height);
   }
 
   /**
-   * Sets subtitle by id. All subtitle tracks are defined in `State`.
+   * Sets subtitle by id. All subtitle tracks are defined in `subtitleTracks`.
    * @param id
    */
   setSubtitleTrack(id: number | null) {
-    this.primaryAsset?.observer.setSubtitleTrack(id);
+    this.primaryAsset_?.observer.setSubtitleTrack(id);
   }
 
   /**
-   * Sets audio by id. All audio tracks are defined in `State`.
+   * Sets audio by id. All audio tracks are defined in `audioTracks`.
    * @param id
    */
   setAudioTrack(id: number) {
-    this.primaryAsset?.observer.setAudioTrack(id);
+    this.primaryAsset_?.observer.setAudioTrack(id);
   }
 
-  private getAssetByPlayer(player: HlsAssetPlayer) {
-    for (const asset of this.assets_) {
-      if (asset.assetPlayer === player) {
-        return asset;
-      }
-    }
-    return null;
+  private onBufferReset_() {
+    this.disposeAssets_();
+
+    this.state_ = null;
+    this.interstitial_ = null;
+
+    // In case anyone is listening, reset your state.
+    this.emitter_.emit(Events.RESET);
+
+    this.primaryAsset_ = new Asset(this.hls, this.observerEmit_);
   }
 
-  get primaryAsset() {
-    for (const asset of this.assets_) {
-      if (!asset.assetPlayer) {
-        return asset;
-      }
-    }
-    return null;
+  private onManifestLoaded_() {
+    this.state_ = {};
+    this.emitter_.emit(Events.READY);
   }
 
-  get activeAsset() {
-    if (this.interstitial) {
-      return this.getAssetByPlayer(this.interstitial.player);
+  private onInterstitialAssetPlayerCreated_(
+    _: string,
+    data: InterstitialAssetPlayerCreatedData,
+  ) {
+    this.mediaManager_?.attachMedia(data.player);
+
+    const asset = new Asset(data.player, this.observerEmit_);
+    this.interstitialAssets_.set(data.player, asset);
+  }
+
+  private onInterstitialAssetStarted_(
+    _: string,
+    data: InterstitialAssetStartedData,
+  ) {
+    const asset = this.interstitialAssets_.get(data.player);
+    assert(asset, "No asset for interstitials player");
+
+    this.mediaManager_?.setActive(data.player);
+
+    const assetListItem = getAssetListItem(data);
+
+    this.interstitial_ = {
+      get time() {
+        return pipeState("time", asset);
+      },
+      get duration() {
+        return pipeState("duration", asset);
+      },
+      player: data.player,
+      type: assetListItem.type,
+    };
+  }
+
+  private onInterstitialAssetEnded_(
+    _: string,
+    data: InterstitialAssetEndedData,
+  ) {
+    this.interstitialAssets_.delete(data.player);
+    this.interstitial_ = null;
+  }
+
+  private onMediaAttached_() {
+    assert(this.hls.media);
+
+    this.mediaManager_ = new MediaManager(
+      this.hls.media,
+      this.options_.multipleVideoElements,
+    );
+  }
+
+  private onInterstitialsPrimaryResumed_() {
+    assert(this.mediaManager_);
+    this.mediaManager_.reset();
+  }
+
+  private disposeAssets_() {
+    this.primaryAsset_?.destroy();
+    this.primaryAsset_ = null;
+
+    this.interstitialAssets_.forEach((asset) => {
+      asset.destroy();
+    });
+    this.interstitialAssets_.clear();
+  }
+
+  private observerEmit_: StateObserverEmit = (hls, event, eventObj) => {
+    if (hls !== this.primaryAsset_?.hls && hls !== this.activeAsset_?.hls) {
+      // If it's not the primary asset, and it's not an interstitial that is currently
+      // active, we skip events from it. The interstitial is still preparing.
+      return;
     }
-    return this.primaryAsset;
+
+    this.dominantStateSideEffect_(event, eventObj);
+
+    this.emitter_.emit(event, eventObj);
+    this.emitter_.emit("*");
+  };
+
+  private dominantStateSideEffect_<E extends keyof FacadeListeners>(
+    event: E,
+    eventObj: Parameters<FacadeListeners[E]>[0],
+  ) {
+    if (!this.state_) {
+      return;
+    }
+
+    // If we started atleast something, we've got a dominant started state.
+    if (!this.state_.started && event === Events.PLAYHEAD_CHANGE) {
+      const data = eventObj as PlayheadChangeEventData;
+      this.state_.started = data.started;
+    }
+  }
+
+  private get activeAsset_() {
+    if (this.interstitial_) {
+      return this.interstitialAssets_.get(this.interstitial_.player) ?? null;
+    }
+    return this.primaryAsset_;
   }
 }
+
+/**
+ * Overarching state, across all assets.
+ */
+type DominantState = {
+  started?: boolean;
+  playRequested?: boolean;
+};

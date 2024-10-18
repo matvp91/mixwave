@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useFacade } from "../..";
-import { useAppStore } from "../AppStoreProvider";
+import { useAppStore } from "../hooks/useAppStore";
 
 export function useSeekTo() {
   const facade = useFacade();

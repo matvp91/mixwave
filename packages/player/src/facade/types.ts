@@ -35,10 +35,13 @@ export type Quality = {
 };
 
 /**
- * State of playhead across all interstitials.
+ * State of playhead across all assets.
  */
 export type Playhead = "idle" | "play" | "playing" | "pause" | "ended";
 
+/**
+ * Defines an interstitial, which is not the primary content.
+ */
 export type Interstitial = {
   time: number;
   duration: number;
@@ -46,6 +49,9 @@ export type Interstitial = {
   type?: CustomInterstitialType;
 };
 
+/**
+ * State variables.
+ */
 export type State = {
   playhead: Playhead;
   started: boolean;
@@ -58,8 +64,12 @@ export type State = {
   subtitleTracks: SubtitleTrack[];
 };
 
+/**
+ * List of events.
+ */
 export enum Events {
   RESET = "reset",
+  READY = "ready",
   PLAYHEAD_CHANGE = "playheadChange",
   TIME_CHANGE = "timeChange",
   VOLUME_CHANGE = "volumeChange",
@@ -71,6 +81,7 @@ export enum Events {
 
 export type PlayheadChangeEventData = {
   playhead: Playhead;
+  started: boolean;
 };
 
 export type TimeChangeEventData = {
@@ -98,9 +109,13 @@ export type AutoQualityChangeEventData = {
   autoQuality: boolean;
 };
 
+/**
+ * List of events with their respective event handlers.
+ */
 export type FacadeListeners = {
   "*": () => void;
   [Events.RESET]: () => void;
+  [Events.READY]: () => void;
   [Events.PLAYHEAD_CHANGE]: (data: PlayheadChangeEventData) => void;
   [Events.TIME_CHANGE]: (data: TimeChangeEventData) => void;
   [Events.VOLUME_CHANGE]: (data: VolumeChangeEventData) => void;

@@ -1,11 +1,8 @@
 import { useSelector } from "../..";
-import type { Metadata } from "../types";
+import { useParams } from "../hooks/useParams";
 
-type LabelProps = {
-  metadata?: Metadata;
-};
-
-export function Label({ metadata }: LabelProps) {
+export function Label() {
+  const { metadata } = useParams();
   const interstitial = useSelector((facade) => facade.interstitial);
 
   if (interstitial?.type === "ad") {

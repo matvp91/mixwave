@@ -1,10 +1,12 @@
-import { createStore, useStore } from "zustand";
+import { createStore } from "zustand";
 import { createContext, useContext, useEffect, useState } from "react";
-import { ControllerContext, Events } from "..";
+import { ControllerContext, Events } from "../..";
 import type { ReactNode } from "react";
-import type { Settings } from "./hooks/useAppSettings";
+import type { Settings } from "../hooks/useAppSettings";
 
-interface AppState {
+type AppStore = ReturnType<typeof createAppStore>;
+
+export interface AppState {
   seeking: boolean;
   setSeeking(value: boolean): void;
   targetTime: number | null;
@@ -16,8 +18,6 @@ interface AppState {
   fullscreen: boolean;
   setFullscreen(value: boolean): void;
 }
-
-type AppStore = ReturnType<typeof createAppStore>;
 
 export const StoreContext = createContext<AppStore>({} as AppStore);
 
@@ -65,11 +65,6 @@ export function AppStoreProvider({ children }: StoreProviderProps) {
   return (
     <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
   );
-}
-
-export function useAppStore<T>(selector: (state: AppState) => T) {
-  const store = useContext(StoreContext);
-  return useStore(store, selector);
 }
 
 function createAppStore() {

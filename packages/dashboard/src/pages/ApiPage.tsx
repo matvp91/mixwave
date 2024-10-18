@@ -1,8 +1,10 @@
 import { SelectObject } from "@/components/SelectObject";
+import { useTheme } from "@/components/ui/theme-provider";
 import { useNavigate, useParams } from "react-router-dom";
 
 export function ApiPage() {
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const { service = "api" } = useParams() as {
     service?: string;
   };
@@ -11,6 +13,8 @@ export function ApiPage() {
     api: window.__ENV__.PUBLIC_API_ENDPOINT,
     stitcher: window.__ENV__.PUBLIC_STITCHER_ENDPOINT,
   }[service];
+
+  const query = `?theme=${theme}`;
 
   return (
     <>
@@ -35,7 +39,7 @@ export function ApiPage() {
           />
         </div>
       </div>
-      <iframe className="w-full h-full" src={`${baseUrl}/swagger`} />
+      <iframe className="w-full h-full" src={`${baseUrl}/swagger${query}`} />
     </>
   );
 }

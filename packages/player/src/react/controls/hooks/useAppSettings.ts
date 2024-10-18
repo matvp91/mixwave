@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { useAppStore } from "../AppStoreProvider";
+import { useAppStore } from "../hooks/useAppStore";
 
 export type SettingsMode = "text-audio" | "quality";
 

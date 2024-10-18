@@ -1,6 +1,6 @@
 import { MouseEventHandler, useCallback, useEffect } from "react";
 import screenfull from "screenfull";
-import { useAppStore } from "../AppStoreProvider";
+import { useAppStore } from "../hooks/useAppStore";
 
 export function useAppFullscreen() {
   const setFullscreen = useAppStore((state) => state.setFullscreen);

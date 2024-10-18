@@ -15,7 +15,7 @@ export function JobsList({ jobs }: JobsListProps) {
         <li key={job.id} className="mb-2">
           <Link
             to={`/jobs/${job.id}`}
-            className="px-4 h-20 flex items-center border border-border rounded-md bg-white hover:shadow-sm transition-shadow hover:border-gray-300"
+            className="px-4 h-20 flex items-center border border-border rounded-md hover:shadow-sm transition-shadow hover:bg-muted/50"
           >
             <div className="grow grid grid-cols-3 gap-2 items-center">
               <div className="flex items-center gap-4">

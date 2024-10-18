@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
 import { Alert } from "@/components/ui/alert";
 import { Editor } from "@/components/Editor";
-import { Player } from "@/components/Player";
 import { Loader } from "@/components/Loader";
-import TvMinimalPlay from "lucide-react/icons/tv-minimal-play";
+import { PlayerView } from "@/components/PlayerView";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 
 export function PlayerPage() {
   const [schema, setSchema] = useState<object>();
@@ -50,8 +53,8 @@ export function PlayerPage() {
   }
 
   return (
-    <div className="min-h-full flex grow">
-      <div className="basis-1/2 min-w-0">
+    <ResizablePanelGroup direction="horizontal">
+      <ResizablePanel>
         <Editor
           localStorageKey="mixPlayerEditorValue"
           schema={schema}
@@ -63,30 +66,18 @@ export function PlayerPage() {
           }
           onSave={onSave}
         />
-      </div>
-      <div className="basis-1/2 p-4">
-        {masterUrl ? (
-          <>
-            <Player url={masterUrl} />
-            <div className="relative">
-              <TvMinimalPlay className="w-4 h-4 absolute left-3 top-3" />
-              <Input
-                className="mt-2 pl-9 text-gray-700"
-                value={masterUrl}
-                onClick={(event) => {
-                  (event.target as HTMLInputElement).select();
-                }}
-                onChange={() => {}}
-              />
-            </div>
-          </>
-        ) : null}
+      </ResizablePanel>
+      <ResizableHandle className="z-50" withHandle />
+      <ResizablePanel>
         {error ? (
-          <Alert variant="destructive" className="text-xs">
-            <pre>{JSON.stringify(error, null, 2)}</pre>
-          </Alert>
+          <div className="p-4">
+            <Alert variant="destructive" className="text-xs">
+              <pre>{JSON.stringify(error, null, 2)}</pre>
+            </Alert>
+          </div>
         ) : null}
-      </div>
-    </div>
+        <PlayerView masterUrl={masterUrl} />
+      </ResizablePanel>
+    </ResizablePanelGroup>
   );
 }

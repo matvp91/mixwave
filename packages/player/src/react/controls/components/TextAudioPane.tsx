@@ -1,12 +1,14 @@
 import { CheckList } from "./CheckList";
 import { Pane } from "./Pane";
 import { useFacade, useSelector } from "../..";
+import { useI18n } from "../hooks/useI18n";
 import type { CheckListItem } from "./CheckList";
 
 export function TextAudioPane() {
   const facade = useFacade();
   const subtitleTracks = useSelector((facade) => facade.subtitleTracks);
   const audioTracks = useSelector((facade) => facade.audioTracks);
+  const l = useI18n();
 
   const subtitleItems = subtitleTracks.map<CheckListItem>((it) => ({
     id: it.id,
@@ -16,19 +18,19 @@ export function TextAudioPane() {
 
   subtitleItems.push({
     id: null,
-    label: "None",
+    label: l("settings.subtitle.none"),
     checked: !subtitleTracks.some((it) => it.active),
   });
 
   return (
     <div className="flex">
-      <Pane title="Subtitles">
+      <Pane title={l("settings.subtitle.title")}>
         <CheckList
           onSelect={(id) => facade.setSubtitleTrack(id)}
           items={subtitleItems}
         />
       </Pane>
-      <Pane title="Audio">
+      <Pane title={l("settings.audio.title")}>
         <CheckList
           onSelect={(id) => {
             if (id !== null) {

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from "react";
-import { useAppStore } from "../AppStoreProvider";
+import { useAppStore } from "../hooks/useAppStore";
 
 export function useAppVisible() {
   const timerRef = useRef<number>();
@@ -32,14 +32,16 @@ export function useAppVisible() {
       setVisible(false);
     };
 
+    container.addEventListener("pointerdown", nudge);
     container.addEventListener("pointermove", onPointerMove);
     container.addEventListener("pointerleave", onPointerLeave);
 
     return () => {
+      container.removeEventListener("pointerdown", nudge);
       container.removeEventListener("pointermove", onPointerMove);
       container.removeEventListener("pointerleave", onPointerLeave);
     };
-  }, [onPointerMove, setVisible]);
+  }, [onPointerMove, setVisible, nudge]);
 
   return [elementRef, nudge] as const;
 }

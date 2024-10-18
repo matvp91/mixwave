@@ -45,6 +45,7 @@ export default defineConfig({
   clearScreen: false,
   server: {
     port: 52000,
+    hmr: false,
   },
   build: {
     rollupOptions: {

@@ -4,13 +4,19 @@ import { useFacade, useSelector } from "../..";
 
 export function Start() {
   const facade = useFacade();
+  const ready = useSelector((facade) => facade.ready);
   const started = useSelector((facade) => facade.started);
+
+  let hidden = started;
+  if (!ready) {
+    hidden = true;
+  }
 
   return (
     <button
       className={cn(
         "absolute inset-0 bg-black/30 z-50 transition-opacity text-white flex items-center justify-center group",
-        started && "opacity-0 pointer-events-none",
+        hidden && "opacity-0 pointer-events-none",
       )}
       onClick={() => facade.playOrPause()}
     >

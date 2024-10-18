@@ -1,6 +1,7 @@
 import MonacoEditor from "@monaco-editor/react";
-import type { BeforeMount, OnChange, OnMount } from "@monaco-editor/react";
 import { useEffect, useState } from "react";
+import { useTheme } from "@/components/ui/theme-provider";
+import type { BeforeMount, OnChange, OnMount } from "@monaco-editor/react";
 
 type EditorProps = {
   schema: object;
@@ -15,6 +16,9 @@ export function Editor({
   onSave,
   localStorageKey,
 }: EditorProps) {
+  const { theme } = useTheme();
+  const style = useMonacoStyle();
+
   const [defaultValue] = useState(() => {
     const localStorageValue = localStorageKey
       ? localStorage.getItem(localStorageKey)
@@ -53,23 +57,47 @@ export function Editor({
   };
 
   return (
-    <div className="h-full flex flex-col bg-[#1e1e1e]">
-      <div className="p-4 flex gap-2">
-        <div className="text-white flex items-center">{title}</div>
+    <div className="h-full flex flex-col">
+      <div
+        className="border-b flex px-4"
+        style={{ height: "calc(3.5rem + 4px)" }}
+      >
+        <div className="flex items-center">{title}</div>
       </div>
-      <MonacoEditor
-        className="h-full"
-        defaultLanguage="json"
-        defaultValue={defaultValue}
-        beforeMount={beforeMount}
-        onMount={onMount}
-        onChange={onChange}
-        defaultPath="custom"
-        theme="vs-dark"
-        options={{
-          tabSize: 2,
-        }}
-      />
+      <div className="h-full relative">
+        {style}
+        <MonacoEditor
+          className="absolute inset-0"
+          defaultLanguage="json"
+          defaultValue={defaultValue}
+          beforeMount={beforeMount}
+          onMount={onMount}
+          onChange={onChange}
+          defaultPath="custom"
+          theme={theme === "dark" ? "vs-dark" : "light"}
+          options={{
+            minimap: {
+              enabled: false,
+            },
+            tabSize: 2,
+          }}
+        />
+      </div>
     </div>
   );
+}
+
+function useMonacoStyle() {
+  const { theme } = useTheme();
+
+  if (theme === "dark") {
+    return (
+      <style>{`
+       .monaco-editor, .monaco-editor-background { background-color: inherit; }
+       .monaco-editor .margin { background-color: inherit; }  
+    `}</style>
+    );
+  }
+
+  return null;
 }

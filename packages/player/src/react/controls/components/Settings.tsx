@@ -4,7 +4,7 @@ import usePrevious from "../hooks/usePrevious";
 import { SettingsPane } from "./SettingsPane";
 import { QualitiesPane } from "./QualitiesPane";
 import { TextAudioPane } from "./TextAudioPane";
-import { useAppStore } from "../AppStoreProvider";
+import { useAppStore } from "../hooks/useAppStore";
 import type { SettingsMode } from "../hooks/useAppSettings";
 
 export function Settings() {

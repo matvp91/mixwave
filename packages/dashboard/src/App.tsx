@@ -9,8 +9,10 @@ import { JobPage } from "@/pages/JobPage";
 import { ApiPage } from "@/pages/ApiPage";
 import { RootLayout } from "@/pages/RootLayout";
 import { Suspense } from "react";
+import { Toaster } from "@/components/ui/toaster";
 import { PlayerPage } from "./pages/PlayerPage";
 import { StoragePage } from "./pages/StoragePage";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 
 const queryClient = new QueryClient();
 
@@ -49,10 +51,13 @@ const router = createBrowserRouter([
 
 export function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Suspense>
-        <RouterProvider router={router} />
-      </Suspense>
-    </QueryClientProvider>
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <QueryClientProvider client={queryClient}>
+        <Suspense>
+          <RouterProvider router={router} />
+        </Suspense>
+        <Toaster />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }

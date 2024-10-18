@@ -1,8 +1,8 @@
 import cn from "clsx";
 import { Progress } from "./Progress";
-import { SlotProgress } from "./SlotProgress";
+import { InterstitialProgress } from "./InterstitialProgress";
 import { TimeStat } from "./TimeStat";
-import { useAppStore } from "../AppStoreProvider";
+import { useAppStore } from "../hooks/useAppStore";
 import { useSelector } from "../..";
 
 export function Seekbar() {
@@ -18,7 +18,7 @@ export function Seekbar() {
     >
       {interstitial ? (
         <div className="absolute left-0 right-0 bottom-0 px-4">
-          <SlotProgress />
+          <InterstitialProgress interstitial={interstitial} />
         </div>
       ) : (
         <div className="absolute left-0 right-0 bottom-0 flex items-center px-4">

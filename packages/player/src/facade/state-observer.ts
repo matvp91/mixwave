@@ -3,17 +3,16 @@ import { EventManager } from "./event-manager";
 import { updateActive, preciseFloat, getLang } from "./helpers";
 import { assert } from "./assert";
 import { Timer } from "./timer";
-import {
-  Events,
-  type AudioTrack,
-  type FacadeListeners,
-  type Quality,
-  type State,
-  type SubtitleTrack,
+import { Events } from "./types";
+import type { Level, MediaPlaylist } from "hls.js";
+import type {
+  Playhead,
+  AudioTrack,
+  FacadeListeners,
+  Quality,
+  State,
+  SubtitleTrack,
 } from "./types";
-import type { Level } from "hls.js";
-import type { Playhead } from "./types";
-import type { MediaPlaylist } from "hls.js";
 
 export type StateObserverEmit = <E extends keyof FacadeListeners>(
   hls: Hls,
@@ -60,6 +59,11 @@ export class StateObserver {
     listen(Hls.Events.SUBTITLE_TRACK_SWITCH, this.onSubtitleTrackSwitch_, this);
     listen(Hls.Events.AUDIO_TRACKS_UPDATED, this.onAudioTracksUpdated_, this);
     listen(Hls.Events.AUDIO_TRACK_SWITCHING, this.onAudioTrackSwitching_, this);
+
+    if (hls.media) {
+      // Looks like we already have media attached, bind listeners immediately.
+      this.onMediaAttached_();
+    }
   }
 
   private onManifestLoaded_() {
@@ -331,7 +335,10 @@ export class StateObserver {
       this.state.started = true;
     }
 
-    this.dispatchEvent_(Events.PLAYHEAD_CHANGE, { playhead });
+    this.dispatchEvent_(Events.PLAYHEAD_CHANGE, {
+      playhead,
+      started: this.state.started,
+    });
   }
 
   private dispatchEvent_<E extends Events>(

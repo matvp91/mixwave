@@ -9,6 +9,7 @@ import { JobPage } from "@/pages/JobPage";
 import { ApiPage } from "@/pages/ApiPage";
 import { RootLayout } from "@/pages/RootLayout";
 import { Suspense } from "react";
+import { Toaster } from "@/components/ui/toaster";
 import { PlayerPage } from "./pages/PlayerPage";
 import { StoragePage } from "./pages/StoragePage";
 
@@ -53,6 +54,7 @@ export function App() {
       <Suspense>
         <RouterProvider router={router} />
       </Suspense>
+      <Toaster />
     </QueryClientProvider>
   );
 }

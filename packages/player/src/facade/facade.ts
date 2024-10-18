@@ -3,6 +3,7 @@ import EventEmitter from "eventemitter3";
 import { getAssetListItem, getTypes, pipeState } from "./helpers";
 import { Asset } from "./asset";
 import { Events } from "./types";
+import { assert } from "./assert";
 import type {
   InterstitialAssetEndedData,
   InterstitialAssetPlayerCreatedData,
@@ -29,6 +30,7 @@ export class Facade {
 
   constructor(public hls: Hls) {
     hls.on(Hls.Events.BUFFER_RESET, this.onBufferReset_, this);
+    hls.on(Hls.Events.MANIFEST_LOADED, this.onManifestLoaded_, this);
     hls.on(
       Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED,
       this.onInterstitialAssetPlayerCreated_,
@@ -56,6 +58,7 @@ export class Facade {
 
   destroy() {
     this.hls.off(Hls.Events.BUFFER_RESET, this.onBufferReset_, this);
+    this.hls.off(Hls.Events.MANIFEST_LOADED, this.onManifestLoaded_, this);
     this.hls.off(
       Hls.Events.INTERSTITIAL_ASSET_PLAYER_CREATED,
       this.onInterstitialAssetPlayerCreated_,
@@ -78,13 +81,18 @@ export class Facade {
   private onBufferReset_() {
     this.disposeAssets_();
 
-    this.state_ = {};
+    this.state_ = null;
     this.interstitial = null;
 
     // In case anyone is listening, reset your state.
     this.emitter_.emit(Events.RESET);
 
     this.primaryAsset_ = new Asset(this.hls, this.observerEmit_);
+  }
+
+  private onManifestLoaded_() {
+    this.state_ = {};
+    this.emitter_.emit(Events.READY);
   }
 
   private onInterstitialAssetPlayerCreated_(
@@ -100,11 +108,7 @@ export class Facade {
     data: InterstitialAssetStartedData,
   ) {
     const asset = this.interstitialAssets_.get(data.player);
-    if (!asset) {
-      throw new Error(
-        "No asset for interstitials player. This is a bug, report",
-      );
-    }
+    assert(asset, "No asset for interstitials player");
 
     const assetListItem = getAssetListItem(data);
 
@@ -164,6 +168,10 @@ export class Facade {
       const data = eventObj as PlayheadChangeEventData;
       this.state_.started = data.started;
     }
+  }
+
+  get ready() {
+    return this.state_ !== null;
   }
 
   get started() {

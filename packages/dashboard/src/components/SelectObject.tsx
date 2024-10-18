@@ -5,6 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 export type SelectObjectItem = {
   label: React.ReactNode;
@@ -15,15 +16,21 @@ type SelectObjectProps = {
   items: SelectObjectItem[];
   value?: string;
   onChange(value?: string): void;
+  className?: string;
 };
 
-export function SelectObject({ items, value, onChange }: SelectObjectProps) {
+export function SelectObject({
+  items,
+  value,
+  onChange,
+  className,
+}: SelectObjectProps) {
   return (
     <Select
       value={toString(value)}
       onValueChange={(value) => onChange(toOrig(value))}
     >
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className={cn("w-[180px]", className)}>
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

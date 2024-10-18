@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
 import { Alert } from "@/components/ui/alert";
 import { Editor } from "@/components/Editor";
-import { Player } from "@/components/Player";
 import { Loader } from "@/components/Loader";
-import TvMinimalPlay from "lucide-react/icons/tv-minimal-play";
+import { PlayerView } from "@/components/PlayerView";
 
 export function PlayerPage() {
   const [schema, setSchema] = useState<object>();
@@ -65,22 +63,7 @@ export function PlayerPage() {
         />
       </div>
       <div className="basis-1/2 p-4">
-        {masterUrl ? (
-          <>
-            <Player url={masterUrl} />
-            <div className="relative">
-              <TvMinimalPlay className="w-4 h-4 absolute left-3 top-3" />
-              <Input
-                className="mt-2 pl-9 text-gray-700"
-                value={masterUrl}
-                onClick={(event) => {
-                  (event.target as HTMLInputElement).select();
-                }}
-                onChange={() => {}}
-              />
-            </div>
-          </>
-        ) : null}
+        <PlayerView masterUrl={masterUrl} />
         {error ? (
           <Alert variant="destructive" className="text-xs">
             <pre>{JSON.stringify(error, null, 2)}</pre>

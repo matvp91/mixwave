@@ -5,12 +5,15 @@ import {
   ControllerProvider,
 } from "@mixwave/player/react";
 import { useEffect, useState } from "react";
+import type { Lang, Metadata } from "@mixwave/player/react";
 
 type PlayerProps = {
-  url?: string;
+  url?: string | null;
+  metadata: Metadata;
+  lang: Lang;
 };
 
-export function Player({ url }: PlayerProps) {
+export function Player({ url, lang, metadata }: PlayerProps) {
   const [hls] = useState(() => new Hls());
   const controller = useController(hls);
 
@@ -36,7 +39,7 @@ export function Player({ url }: PlayerProps) {
           ref={controller.mediaRef}
           className="absolute inset-O w-full h-full"
         />
-        <Controls lang="nld" />
+        <Controls lang={lang} metadata={metadata} />
       </div>
     </ControllerProvider>
   );

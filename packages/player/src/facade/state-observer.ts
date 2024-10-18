@@ -59,6 +59,11 @@ export class StateObserver {
     listen(Hls.Events.SUBTITLE_TRACK_SWITCH, this.onSubtitleTrackSwitch_, this);
     listen(Hls.Events.AUDIO_TRACKS_UPDATED, this.onAudioTracksUpdated_, this);
     listen(Hls.Events.AUDIO_TRACK_SWITCHING, this.onAudioTrackSwitching_, this);
+
+    if (hls.media) {
+      // Looks like we already have media attached, bind listeners immediately.
+      this.onMediaAttached_();
+    }
   }
 
   private onManifestLoaded_() {

@@ -1,6 +1,7 @@
 import { Elysia, t } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
+import { scalarCustomCss } from "@mixwave/shared";
 import { env } from "./env";
 import { createSession } from "./session";
 import { validateFilter } from "./filters";
@@ -10,17 +11,6 @@ import {
   formatMediaPlaylist,
   formatAssetList,
 } from "./playlist";
-
-const CUSTOM_SCALAR_CSS = `
-  .scalar-container.z-overlay {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-
-  .scalar-api-client__send-request-button, .show-api-client-button {
-    background: var(--scalar-button-1);
-  }
-`;
 
 const app = new Elysia()
   .use(cors())
@@ -36,7 +26,7 @@ const app = new Elysia()
       },
       scalarConfig: {
         hideDownloadButton: true,
-        customCss: CUSTOM_SCALAR_CSS,
+        customCss: scalarCustomCss,
       },
     }),
   )

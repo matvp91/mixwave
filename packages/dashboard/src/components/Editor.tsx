@@ -1,6 +1,5 @@
 import MonacoEditor from "@monaco-editor/react";
 import { useEffect, useState } from "react";
-import { useTheme } from "@/components/ui/theme-provider";
 import type { BeforeMount, OnChange, OnMount } from "@monaco-editor/react";
 
 type EditorProps = {
@@ -16,9 +15,6 @@ export function Editor({
   onSave,
   localStorageKey,
 }: EditorProps) {
-  const { theme } = useTheme();
-  const style = useMonacoStyle();
-
   const [defaultValue] = useState(() => {
     const localStorageValue = localStorageKey
       ? localStorage.getItem(localStorageKey)
@@ -58,14 +54,8 @@ export function Editor({
 
   return (
     <div className="h-full flex flex-col">
-      <div
-        className="border-b flex px-4"
-        style={{ height: "calc(3.5rem + 4px)" }}
-      >
-        <div className="flex items-center">{title}</div>
-      </div>
-      <div className="h-full relative">
-        {style}
+      <div className="flex h-14 items-center border-b px-4">{title}</div>
+      <div className="grow relative">
         <MonacoEditor
           className="absolute inset-0"
           defaultLanguage="json"
@@ -74,8 +64,8 @@ export function Editor({
           onMount={onMount}
           onChange={onChange}
           defaultPath="custom"
-          theme={theme === "dark" ? "vs-dark" : "light"}
           options={{
+            wordWrap: "on",
             minimap: {
               enabled: false,
             },
@@ -85,19 +75,4 @@ export function Editor({
       </div>
     </div>
   );
-}
-
-function useMonacoStyle() {
-  const { theme } = useTheme();
-
-  if (theme === "dark") {
-    return (
-      <style>{`
-       .monaco-editor, .monaco-editor-background { background-color: inherit; }
-       .monaco-editor .margin { background-color: inherit; }  
-    `}</style>
-    );
-  }
-
-  return null;
 }

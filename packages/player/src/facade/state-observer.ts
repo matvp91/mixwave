@@ -3,17 +3,16 @@ import { EventManager } from "./event-manager";
 import { updateActive, preciseFloat, getLang } from "./helpers";
 import { assert } from "./assert";
 import { Timer } from "./timer";
-import {
-  Events,
-  type AudioTrack,
-  type FacadeListeners,
-  type Quality,
-  type State,
-  type SubtitleTrack,
+import { Events } from "./types";
+import type { Level, MediaPlaylist } from "hls.js";
+import type {
+  Playhead,
+  AudioTrack,
+  FacadeListeners,
+  Quality,
+  State,
+  SubtitleTrack,
 } from "./types";
-import type { Level } from "hls.js";
-import type { Playhead } from "./types";
-import type { MediaPlaylist } from "hls.js";
 
 export type StateObserverEmit = <E extends keyof FacadeListeners>(
   hls: Hls,
@@ -331,7 +330,10 @@ export class StateObserver {
       this.state.started = true;
     }
 
-    this.dispatchEvent_(Events.PLAYHEAD_CHANGE, { playhead });
+    this.dispatchEvent_(Events.PLAYHEAD_CHANGE, {
+      playhead,
+      started: this.state.started,
+    });
   }
 
   private dispatchEvent_<E extends Events>(

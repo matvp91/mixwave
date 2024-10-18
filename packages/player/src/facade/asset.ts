@@ -32,4 +32,8 @@ export class Asset {
   get observer() {
     return this.observer_;
   }
+
+  get media() {
+    return this.hls.media;
+  }
 }

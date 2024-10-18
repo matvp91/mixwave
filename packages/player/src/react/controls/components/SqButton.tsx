@@ -36,6 +36,7 @@ export function SqButton({
         selected
           ? "after:opacity-95"
           : "hover:after:opacity-50 active:after:opacity-85 group active:after:scale-105",
+        disabled && "pointer-events-none opacity-50",
       )}
       onClick={(event) => {
         clearTimeout(timerRef.current);

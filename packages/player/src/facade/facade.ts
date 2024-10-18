@@ -1,28 +1,29 @@
 import Hls from "hls.js";
-import type {
-  InterstitialAssetEndedData,
-  InterstitialAssetPlayerCreatedData,
-  InterstitialAssetStartedData,
-} from "hls.js";
 import EventEmitter from "eventemitter3";
 import { getAssetListItem, getTypes, pipeState } from "./helpers";
 import { Asset } from "./asset";
 import { Events } from "./types";
+import type {
+  InterstitialAssetEndedData,
+  InterstitialAssetPlayerCreatedData,
+  InterstitialAssetStartedData,
+  HlsAssetPlayer,
+} from "hls.js";
 import type { StateObserverEmit } from "./state-observer";
-import type { FacadeListeners, Interstitial } from "./types";
-import type { HlsAssetPlayer } from "hls.js";
-
-type GenericState = {
-  started: boolean;
-  playRequested: boolean;
-};
+import type {
+  FacadeListeners,
+  Interstitial,
+  PlayheadChangeEventData,
+} from "./types";
 
 export class Facade {
   private emitter_ = new EventEmitter();
 
-  private assets_ = new Set<Asset>();
+  private primaryAsset_: Asset | null = null;
 
-  private genericState_: GenericState | null = null;
+  private interstitialAssets_ = new Map<HlsAssetPlayer, Asset>();
+
+  private state_: DominantState | null = null;
 
   interstitial: Interstitial | null = null;
 
@@ -77,33 +78,34 @@ export class Facade {
   private onBufferReset_() {
     this.disposeAssets_();
 
+    this.state_ = {};
+    this.interstitial = null;
+
     // In case anyone is listening, reset your state.
     this.emitter_.emit(Events.RESET);
 
-    // Build a generic map, eg; when we started atleast 1 asset,
-    // it means we started the session as a whole.
-    this.genericState_ = {
-      started: false,
-      playRequested: false,
-    };
-
-    const primaryAsset = new Asset(this.hls, this.observerEmit_);
-    this.assets_.add(primaryAsset);
+    this.primaryAsset_ = new Asset(this.hls, this.observerEmit_);
   }
 
   private onInterstitialAssetPlayerCreated_(
     _: string,
     data: InterstitialAssetPlayerCreatedData,
   ) {
-    const interstitialAsset = new Asset(data.player, this.observerEmit_);
-    this.assets_.add(interstitialAsset);
+    const asset = new Asset(data.player, this.observerEmit_);
+    this.interstitialAssets_.set(data.player, asset);
   }
 
   private onInterstitialAssetStarted_(
     _: string,
     data: InterstitialAssetStartedData,
   ) {
-    const asset = this.getAssetByPlayer(data.player);
+    const asset = this.interstitialAssets_.get(data.player);
+    if (!asset) {
+      throw new Error(
+        "No asset for interstitials player. This is a bug, report",
+      );
+    }
+
     const assetListItem = getAssetListItem(data);
 
     this.interstitial = {
@@ -122,49 +124,55 @@ export class Facade {
     _: string,
     data: InterstitialAssetEndedData,
   ) {
-    const asset = this.getAssetByPlayer(data.player);
-    if (!asset) {
-      throw new Error(
-        "No asset for interstitials player. This is a bug, report",
-      );
-    }
-    this.assets_.delete(asset);
+    this.interstitialAssets_.delete(data.player);
     this.interstitial = null;
   }
 
   private disposeAssets_() {
-    this.assets_.forEach((asset) => {
+    this.primaryAsset_?.destroy();
+    this.primaryAsset_ = null;
+
+    this.interstitialAssets_.forEach((asset) => {
       asset.destroy();
     });
-    this.assets_.clear();
-
-    this.interstitial = null;
+    this.interstitialAssets_.clear();
   }
 
   private observerEmit_: StateObserverEmit = (hls, event, eventObj) => {
-    if (hls !== this.primaryAsset?.hls && hls !== this.activeAsset?.hls) {
+    if (hls !== this.primaryAsset_?.hls && hls !== this.activeAsset_?.hls) {
+      // If it's not the primary asset, and it's not an interstitial that is currently
+      // active, we skip events from it. The interstitial is still preparing.
       return;
     }
 
-    if (
-      this.genericState_ &&
-      event === Events.PLAYHEAD_CHANGE &&
-      this.activeAsset?.state.started
-    ) {
-      this.genericState_.started = true;
-    }
+    this.dominantStateSideEffect_(event, eventObj);
 
     this.emitter_.emit(event, eventObj);
     this.emitter_.emit("*");
   };
 
+  private dominantStateSideEffect_<E extends keyof FacadeListeners>(
+    event: E,
+    eventObj: Parameters<FacadeListeners[E]>[0],
+  ) {
+    if (!this.state_) {
+      return;
+    }
+
+    // If we started atleast something, we've got a dominant started state.
+    if (!this.state_.started && event === Events.PLAYHEAD_CHANGE) {
+      const data = eventObj as PlayheadChangeEventData;
+      this.state_.started = data.started;
+    }
+  }
+
   get started() {
-    return this.genericState_?.started ?? false;
+    return this.state_?.started ?? false;
   }
 
   get playhead() {
-    const playhead = pipeState("playhead", this.activeAsset);
-    if (playhead === "pause" && this.genericState_?.playRequested) {
+    const playhead = pipeState("playhead", this.activeAsset_);
+    if (playhead === "pause" && this.state_?.playRequested) {
       // We explicitly requested play, we didn't pause ourselves. Assume
       // this is an interstitial transition.
       return "playing";
@@ -173,34 +181,34 @@ export class Facade {
   }
 
   get time() {
-    return pipeState("time", this.primaryAsset);
+    return pipeState("time", this.primaryAsset_);
   }
 
   get duration() {
     if (this.hls.interstitialsManager) {
       return this.hls.interstitialsManager.primary.duration;
     }
-    return pipeState("duration", this.primaryAsset);
+    return pipeState("duration", this.primaryAsset_);
   }
 
   get autoQuality() {
-    return pipeState("autoQuality", this.primaryAsset);
+    return pipeState("autoQuality", this.primaryAsset_);
   }
 
   get qualities() {
-    return pipeState("qualities", this.primaryAsset);
+    return pipeState("qualities", this.primaryAsset_);
   }
 
   get audioTracks() {
-    return pipeState("audioTracks", this.primaryAsset);
+    return pipeState("audioTracks", this.primaryAsset_);
   }
 
   get subtitleTracks() {
-    return pipeState("subtitleTracks", this.primaryAsset);
+    return pipeState("subtitleTracks", this.primaryAsset_);
   }
 
   get volume() {
-    return pipeState("volume", this.activeAsset);
+    return pipeState("volume", this.activeAsset_);
   }
 
   get cuePoints() {
@@ -221,19 +229,19 @@ export class Facade {
    * Toggles play or pause.
    */
   playOrPause() {
-    if (!this.genericState_) {
+    if (!this.state_) {
       return;
     }
-    const media = this.activeAsset?.hls.media;
+    const media = this.activeAsset_?.media;
     if (!media) {
       return;
     }
     if (this.playhead === "play" || this.playhead === "playing") {
       media.pause();
-      this.genericState_.playRequested = false;
+      this.state_.playRequested = false;
     } else {
       media.play();
-      this.genericState_.playRequested = true;
+      this.state_.playRequested = true;
     }
   }
 
@@ -244,8 +252,8 @@ export class Facade {
   seekTo(targetTime: number) {
     if (this.hls.interstitialsManager) {
       this.hls.interstitialsManager.primary.seekTo(targetTime);
-    } else if (this.hls.media) {
-      this.hls.media.currentTime = targetTime;
+    } else if (this.primaryAsset_?.media) {
+      this.primaryAsset_.media.currentTime = targetTime;
     }
   }
 
@@ -254,7 +262,7 @@ export class Facade {
    * @param volume
    */
   setVolume(volume: number) {
-    const media = this.activeAsset?.hls.media;
+    const media = this.activeAsset_?.media;
     if (media) {
       media.volume = volume;
     }
@@ -265,7 +273,7 @@ export class Facade {
    * @param id
    */
   setQuality(height: number | null) {
-    this.primaryAsset?.observer.setQuality(height);
+    this.primaryAsset_?.observer.setQuality(height);
   }
 
   /**
@@ -273,7 +281,7 @@ export class Facade {
    * @param id
    */
   setSubtitleTrack(id: number | null) {
-    this.primaryAsset?.observer.setSubtitleTrack(id);
+    this.primaryAsset_?.observer.setSubtitleTrack(id);
   }
 
   /**
@@ -281,31 +289,21 @@ export class Facade {
    * @param id
    */
   setAudioTrack(id: number) {
-    this.primaryAsset?.observer.setAudioTrack(id);
+    this.primaryAsset_?.observer.setAudioTrack(id);
   }
 
-  private getAssetByPlayer(player: HlsAssetPlayer) {
-    for (const asset of this.assets_) {
-      if (asset.assetPlayer === player) {
-        return asset;
-      }
-    }
-    return null;
-  }
-
-  get primaryAsset() {
-    for (const asset of this.assets_) {
-      if (!asset.assetPlayer) {
-        return asset;
-      }
-    }
-    return null;
-  }
-
-  get activeAsset() {
+  private get activeAsset_() {
     if (this.interstitial) {
-      return this.getAssetByPlayer(this.interstitial.player);
+      return this.interstitialAssets_.get(this.interstitial.player) ?? null;
     }
-    return this.primaryAsset;
+    return this.primaryAsset_;
   }
 }
+
+/**
+ * Overarching state, across all assets.
+ */
+type DominantState = {
+  started?: boolean;
+  playRequested?: boolean;
+};

@@ -71,6 +71,7 @@ export enum Events {
 
 export type PlayheadChangeEventData = {
   playhead: Playhead;
+  started: boolean;
 };
 
 export type TimeChangeEventData = {

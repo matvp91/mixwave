@@ -3,6 +3,11 @@ import { Alert } from "@/components/ui/alert";
 import { Editor } from "@/components/Editor";
 import { Loader } from "@/components/Loader";
 import { PlayerView } from "@/components/PlayerView";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 
 export function PlayerPage() {
   const [schema, setSchema] = useState<object>();
@@ -48,8 +53,8 @@ export function PlayerPage() {
   }
 
   return (
-    <div className="min-h-full flex grow">
-      <div className="basis-1/2 min-w-0">
+    <ResizablePanelGroup direction="horizontal">
+      <ResizablePanel>
         <Editor
           localStorageKey="mixPlayerEditorValue"
           schema={schema}
@@ -61,8 +66,9 @@ export function PlayerPage() {
           }
           onSave={onSave}
         />
-      </div>
-      <div className="basis-1/2">
+      </ResizablePanel>
+      <ResizableHandle className="z-50" withHandle />
+      <ResizablePanel>
         {error ? (
           <div className="p-4">
             <Alert variant="destructive" className="text-xs">
@@ -71,7 +77,7 @@ export function PlayerPage() {
           </div>
         ) : null}
         <PlayerView masterUrl={masterUrl} />
-      </div>
-    </div>
+      </ResizablePanel>
+    </ResizablePanelGroup>
   );
 }

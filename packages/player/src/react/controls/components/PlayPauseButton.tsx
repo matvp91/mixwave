@@ -19,7 +19,7 @@ export function PlayPauseButton({ nudgeVisible }: PlayPauseButtonProps) {
         facade.playOrPause();
         nudgeVisible();
       }}
-      tooltip={canPause ? "pause" : "play"}
+      tooltip={canPause ? "button.pause" : "button.play"}
       tooltipPlacement="left"
     >
       {canPause ? (

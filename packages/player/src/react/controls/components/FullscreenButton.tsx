@@ -14,7 +14,7 @@ export function FullscreenButton({ toggleFullscreen }: FullscreenButtonProps) {
   return (
     <SqButton
       onClick={toggleFullscreen}
-      tooltip={fullscreen ? "exitFullscreen" : "fullscreen"}
+      tooltip={fullscreen ? "button.exit-fullscreen" : "button.fullscreen"}
       tooltipPlacement="right"
     >
       {fullscreen ? (

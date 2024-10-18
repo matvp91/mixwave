@@ -14,7 +14,7 @@ export function SqButtonTooltip({ value, placement }: SqButtonTooltipProps) {
 
   // We have a progress bar shown when interstitial is an ad, or
   // if we have no interstitial at all.
-  let progress = interstitial?.type === "ad" || !interstitial;
+  const progress = interstitial?.type === "ad" || !interstitial;
 
   return (
     <div

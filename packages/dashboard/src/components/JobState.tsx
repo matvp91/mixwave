@@ -8,18 +8,31 @@ import type { Job } from "@/api";
 
 export function JobState({ state }: { state: Job["state"] }) {
   if (state === "completed") {
-    return createCircle("bg-emerald-200 text-emerald-800", Check);
+    return createCircle(
+      "bg-emerald-200 text-emerald-800 dark:bg-emerald-400",
+      Check,
+    );
   }
   if (state === "failed") {
-    return createCircle("bg-red-200 text-red-800", X);
+    return createCircle("bg-red-200 text-red-800 dark:bg-red-400", X);
   }
   if (state === "running") {
-    return createCircle("bg-blue-200 text-blue-800", Loader, "animate-spin");
+    return createCircle(
+      "bg-blue-200 text-blue-800 dark:bg-blue-400",
+      Loader,
+      "animate-spin",
+    );
   }
   if (state === "skipped") {
-    return createCircle("bg-gray-200 text-gray-800", CircleOff);
+    return createCircle(
+      "bg-gray-200 text-gray-800 dark:bg-gray-400",
+      CircleOff,
+    );
   }
-  return createCircle("bg-violet-200 text-violet-800", CircleDotDashed);
+  return createCircle(
+    "bg-violet-200 text-violet-800 dark:bg-gray-400",
+    CircleDotDashed,
+  );
 }
 
 function createCircle(

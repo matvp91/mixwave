@@ -40,7 +40,7 @@ export function JobPage() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <div className="ml-auto">
+        <div className="ml-4 flex items-center">
           <JobTag tag={job.tag} />
         </div>
       </div>

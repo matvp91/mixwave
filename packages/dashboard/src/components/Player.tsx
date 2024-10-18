@@ -32,7 +32,7 @@ export function Player({ url, lang, metadata }: PlayerProps) {
   return (
     <ControllerProvider controller={controller}>
       <div
-        className="relative aspect-video bg-black overflow-hidden"
+        className="relative aspect-video bg-black overflow-hidden rounded-md"
         data-mix-container
       >
         <video

@@ -1,6 +1,7 @@
 import { Player } from "@/components/Player";
 import { PlayerAccordion } from "@/components/PlayerAccordion";
 import { useState } from "react";
+import { PlayerNpmInstall } from "./PlayerNpmInstall";
 import type { Lang, Metadata } from "@mixwave/player/react";
 
 type PlayerViewProps = {
@@ -16,6 +17,9 @@ export function PlayerView({ masterUrl }: PlayerViewProps) {
 
   return (
     <>
+      <div className="mb-2">
+        <PlayerNpmInstall />
+      </div>
       <Player url={masterUrl} metadata={metadata} lang={lang} />
       <PlayerAccordion
         masterUrl={masterUrl}

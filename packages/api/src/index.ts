@@ -227,7 +227,7 @@ const app = new Elysia()
     },
     {
       detail: {
-        summary: "Get a job' logs",
+        summary: "Get job logs",
       },
       params: t.Object({
         id: t.String(),

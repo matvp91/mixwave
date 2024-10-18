@@ -1,4 +1,4 @@
-import { useAppStore } from "../AppStoreProvider";
+import { useAppStore } from "../hooks/useAppStore";
 import { useSelector } from "../..";
 
 export function useFakeTime() {

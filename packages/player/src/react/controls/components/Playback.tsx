@@ -7,13 +7,8 @@ import { useAppSettings } from "../hooks/useAppSettings";
 import { useAppFullscreen } from "../hooks/useAppFullscreen";
 import { useVisibleControls } from "../hooks/useVisibleControls";
 import { Seekbar } from "./Seekbar";
-import type { Metadata } from "../types";
 
-type PlaybackProps = {
-  metadata?: Metadata;
-};
-
-export function Playback({ metadata }: PlaybackProps) {
+export function Playback() {
   const [ref, nudgeVisible] = useAppVisible();
   const setAppSettings = useAppSettings();
   const toggleFullscreen = useAppFullscreen();
@@ -33,7 +28,6 @@ export function Playback({ metadata }: PlaybackProps) {
           <BottomControls
             nudgeVisible={nudgeVisible}
             setAppSettings={setAppSettings}
-            metadata={metadata}
             toggleFullscreen={toggleFullscreen}
           />
         </div>

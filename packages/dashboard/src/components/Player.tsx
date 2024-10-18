@@ -36,7 +36,7 @@ export function Player({ url }: PlayerProps) {
           ref={controller.mediaRef}
           className="absolute inset-O w-full h-full"
         />
-        <Controls />
+        <Controls lang="nld" />
       </div>
     </ControllerProvider>
   );

@@ -1,5 +1,5 @@
 import { useSelector } from "../..";
-import { useAppStore } from "../AppStoreProvider";
+import { useAppStore } from "../hooks/useAppStore";
 
 export function useVisibleControls() {
   const started = useSelector((facade) => facade.started);

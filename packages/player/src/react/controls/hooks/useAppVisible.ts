@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from "react";
-import { useAppStore } from "../AppStoreProvider";
+import { useAppStore } from "../hooks/useAppStore";
 
 export function useAppVisible() {
   const timerRef = useRef<number>();

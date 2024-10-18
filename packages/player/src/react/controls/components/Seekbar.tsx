@@ -2,7 +2,7 @@ import cn from "clsx";
 import { Progress } from "./Progress";
 import { InterstitialProgress } from "./InterstitialProgress";
 import { TimeStat } from "./TimeStat";
-import { useAppStore } from "../AppStoreProvider";
+import { useAppStore } from "../hooks/useAppStore";
 import { useSelector } from "../..";
 
 export function Seekbar() {

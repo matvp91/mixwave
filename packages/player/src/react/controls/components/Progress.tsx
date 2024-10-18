@@ -2,7 +2,7 @@ import { useRef, useState, useEffect, useCallback } from "react";
 import { toHMS } from "../utils";
 import cn from "clsx";
 import { useSelector } from "../..";
-import { useAppStore } from "../AppStoreProvider";
+import { useAppStore } from "../hooks/useAppStore";
 import { useFakeTime } from "../hooks/useFakeTime";
 import { useSeekTo } from "../hooks/useSeekTo";
 import type { PointerEventHandler } from "react";

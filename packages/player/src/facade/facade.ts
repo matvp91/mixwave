@@ -172,7 +172,10 @@ export class Facade {
 
   get playhead() {
     const playhead = pipeState("playhead", this.activeAsset_);
-    if (playhead === "pause" && this.state_?.playRequested) {
+    if (
+      (playhead === "pause" || playhead === "idle") &&
+      this.state_?.playRequested
+    ) {
       // We explicitly requested play, we didn't pause ourselves. Assume
       // this is an interstitial transition.
       return "playing";

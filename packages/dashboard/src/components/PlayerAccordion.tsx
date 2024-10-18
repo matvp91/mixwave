@@ -38,9 +38,9 @@ export function PlayerAccordion({
   ];
 
   return (
-    <Accordion type="single" collapsible>
-      <AccordionItem value="properties">
-        <AccordionTrigger className="pl-2">Properties</AccordionTrigger>
+    <Accordion type="single" collapsible defaultValue="session">
+      <AccordionItem value="session">
+        <AccordionTrigger className="pl-4">Session</AccordionTrigger>
         <AccordionContent>
           <div className="p-4 bg-gray-50">
             <Label>Master playlist URL</Label>
@@ -72,8 +72,8 @@ export function PlayerAccordion({
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="settings">
-        <AccordionTrigger className="pl-2">Settings</AccordionTrigger>
-        <AccordionContent>
+        <AccordionTrigger className="pl-4">Settings</AccordionTrigger>
+        <AccordionContent className="space-y-4">
           <div className="p-4 rounded-md bg-gray-50 space-y-2">
             <Label>Language</Label>
             <SelectObject
@@ -86,7 +86,7 @@ export function PlayerAccordion({
               ISO 6301 - 3 characters
             </p>
           </div>
-          <p className="mt-2">
+          <p className="ml-4">
             Influences the{" "}
             <span className="font-mono text-xs text-gray-600 bg-gray-50 rounded-sm p-1">
               metadata
@@ -97,7 +97,7 @@ export function PlayerAccordion({
             </span>{" "}
             component.
           </p>
-          <div className="p-4 rounded-md mt-2 bg-gray-50">
+          <div className="p-4 rounded-md bg-gray-50">
             <PlayerMetadataForm values={metadata} onSubmit={setMetadata} />
           </div>
         </AccordionContent>

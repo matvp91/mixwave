@@ -4,9 +4,9 @@ export function PlayerNpmInstall() {
   return (
     <div className="flex py-2 pl-4 pr-4 border border-border rounded-md items-center">
       <svg
-        className="h-[10px]"
+        className="h-[10px] fill-primary/80"
         viewBox="0 0 12.32 9.33"
-        fill="rgba(0, 0, 0, 0.5)"
+        fill="currentColor"
       >
         <g>
           <line x1="7.6" y1="8.9" x2="7.6" y2="6.9" />
@@ -18,7 +18,7 @@ export function PlayerNpmInstall() {
         </g>
       </svg>
       <span
-        className="text-black/80 text-[13px] ml-1"
+        className="text-primary/80 text-[13px] ml-1"
         style={{
           fontFamily: "Consolas, monaco, monospace",
           lineHeight: "24px",

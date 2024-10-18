@@ -1,6 +1,6 @@
 import { Elysia, t } from "elysia";
 import { cors } from "@elysiajs/cors";
-import { swagger } from "@elysiajs/swagger";
+import { swagger, onAfterHandle } from "./swagger";
 import { addTranscodeJob, addPackageJob } from "@mixwave/artisan/producer";
 import {
   LangCodeSchema,
@@ -14,36 +14,9 @@ import { StorageFolderSchema, StorageFileSchema, JobSchema } from "./types";
 
 export type App = typeof app;
 
-const CUSTOM_SCALAR_CSS = `
-  .scalar-container.z-overlay {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-
-  .scalar-api-client__send-request-button, .show-api-client-button {
-    background: var(--scalar-button-1);
-  }
-`;
-
 const app = new Elysia()
   .use(cors())
-  .use(
-    swagger({
-      documentation: {
-        info: {
-          title: "Mixwave API",
-          description:
-            "The Mixwave API is organized around REST, returns JSON-encoded responses " +
-            "and uses standard HTTP response codes and verbs.",
-          version: "1.0.0",
-        },
-      },
-      scalarConfig: {
-        hideDownloadButton: true,
-        customCss: CUSTOM_SCALAR_CSS,
-      },
-    }),
-  )
+  .use(swagger)
   .model({
     LangCode: LangCodeSchema,
     VideoCodec: VideoCodecSchema,
@@ -286,6 +259,8 @@ const app = new Elysia()
       },
     },
   );
+
+app.onAfterHandle(onAfterHandle);
 
 app.on("stop", () => {
   process.exit(0);

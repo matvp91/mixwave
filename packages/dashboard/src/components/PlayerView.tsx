@@ -17,7 +17,7 @@ export function PlayerView({ masterUrl }: PlayerViewProps) {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="px-4 mt-4">
+      <div className="px-4 mt-2">
         <PlayerNpmInstall />
       </div>
       <div className="px-4 mt-2">

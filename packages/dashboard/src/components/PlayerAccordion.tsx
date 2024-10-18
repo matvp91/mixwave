@@ -42,11 +42,11 @@ export function PlayerAccordion({
       <AccordionItem value="session">
         <AccordionTrigger className="px-2">Session</AccordionTrigger>
         <AccordionContent>
-          <div className="p-4 bg-gray-50">
+          <div className="px-4">
             <Label>Master playlist URL</Label>
             <div className="mt-2 flex gap-2">
               <Input
-                className="text-gray-700"
+                className="text-muted-foreground"
                 value={masterUrl ?? ""}
                 onClick={(event) => {
                   (event.target as HTMLInputElement).select();
@@ -75,7 +75,7 @@ export function PlayerAccordion({
       <AccordionItem value="settings">
         <AccordionTrigger className="px-2">Settings</AccordionTrigger>
         <AccordionContent className="space-y-4">
-          <div className="p-4 rounded-md bg-gray-50 space-y-2">
+          <div className="px-4 rounded-md space-y-2">
             <Label>Language</Label>
             <SelectObject
               className="w-full max-w-full"
@@ -98,7 +98,7 @@ export function PlayerAccordion({
             </span>{" "}
             component.
           </p>
-          <div className="p-4 rounded-md bg-gray-50">
+          <div className="px-4 rounded-md">
             <PlayerMetadataForm values={metadata} onSubmit={setMetadata} />
           </div>
         </AccordionContent>

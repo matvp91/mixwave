@@ -5,6 +5,7 @@ import Rows3 from "lucide-react/icons/rows-3";
 import Sailboat from "lucide-react/icons/sailboat";
 import Play from "lucide-react/icons/play";
 import Box from "lucide-react/icons/box";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 import { SidebarNavLink } from "./SidebarNavLink";
 
 export function Sidebar() {
@@ -39,6 +40,9 @@ export function Sidebar() {
             API
           </SidebarNavLink>
         </nav>
+      </div>
+      <div className="p-4 flex justify-end">
+        <ModeToggle />
       </div>
     </div>
   );

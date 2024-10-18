@@ -19,7 +19,7 @@ export function SqButtonTooltip({ value, placement }: SqButtonTooltipProps) {
   return (
     <div
       className={cn(
-        "absolute h-8 flex items-center transition-all opacity-0 group-hover:opacity-100 whitespace-nowrap",
+        "absolute pointer-events-none h-8 flex items-center transition-all opacity-0 group-hover:opacity-100 whitespace-nowrap",
         placement === "left" && "left-0",
         placement === "right" && "right-0",
         progress ? "-top-[4.625rem]" : "-top-10",

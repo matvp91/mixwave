@@ -47,10 +47,11 @@ export function PlayerAccordion({
             <div className="mt-2 flex gap-2">
               <Input
                 className="text-gray-700"
-                value={masterUrl}
+                value={masterUrl ?? ""}
                 onClick={(event) => {
                   (event.target as HTMLInputElement).select();
                 }}
+                readOnly
                 onChange={() => {}}
               />
               <Button

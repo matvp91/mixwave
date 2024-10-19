@@ -40,7 +40,10 @@ export class HlsFacade {
 
   private mediaManager_: MediaManager | null = null;
 
-  constructor(public hls: Hls, userOptions?: Partial<HlsFacadeOptions>) {
+  constructor(
+    public hls: Hls,
+    userOptions?: Partial<HlsFacadeOptions>,
+  ) {
     this.options_ = {
       // Add default values.
       multipleVideoElements: false,

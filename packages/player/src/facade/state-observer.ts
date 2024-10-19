@@ -39,7 +39,10 @@ export class StateObserver {
 
   private timeTick_ = new Timer(() => this.onTimeTick_());
 
-  constructor(public hls: Hls, private emit_: StateObserverEmit) {
+  constructor(
+    public hls: Hls,
+    private emit_: StateObserverEmit,
+  ) {
     const listen = this.eventManager_.listen(hls);
 
     listen(Hls.Events.MANIFEST_LOADED, this.onManifestLoaded_, this);

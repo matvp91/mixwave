@@ -4,3 +4,5 @@ interface Window {
     PUBLIC_STITCHER_ENDPOINT: string;
   };
 }
+
+declare const __VERSION__: string;

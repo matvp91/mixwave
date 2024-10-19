@@ -13,7 +13,12 @@ export function Sidebar() {
       <div className="flex h-14 items-center border-b px-4">
         <Link to="/" className="flex items-center gap-2">
           <img src={logo} className="w-6" />
-          <span className="font-medium">Mixwave</span>
+          <div className="relative">
+            <span className="font-medium">Mixwave</span>
+            <span className="absolute top-0 text-[10px] ml-[2px]">
+              {__VERSION__}
+            </span>
+          </div>
         </Link>
       </div>
       <div className="flex-1">

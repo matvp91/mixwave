@@ -1,4 +1,4 @@
-import type { LangCode, VideoCodec, AudioCodec } from "@mixwave/shared";
+import type { LangCode, VideoCodec, AudioCodec } from "shared";
 
 export type Stream =
   | {

@@ -7,7 +7,7 @@ import {
   VideoCodecSchema,
   AudioCodecSchema,
   scalarCustomCss,
-} from "@mixwave/shared";
+} from "shared";
 import { env } from "./env";
 import { getJob, getJobs, getJobLogs } from "./jobs";
 import { getStorageFolder, getStorageFile } from "./s3";

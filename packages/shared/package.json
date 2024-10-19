@@ -1,10 +1,11 @@
 {
-  "name": "@mixwave/shared",
+  "name": "shared",
+  "private": true,
   "version": "1.0.0",
   "type": "module",
   "main": "./src/index.ts",
   "scripts": {
-    "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
+    "lint": "eslint",
     "typecheck": "tsc"
   },
   "dependencies": {
@@ -14,6 +15,9 @@
     "iso-language-codes": "^2.0.0"
   },
   "devDependencies": {
-    "@types/find-config": "^1.0.4"
+    "@types/find-config": "^1.0.4",
+    "config": "workspace:*",
+    "eslint": "^9.13.0",
+    "typescript": "^5.6.3"
   }
 }

@@ -8,18 +8,21 @@
   "scripts": {
     "dev": "bun --watch ./src/index.ts",
     "build": "bun build ./src/index.ts --target=bun --outdir=./dist",
-    "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
+    "lint": "eslint",
     "typecheck": "tsc"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "config": "workspace:*",
+    "eslint": "^9.13.0",
+    "typescript": "^5.6.3"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.623.0",
     "@elysiajs/cors": "^1.1.1",
     "@elysiajs/swagger": "^1.1.5",
     "@mixwave/artisan": "workspace:*",
-    "@mixwave/shared": "workspace:*",
+    "shared": "workspace:*",
     "bullmq": "^5.12.0",
     "elysia": "^1.1.20"
   }

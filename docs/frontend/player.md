@@ -71,10 +71,6 @@ import {
 
 export function PlayerControls() {
   const [hls] = useState(() => new Hls());
-
-  // Optionally you can provide your own facade as a second argument
-  // of useController. When not provided, we'll create a facade
-  // for you, which you can access with controller.facade later.
   const controller = useController(hls);
 
   useEffect(() => {
@@ -140,14 +136,14 @@ new HlsFacade(hls, userOptions?): HlsFacade
 
 ###### Parameters
 
-| Parameter      | Type                                                          |
-| -------------- | ------------------------------------------------------------- |
-| `hls`          | `Hls`                                                         |
-| `userOptions`? | `Partial`\<[`HlsFacadeOptions`](README.md#hlsfacadeoptions)\> |
+| Parameter      | Type                                                                 |
+| -------------- | -------------------------------------------------------------------- |
+| `hls`          | `Hls`                                                                |
+| `userOptions`? | `Partial`\<[`HlsFacadeOptions`](/frontend/player#hlsfacadeoptions)\> |
 
 ###### Returns
 
-[`HlsFacade`](README.md#hlsfacade)
+[`HlsFacade`](/frontend/player#hlsfacade)
 
 #### Properties
 
@@ -167,7 +163,7 @@ Audio tracks of the primary asset.
 
 ###### Returns
 
-[`AudioTrack`](README.md#audiotrack)[]
+[`AudioTrack`](/frontend/player#audiotrack)[]
 
 ##### autoQuality
 
@@ -216,7 +212,7 @@ from that interstitial, such as time / duration, ...
 
 ###### Returns
 
-`null` \| [`Interstitial`](README.md#interstitial-1)
+`null` \| [`Interstitial`](/frontend/player#interstitial-1)
 
 ##### playhead
 
@@ -230,7 +226,7 @@ we'll still return the state as playing.
 
 ###### Returns
 
-[`Playhead`](README.md#playhead-1)
+[`Playhead`](/frontend/player#playhead-1)
 
 ##### qualities
 
@@ -242,7 +238,7 @@ Qualities list of the primary asset.
 
 ###### Returns
 
-[`Quality`](README.md#quality)[]
+[`Quality`](/frontend/player#quality)[]
 
 ##### ready
 
@@ -279,7 +275,7 @@ Subtitle tracks of the primary asset.
 
 ###### Returns
 
-[`SubtitleTrack`](README.md#subtitletrack)[]
+[`SubtitleTrack`](/frontend/player#subtitletrack)[]
 
 ##### time
 
@@ -327,16 +323,16 @@ off<E>(event, listener): void
 
 ###### Type Parameters
 
-| Type Parameter                                                           |
-| ------------------------------------------------------------------------ |
-| `E` _extends_ keyof [`HlsFacadeListeners`](README.md#hlsfacadelisteners) |
+| Type Parameter                                                                  |
+| ------------------------------------------------------------------------------- |
+| `E` _extends_ keyof [`HlsFacadeListeners`](/frontend/player#hlsfacadelisteners) |
 
 ###### Parameters
 
-| Parameter  | Type                                                        |
-| ---------- | ----------------------------------------------------------- |
-| `event`    | `E`                                                         |
-| `listener` | [`HlsFacadeListeners`](README.md#hlsfacadelisteners)\[`E`\] |
+| Parameter  | Type                                                               |
+| ---------- | ------------------------------------------------------------------ |
+| `event`    | `E`                                                                |
+| `listener` | [`HlsFacadeListeners`](/frontend/player#hlsfacadelisteners)\[`E`\] |
 
 ###### Returns
 
@@ -350,16 +346,16 @@ on<E>(event, listener): void
 
 ###### Type Parameters
 
-| Type Parameter                                                           |
-| ------------------------------------------------------------------------ |
-| `E` _extends_ keyof [`HlsFacadeListeners`](README.md#hlsfacadelisteners) |
+| Type Parameter                                                                  |
+| ------------------------------------------------------------------------------- |
+| `E` _extends_ keyof [`HlsFacadeListeners`](/frontend/player#hlsfacadelisteners) |
 
 ###### Parameters
 
-| Parameter  | Type                                                        |
-| ---------- | ----------------------------------------------------------- |
-| `event`    | `E`                                                         |
-| `listener` | [`HlsFacadeListeners`](README.md#hlsfacadelisteners)\[`E`\] |
+| Parameter  | Type                                                               |
+| ---------- | ------------------------------------------------------------------ |
+| `event`    | `E`                                                                |
+| `listener` | [`HlsFacadeListeners`](/frontend/player#hlsfacadelisteners)\[`E`\] |
 
 ###### Returns
 
@@ -496,9 +492,9 @@ type AudioTracksChangeEventData: object;
 
 #### Type declaration
 
-| Name          | Type                                   |
-| ------------- | -------------------------------------- |
-| `audioTracks` | [`AudioTrack`](README.md#audiotrack)[] |
+| Name          | Type                                          |
+| ------------- | --------------------------------------------- |
+| `audioTracks` | [`AudioTrack`](/frontend/player#audiotrack)[] |
 
 ---
 
@@ -575,12 +571,12 @@ Defines an interstitial, which is not the primary content.
 
 #### Type declaration
 
-| Name       | Type                                                         |
-| ---------- | ------------------------------------------------------------ |
-| `duration` | `number`                                                     |
-| `player`   | `HlsAssetPlayer`                                             |
-| `time`     | `number`                                                     |
-| `type`?    | [`CustomInterstitialType`](README.md#custominterstitialtype) |
+| Name       | Type                                                                |
+| ---------- | ------------------------------------------------------------------- |
+| `duration` | `number`                                                            |
+| `player`   | `HlsAssetPlayer`                                                    |
+| `time`     | `number`                                                            |
+| `type`?    | [`CustomInterstitialType`](/frontend/player#custominterstitialtype) |
 
 ---
 
@@ -607,10 +603,10 @@ type PlayheadChangeEventData: object;
 
 #### Type declaration
 
-| Name       | Type                               |
-| ---------- | ---------------------------------- |
-| `playhead` | [`Playhead`](README.md#playhead-1) |
-| `started`  | `boolean`                          |
+| Name       | Type                                      |
+| ---------- | ----------------------------------------- |
+| `playhead` | [`Playhead`](/frontend/player#playhead-1) |
+| `started`  | `boolean`                                 |
 
 ---
 
@@ -622,9 +618,9 @@ type QualitiesChangeEventData: object;
 
 #### Type declaration
 
-| Name        | Type                             |
-| ----------- | -------------------------------- |
-| `qualities` | [`Quality`](README.md#quality)[] |
+| Name        | Type                                    |
+| ----------- | --------------------------------------- |
+| `qualities` | [`Quality`](/frontend/player#quality)[] |
 
 ---
 
@@ -656,17 +652,17 @@ State variables.
 
 #### Type declaration
 
-| Name             | Type                                         |
-| ---------------- | -------------------------------------------- |
-| `audioTracks`    | [`AudioTrack`](README.md#audiotrack)[]       |
-| `autoQuality`    | `boolean`                                    |
-| `duration`       | `number`                                     |
-| `playhead`       | [`Playhead`](README.md#playhead-1)           |
-| `qualities`      | [`Quality`](README.md#quality)[]             |
-| `started`        | `boolean`                                    |
-| `subtitleTracks` | [`SubtitleTrack`](README.md#subtitletrack)[] |
-| `time`           | `number`                                     |
-| `volume`         | `number`                                     |
+| Name             | Type                                                |
+| ---------------- | --------------------------------------------------- |
+| `audioTracks`    | [`AudioTrack`](/frontend/player#audiotrack)[]       |
+| `autoQuality`    | `boolean`                                           |
+| `duration`       | `number`                                            |
+| `playhead`       | [`Playhead`](/frontend/player#playhead-1)           |
+| `qualities`      | [`Quality`](/frontend/player#quality)[]             |
+| `started`        | `boolean`                                           |
+| `subtitleTracks` | [`SubtitleTrack`](/frontend/player#subtitletrack)[] |
+| `time`           | `number`                                            |
+| `volume`         | `number`                                            |
 
 ---
 
@@ -697,9 +693,9 @@ type SubtitleTracksChangeEventData: object;
 
 #### Type declaration
 
-| Name             | Type                                         |
-| ---------------- | -------------------------------------------- |
-| `subtitleTracks` | [`SubtitleTrack`](README.md#subtitletrack)[] |
+| Name             | Type                                                |
+| ---------------- | --------------------------------------------------- |
+| `subtitleTracks` | [`SubtitleTrack`](/frontend/player#subtitletrack)[] |
 
 ---
 

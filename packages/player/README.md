@@ -14,6 +14,8 @@ We strongly recommend you to go to the documentation link instead of relying on 
 
 The components are styled with [Tailwind](https://tailwindcss.com/), make sure you have it setup properly. Open your `tailwind.config.js` file and include the player build.
 
+An example can be found on StackBlitz: https://stackblitz.com/edit/mixwave-player-demo
+
 ```js
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -37,25 +39,39 @@ hls.attachMedia(videoElement);
 const facade = new HlsFacade(hls);
 ```
 
-Render the `HlsUi` component in your `React` setup, as if you would with any other component. Make sure you add the right classes and the data attribute `data-mix-container` to the container.
+Render the `Controls` component in your `React` setup, as if you would with any other component. Make sure you add the right classes and the data attribute `data-mix-container` to the container.
 
 ```tsx
-import { HlsUi } from "@mixwave/player";
-import type { HlsFacade } from "@mixwave/player";
+import Hls from "hls.js";
+import {
+  ControllerProvider,
+  Controls,
+  useController,
+} from "@mixwave/player/react";
 
-type PlayerProps = {
-  facade: HlsFacade;
-};
+export function PlayerControls() {
+  const [hls] = useState(() => new Hls());
+  const controller = useController(hls);
 
-function Player({ facade }: PlayerProps) {
+  useEffect(() => {
+    if (url) {
+      hls.loadSource(url);
+    }
+  }, [url]);
+
   return (
-    <div
-      className="relative aspect-video bg-black overflow-hidden"
-      data-mix-container
-    >
-      <video ref={ref} className="absolute inset-O w-full h-full" />
-      <HlsUi facade={facade} />
-    </div>
+    <ControllerProvider controller={controller}>
+      <div
+        className="relative aspect-video bg-black overflow-hidden rounded-md"
+        data-mix-container
+      >
+        <video
+          ref={controller.mediaRef}
+          className="absolute inset-O w-full h-full"
+        />
+        <Controls />
+      </div>
+    </ControllerProvider>
   );
 }
 ```

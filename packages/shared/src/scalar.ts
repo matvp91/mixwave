@@ -1,4 +1,4 @@
-export const scalarCustomCss = `
+export const customCss = `
   .scalar-container.z-overlay {
     padding-left: 16px;
     padding-right: 16px;

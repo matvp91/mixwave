@@ -2,7 +2,7 @@ import { defineConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
-import { parseEnv } from "shared";
+import { parseEnv } from "shared/env";
 
 // When we inject new PUBLIC_ variables, make sure to add them
 // in src/globals.d.ts too. All of these are optional because we

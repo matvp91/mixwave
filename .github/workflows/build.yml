@@ -1,14 +1,10 @@
 name: Build
 
 on:
-  pull_request: # Trigger for pull requests.
-    types: [opened, synchronize, reopened, ready_for_review]
-    branches:
-      - main
   push:
-    branches:
-      - main
-  workflow_dispatch: # Allows for manual triggering.
+    branches: [master]
+    tags: ["v*"]
+  pull_request:
 
 jobs:
   build:

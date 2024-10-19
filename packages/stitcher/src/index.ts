@@ -1,7 +1,7 @@
 import { Elysia, t } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
-import { scalarCustomCss } from "shared";
+import { customCss } from "shared/scalar";
 import { env } from "./env";
 import { createSession } from "./session";
 import { validateFilter } from "./filters";
@@ -26,7 +26,7 @@ const app = new Elysia()
       },
       scalarConfig: {
         hideDownloadButton: true,
-        customCss: scalarCustomCss,
+        customCss,
       },
     }),
   )

@@ -6,8 +6,8 @@ import {
   LangCodeSchema,
   VideoCodecSchema,
   AudioCodecSchema,
-  scalarCustomCss,
-} from "shared";
+} from "shared/typebox";
+import { customCss } from "shared/scalar";
 import { env } from "./env";
 import { getJob, getJobs, getJobLogs } from "./jobs";
 import { getStorageFolder, getStorageFile } from "./s3";
@@ -30,7 +30,7 @@ const app = new Elysia()
       },
       scalarConfig: {
         hideDownloadButton: true,
-        customCss: scalarCustomCss,
+        customCss,
       },
     }),
   )

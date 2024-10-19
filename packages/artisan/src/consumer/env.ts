@@ -1,4 +1,4 @@
-import { parseEnv } from "shared";
+import { parseEnv } from "shared/env";
 
 export const env = parseEnv((t) => ({
   // config.env

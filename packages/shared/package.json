@@ -3,7 +3,11 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "main": "./src/index.ts",
+  "exports": {
+    "./env": "./src/env.ts",
+    "./scalar": "./src/scalar.ts",
+    "./typebox": "./src/typebox.ts"
+  },
   "scripts": {
     "lint": "eslint"
   },

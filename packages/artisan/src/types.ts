@@ -1,4 +1,4 @@
-import type { LangCode, VideoCodec, AudioCodec } from "shared";
+import type { LangCode, VideoCodec, AudioCodec } from "shared/typebox";
 
 export type Stream =
   | {

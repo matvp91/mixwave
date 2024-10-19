@@ -84,9 +84,9 @@ Let's say you transcoded and packaged a new asset with the id `abbda878-8e08-40f
 
 <video class="video-frame" src="/video/InterstitialBumper.mp4" controls></video>
 
-### VMAP
+### VMAP (linear ads)
 
-Instruct stitcher to add interstitials based on [VMAP](https://www.iab.com/guidelines/vmap/) definitions. Each VMAP contains one or more `AdBreak` elements with a position of where the interstitial should be.
+[VMAP](https://www.iab.com/guidelines/vmap/) (Video Multiple Ad Playlist) is an XML-based specification that defines how multiple ad breaks can be inserted into a video stream. Instruct stitcher to add interstitials based on VMAP definitions. Each VMAP contains one or more `AdBreak` elements with a position of where the interstitial should be.
 
 ```json
 {

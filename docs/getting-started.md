@@ -136,8 +136,8 @@ pnpm dev
 
 If you did not specify other ports for the separate services, you'd have these services running now:
 
-- Dashboard: localhost:52000
-- API: localhost:52001
-- Stitcher: localhost:52002
+- Dashboard - localhost:52000
+- API - localhost:52001
+- Stitcher - localhost:52002
 
 The artisan workers have also been booted in the background, and they're ready to do some transcoding work.

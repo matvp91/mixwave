@@ -4,8 +4,8 @@ layout: home
 
 hero:
   name: <img class="logo" src="/mixwave/logo.svg" /> <span class="hidden">Mixwave</span>
-  text: "Convert, package and manipulate on the fly."
-  tagline: "A friendly API to simplify the complexities of video delivery."
+  text: "Mixwave"
+  tagline: "Simplify the complexities of video delivery. All-in-one toolkit from ingest to adaptive video playback."
   actions:
     - theme: brand
       text: Introduction

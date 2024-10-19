@@ -8,19 +8,23 @@ next:
 
 Mixwave is a self hostable platform that aims to simplify the complexities of video delivery. Transcode and package your media for online streaming with simple API calls and sane defaults.
 
-Things get more complicated once you go beyond playing a basic mp4 file. To offer different video qualities depending on the viewer's bandwidth, or to include multiple audio or text tracks, you need a different setup.
+Video delivery is quite fragmented, especially when it comes to how content is streamed and protected on different platforms and devices. For example, delivering video in an HLS playlist is a whole different beast compared to MPEG-DASH. While there used to be solid reasons for this, like device compatibility, we now believe this kind of fragmentation isn’t necessary anymore — especially with CMAF becoming the standard. So, we’re keeping things simple and focusing on just one playback protocol: HLS with CMAF. Instead of trying to support everything under the sun, we’re sticking with the best tool for the job. When you don’t have to do the same thing over and over, aiming for perfection gets way easier.
 
-Before we go further, it's important to note that Mixwave intentionally keeps its scope limited. We choose to focus on a single playback protocol HLS CMAF rather than trying to support a wide range of options. We aim to avoid fragmentation by picking the right tools for the job. If you don't have to do the same thing multiple times, aiming for perfection is a lot easier.
+Delivering video gets more complex once you move beyond just providing a simple MP4 file to your users. If you want to offer different video qualities based on the viewer's bandwidth, or include multiple audio and text tracks, you need a more advanced setup. That's where Mixwave comes in.
 
-## API
+## Terminology
 
-Essentially Mixwave is a set of APIs that handle video from ingest to playback. It is designed to be user-friendly, making video transcoding, packaging, and delivery accessible to a wider audience.
+You’ll come across a lot of specific video terms in our documentation. We want to go over these first to make sure we're all on the same page. We’ll keep things straightforward, but if you’re curious to dive deeper into video, there's plenty of info at https://howvideo.works/.
 
-Typically, you transcode the video once. The resulting intermediary file is then assigned a generated UUID, which can be used to initiate a packaging job or to configure the stitcher for manipulating or merging playlists.
+- Transcoding - Convert video to different formats or quality levels for compatibility and optimization.
+- Packaging - Prepare video content for delivery by formatting it into segments and manifest files for streaming protocols (like HLS).
+- Stitching - Modifying playlist files to control video playback, such as switching streams or adding content dynamically (like ads, bumpers, ...).
+- Interstitials - Insert other content into an HLS stream by dynamically updating the playlist during video playback.
+- Codec - A video or audio codec compresses and decompresses media files to reduce their size for storage or streaming.
 
 ## Features
 
-Mixwave makes it easier for you to do the following tasks using a user-friendly API:
+Mixwave makes it easier for you to do the following tasks using a user-friendly API and our dashboard:
 
 ### <img src="/transcode.svg" class="title-image" /> Transcode
 

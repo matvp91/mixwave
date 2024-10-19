@@ -27,3 +27,6 @@ dist-ssr
 *.sw?
 
 config.env
+
+vite.config.ts.timestamp*
+*.tsbuildinfo

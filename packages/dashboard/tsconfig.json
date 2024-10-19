@@ -1,13 +1,6 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ],
+  "extends": "config/tsconfig.vite.json",
+  "include": ["src"],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {

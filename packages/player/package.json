@@ -32,8 +32,8 @@
   "scripts": {
     "dev": "vite build --watch",
     "build": "tsc -b && vite build",
-    "typedoc": "pnpm run build && typedoc --tsconfig tsconfig.typedoc.json",
-    "lint": "eslint \"./src/**/*.ts\" \"./src/**/*.tsx\" && prettier --check \"./src/**/*.ts\" \"./src/**/*.tsx\""
+    "lint": "eslint",
+    "typedoc": "pnpm run build && typedoc --tsconfig tsconfig.typedoc.json"
   },
   "peerDependencies": {
     "hls.js": "^1.6.0-beta.1",
@@ -54,8 +54,11 @@
     "typedoc": "^0.26.8",
     "typedoc-plugin-markdown": "^4.2.9",
     "vite": "^5.4.1",
-    "vite-plugin-dts": "^4.1.0",
-    "vite-plugin-svgr": "^4.2.0"
+    "vite-plugin-dts": "^4.2.4",
+    "vite-plugin-svgr": "^4.2.0",
+    "config": "workspace:*",
+    "eslint": "^9.13.0",
+    "typescript": "^5.6.3"
   },
   "repository": {
     "type": "git",

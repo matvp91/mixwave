@@ -14,5 +14,5 @@ export type MetaFile = {
  */
 export async function getMetaFile(path: string): Promise<MetaFile> {
   const text = await fs.readFile(`${path}/meta.json`, "utf8");
-  return JSON.parse(text);
+  return JSON.parse(text.toString());
 }

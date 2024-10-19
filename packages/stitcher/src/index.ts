@@ -1,7 +1,7 @@
 import { Elysia, t } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
-import { scalarCustomCss } from "@mixwave/shared";
+import { scalarCustomCss } from "shared";
 import { env } from "./env";
 import { createSession } from "./session";
 import { validateFilter } from "./filters";

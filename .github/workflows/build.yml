@@ -1,14 +1,10 @@
 name: Build
 
 on:
-  pull_request: # Trigger for pull requests.
-    types: [opened, synchronize, reopened, ready_for_review]
-    branches:
-      - main
   push:
-    branches:
-      - main
-  workflow_dispatch: # Allows for manual triggering.
+    branches: [master]
+    tags: ["v*"]
+  pull_request:
 
 jobs:
   build:
@@ -32,4 +28,4 @@ jobs:
         env:
           PUBLIC_API_ENDPOINT: http://api
           PUBLIC_STITCHER_ENDPOINT: http://stitcher
-        run: pnpm --filter="@mixwave/*" build
+        run: pnpm build

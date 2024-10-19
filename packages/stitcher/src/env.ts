@@ -1,4 +1,4 @@
-import { parseEnv } from "@mixwave/shared";
+import { parseEnv } from "shared";
 
 export const env = parseEnv((t) => ({
   // process

@@ -4,10 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch ./src/index.ts",
-    "build": "bun build ./src/index.ts --target=bun --outdir=./dist",
+    "build": "tsc -b && bun build ./src/index.ts --target=bun --outdir=./dist",
     "test": "bun test",
-    "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
-    "typecheck": "tsc"
+    "lint": "eslint"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -15,13 +14,16 @@
     "@types/lru-cache": "^7.10.10",
     "@types/luxon": "^3.4.2",
     "@types/node": "^22.1.0",
-    "@types/uuid": "^10.0.0"
+    "@types/uuid": "^10.0.0",
+    "config": "workspace:*",
+    "eslint": "^9.13.0",
+    "typescript": "^5.6.3"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.1.1",
     "@elysiajs/swagger": "^1.1.5",
     "@mixwave/artisan": "workspace:*",
-    "@mixwave/shared": "workspace:*",
+    "shared": "workspace:*",
     "@xmldom/xmldom": "^0.8.10",
     "dom-parser": "^1.1.5",
     "elysia": "^1.1.20",

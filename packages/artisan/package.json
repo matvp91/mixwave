@@ -7,15 +7,14 @@
   },
   "scripts": {
     "dev": "bun --watch ./src/consumer/index.ts",
-    "build": "bun build ./src/consumer/index.ts --target=bun --outdir=./dist",
-    "lint": "eslint \"./src/**/*.ts\" && prettier --check \"./src/**/*.ts\"",
-    "typecheck": "tsc",
+    "build": "tsc -b && bun build ./src/consumer/index.ts --target=bun --outdir=./dist",
+    "lint": "eslint",
     "install-bin": "./scripts/install-bin.sh"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.623.0",
     "@aws-sdk/lib-storage": "^3.669.0",
-    "@mixwave/shared": "workspace:*",
+    "shared": "workspace:*",
     "@sinclair/typebox": "^0.33.16",
     "bullmq": "^5.12.0",
     "execa": "^9.4.0",
@@ -28,6 +27,9 @@
   "devDependencies": {
     "@types/bun": "latest",
     "@types/mime-types": "^2.1.4",
-    "@types/parse-filepath": "^1.0.2"
+    "@types/parse-filepath": "^1.0.2",
+    "config": "workspace:*",
+    "eslint": "^9.13.0",
+    "typescript": "^5.6.3"
   }
 }

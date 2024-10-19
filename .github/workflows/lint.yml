@@ -1,14 +1,10 @@
 name: Lint
 
 on:
-  pull_request: # Trigger for pull requests.
-    types: [opened, synchronize, reopened, ready_for_review]
-    branches:
-      - main
   push:
-    branches:
-      - main
-  workflow_dispatch: # Allows for manual triggering.
+    branches: [master]
+    tags: ["v*"]
+  pull_request:
 
 jobs:
   lint:
@@ -28,5 +24,3 @@ jobs:
         run: pnpm install
       - name: Run lint
         run: pnpm lint
-      - name: Run typecheck
-        run: pnpm typecheck

@@ -1,13 +1,18 @@
 import { useCallback, useEffect, useState, useRef } from "react";
-import { Facade } from "..";
+import { HlsFacade } from "..";
 import type Hls from "hls.js";
 
 type MediaRefCallback = (media: HTMLMediaElement | null) => void;
 
 export type Controller = ReturnType<typeof createController>;
 
-export function useController(hls: Hls) {
-  const [facade] = useState<Facade>(() => new Facade(hls));
+export function useController(hls: Hls, userFacade?: HlsFacade) {
+  const [facade] = useState<HlsFacade>(() => {
+    if (userFacade) {
+      return userFacade;
+    }
+    return new HlsFacade(hls);
+  });
 
   const mediaRef = useCallback((media: HTMLMediaElement | null) => {
     if (media) {
@@ -31,7 +36,7 @@ export function useController(hls: Hls) {
   return controllerRef.current;
 }
 
-function createController(facade: Facade, mediaRef: MediaRefCallback) {
+function createController(facade: HlsFacade, mediaRef: MediaRefCallback) {
   const listeners = new Set<() => void>();
 
   let lastFacade = [facade];

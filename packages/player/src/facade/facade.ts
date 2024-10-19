@@ -13,20 +13,20 @@ import type {
 } from "hls.js";
 import type { StateObserverEmit } from "./state-observer";
 import type {
-  FacadeListeners,
+  HlsFacadeListeners,
   Interstitial,
   PlayheadChangeEventData,
 } from "./types";
 
-export type FacadeOptions = {
+export type HlsFacadeOptions = {
   multipleVideoElements: boolean;
 };
 
 /**
  * A facade wrapper that simplifies working with HLS.js API.
  */
-export class Facade {
-  private options_: FacadeOptions;
+export class HlsFacade {
+  private options_: HlsFacadeOptions;
 
   private emitter_ = new EventEmitter();
 
@@ -40,10 +40,7 @@ export class Facade {
 
   private mediaManager_: MediaManager | null = null;
 
-  constructor(
-    public hls: Hls,
-    userOptions?: Partial<FacadeOptions>,
-  ) {
+  constructor(public hls: Hls, userOptions?: Partial<HlsFacadeOptions>) {
     this.options_ = {
       // Add default values.
       multipleVideoElements: false,
@@ -82,11 +79,17 @@ export class Facade {
     }
   }
 
-  on<E extends keyof FacadeListeners>(event: E, listener: FacadeListeners[E]) {
+  on<E extends keyof HlsFacadeListeners>(
+    event: E,
+    listener: HlsFacadeListeners[E],
+  ) {
     this.emitter_.on(event, listener);
   }
 
-  off<E extends keyof FacadeListeners>(event: E, listener: FacadeListeners[E]) {
+  off<E extends keyof HlsFacadeListeners>(
+    event: E,
+    listener: HlsFacadeListeners[E],
+  ) {
     this.emitter_.off(event, listener);
   }
 
@@ -275,7 +278,7 @@ export class Facade {
 
   /**
    * Sets quality by id. All quality levels are defined in `qualities`.
-   * @param id
+   * @param height
    */
   setQuality(height: number | null) {
     this.primaryAsset_?.observer.setQuality(height);
@@ -392,9 +395,9 @@ export class Facade {
     this.emitter_.emit("*");
   };
 
-  private dominantStateSideEffect_<E extends keyof FacadeListeners>(
+  private dominantStateSideEffect_<E extends keyof HlsFacadeListeners>(
     event: E,
-    eventObj: Parameters<FacadeListeners[E]>[0],
+    eventObj: Parameters<HlsFacadeListeners[E]>[0],
   ) {
     if (!this.state_) {
       return;

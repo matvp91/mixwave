@@ -8,16 +8,16 @@ import type { Level, MediaPlaylist } from "hls.js";
 import type {
   Playhead,
   AudioTrack,
-  FacadeListeners,
+  HlsFacadeListeners,
   Quality,
   State,
   SubtitleTrack,
 } from "./types";
 
-export type StateObserverEmit = <E extends keyof FacadeListeners>(
+export type StateObserverEmit = <E extends keyof HlsFacadeListeners>(
   hls: Hls,
   event: E,
-  eventObj: Parameters<FacadeListeners[E]>[0],
+  eventObj: Parameters<HlsFacadeListeners[E]>[0],
 ) => void;
 
 export class StateObserver {
@@ -39,10 +39,7 @@ export class StateObserver {
 
   private timeTick_ = new Timer(() => this.onTimeTick_());
 
-  constructor(
-    public hls: Hls,
-    private emit_: StateObserverEmit,
-  ) {
+  constructor(public hls: Hls, private emit_: StateObserverEmit) {
     const listen = this.eventManager_.listen(hls);
 
     listen(Hls.Events.MANIFEST_LOADED, this.onManifestLoaded_, this);
@@ -343,7 +340,7 @@ export class StateObserver {
 
   private dispatchEvent_<E extends Events>(
     event: E,
-    eventObj: Parameters<FacadeListeners[E]>[0],
+    eventObj: Parameters<HlsFacadeListeners[E]>[0],
   ) {
     this.emit_(this.hls, event, eventObj);
   }

@@ -112,7 +112,7 @@ export type AutoQualityChangeEventData = {
 /**
  * List of events with their respective event handlers.
  */
-export type FacadeListeners = {
+export type HlsFacadeListeners = {
   "*": () => void;
   [Events.RESET]: () => void;
   [Events.READY]: () => void;

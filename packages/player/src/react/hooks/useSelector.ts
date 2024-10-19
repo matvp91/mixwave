@@ -1,9 +1,9 @@
 import { useContext, useCallback } from "react";
 import { useSyncExternalStoreWithSelector } from "use-sync-external-store/shim/with-selector";
 import { ControllerContext } from "../ControllerProvider";
-import type { Facade } from "..";
+import type { HlsFacade } from "..";
 
-export function useSelector<Sel>(selector: (snapshot: Facade) => Sel) {
+export function useSelector<Sel>(selector: (snapshot: HlsFacade) => Sel) {
   const controller = useContext(ControllerContext);
 
   type Snapshot = ReturnType<typeof controller.getSnapshot>;

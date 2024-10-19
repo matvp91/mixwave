@@ -71,7 +71,7 @@ export default defineConfig({
       copyright: "Copyright © 2024-present Matthias Van Parijs",
     },
     outline: {
-      level: "deep",
+      level: [1, 3],
     },
   },
   vite: {

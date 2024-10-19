@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "vitepress dev",
-    "build": "vitepress build"
+    "build": "./node_modules/.bin/vitepress build"
   },
   "dependencies": {
     "vitepress": "^1.3.2",

@@ -1,8 +1,8 @@
 {
   "name": "mixwave",
   "scripts": {
-    "dev": "turbo dev",
-    "build": "turbo build",
+    "dev": "turbo dev --filter=\"@mixwave/*\"",
+    "build": "turbo build --filter=\"@mixwave/*\"",
     "lint": "turbo lint",
     "test": "turbo test",
     "install-bin": "turbo install-bin"

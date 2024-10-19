@@ -34,13 +34,16 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Install dependencies
-        run: pnpm --filter "docs" install
+        run: pnpm install
+        working-directory: ./docs
       - name: Build with VitePress
-        run: pnpm --filter "docs" build
+        run: pnpm build
+        working-directory: ./docs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        working-directory: ./docs
         with:
-          path: docs/.vitepress/dist
+          path: .vitepress/dist
   deploy:
     environment:
       name: github-pages

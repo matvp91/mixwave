@@ -9,7 +9,6 @@ export default defineConfig({
   plugins: [
     dts({
       rollupTypes: true,
-      tsconfigPath: "./tsconfig.app.json",
     }),
     react(),
     svgr(),

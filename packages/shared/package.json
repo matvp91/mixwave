@@ -5,8 +5,7 @@
   "type": "module",
   "main": "./src/index.ts",
   "scripts": {
-    "lint": "eslint",
-    "typecheck": "tsc"
+    "lint": "eslint"
   },
   "dependencies": {
     "@sinclair/typebox": "^0.33.16",

@@ -4,7 +4,6 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
-    "typecheck": "turbo typecheck",
     "test": "turbo test",
     "install-bin": "turbo install-bin"
   },

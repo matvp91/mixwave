@@ -10,7 +10,6 @@
       "cache": false
     },
     "lint": {},
-    "typecheck": {},
     "test": {},
     "install-bin": {}
   }

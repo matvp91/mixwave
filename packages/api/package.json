@@ -7,9 +7,8 @@
   },
   "scripts": {
     "dev": "bun --watch ./src/index.ts",
-    "build": "bun build ./src/index.ts --target=bun --outdir=./dist",
-    "lint": "eslint",
-    "typecheck": "tsc"
+    "build": "tsc -b && bun build ./src/index.ts --target=bun --outdir=./dist",
+    "lint": "eslint"
   },
   "devDependencies": {
     "@types/bun": "latest",

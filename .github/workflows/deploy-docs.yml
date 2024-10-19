@@ -20,12 +20,14 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./docs
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: pnpm/action-setup@v3
       - name: Setup node
         uses: actions/setup-node@v4
         with:
@@ -34,9 +36,9 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Install dependencies
-        run: cd ./docs && pnpm install
+        run: npm ci
       - name: Build with VitePress
-        run: cd ./docs && pnpm build
+        run: npm run build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

@@ -14,8 +14,6 @@ We strongly recommend you to go to the documentation link instead of relying on 
 
 The components are styled with [Tailwind](https://tailwindcss.com/), make sure you have it setup properly. Open your `tailwind.config.js` file and include the player build.
 
-An example can be found on StackBlitz: https://stackblitz.com/edit/mixwave-player-demo
-
 ```js
 /** @type {import('tailwindcss').Config} */
 module.exports = {

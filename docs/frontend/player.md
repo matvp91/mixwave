@@ -96,10 +96,6 @@ export function PlayerControls() {
 }
 ```
 
-## Example
-
-If you want to see a running example, check [StackBlitz - Mixwave Player Demo](https://stackblitz.com/edit/mixwave-player-demo).
-
 ## Enumerations
 
 ### Events

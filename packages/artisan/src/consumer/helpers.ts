@@ -23,8 +23,10 @@ export async function getFakeJob<T>(job: Job) {
 }
 
 export async function getBinaryPath(name: string) {
-  const path = `${process.cwd()}/bin/${name}`;
-  const exists = await Bun.file(path).exists();
+  const { path } = import.meta;
+  const packagesDir = `${path.substring(0, path.indexOf("/artisan"))}`;
+  const filePath = `${packagesDir}/artisan/bin/${name}`;
+  const exists = await Bun.file(filePath).exists();
   if (!exists) {
     throw new Error(
       `Failed to get bin dep "${name}", run scripts/bin-deps.sh to install binary dependencies.`,

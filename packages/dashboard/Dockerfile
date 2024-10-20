@@ -1,7 +1,7 @@
 FROM nginx
 WORKDIR /usr/src/app
 
-COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx/default.conf.template /etc/nginx/templates/
 COPY ./dist /var/www
 
 ENV PUBLIC_API_ENDPOINT="#"

@@ -1,0 +1,11 @@
+server {
+  listen 52000;
+  
+  location / {
+    root /var/www;
+    try_files $uri $uri/ /index.html;
+    ssi on;
+    set $SSI_API_ENDPOINT "${PUBLIC_API_ENDPOINT}";
+    set $SSI_STITCHER_ENDPOINT "${PUBLIC_STITCHER_ENDPOINT}";
+  }
+}

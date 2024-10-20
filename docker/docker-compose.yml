@@ -35,6 +35,7 @@ services:
     environment:
       - REDIS_HOST=mixwave-redis
       - REDIS_PORT=6379
+      - PUBLIC_STITCHER_ENDPOINT=http://localhost:52002
 
   mixwave-artisan:
     image: "mixwave/artisan:latest"

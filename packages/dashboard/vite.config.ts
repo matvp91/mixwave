@@ -19,10 +19,13 @@ const MANUAL_CHUNKS = [
   "react-syntax-highlighter",
 ];
 
-function ssiEnvPlugin(values: Record<string, string>) {
+function ssiEnvPlugin(values: Record<string, string>, mode: string) {
   return {
     name: "html-transform",
     transformIndexHtml(html) {
+      if (mode === "production") {
+        return html;
+      }
       Object.entries(values).forEach(([key, value]) => {
         html = html.replace(`<!--#echo var="${key}"-->`, value);
       });
@@ -32,31 +35,36 @@ function ssiEnvPlugin(values: Record<string, string>) {
 }
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react(), ssiEnvPlugin(env)],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-      "lucide-react/icons": fileURLToPath(
-        new URL("./node_modules/lucide-react/dist/esm/icons", import.meta.url),
-      ),
+export default defineConfig(({ mode }) => {
+  return {
+    plugins: [react(), ssiEnvPlugin(env, mode)],
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+        "lucide-react/icons": fileURLToPath(
+          new URL(
+            "./node_modules/lucide-react/dist/esm/icons",
+            import.meta.url,
+          ),
+        ),
+      },
     },
-  },
-  define: {
-    __VERSION__: JSON.stringify(process.env.npm_package_version),
-  },
-  clearScreen: false,
-  server: {
-    port: 52000,
-    hmr: false,
-  },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: (id) => {
-          return MANUAL_CHUNKS.find((chunk) => id.includes(chunk));
+    define: {
+      __VERSION__: JSON.stringify(process.env.npm_package_version),
+    },
+    clearScreen: false,
+    server: {
+      port: 52000,
+      hmr: false,
+    },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: (id) => {
+            return MANUAL_CHUNKS.find((chunk) => id.includes(chunk));
+          },
         },
       },
     },
-  },
+  };
 });

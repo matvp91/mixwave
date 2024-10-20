@@ -79,6 +79,9 @@ export function PlayerControls() {
   const [hls] = useState(() => new Hls());
   const controller = useController(hls);
 
+  // Controller creates a facade internally, interact with it as you please.
+  const { facade } = controller;
+
   useEffect(() => {
     if (url) {
       hls.loadSource(url);

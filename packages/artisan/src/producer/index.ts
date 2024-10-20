@@ -160,7 +160,7 @@ export async function addPackageJob({
       metadata: {
         tag,
       },
-    } satisfies PackageData,
+    },
     {
       jobId: `package_${randomUUID()}`,
     },

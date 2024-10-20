@@ -5,25 +5,28 @@ import dts from "vite-plugin-dts";
 import svgr from "vite-plugin-svgr";
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [
-    dts({
-      rollupTypes: true,
-    }),
-    react(),
-    svgr(),
-  ],
-  build: {
-    lib: {
-      entry: {
-        index: resolve(__dirname, "src/facade/index.ts"),
-        react: resolve(__dirname, "src/react/index.tsx"),
+export default defineConfig(({ mode }) => {
+  return {
+    plugins: [
+      dts({
+        rollupTypes: true,
+      }),
+      react(),
+      svgr(),
+    ],
+    build: {
+      emptyOutDir: mode === "development" ? false : true,
+      lib: {
+        entry: {
+          index: resolve(__dirname, "src/facade/index.ts"),
+          react: resolve(__dirname, "src/react/index.tsx"),
+        },
+        formats: ["es"],
       },
-      formats: ["es"],
+      rollupOptions: {
+        external: ["react", "hls.js"],
+      },
     },
-    rollupOptions: {
-      external: ["react", "hls.js"],
-    },
-  },
-  clearScreen: false,
+    clearScreen: false,
+  };
 });

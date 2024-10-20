@@ -30,7 +30,7 @@
     }
   },
   "scripts": {
-    "dev": "vite build --watch",
+    "dev": "rm -r ./dist && vite build --watch --mode development",
     "build": "tsc -b && vite build",
     "lint": "eslint",
     "typedoc": "pnpm run build && typedoc --tsconfig tsconfig.typedoc.json"

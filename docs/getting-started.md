@@ -23,9 +23,7 @@ services:
     image: "mixwave/dashboard:latest"
     ports:
       - 52000:52000
-    environment:
-      - PUBLIC_API_ENDPOINT=http://localhost:52001
-      - PUBLIC_STITCHER_ENDPOINT=http://localhost:52002
+    env_file: config.env
 
   mixwave-api:
     image: "mixwave/api:latest"
@@ -81,8 +79,6 @@ S3_REGION=us-east-1
 S3_ACCESS_KEY=
 S3_SECRET_KEY=
 S3_BUCKET=mixwave
-REDIS_HOST=redis
-REDIS_PORT=6379
 PUBLIC_API_ENDPOINT=http://localhost:52001
 PUBLIC_STITCHER_ENDPOINT=http://localhost:52002
 PUBLIC_S3_ENDPOINT=https://s3.us-east-1.amazonaws.com/mixwave

@@ -8,9 +8,7 @@ services:
     image: "mixwave/dashboard:latest"
     ports:
       - 52000:52000
-    environment:
-      - PUBLIC_API_ENDPOINT=http://localhost:52001
-      - PUBLIC_STITCHER_ENDPOINT=http://localhost:52002
+    env_file: config.env
 
   mixwave-api:
     image: "mixwave/api:latest"
@@ -35,7 +33,6 @@ services:
     environment:
       - REDIS_HOST=mixwave-redis
       - REDIS_PORT=6379
-      - PUBLIC_STITCHER_ENDPOINT=http://localhost:52002
 
   mixwave-artisan:
     image: "mixwave/artisan:latest"

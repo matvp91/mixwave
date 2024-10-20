@@ -82,7 +82,7 @@ export function PlayerControls() {
   return (
     <ControllerProvider controller={controller}>
       <div
-        className="relative aspect-video bg-black overflow-hidden rounded-md"
+        className="relative aspect-video bg-black overflow-hidden"
         data-mix-container
       >
         <video

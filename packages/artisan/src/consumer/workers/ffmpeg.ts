@@ -67,10 +67,6 @@ async function runJob(
 
   job.log(`Input is ${inputFile.path}`);
 
-  const inputInfo = await FFmpeggy.probe(inputFile.path);
-
-  job.log(`Probed info (${JSON.stringify(inputInfo)})`);
-
   const ffmpeg = new FFmpeggy({
     input: inputFile.path,
     globalOptions: ["-loglevel error"],
@@ -81,6 +77,9 @@ async function runJob(
   const outputOptions: string[] = [];
 
   if (params.stream.type === "video") {
+    const inputInfo = await FFmpeggy.probe(inputFile.path);
+    job.log(`Probed info (${JSON.stringify(inputInfo)})`);
+
     const maxHeight = getMaxHeight(inputInfo);
 
     if (maxHeight > 0 && params.stream.height > maxHeight) {

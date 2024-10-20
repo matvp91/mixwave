@@ -32,5 +32,5 @@ export async function getBinaryPath(name: string) {
       `Failed to get bin dep "${name}", run scripts/bin-deps.sh to install binary dependencies.`,
     );
   }
-  return path;
+  return filePath;
 }

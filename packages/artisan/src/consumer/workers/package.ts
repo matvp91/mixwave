@@ -3,7 +3,7 @@ import { lookup } from "mime-types";
 import parseFilePath from "parse-filepath";
 import { downloadFolder, uploadFolder } from "../s3";
 import { TmpDir } from "../tmp-dir";
-import { getMetaFile } from "../meta-file";
+import { getMeta } from "../meta";
 import { getBinaryPath } from "../helpers";
 import type { Job } from "bullmq";
 import type { Stream } from "../../types";
@@ -36,7 +36,7 @@ async function runJob(
 
   job.log(`Synced folder in ${inDir}`);
 
-  const metaFile = await getMetaFile(inDir);
+  const metaFile = await getMeta(inDir);
 
   job.log(`Got meta file: "${JSON.stringify(metaFile)}"`);
 

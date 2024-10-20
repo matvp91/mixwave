@@ -4,7 +4,7 @@ import { uploadJson } from "../s3";
 import { JOB_SKIPPED } from "./helpers";
 import type { FfmpegResult } from "./ffmpeg";
 import type { Stream } from "../../types";
-import type { MetaFile } from "../meta-file";
+import type { Meta } from "../meta";
 import type { Job } from "bullmq";
 import type { SkippableJobResult } from "./helpers";
 
@@ -58,7 +58,7 @@ export default async function (
     return JOB_SKIPPED;
   }
 
-  const meta: MetaFile = {
+  const meta: Meta = {
     version: 1,
     streams,
     segmentSize: params.segmentSize,

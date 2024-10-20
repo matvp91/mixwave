@@ -18,9 +18,6 @@ FFmpeggy.DefaultConfig = {
   ffprobeBin,
 };
 
-// The guys at shaka-streamer did a great job implementing an ffmpeg pipeline, we can always learn from it:
-// https://github.com/shaka-project/shaka-streamer/blob/8bee20a09efab659ea3ecea8ff67db32202a807c/streamer/transcoder_node.py
-
 export type FfmpegData = {
   params: {
     input: Input;
@@ -37,23 +34,6 @@ export type FfmpegResult = SkippableJobResult<{
   name: string;
   stream: Stream;
 }>;
-
-async function prepareInput(job: Job, tmpDir: TmpDir, input: Input) {
-  const filePath = parseFilePath(input.path);
-
-  // If the input is on S3, download the file locally.
-  if (filePath.dir.startsWith("s3://")) {
-    const inDir = await tmpDir.create();
-
-    job.log(`Download "${filePath.path}" to "${inDir}"`);
-    await downloadFile(inDir, filePath.path.replace("s3://", ""));
-
-    return parseFilePath(`${inDir}/${filePath.basename}`);
-  }
-
-  // Assume that the input can be handled directly by ffmpeg, such as http(s).
-  return filePath;
-}
 
 async function runJob(
   job: Job<FfmpegData, FfmpegResult>,
@@ -234,4 +214,27 @@ function getMaxHeight(info: FFprobeResult) {
     }
     return acc > stream.height ? acc : stream.height;
   }, 0);
+}
+
+async function prepareInput(job: Job, tmpDir: TmpDir, input: Input) {
+  const filePath = parseFilePath(input.path);
+
+  // If the input is on S3, download the file locally.
+  if (filePath.dir.startsWith("s3://")) {
+    const inDir = await tmpDir.create();
+
+    job.log(`Download "${filePath.path}" to "${inDir}"`);
+    await downloadFile(inDir, filePath.path.replace("s3://", ""));
+
+    return parseFilePath(`${inDir}/${filePath.basename}`);
+  }
+
+  if (
+    filePath.dir.startsWith("http://") ||
+    filePath.dir.startsWith("https://")
+  ) {
+    return filePath;
+  }
+
+  throw new Error("Failed to resolve input path");
 }

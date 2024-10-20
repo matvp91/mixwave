@@ -165,7 +165,9 @@ export class StateObserver {
 
       const idx = this.hls.levels.findIndex((level) => {
         return (
-          level.height === height && level.audioCodec === loadLevel.audioCodec
+          level.height === height &&
+          level.audioCodec?.substring(0, 4) ===
+            loadLevel.audioCodec?.substring(0, 4)
         );
       });
 

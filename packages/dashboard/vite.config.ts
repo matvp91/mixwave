@@ -27,7 +27,10 @@ function ssiEnvPlugin(values: Record<string, string>, mode: string) {
         return html;
       }
       Object.entries(values).forEach(([key, value]) => {
-        html = html.replace(`<!--#echo var="${key}"-->`, value);
+        html = html.replace(
+          `<!--#echo var="${key.replace("PUBLIC_", "SSI_")}"-->`,
+          value,
+        );
       });
       return html;
     },

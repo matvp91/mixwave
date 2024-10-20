@@ -12,8 +12,6 @@ We built a couple of tools to simplify working with HLS streams through [HLS.js]
 > [!CAUTION]
 > Today we rely on a beta build of HLS.js, v1.6.0-beta.1, once a final version is out, we'll update the peer dependency.
 
-<video class="video-frame" src="/video/Player.mp4" loop muted autoplay></video>
-
 ## Installation
 
 ```sh
@@ -21,7 +19,15 @@ npm i hls.js@1.6.0-beta.1
 npm i @mixwave/player
 ```
 
+## Demo
+
+Check the demo on [StackBlitz](https://stackblitz.com/edit/mixwave-player-demo).
+
+<iframe class="iframe-frame" style="aspect-ratio: 13.55 / 9;" src="https://stackblitz.com/edit/mixwave-player-demo?ctl=1&embed=1&file=src%2FPlayer.tsx&view=preview"></iframe>
+
 ## Facade
+
+The facade is a thin extension for HLS.js that covers simpler state management and methods.
 
 ```typescript
 import Hls from "hls.js";

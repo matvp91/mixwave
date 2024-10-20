@@ -46,3 +46,8 @@ summary {
   border-radius: 12px;
   overflow: hidden;
 }
+
+.iframe-frame {
+  width: 100%;
+  border: none;
+}

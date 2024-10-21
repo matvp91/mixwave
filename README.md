@@ -1,8 +1,8 @@
 <div align="center">
-  <img src="./public/logo-mascotte.png" width="420" />
+  <img src="./public/logo-mascotte.png" width="140" />
 
   <h3>Superstreamer</h3>
-  <h4>From video processing to playback in a matter of minutes</h4>
+  <h4>From video processing to playback in a matter of minutes.</h4>
   
   <p align="center">
     <img src="https://img.shields.io/github/license/matvp91/superstreamer">
@@ -24,24 +24,16 @@
 
 </div>
 
-Mixwave is a self hostable platform that aims to simplify the complexities of video delivery. Transcode and package your media for online streaming with simple API calls and sane defaults, or craft dynamic HLS playlists on the fly with bumpers, ads and filters.
+Superstreamer is a self hostable platform that aims to simplify the complexities of video delivery. Transcode and package your media for online streaming with simple API calls and sane defaults, or craft dynamic HLS playlists on the fly with bumpers, ads and filters.
 
 - Transcode your video file into separate quality tracks (eg; 1080p, 720p, 480p).
-- Write `HLS CMAF` playlists directly to S3, ready to be played by [HLS.js](https://github.com/video-dev/hls.js).
-- Scales `ffmpeg` jobs horizontally.
-- Manually insert [HLS interstitials](https://developer.apple.com/streaming/GettingStartedWithHLSInterstitials.pdf), like the Netflix bumper.
-- Parses an [Ad Playlist](https://www.iab.com/guidelines/vmap/) (VMAP), transcodes and packages the ad media files and inserts them as interstitials, on the fly.
-- Player included, with a UI written in React.
+- Write `HLS CMAF` playlists directly to S3, ready for playback!
+- Want to insert a bumper like Netflix? Stitch it as an HLS interstitial on the fly.
+- Insert linear ads as interstitials by providing a simple VMAP.
+- Use our facade to interact with HLS.js, a heavily simplified wrapper that makes sense for player builders.
+- Awesome React components to start building your own player.
 
 Give us a ⭐ if you like our work. Much appreciated!
-
-## Motivation
-
-Video is quite fragmented, particularly in the way video content is delivered and protected across different platforms and devices. Think [MPEG-DASH vs. HLS](https://www.gumlet.com/learn/hls-vs-dash/), [CTR vs. CBCS](https://websites.fraunhofer.de/video-dev/is-this-the-end-of-cenc-an-overview-of-drm-codec-support-in-2021/), [SSAI vs. CSAI](https://clearcode.cc/blog/client-side-server-side-ad-insertion/). Besides, there's also a lot of cool things happening behind closed doors, like SGAI. We aim to avoid fragmentation by picking the right tools for the job. If you don't have to do the same thing multiple times, aiming for perfection is a lot easier. We believe `HLS CMAF` is the right way forward, and when playlist manipulation is required, we tend to lean towards `HLS Interstitials`. There's obviously going to be roadblocks ahead, think of devices not supporting multiple video elements or partially serving encrypted fragments opposed to plain ads. We'll tackle these once we get there.
-
-There's a lot of video tooling out there, think of ffmpeg, bento4, shaka-packager, but not in a unified manner. Mixwave implements the excellent work done by others, and tries to make it approachable in the form of an API with a strong focus on scalability and ease of use. The latter is quiet challenging, you'd only have to look at how complex ffmpeg gets when you get into the details.
-
-Video from source to consumer is a hard task to get right, [howvideo.works](https://howvideo.works/) is a great resource to get you started.
 
 ## Getting Started
 
@@ -52,56 +44,3 @@ cp config.env.example config.env
 # Open config.env and change the variables.
 docker compose up -d
 ```
-
-## Run locally
-
-We try to make it as easy for you to run Mixwave locally. Install [Bun](https://bun.sh/) (v1.1.30 or above), and [pnpm](https://pnpm.io/installation). Next up, make sure you have the `config.env` file configured properly as well. We recommend [Redis Stack](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/) in your dev env. Run the following commands at the root of the project:
-
-```shell
-pnpm install-bin # Helper to install ffmpeg, packager
-pnpm install # Install npm dependencies
-pnpm dev # Run dev env
-```
-
-Go to `http://localhost:52000` and you're good to go!
-
-There's more info in the [Getting Started](https://matvp91.github.io/mixwave/getting-started.html) section in the docs.
-
-## Player
-
-We built a `facade` that simplifies working with [HLS.js](https://github.com/video-dev/hls.js) and React player components.
-
-- **Demo**: We created a sample on [StackBlitz - Mixwave Player Demo](https://stackblitz.com/edit/mixwave-player-demo) if you're interested in the implementation details.
-- **Documentation**: There's a separate [README](https://github.com/matvp91/mixwave/tree/main/packages/player) dedicated to the player module.
-
-```sh
-# We currently rely on HLS.js 1.6.0 beta as it contains interstitials support.
-npm i hls.js@1.6.0-beta.1
-npm i @mixwave/player
-```
-
-https://github.com/user-attachments/assets/b839a0dd-4c5f-443a-b53e-f21742be0875
-
-## Demos
-
-### Transcode & Package
-
-Let's take the popular BigBuckBunny MP4 video and package it in two different resolutions: 480p and 720p. Once that's done, we'll use the `packageAfter` flag to immediately package the files. In the end, we'll have an HLS playlist ready and stored on our S3.
-
-https://github.com/user-attachments/assets/5fb52e94-c729-4d5b-8f27-a93c161d07e2
-
-### Prepend a bumper dynamically
-
-You know what's even more exciting than just playing videos? Manipulating them in real-time! We'll quickly transcode and package the iconic Netflix bumper, then prepend it to the beginning of our BigBuckBunny video.
-
-https://github.com/user-attachments/assets/b799d7d4-9f53-40ae-bd9b-51589d31fef3
-
-### Insert linear ads
-
-To wrap things up, we'll have the stitcher fetch a few Google IMA video ads and insert them into our playlist. If you need more control, feel free to customize the ad request however you'd like, as long as the final output is a [VMAP](https://www.iab.com/guidelines/vmap/). Each ad break defined in the VMAP will then be mapped to interstitials.
-
-https://github.com/user-attachments/assets/10fa274d-1761-4d10-9c39-065f241f84aa
-
-## 🤝 Contribute
-
-New contributors are welcome! See `CONTRIBUTING.md` for contributing to the project.

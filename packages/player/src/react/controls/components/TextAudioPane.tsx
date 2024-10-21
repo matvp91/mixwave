@@ -24,26 +24,30 @@ export function TextAudioPane() {
 
   return (
     <div className="flex">
-      <Pane title={l("settings.subtitle.title")}>
-        <CheckList
-          onSelect={(id) => facade.setSubtitleTrack(id)}
-          items={subtitleItems}
-        />
-      </Pane>
-      <Pane title={l("settings.audio.title")}>
-        <CheckList
-          onSelect={(id) => {
-            if (id !== null) {
-              facade.setAudioTrack(id);
-            }
-          }}
-          items={audioTracks.map((it) => ({
-            id: it.id,
-            label: it.label,
-            checked: it.active,
-          }))}
-        />
-      </Pane>
+      {subtitleItems.length ? (
+        <Pane title={l("settings.subtitle.title")}>
+          <CheckList
+            onSelect={(id) => facade.setSubtitleTrack(id)}
+            items={subtitleItems}
+          />
+        </Pane>
+      ) : null}
+      {audioTracks.length ? (
+        <Pane title={l("settings.audio.title")}>
+          <CheckList
+            onSelect={(id) => {
+              if (id !== null) {
+                facade.setAudioTrack(id);
+              }
+            }}
+            items={audioTracks.map((it) => ({
+              id: it.id,
+              label: it.label,
+              checked: it.active,
+            }))}
+          />
+        </Pane>
+      ) : null}
     </div>
   );
 }

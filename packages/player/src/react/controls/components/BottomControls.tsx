@@ -8,6 +8,7 @@ import { useFacade, useSelector } from "../..";
 import { useAppStore } from "../hooks/useAppStore";
 import { useFakeTime } from "../hooks/useFakeTime";
 import { useSeekTo } from "../hooks/useSeekTo";
+import { useShowTextAudio } from "../hooks/useShowTextAudio";
 import { PlayPauseButton } from "./PlayPauseButton";
 import { FullscreenButton } from "./FullscreenButton";
 import type { MouseEventHandler } from "react";
@@ -33,6 +34,7 @@ export function BottomControls({
 
   const seekTo = useSeekTo();
   const fakeTime = useFakeTime();
+  const showTextAudio = useShowTextAudio();
 
   return (
     <div className="flex gap-1">
@@ -51,16 +53,18 @@ export function BottomControls({
       />
       <Label />
       <div className="grow" />
-      <SqButton
-        onClick={() => setAppSettings("text-audio")}
-        onIdle={() => setAppSettings("text-audio", true)}
-        selected={
-          settings?.mode === "text-audio" && settings.entry === "explicit"
-        }
-        data-sprs-settings-action
-      >
-        <SubtitlesIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
-      </SqButton>
+      {showTextAudio ? (
+        <SqButton
+          onClick={() => setAppSettings("text-audio")}
+          onIdle={() => setAppSettings("text-audio", true)}
+          selected={
+            settings?.mode === "text-audio" && settings.entry === "explicit"
+          }
+          data-sprs-settings-action
+        >
+          <SubtitlesIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
+        </SqButton>
+      ) : null}
       <SqButton
         onClick={() => setAppSettings("quality")}
         onIdle={() => setAppSettings("quality", true)}

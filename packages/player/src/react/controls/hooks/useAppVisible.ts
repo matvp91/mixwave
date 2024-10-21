@@ -20,7 +20,7 @@ export function useAppVisible() {
   }, [onPointerMove]);
 
   useEffect(() => {
-    const el = elementRef.current?.closest("[data-mix-container]");
+    const el = elementRef.current?.closest("[data-sprs-container]");
     if (!el) {
       return;
     }

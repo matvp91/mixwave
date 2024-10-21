@@ -3,35 +3,56 @@
 layout: home
 
 hero:
-  name: <img class="logo" src="/mixwave/logo.svg" /> <span class="hidden">Mixwave</span>
-  text: "Mixwave"
-  tagline: "Simplify the complexities of video delivery. All-in-one toolkit from ingest to adaptive video playback."
+  name: Superstreamer
+  text: Effortless video
+  tagline: All-in-one toolkit from ingest to adaptive video playback.
   actions:
     - theme: brand
       text: Introduction
-      link: /introduction
+      link: /guide/what-is-superstreamer
     - theme: alt
       text: Getting Started
-      link: /getting-started
+      link: /guide/getting-started
     - theme: alt
       text: GitHub
-      link: https://github.com/matvp91/mixwave
+      link: https://github.com/matvp91/superstreamer
+  image:
+    src: /logo-mascotte.png
+    alt: VitePress
 
 features:
   - title: Transcode
     details: Converting a video file from one format or codec to another, at scale.
-    icon:
-      src: /transcode.svg
   - title: Package
     details: Prepare and organize video files for delivery and playback. Upload directly to S3.
-    icon:
-      src: /package.svg
   - title: Stitcher
     details: Manipulate and craft HLS playlists on the fly, supports HLS interstitials.
-    icon:
-      src: /stitcher.svg
   - title: Player
     details: A unified <a href="https://github.com/video-dev/hls.js">HLS.js</a> API and React components that integrate seamlessly.
-    icon:
-      src: /player.svg
 ---
+
+<style>
+:root {
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #ff4d00 30%, #ff9a00);
+
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, rgba(255, 77, 0, .2) 40%, rgba(255, 154, 0, .2) 40%);
+  --vp-home-hero-image-filter: blur(44px);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --vp-home-hero-image-filter: blur(56px);
+  }
+}
+
+@media (min-width: 960px) {
+  :root {
+    --vp-home-hero-image-filter: blur(68px);
+  }
+}
+
+.VPHomeHero .VPImage {
+  max-width: 160px;
+}
+</style>

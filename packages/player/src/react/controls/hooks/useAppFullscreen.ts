@@ -14,7 +14,7 @@ export function useAppFullscreen() {
   const onClick: MouseEventHandler<HTMLElement> = useCallback(
     (event) => {
       const element = event.target as HTMLElement;
-      const container = element.closest("[data-mix-container]");
+      const container = element.closest("[data-sprs-container]");
       if (container) {
         screenfull.toggle(container);
       }

@@ -1,53 +1,18 @@
 :root {
-  --vp-c-brand-1: #7600ff;
-  --vp-c-brand-2: #7600ff;
-  --vp-c-brand-3: #7600ff;
+  --vp-c-brand-1: #ff7400;
+  --vp-c-brand-2: #ff7400;
+  --vp-c-brand-3: #ff7400;
 }
 
 .logo {
-  width: 96px;
+  width: 120px;
 }
 
 .hidden {
   display: none;
 }
 
-.VPHero .name {
-  line-height: 0px;
-}
-
-.title-image {
-  display: inline-block;
-  width: 30px;
-  margin-bottom: -6px;
-  margin-right: 2px;
-}
-
-summary {
-  margin: 0 !important;
-}
-
-.image {
-  overflow: hidden;
-  border: 1px solid #aaa;
-  border-radius: 6px;
-}
-
-.navitem-img {
-  display: flex;
-}
-
-.navitem-img img {
-  width: 16px;
-  margin-right: 4px;
-}
-
-.video-frame {
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.iframe-frame {
+.iframe {
   width: 100%;
   border: none;
 }

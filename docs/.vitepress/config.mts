@@ -1,10 +1,10 @@
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
-  base: "/mixwave/",
-  title: "Mixwave",
+  base: "/superstreamer/",
+  title: "Superstreamer",
   description:
-    "All-in-one toolkit handles everything from video source to player.",
+    "An open, scalable, online streaming setup. All-in-one toolkit from ingest to adaptive video playback.",
   lang: "en-US",
   head: [
     [
@@ -22,56 +22,64 @@ export default defineConfig({
       provider: "local",
     },
     sidebar: [
-      { text: "Introduction", link: "introduction" },
-      { text: "Getting Started", link: "getting-started" },
+      {
+        text: "Introduction",
+        items: [
+          {
+            text: "What is Superstreamer?",
+            link: "/guide/what-is-superstreamer"
+          },
+          {
+            text: "Getting Started",
+            link: "/guide/getting-started"
+          },
+          {
+            text: "Packages",
+            link: "/guide/packages"
+          },
+          {
+            text: "Learning",
+            link: "/guide/learning"
+          }
+        ]
+      },
       {
         text: "Features",
         items: [
           {
-            text: "Transcode",
-            link: "features/transcode",
+            text: "Video Processing",
+            link: "/guide/video-processing",
           },
           {
-            text: "Package",
-            link: "features/package",
+            text: "Playlist Manipulation",
+            link: "/guide/playlist-manipulation",
           },
-          {
-            text: "Stitcher",
-            link: "features/stitcher",
-          },
-        ],
-      },
-      {
-        text: "Frontend",
-        items: [
           {
             text: "Player",
-            link: "frontend/player",
+            link: "/guide/player",
           },
           {
             text: "Dashboard",
-            link: "frontend/dashboard",
-          },
-        ],
+            link: "/guide/dashboard"
+          }
+        ]
       },
       {
         text: "Miscellaneous",
         items: [
-          { text: "Contribute", link: "misc/contribute" },
-          { text: "Tips", link: "misc/tips" },
-          { text: "Credits", link: "misc/credits" },
-        ],
-      },
+          {
+            text: "Contribute",
+            link: "/guide/contribute"
+          }
+        ]
+      }
     ],
     socialLinks: [
-      { icon: "github", link: "https://github.com/matvp91/mixwave" },
+      { icon: "github", link: "https://github.com/matvp91/superstreamer" },
     ],
     footer: {
       message: "Released under the MPL-2.0 License.",
       copyright: "Copyright © 2024-present Matthias Van Parijs",
-    },
-    outline: {
-      level: [1, 3],
     },
   },
   vite: {

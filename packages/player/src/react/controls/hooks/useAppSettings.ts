@@ -109,12 +109,12 @@ function matchElement(target: EventTarget | null, attr: string) {
 function isOverSettings(target: EventTarget | null) {
   let isOver = false;
 
-  const container = matchElement(target, "data-mix-container");
-  if (container?.querySelector("[data-mix-settings")?.matches(":hover")) {
+  const container = matchElement(target, "data-sprs-container");
+  if (container?.querySelector("[data-sprs-settings")?.matches(":hover")) {
     isOver = true;
   }
 
-  const element = matchElement(target, "data-mix-settings-action");
+  const element = matchElement(target, "data-sprs-settings-action");
   if (element?.matches(":hover")) {
     isOver = true;
   }

@@ -25,9 +25,9 @@ export function toHMS(seconds: number) {
 
 export function insertGenericStyle() {
   const style = document.createElement("style");
-  style.setAttribute("data-mix-style", "");
+  style.setAttribute("data-sprs-style", "");
   style.innerText = `
-  [data-mix-container] video::-webkit-media-text-track-container {
+  [data-sprs-container] video::-webkit-media-text-track-container {
     transform: scale(0.95);
   }
 `;

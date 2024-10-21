@@ -16,7 +16,7 @@ export function getMasterUrl(uri: string) {
   }
 
   if (uuidRegex.test(uri)) {
-    // We prefer using the mix protocol for asset identification but we allow
+    // We prefer using the asset protocol for asset identification but we allow
     // just uuid's too and assume it's a valid assetId.
     uri = `${ASSET_PROTOCOL}//${uri}`;
   }

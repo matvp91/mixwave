@@ -13,7 +13,7 @@ import type {
 type InterstitialAsset = {
   URI: string;
   DURATION: number;
-  "MIX-TYPE": Required<SessionInterstitial["type"]>;
+  "SPRS-TYPE": Required<SessionInterstitial["type"]>;
 };
 
 export function getStaticPDT(session: Session) {
@@ -50,7 +50,7 @@ export function getStaticDateRanges(session: Session) {
     };
 
     if (types.length) {
-      clientAttributes["MIX-TYPES"] = types.join(",");
+      clientAttributes["SPRS-TYPES"] = types.join(",");
     }
 
     return {
@@ -120,7 +120,7 @@ async function formatAdBreaks(
     assets.push({
       URI: presentation.url,
       DURATION: await presentation.getDuration(),
-      "MIX-TYPE": "ad",
+      "SPRS-TYPE": "ad",
     });
   }
 }
@@ -140,7 +140,7 @@ async function formatInterstitials(
     assets.push({
       URI: presentation.url,
       DURATION: await presentation.getDuration(),
-      "MIX-TYPE": interstitial.type,
+      "SPRS-TYPE": interstitial.type,
     });
   }
 }

@@ -57,7 +57,7 @@ export function BottomControls({
         selected={
           settings?.mode === "text-audio" && settings.entry === "explicit"
         }
-        data-mix-settings-action
+        data-sprs-settings-action
       >
         <SubtitlesIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
       </SqButton>
@@ -65,7 +65,7 @@ export function BottomControls({
         onClick={() => setAppSettings("quality")}
         onIdle={() => setAppSettings("quality", true)}
         selected={settings?.mode === "quality" && settings.entry === "explicit"}
-        data-mix-settings-action
+        data-sprs-settings-action
       >
         <SettingsIcon className="w-6 h-6 group-hover:scale-110 transition-transform origin-center" />
       </SqButton>

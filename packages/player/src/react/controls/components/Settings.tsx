@@ -38,7 +38,7 @@ export function Settings() {
     }
 
     const paneElements = element.querySelectorAll<HTMLDivElement>(
-      "[data-mix-settings-pane]",
+      "[data-sprs-settings-pane]",
     );
 
     Array.from(paneElements).map((el) => {
@@ -54,7 +54,7 @@ export function Settings() {
     });
 
     const activePane = element.querySelector<HTMLDivElement>(
-      "[data-mix-settings-pane=active]",
+      "[data-sprs-settings-pane=active]",
     );
     if (activePane) {
       const rect = activePane.getBoundingClientRect();
@@ -72,7 +72,7 @@ export function Settings() {
         mode !== null && "opacity-100 pointer-events-auto",
       )}
       ref={ref}
-      data-mix-settings
+      data-sprs-settings
     >
       <SettingsPane active={lastMode === "quality"}>
         <QualitiesPane />

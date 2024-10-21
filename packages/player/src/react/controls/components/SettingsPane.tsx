@@ -12,7 +12,7 @@ export function SettingsPane({ children, active }: SettingsPaneProps) {
         "pointer-events-none opacity-0 left-0 top-0",
         active && "pointer-events-auto opacity-100",
       )}
-      data-mix-settings-pane={active ? "active" : ""}
+      data-sprs-settings-pane={active ? "active" : ""}
     >
       {children}
     </div>

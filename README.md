@@ -44,3 +44,5 @@ cp config.env.example config.env
 # Open config.env and change the variables.
 docker compose up -d
 ```
+
+Dive into the [Documentation](https://matvp91.github.io/superstreamer) and do not hesitate to ask questions on [Discord](https://discord.gg/4hXgz9EsF4).

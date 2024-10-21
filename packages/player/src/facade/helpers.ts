@@ -47,12 +47,12 @@ export function getAssetListItem(data: InterstitialAssetStartedData): {
     data.assetListIndex
   ] as
     | {
-        "MIX-TYPE"?: CustomInterstitialType;
+        "SPRS-TYPE"?: CustomInterstitialType;
       }
     | undefined;
 
   return {
-    type: assetListItem?.["MIX-TYPE"],
+    type: assetListItem?.["SPRS-TYPE"],
   };
 }
 
@@ -60,7 +60,7 @@ export function getTypes(item: InterstitialScheduleItem) {
   if (!item.event) {
     return null;
   }
-  return item.event.dateRange.attr.enumeratedStringList("X-MIX-TYPES", {
+  return item.event.dateRange.attr.enumeratedStringList("X-SPRS-TYPES", {
     ad: false,
     bumper: false,
   } satisfies Record<CustomInterstitialType, boolean>);

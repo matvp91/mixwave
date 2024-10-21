@@ -1,6 +1,6 @@
 #!/bin/bash
 
-declare -a arr=("api" "artisan" "dashboard" "stitcher")
+declare -a arr=("api" "artisan" "app" "stitcher")
 
 for package in "${arr[@]}"
 do

@@ -1,54 +1,54 @@
 version: "3"
 
 volumes:
-  mixwave_redis_data:
+  superstreamer_redis_data:
 
 services:
-  mixwave-dashboard:
-    image: "mixwave/dashboard:latest"
+  superstreamer-app:
+    image: "superstreamerapp/app:latest"
     ports:
       - 52000:52000
     env_file: config.env
 
-  mixwave-api:
-    image: "mixwave/api:latest"
+  superstreamer-api:
+    image: "superstreamerapp/api:latest"
     restart: always
     ports:
       - 52001:52001
     depends_on:
-      - mixwave-redis
+      - superstreamer-redis
     env_file: config.env
     environment:
-      - REDIS_HOST=mixwave-redis
+      - REDIS_HOST=superstreamer-redis
       - REDIS_PORT=6379
 
-  mixwave-stitcher:
-    image: "mixwave/stitcher:latest"
+  superstreamer-stitcher:
+    image: "superstreamerapp/stitcher:latest"
     restart: always
     ports:
       - 52002:52002
     depends_on:
-      - mixwave-redis
+      - superstreamer-redis
     env_file: config.env
     environment:
-      - REDIS_HOST=mixwave-redis
+      - REDIS_HOST=superstreamer-redis
       - REDIS_PORT=6379
 
-  mixwave-artisan:
-    image: "mixwave/artisan:latest"
+  superstreamer-artisan:
+    image: "superstreamerapp/artisan:latest"
     restart: always
     depends_on:
-      - mixwave-redis
+      - superstreamer-redis
     env_file: config.env
     environment:
-      - REDIS_HOST=mixwave-redis
+      - REDIS_HOST=superstreamer-redis
       - REDIS_PORT=6379
 
-  mixwave-redis:
+  superstreamer-redis:
     image: redis/redis-stack-server:7.2.0-v6
     ports:
-      - 6379:6379
+      - 127.0.0.1:6379:6379
     healthcheck:
       test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
     volumes:
-      - mixwave_redis_data:/data
+      - superstreamer_redis_data:/data

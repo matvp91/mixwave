@@ -4,12 +4,11 @@
   "commit": false,
   "fixed": [
     [
-      "@mixwave/api",
-      "@mixwave/artisan",
-      "@mixwave/artisan-producer",
-      "@mixwave/dashboard",
-      "@mixwave/shared",
-      "@mixwave/stitcher"
+      "@superstreamer/api",
+      "@superstreamer/artisan",
+      "@superstreamer/dashboard",
+      "@superstreamer/shared",
+      "@superstreamer/stitcher"
     ]
   ],
   "linked": [],

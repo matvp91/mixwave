@@ -1,4 +1,4 @@
-import { addTranscodeJob } from "@mixwave/artisan/producer";
+import { addTranscodeJob } from "@superstreamer/artisan/producer";
 import { VASTClient } from "vast-client";
 import { DOMParser } from "@xmldom/xmldom";
 import * as uuid from "uuid";

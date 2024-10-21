@@ -1,9 +1,9 @@
 {
-  "name": "@mixwave/player",
+  "name": "@superstreamer/player",
   "version": "1.2.2",
   "description": "Video player controls (React, Tailwind) and an HLS.js facade",
-  "author": "Mixwave",
-  "homepage": "https://github.com/matvp91/mixwave/tree/main/packages/player",
+  "author": "Superstreamer",
+  "homepage": "https://github.com/matvp91/superstreamer/tree/main/packages/player",
   "maintainers": [
     {
       "name": "Matthias Van Parijs"
@@ -62,10 +62,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/matvp91/mixwave.git"
+    "url": "git+https://github.com/matvp91/superstreamer.git"
   },
   "bugs": {
-    "url": "https://github.com/matvp91/mixwave/issues"
+    "url": "https://github.com/matvp91/superstreamer/issues"
   },
   "license": "MPL-2.0"
 }

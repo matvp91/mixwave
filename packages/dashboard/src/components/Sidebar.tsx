@@ -1,4 +1,4 @@
-import logo from "../assets/logo.svg";
+import logoMascotte from "../assets/logo-mascotte.png";
 import { SidebarTitle } from "./SidebarTitle";
 import { Link } from "react-router-dom";
 import Rows3 from "lucide-react/icons/rows-3";
@@ -12,9 +12,9 @@ export function Sidebar() {
     <div className="flex h-full max-h-screen flex-col gap-2">
       <div className="flex h-14 items-center border-b px-4">
         <Link to="/" className="flex items-center gap-2">
-          <img src={logo} className="w-6" />
+          <img src={logoMascotte} className="w-6" />
           <div className="relative">
-            <span className="font-medium">Mixwave</span>
+            <span className="font-medium text-sm">Superstreamer</span>
             <span className="absolute top-0 text-[10px] ml-[2px]">
               {__VERSION__}
             </span>

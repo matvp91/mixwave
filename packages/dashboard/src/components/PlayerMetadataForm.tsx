@@ -9,7 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { Metadata } from "@mixwave/player/react";
+import type { Metadata } from "@superstreamer/player/react";
 
 type PlayerMetadataFormProps = {
   values: Metadata;

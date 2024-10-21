@@ -12,8 +12,7 @@ import { PlayerMetadataForm } from "./PlayerMetadataForm";
 import copy from "copy-to-clipboard";
 import { SelectObject } from "./SelectObject";
 import type { SelectObjectItem } from "./SelectObject";
-import type { Metadata } from "@mixwave/player/react";
-import type { Lang } from "@mixwave/player/react";
+import type { Metadata, Lang } from "@superstreamer/player/react";
 
 type PlayerAccordionProps = {
   masterUrl?: string;

@@ -2,7 +2,7 @@ import { Player } from "@/components/Player";
 import { PlayerAccordion } from "@/components/PlayerAccordion";
 import { useState } from "react";
 import { PlayerNpmInstall } from "./PlayerNpmInstall";
-import type { Lang, Metadata } from "@mixwave/player/react";
+import type { Lang, Metadata } from "@superstreamer/player/react";
 
 type PlayerViewProps = {
   masterUrl?: string;

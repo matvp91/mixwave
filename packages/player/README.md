@@ -1,14 +1,14 @@
-# @mixwave/player
+# @superstreamer/player
 
 Player is a collection of React components and a `facade` for [HLS.js](https://github.com/video-dev/hls.js), providing a unified API. It streamlines working with HLS.js by handling state management with a strong emphasis on reactivity and it provides a set of methods that make more sense for those building their own player UI.
 
 ```sh
 npm i hls.js@1.6.0-beta.1
-npm i @mixwave/player
+npm i @superstreamer/player
 ```
 
 > [!NOTE]
-> Full docs available at https://matvp91.github.io/mixwave/frontend/player.html
+> Full docs available at https://matvp91.github.io/superstreamer/frontend/player.html
 
 We strongly recommend you to go to the documentation link instead of relying on this README.
 
@@ -19,7 +19,7 @@ The components are styled with [Tailwind](https://tailwindcss.com/), make sure y
 module.exports = {
   content: [
     "./src/**/*.{ts,tsx}",
-    "./node_modules/@mixwave/player/dist/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@superstreamer/player/dist/**/*.{js,ts,jsx,tsx}",
   ],
   // The rest of the config...
 };
@@ -29,7 +29,7 @@ Pass your `HLS.js` instance to the facade.
 
 ```ts
 import Hls from "hls.js";
-import { HlsFacade } from "@mixwave/player";
+import { HlsFacade } from "@superstreamer/player";
 
 const hls = new Hls();
 hls.attachMedia(videoElement);
@@ -45,7 +45,7 @@ import {
   ControllerProvider,
   Controls,
   useController,
-} from "@mixwave/player/react";
+} from "@superstreamer/player/react";
 
 export function PlayerControls() {
   const [hls] = useState(() => new Hls());
@@ -77,7 +77,7 @@ export function PlayerControls() {
 You can now interact with the `Hls` instance.
 
 ```ts
-hls.loadSource("https://mixwave.stream/playlist/master.m3u8");
+hls.loadSource("https://example.com/playlist/master.m3u8");
 ```
 
 The `facade` greatly simplifies working with `HLS.js`, you can definitely use it to build your own UI instead.

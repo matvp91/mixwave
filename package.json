@@ -1,8 +1,8 @@
 {
-  "name": "mixwave",
+  "name": "superstreamer",
   "scripts": {
-    "dev": "turbo dev --filter=\"@mixwave/*\"",
-    "build": "turbo build --filter=\"@mixwave/*\"",
+    "dev": "turbo dev --filter=\"@superstreamer/*\"",
+    "build": "turbo build --filter=\"@superstreamer/*\"",
     "lint": "turbo lint",
     "test": "turbo test",
     "install-bin": "turbo install-bin"

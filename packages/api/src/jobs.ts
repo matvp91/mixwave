@@ -1,4 +1,4 @@
-import { allQueus, flowProducer } from "@mixwave/artisan/producer";
+import { allQueus, flowProducer } from "@superstreamer/artisan/producer";
 import { Job as BullMQJob } from "bullmq";
 import type { JobNode, JobState, Queue } from "bullmq";
 import type { Job } from "./types";

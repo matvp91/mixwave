@@ -14,7 +14,7 @@ export class TmpDir {
    */
   async create() {
     const dir = await fs.mkdtemp(
-      path.join(os.tmpdir(), `mixwave-${crypto.randomUUID()}`),
+      path.join(os.tmpdir(), `superstreamer-${crypto.randomUUID()}`),
     );
     this.dirs_.add(dir);
     return dir;

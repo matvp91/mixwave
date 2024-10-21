@@ -1,7 +1,7 @@
 {
   "$schema": "https://typedoc-plugin-markdown.org/schema.json",
   "entryPoints": ["./dist/index.d.ts"],
-  "name": "Mixwave Player",
+  "name": "Superstreamer Player",
   "plugin": ["typedoc-plugin-markdown"],
   "mergeReadme": true,
   "readme": "none",

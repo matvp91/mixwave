@@ -24,10 +24,10 @@ export function PlayerNpmInstall() {
           lineHeight: "24px",
         }}
       >
-        npm i @mixwave/player
+        npm i @superstreamer/player
       </span>
       <a
-        href="https://www.npmjs.com/package/@mixwave/player"
+        href="https://www.npmjs.com/package/@superstreamer/player"
         className="hover:underline ml-auto"
         target="_blank"
       >

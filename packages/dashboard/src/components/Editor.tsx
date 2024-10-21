@@ -31,7 +31,7 @@ export function Editor({
       validate: true,
       schemas: [
         {
-          uri: "http://mixwave-schema.org/stitcher/session",
+          uri: "http://superstreamer-schema.org/stitcher/session",
           fileMatch: ["custom"],
           schema,
         },

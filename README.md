@@ -1,13 +1,13 @@
 <div align="center">
-  <img src="./public/logo-full.png" width="420" />
+  <img src="./public/logo-mascotte.png" width="420" />
 
-  <h3>Mixwave</h3>
+  <h3>Superstreamer</h3>
   <h4>From video processing to playback in a matter of minutes</h4>
   
   <p align="center">
-    <img src="https://img.shields.io/github/license/matvp91/mixwave">
-    <img src="https://img.shields.io/github/last-commit/matvp91/mixwave">
-    <img src="https://img.shields.io/github/stars/matvp91/mixwave" alt="stars">
+    <img src="https://img.shields.io/github/license/matvp91/superstreamer">
+    <img src="https://img.shields.io/github/last-commit/matvp91/superstreamer">
+    <img src="https://img.shields.io/github/stars/matvp91/superstreamer" alt="stars">
     <img src="https://img.shields.io/badge/PR's-welcome-0437F2" alt="pr">
     <a href="https://discord.gg/4hXgz9EsF4">
       <img src="https://img.shields.io/discord/1290252589522223166?v=1" alt="discord">
@@ -15,8 +15,8 @@
   </p>
 
   <p align="center">
-    <a href="https://matvp91.github.io/mixwave">Documentation</a> · 
-    <a href="https://matvp91.github.io/mixwave/getting-started.html">Getting Started</a>
+    <a href="https://matvp91.github.io/superstreamer">Documentation</a> · 
+    <a href="https://matvp91.github.io/superstreamer/getting-started.html">Getting Started</a>
   </p>
 
 [<img src="./public/button-buy-me-a-coffee.png" width="150" alt="Buy me a coffee button"/>](https://www.buymeacoffee.com/matvp91)

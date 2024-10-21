@@ -3,9 +3,9 @@ import {
   Controls,
   useController,
   ControllerProvider,
-} from "@mixwave/player/react";
+} from "@superstreamer/player/react";
 import { useEffect, useState } from "react";
-import type { Lang, Metadata } from "@mixwave/player/react";
+import type { Lang, Metadata } from "@superstreamer/player/react";
 
 type PlayerProps = {
   url?: string | null;

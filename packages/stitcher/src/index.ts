@@ -18,7 +18,7 @@ const app = new Elysia()
     swagger({
       documentation: {
         info: {
-          title: "Mixwave Stitcher API",
+          title: "Superstreamer Stitcher API",
           version: "1.0.0",
           description:
             "Realtime playlist manipulator. Can be used for ad, bumper or other HLS interstitials insertion on-the-fly. Can apply filters to playlists.",

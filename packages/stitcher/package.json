@@ -1,5 +1,5 @@
 {
-  "name": "@mixwave/stitcher",
+  "name": "@superstreamer/stitcher",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -22,7 +22,7 @@
   "dependencies": {
     "@elysiajs/cors": "^1.1.1",
     "@elysiajs/swagger": "^1.1.5",
-    "@mixwave/artisan": "workspace:*",
+    "@superstreamer/artisan": "workspace:*",
     "shared": "workspace:*",
     "@xmldom/xmldom": "^0.8.10",
     "dom-parser": "^1.1.5",

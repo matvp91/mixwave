@@ -1,7 +1,10 @@
 import { Elysia, t } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
-import { addTranscodeJob, addPackageJob } from "@mixwave/artisan/producer";
+import {
+  addTranscodeJob,
+  addPackageJob,
+} from "@superstreamer/artisan/producer";
 import {
   LangCodeSchema,
   VideoCodecSchema,
@@ -21,9 +24,9 @@ const app = new Elysia()
     swagger({
       documentation: {
         info: {
-          title: "Mixwave API",
+          title: "Superstreamer API",
           description:
-            "The Mixwave API is organized around REST, returns JSON-encoded responses " +
+            "The Superstreamer API is organized around REST, returns JSON-encoded responses " +
             "and uses standard HTTP response codes and verbs.",
           version: "1.0.0",
         },
